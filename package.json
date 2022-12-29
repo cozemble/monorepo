@@ -1,0 +1,26 @@
+{
+  "name": "cozemble-monorepo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "dev": "turbo run dev --parallel"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/cozemble/monorepo.git"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/cozemble/monorepo/issues"
+  },
+  "homepage": "https://github.com/cozemble/monorepo#readme",
+  "devDependencies": {
+    "install": "^0.13.0",
+    "turbo": "latest"
+  },
+  "packageManager": "pnpm@7.9.3"
+}
