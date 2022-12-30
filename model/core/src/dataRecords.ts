@@ -1,17 +1,34 @@
-import {uuids} from "@cozemble/lang-util";
+import {clock, uuids} from "@cozemble/lang-util";
 import {DataRecord, Model, models} from "./core";
 
 export const dataRecords = {
-    random: (model: Model): DataRecord => {
+    newInstance: (model: Model, creatorId: string): DataRecord => {
+        return {
+            _type: "data.record",
+            id: {
+                _type: "data.record.id",
+                id: uuids.v4()
+            },
+            createdBy: {_type: "user.id", id: creatorId},
+            createdMillis: {_type: "timestamp.epoch.millis", value: clock.now().getTime()},
+            updatedMillis: {_type: "timestamp.epoch.millis", value: clock.now().getTime()},
+            modelId: model.id,
+            values: {}
+        }
+    },
+    random: (model: Model, givenValues: { [key: string]: any }): DataRecord => {
         const record: DataRecord = {
             _type: "data.record",
             id: {_type: "data.record.id", id: uuids.v4()},
             modelId: model.id,
             createdBy: {_type: "user.id", id: "random"},
-            createdMillis: {_type: "timestamp.epoch.millis", value: Date.now()},
-            updatedMillis: {_type: "timestamp.epoch.millis", value: Date.now()},
+            createdMillis: {_type: "timestamp.epoch.millis", value: clock.now().getTime()},
+            updatedMillis: {_type: "timestamp.epoch.millis", value: clock.now().getTime()},
             values: {}
         }
-        return model.properties.reduce((record, property) => models.setPropertyValue(model, property, property.randomValue(), record), record)
+        return model.properties.reduce((record, property) => {
+            const value = givenValues[property.name] || property.randomValue()
+            return models.setPropertyValue(model, property, value, record);
+        }, record)
     }
 }

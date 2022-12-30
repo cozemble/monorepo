@@ -5,7 +5,8 @@ import {
     dropNulls,
     ensureArray,
     equal,
-    filterAsync, findMandatory,
+    filterAsync,
+    findMandatory,
     first,
     groupBy,
     headAndTail,
@@ -41,8 +42,11 @@ import {bestGuessAtMessageForUser, ErrorWithContext, mergeContext, mergeErrorCon
 import {Selectable} from "./selections";
 import {
     containsObject,
-    dropKeys, dropKeysRecursive, keysAndValues,
-    mapKeys, mapValues,
+    dropKeys,
+    dropKeysRecursive,
+    keysAndValues,
+    mapKeys,
+    mapValues,
     merge,
     orderKeys,
     pick,
@@ -281,3 +285,5 @@ export {
     Option,
     options
 } from './options'
+
+export {Clock, SystemClock, FixedClock, clock} from './clock'

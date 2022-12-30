@@ -42,6 +42,7 @@ export const stringPropertyRegistration: PropertyDescriptor<StringProperty> = {
         return {
             _type: "string.property",
             id: uuids.v4(),
+            version: 1,
             name: "",
             required: false,
             unique: false,

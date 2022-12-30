@@ -12,6 +12,7 @@ export interface PropertyDescriptor<T = Property> {
 export interface Property<T = any> {
     _type: string
     id: string
+    version: number
     name: string
     randomValue: () => T
 }

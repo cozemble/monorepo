@@ -3,6 +3,7 @@
     import {models} from "@cozemble/model-core";
     import {stringProperties, stringPropertyOptions} from "@cozemble/model-string-core";
     import {dataRecords} from "@cozemble/model-core";
+    import PaginatedEditor from "$lib/PaginatedEditor.svelte";
 
     let model = models.newInstance("Customer",
         stringProperties.newInstance("First name", stringPropertyOptions.required),
@@ -11,9 +12,7 @@
         stringProperties.newInstance("Email", stringPropertyOptions.unique, stringPropertyOptions.validation("^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$", "Must be a valid email address"))
     )
     let records: DataRecord[] = [
-        dataRecords.random(model),
+        dataRecords.random(model, {"First name":"Mike", "Last name":"Smith", "Phone":"555-555-5555", "Email":"mike@smith.com"}),
     ]
 </script>
-Paginated editor
-<p>model = {JSON.stringify(model, null, 2)}</p>
-<p>records = {JSON.stringify(records, null, 2)}</p>
+<PaginatedEditor {model} {records} />

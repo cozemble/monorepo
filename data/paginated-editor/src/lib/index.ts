@@ -1,1 +1,1 @@
-// Reexport your entry components here
+export const x = 1
