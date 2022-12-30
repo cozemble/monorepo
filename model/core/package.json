@@ -18,5 +18,6 @@
     "typescript": "^4.9.3"
   },
   "dependencies": {
+    "@cozemble/lang-util": "workspace:*"
   }
 }

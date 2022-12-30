@@ -8,5 +8,10 @@ export {
     PropertyDescriptor,
     UserId,
     TimestampEpochMillis,
-    propertyRegistry
+    propertyRegistry,
+    models
 } from "./core"
+
+export {
+    dataRecords
+} from './dataRecords'

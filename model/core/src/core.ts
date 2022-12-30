@@ -1,3 +1,5 @@
+import {uuids} from "@cozemble/lang-util"
+
 export interface PropertyDescriptor<T = Property> {
     _type: "property.descriptor"
     id: string
@@ -7,10 +9,11 @@ export interface PropertyDescriptor<T = Property> {
     validate(property: T): Map<string, string>
 }
 
-export interface Property {
+export interface Property<T = any> {
     _type: string
     id: string
     name: string
+    randomValue: () => T
 }
 
 export interface ModelId {
@@ -23,6 +26,30 @@ export interface Model {
     id: ModelId
     name: string
     properties: Property[]
+}
+
+export let models = {
+    newInstance: (name: string, ...properties: Property[]): Model => {
+        return {
+            _type: "model",
+            id: {
+                _type: "model.id",
+                id: uuids.v4()
+            },
+            name,
+            properties
+        }
+    },
+    setPropertyValue<T = any>(model: Model, property: Property<T>, value: T | null, record: DataRecord): DataRecord {
+        return {
+            ...record,
+            updatedMillis: {_type: "timestamp.epoch.millis", value: Date.now()},
+            values: {
+                ...record.values,
+                [property.id]: value
+            }
+        }
+    }
 }
 
 export interface DataRecordId {

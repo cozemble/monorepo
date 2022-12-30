@@ -1,5 +1,8 @@
 export {
     StringProperty,
     RegexValidation,
-    stringPropertyRegistration
+    stringPropertyRegistration,
+    stringProperties,
+    stringPropertyOptions,
+    StringPropertyOption
 } from './stringProperty'

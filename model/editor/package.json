@@ -1,5 +1,5 @@
 {
-	"name": "editor",
+	"name": "@cozemble/model-editor",
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {

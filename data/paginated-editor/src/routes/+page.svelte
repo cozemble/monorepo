@@ -1,0 +1,1 @@
+<a href="paginatedEditor">Paginated editor</a>
