@@ -3,6 +3,8 @@ export interface PropertyDescriptor<T = Property> {
     id: string
     name: DottedName
     newProperty: () => T
+
+    validate(property: T): Map<string, string>
 }
 
 export interface Property {
@@ -60,6 +62,9 @@ export const propertyRegistry = {
         if (!registeredProperties.find(p => p.id === descriptor.id)) {
             registeredProperties.push(descriptor)
         }
+    },
+    get: (id: string): PropertyDescriptor | null => {
+        return registeredProperties.find(p => p.id === id) ?? null
     },
     list: () => {
         return registeredProperties

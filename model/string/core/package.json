@@ -1,5 +1,5 @@
 {
-  "name": "@cozemble/model-assembled",
+  "name": "@cozemble/model-string-core",
   "version": "1.0.0",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -19,8 +19,6 @@
   },
   "dependencies": {
     "@cozemble/lang-util": "workspace:*",
-    "@cozemble/model-core": "workspace:*",
-    "@cozemble/model-string-core": "workspace:*",
-    "@cozemble/model-string-ui": "workspace:*"
+    "@cozemble/model-core": "workspace:*"
   }
 }

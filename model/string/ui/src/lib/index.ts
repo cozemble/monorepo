@@ -1,0 +1,1 @@
+export {default as PropertyConfigurer} from './StringPropertyConfigurer.svelte'

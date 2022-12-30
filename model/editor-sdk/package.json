@@ -1,0 +1,20 @@
+{
+  "name": "@cozemble/model-editor-sdk",
+  "version": "1.0.0",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",
+    "test": "echo N/A"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.3",
+    "svelte": "^3.54.0",
+    "svelte-check": "^2.9.2"
+  },
+  "dependencies": {
+  }
+}
