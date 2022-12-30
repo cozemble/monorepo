@@ -4,9 +4,9 @@
     import {propertyConfigurerRegistry} from "@cozemble/model-assembled";
     import {editorHost, emptyFormErrorState} from "@cozemble/model-editor-sdk";
     import {writable} from 'svelte/store'
-    import {afterUpdate} from 'svelte'
+    import {afterUpdate, createEventDispatcher} from 'svelte'
 
-    export let property:Property
+    export let property: Property
 
     const formSectionErrorState = writable(emptyFormErrorState())
     editorHost.setErrorState(formSectionErrorState)
@@ -27,11 +27,15 @@
 
     $: configurer = propertyConfigurerRegistry.get(property._type)
     $: errors = propertyDescriptor?.validate(property) ?? new Map()
+    const dispatch = createEventDispatcher()
 
     function saveClicked() {
         const errors = propertyDescriptor?.validate(property) ?? new Map()
         console.log({errors, propertyDescriptor})
         $formSectionErrorState.showErrors = errors.size > 0
+        if (errors.size === 0) {
+            dispatch("save", {property})
+        }
     }
 
 </script>

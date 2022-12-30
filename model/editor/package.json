@@ -20,6 +20,7 @@
 		"vite": "^4.0.0"
 	},
 	"dependencies": {
+		"@cozemble/lang-util": "workspace:*",
 		"@cozemble/model-core": "workspace:*",
 		"@cozemble/model-assembled": "workspace:*",
 		"@cozemble/model-editor-sdk": "workspace:*"
