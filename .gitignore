@@ -31,3 +31,6 @@ jspm_packages/
 .env.test
 
 .turbo
+.svelte-kit
+package
+dist
