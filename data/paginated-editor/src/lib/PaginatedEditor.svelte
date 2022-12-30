@@ -1,6 +1,7 @@
 <script lang="ts">
     import type {DataRecord, Model} from "@cozemble/model-core";
     import {dataRecords} from "@cozemble/model-core";
+    import PropertyView from "$lib/PropertyView.svelte";
 
     export let model: Model
     export let records: DataRecord[]
@@ -12,8 +13,9 @@
     function editRecord(record: DataRecord) {
 
     }
+
     function addRecord() {
-        records = [...records, dataRecords.newInstance(model,"test-user")]
+        records = [...records, dataRecords.newInstance(model, "test-user")]
     }
 </script>
 <table>
@@ -29,7 +31,9 @@
     {#each records as record}
         <tr>
             {#each model.properties as property}
-                <td>{record.values[property.id] ?? ""}</td>
+                <td>
+                    <PropertyView record={record} property={property}/>
+                </td>
             {/each}
             <td>
                 <button on:click={() => editRecord(record.id)}>Edit</button>

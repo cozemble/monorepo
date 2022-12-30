@@ -20,6 +20,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@cozemble/model-core": "workspace:*",
 		"@cozemble/model-string-core": "workspace:*",
 		"@cozemble/model-editor-sdk": "workspace:*"
 

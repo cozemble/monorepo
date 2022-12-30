@@ -39,9 +39,10 @@ export const stringPropertyRegistration: PropertyDescriptor<StringProperty> = {
     name: {_type: "dotted.name", name: "String"},
     validate,
     newProperty: () => {
+        const id = uuids.v4()
         return {
             _type: "string.property",
-            id: uuids.v4(),
+            id,
             version: 1,
             name: "",
             required: false,
@@ -49,6 +50,18 @@ export const stringPropertyRegistration: PropertyDescriptor<StringProperty> = {
             validations: [],
             randomValue: () => {
                 return (Math.random() + 1).toString(36).substring(2)
+            },
+            setValue: (record, value) => {
+                return {
+                    ...record,
+                    values: {
+                        ...record.values,
+                        [id]: value
+                    }
+                }
+            },
+            getValue: (record) => {
+                return record.values[id] ?? null
             }
         }
     }

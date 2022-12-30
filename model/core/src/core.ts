@@ -1,4 +1,4 @@
-import {uuids} from "@cozemble/lang-util"
+import {clock, uuids} from "@cozemble/lang-util"
 
 export interface PropertyDescriptor<T = Property> {
     _type: "property.descriptor"
@@ -15,6 +15,10 @@ export interface Property<T = any> {
     version: number
     name: string
     randomValue: () => T
+
+    setValue(record: DataRecord, value: T | null): DataRecord
+
+    getValue(record: DataRecord): T | null
 }
 
 export interface ModelId {
@@ -43,12 +47,8 @@ export let models = {
     },
     setPropertyValue<T = any>(model: Model, property: Property<T>, value: T | null, record: DataRecord): DataRecord {
         return {
-            ...record,
-            updatedMillis: {_type: "timestamp.epoch.millis", value: Date.now()},
-            values: {
-                ...record.values,
-                [property.id]: value
-            }
+            ...property.setValue(record, value),
+            updatedMillis: {_type: "timestamp.epoch.millis", value: clock.now().getTime()}
         }
     }
 }

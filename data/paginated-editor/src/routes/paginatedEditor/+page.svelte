@@ -1,9 +1,10 @@
 <script lang="ts">
     import type {DataRecord} from "@cozemble/model-core";
-    import {models} from "@cozemble/model-core";
+    import {dataRecords, models} from "@cozemble/model-core";
     import {stringProperties, stringPropertyOptions} from "@cozemble/model-string-core";
-    import {dataRecords} from "@cozemble/model-core";
     import PaginatedEditor from "$lib/PaginatedEditor.svelte";
+    import {onMount} from "svelte";
+    import {registerAllProperties, registerAllPropertyViewers} from "@cozemble/model-assembled";
 
     let model = models.newInstance("Customer",
         stringProperties.newInstance("First name", stringPropertyOptions.required),
@@ -12,7 +13,21 @@
         stringProperties.newInstance("Email", stringPropertyOptions.unique, stringPropertyOptions.validation("^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$", "Must be a valid email address"))
     )
     let records: DataRecord[] = [
-        dataRecords.random(model, {"First name":"Mike", "Last name":"Smith", "Phone":"555-555-5555", "Email":"mike@smith.com"}),
+        dataRecords.random(model, {
+            "First name": "Mike",
+            "Last name": "Smith",
+            "Phone": "555-555-5555",
+            "Email": "mike@smith.com"
+        }),
     ]
+
+    let mounted = false
+    onMount(() => {
+        registerAllProperties()
+        registerAllPropertyViewers()
+        mounted = true
+    })
 </script>
-<PaginatedEditor {model} {records} />
+{#if mounted}
+    <PaginatedEditor {model} {records}/>
+{/if}
