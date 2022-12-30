@@ -2,27 +2,31 @@
     import type {Model, Property} from "@cozemble/model-core";
     import {uuids} from "@cozemble/lang-util";
     import PropertyEditor from "$lib/PropertyEditor.svelte";
+    import {createEventDispatcher} from "svelte";
 
     export let model: Model
     let propertyBeingEdited: Property | null = null
+    const dispatch = createEventDispatcher()
 
     function addProperty() {
         model = {...model, properties: [...model.properties, {_type: "", id: uuids.v4(), name: "Untitled property"}]}
+        dispatch("changed", {model})
     }
 
     function editProperty(p: Property) {
         propertyBeingEdited = p
     }
 
-    function propertyEdited(event:CustomEvent) {
+    function propertyEdited(event: CustomEvent) {
         const property = event.detail.property
         model = {...model, properties: model.properties.map(p => p.id === property.id ? property : p)}
         propertyBeingEdited = null
+        dispatch("changed", {model})
     }
 </script>
 
 {#if propertyBeingEdited}
-    <PropertyEditor property={propertyBeingEdited} on:save={propertyEdited} />
+    <PropertyEditor property={propertyBeingEdited} on:save={propertyEdited}/>
 {:else}
     <table>
         <thead>
