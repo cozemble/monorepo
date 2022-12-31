@@ -4,14 +4,31 @@
     import PropertyView from "$lib/PropertyView.svelte";
     import type {CellFocus} from "$lib/CellFocus";
     import {cellFocus} from "$lib/CellFocus";
-    import {afterUpdate} from "svelte";
     import PropertyEdit from "$lib/PropertyEdit.svelte";
+    import type {DataEditorClient, DataEditorEvent} from "@cozemble/model-editor-sdk";
+    import {dataEditorHost} from "@cozemble/model-editor-sdk";
+    import {applyValueChanged, modeFollowingValueChange, type UiMode} from "$lib/onValueChanged";
+    import {writable, type Writable} from "svelte/store";
 
     export let model: Model
     export let records: DataRecord[]
 
-    let mode: "navigate" | "edit" = "navigate"
-    let focus: CellFocus | null = null
+    let mode: Writable<UiMode> = writable("navigate")
+    let focus: Writable<CellFocus | null> = writable(null)
+
+    const dataEditorClient: DataEditorClient = {
+        dispatchEditEvent(event: DataEditorEvent): void {
+            if (event._type === "value.changed") {
+                records = applyValueChanged(records, event)
+                modeFollowingValueChange(event, mode, focus)
+            }
+            if(event._type === "edit.aborted") {
+                mode.set("navigate")
+                focus.set(null)
+            }
+        }
+    }
+    dataEditorHost.setClient(dataEditorClient)
 
     function deleteRecord(_record: DataRecord) {
 
@@ -26,43 +43,35 @@
     }
 
     function setCellFocus(row: number, column: number) {
-        focus = cellFocus(row, column)
-        console.log({focus})
+        $focus = cellFocus(row, column)
     }
 
-    function isFocussed(focus:CellFocus|null,row: number, column: number) {
-        console.log({focus, row, column})
-        return focus && focus.row === row && focus.column === column
+    function isFocussed(focus: CellFocus | null, row: number, column: number) {
+        return $focus && $focus.row === row && $focus.column === column
     }
 
     function bodyClicked(event: Event) {
         const target = event.target as HTMLElement
         const cell = target.closest('td')
-        console.log("body clicked", {event, cell})
-        if(cell) {
+        if (cell) {
             const rowIndex = cell.getAttribute('data-row-index')
             const colIndex = cell.getAttribute('data-column-index')
-            if(rowIndex && colIndex) {
-                console.log("body clicked", {rowIndex, colIndex})
+            if (rowIndex && colIndex) {
                 setCellFocus(parseInt(rowIndex), parseInt(colIndex))
             }
         }
     }
 
     function keyup(event: KeyboardEvent) {
-        if(event.key === "Enter") {
-            mode = "edit"
+        if ($mode === "navigate") {
+            if (event.key === "Enter") {
+                $mode = "edit"
+            }
         }
-        if(event.key === "Escape") {
-            mode = "navigate"
-        }
-        console.log("keydown", {mode})
     }
-
-    afterUpdate(() => console.log("updated", {mode, focus}))
 </script>
 
-<svelte:window on:keyup={keyup} />
+<svelte:window on:keyup={keyup}/>
 
 <table>
     <thead>
@@ -77,9 +86,9 @@
     {#each records as record, rowIndex}
         <tr>
             {#each model.properties as property, colIndex}
-                <td class:highlighted={isFocussed(focus,rowIndex, colIndex)} data-row-index={rowIndex}
+                <td class:highlighted={isFocussed($focus,rowIndex, colIndex)} data-row-index={rowIndex}
                     data-column-index={colIndex}>
-                    {#if mode === "edit" && isFocussed(focus,rowIndex, colIndex)}
+                    {#if $mode === "edit" && isFocussed($focus, rowIndex, colIndex)}
                         <PropertyEdit record={record} property={property}/>
                     {:else}
                         <PropertyView record={record} property={property}/>

@@ -14,6 +14,7 @@ importers:
     specifiers:
       '@cozemble/model-assembled': workspace:*
       '@cozemble/model-core': workspace:*
+      '@cozemble/model-editor-sdk': workspace:*
       '@cozemble/model-string-core': workspace:*
       '@sveltejs/adapter-auto': ^1.0.0
       '@sveltejs/kit': ^1.0.0
@@ -26,6 +27,7 @@ importers:
     dependencies:
       '@cozemble/model-assembled': link:../../model/assembled
       '@cozemble/model-core': link:../../model/core
+      '@cozemble/model-editor-sdk': link:../../model/editor-sdk
     devDependencies:
       '@cozemble/model-string-core': link:../../model/string/core
       '@sveltejs/adapter-auto': 1.0.0_@sveltejs+kit@1.0.1
@@ -41,6 +43,7 @@ importers:
     specifiers:
       '@cozemble/model-assembled': workspace:*
       '@cozemble/model-core': workspace:*
+      '@cozemble/model-editor-sdk': workspace:*
       '@cozemble/model-string-core': workspace:*
       '@sveltejs/adapter-auto': ^1.0.0
       '@sveltejs/kit': ^1.0.0
@@ -53,6 +56,7 @@ importers:
     dependencies:
       '@cozemble/model-assembled': link:../../../model/assembled
       '@cozemble/model-core': link:../../../model/core
+      '@cozemble/model-editor-sdk': link:../../../model/editor-sdk
     devDependencies:
       '@cozemble/model-string-core': link:../../../model/string/core
       '@sveltejs/adapter-auto': 1.0.0_@sveltejs+kit@1.0.1
@@ -152,9 +156,12 @@ importers:
 
   model/editor-sdk:
     specifiers:
+      '@cozemble/model-core': workspace:*
       svelte: ^3.54.0
       svelte-check: ^2.9.2
       typescript: ^4.9.3
+    dependencies:
+      '@cozemble/model-core': link:../core
     devDependencies:
       svelte: 3.55.0
       svelte-check: 2.10.3_svelte@3.55.0
@@ -235,6 +242,7 @@ importers:
 
   model/string/ui/package:
     specifiers:
+      '@cozemble/model-core': workspace:*
       '@cozemble/model-editor-sdk': workspace:*
       '@cozemble/model-string-core': workspace:*
       '@sveltejs/adapter-auto': ^1.0.0
@@ -246,6 +254,7 @@ importers:
       typescript: ^4.9.3
       vite: ^4.0.0
     dependencies:
+      '@cozemble/model-core': link:../../../core
       '@cozemble/model-editor-sdk': link:../../../editor-sdk
       '@cozemble/model-string-core': link:../../core
     devDependencies:

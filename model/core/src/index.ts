@@ -10,7 +10,10 @@ export {
     TimestampEpochMillis,
     propertyRegistry,
     models,
-    properties
+    properties,
+    DataRecordPath,
+    DataRecordPathElement,
+    dataRecordPaths
 } from "./core"
 
 export {

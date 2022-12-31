@@ -92,6 +92,40 @@ export interface DataRecord {
     values: { [key: string]: any }
 }
 
+export type DataRecordPathElement = Property
+
+export interface DataRecordPath<T = any> {
+    _type: "data.record.path"
+    parentElements: DataRecordPathElement[]
+    property: Property<T>
+
+    getValue(record: DataRecord): T | null
+
+    setValue(record: DataRecord, t: T | null): DataRecord
+}
+
+export const dataRecordPaths = {
+    newInstance: <T = any>(property: Property<T>, ...parentElements: DataRecordPathElement[]): DataRecordPath<T> => {
+        return {
+            _type: "data.record.path",
+            parentElements,
+            property,
+            getValue: (record) => {
+                if (parentElements.length > 0) {
+                    throw new Error("Not implemented: dataRecordPaths with parent elements")
+                }
+                return property.getValue(record)
+            },
+            setValue: (record, value) => {
+                if (parentElements.length > 0) {
+                    throw new Error("Not implemented: dataRecordPaths with parent elements")
+                }
+                return property.setValue(record, value)
+            }
+        }
+    }
+}
+
 export interface DottedName {
     _type: "dotted.name"
     name: string
