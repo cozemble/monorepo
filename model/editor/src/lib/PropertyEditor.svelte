@@ -1,10 +1,11 @@
 <script lang="ts">
     import type {Property, PropertyDescriptor} from "@cozemble/model-core";
-    import {propertyRegistry} from "@cozemble/model-core";
+    import {propertyDescriptors} from "@cozemble/model-core";
     import {propertyConfigurerRegistry} from "@cozemble/model-assembled";
     import {editorHost, emptyFormErrorState} from "@cozemble/model-editor-sdk";
     import {writable} from 'svelte/store'
     import {afterUpdate, createEventDispatcher} from 'svelte'
+    import {propertyTypeFns} from "@cozemble/model-core";
 
     export let property: Property
 
@@ -15,11 +16,11 @@
 
     function propertyTypeChanged(event: Event) {
         const target = event.target as HTMLSelectElement
-        propertyDescriptor = propertyRegistry.get(target.value)
+        propertyDescriptor = propertyDescriptors.get(propertyTypeFns.newInstance(target.value))
         if (propertyDescriptor) {
             property = {...propertyDescriptor.newProperty(), id: property.id, name: property.name}
         } else {
-            property = {...property, _type: ""}
+            property = {...property, _type: propertyTypeFns.newInstance("")}
         }
     }
 
@@ -47,8 +48,8 @@
     <label>Property Type</label><br/>
     <select on:change={propertyTypeChanged}>
         <option value="">----</option>
-        {#each propertyRegistry.list() as registeredProperty}
-            <option value={registeredProperty.id}>{registeredProperty.name.name}</option>
+        {#each propertyDescriptors.list() as propertyDescriptor}
+            <option value={propertyDescriptor.propertyType.type} selected={propertyTypeFns.equals(property._type,propertyDescriptor.propertyType)}>{propertyDescriptor.name.name}</option>
         {/each}
     </select><br/>
     {#if configurer}

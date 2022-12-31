@@ -1,56 +1,57 @@
-import {propertyRegistry} from "@cozemble/model-core";
+import {propertyDescriptors, PropertyType} from "@cozemble/model-core";
 import {stringPropertyRegistration} from "@cozemble/model-string-core";
 import {
     PropertyConfigurer as StringPropertyConfigurer,
-    PropertyViewer as StringPropertyViewer,
-    PropertyEditor as StringPropertyEditor
+    PropertyEditor as StringPropertyEditor,
+    PropertyViewer as StringPropertyViewer
 } from "@cozemble/model-string-ui";
+import {stringPropertyType} from "@cozemble/model-string-core/dist/esm";
 
-export {propertyRegistry} from "@cozemble/model-core";
+export {propertyDescriptors} from "@cozemble/model-core";
 
 const propertyConfigurerMap = new Map<string, any>()
 const propertyViewerMap = new Map<string, any>()
 const propertyEditorMap = new Map<string, any>()
 
 export const propertyConfigurerRegistry = {
-    register: (propertyType: string, component: any) => {
-        propertyConfigurerMap.set(propertyType, component)
+    register: (propertyType: PropertyType, component: any) => {
+        propertyConfigurerMap.set(propertyType.type, component)
     },
-    get: (propertyType: string) => {
-        return propertyConfigurerMap.get(propertyType) ?? null
+    get: (propertyType: PropertyType) => {
+        return propertyConfigurerMap.get(propertyType.type) ?? null
     }
 }
 
 export const propertyViewerRegistry = {
-    register: (propertyType: string, component: any) => {
-        propertyViewerMap.set(propertyType, component)
+    register: (propertyType: PropertyType, component: any) => {
+        propertyViewerMap.set(propertyType.type, component)
     },
-    get: (propertyType: string) => {
-        return propertyViewerMap.get(propertyType) ?? null
+    get: (propertyType: PropertyType) => {
+        return propertyViewerMap.get(propertyType.type) ?? null
     }
 }
 
 export const propertyEditorRegistry = {
-    register: (propertyType: string, component: any) => {
-        propertyEditorMap.set(propertyType, component)
+    register: (propertyType: PropertyType, component: any) => {
+        propertyEditorMap.set(propertyType.type, component)
     },
-    get: (propertyType: string) => {
-        return propertyEditorMap.get(propertyType) ?? null
+    get: (propertyType: PropertyType) => {
+        return propertyEditorMap.get(propertyType.type) ?? null
     }
 }
 
 export function registerAllProperties() {
-    propertyRegistry.register(stringPropertyRegistration)
+    propertyDescriptors.register(stringPropertyRegistration)
 }
 
 export function registerAllPropertyConfigurers() {
-    propertyConfigurerRegistry.register("string.property", StringPropertyConfigurer)
+    propertyConfigurerRegistry.register(stringPropertyType, StringPropertyConfigurer)
 }
 
 export function registerAllPropertyViewers() {
-    propertyViewerRegistry.register("string.property", StringPropertyViewer)
+    propertyViewerRegistry.register(stringPropertyType, StringPropertyViewer)
 }
 
 export function registerAllPropertyEditors() {
-    propertyEditorRegistry.register("string.property", StringPropertyEditor)
+    propertyEditorRegistry.register(stringPropertyType, StringPropertyEditor)
 }

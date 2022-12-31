@@ -1,4 +1,5 @@
 packages:
+  - "data/**"
   - "lang/*"
   - "model/**"
-  - "data/**"
+  - "ui/**"

@@ -1,7 +1,8 @@
 import {clock, uuids} from "@cozemble/lang-util";
-import {DataRecord, Model, models} from "./core";
+import {DataRecord, Model} from "@cozemble/model-core";
+import {modelFns} from "./modelsFns";
 
-export const dataRecords = {
+export const dataRecordFns = {
     newInstance: (model: Model, creatorId: string): DataRecord => {
         return {
             _type: "data.record",
@@ -28,7 +29,7 @@ export const dataRecords = {
         }
         return model.properties.reduce((record, property) => {
             const value = givenValues[property.name] || property.randomValue()
-            return models.setPropertyValue(model, property, value, record);
+            return modelFns.setPropertyValue(model, property, value, record);
         }, record)
     }
 }

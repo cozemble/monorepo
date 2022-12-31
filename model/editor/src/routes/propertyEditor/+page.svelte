@@ -5,7 +5,7 @@
     } from "@cozemble/model-assembled";
     import {onMount} from 'svelte'
     import PropertyEditor from "$lib/PropertyEditor.svelte";
-    import {properties} from "@cozemble/model-core";
+    import {propertyFns} from "@cozemble/model-api";
 
     let mounted = false
     onMount(() => {
@@ -14,7 +14,7 @@
         mounted = true
     })
 
-    let property = properties.nullInstance()
+    let property = propertyFns.newInstance()
 
 </script>
 

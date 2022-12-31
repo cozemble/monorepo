@@ -23,6 +23,7 @@
   "type": "module",
   "dependencies": {
     "@cozemble/model-core": "workspace:*",
+    "@cozemble/model-api": "workspace:*",
     "@cozemble/model-assembled": "workspace:*",
     "@cozemble/model-editor-sdk": "workspace:*"
   }

@@ -1,5 +1,7 @@
 import {Option, options, uuids} from "@cozemble/lang-util";
-import {Property, PropertyDescriptor} from "@cozemble/model-core";
+import {Property, PropertyDescriptor, propertyTypeFns} from "@cozemble/model-core";
+
+export const stringPropertyType = propertyTypeFns.newInstance("string.property")
 
 export interface RegexValidation {
     _type: "regex.validation"
@@ -8,7 +10,7 @@ export interface RegexValidation {
 }
 
 export interface StringProperty extends Property {
-    _type: "string.property"
+    _type: { _type: "property.type", type: "string.property" }
     required: boolean
     unique: boolean
     validations: RegexValidation[]
@@ -35,13 +37,13 @@ function validate(property: StringProperty): Map<string, string> {
 
 export const stringPropertyRegistration: PropertyDescriptor<StringProperty> = {
     _type: "property.descriptor",
-    id: "core.string.property",
+    propertyType: stringPropertyType,
     name: {_type: "dotted.name", name: "String"},
     validate,
     newProperty: () => {
         const id = uuids.v4()
         return {
-            _type: "string.property",
+            _type: {_type: "property.type", type: "string.property"},
             id,
             version: 1,
             name: "",

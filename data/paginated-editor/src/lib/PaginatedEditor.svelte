@@ -1,6 +1,5 @@
 <script lang="ts">
     import type {DataRecord, Model} from "@cozemble/model-core";
-    import {dataRecords} from "@cozemble/model-core";
     import PropertyView from "$lib/PropertyView.svelte";
     import type {CellFocus} from "$lib/CellFocus";
     import {cellFocus} from "$lib/CellFocus";
@@ -9,6 +8,7 @@
     import {dataEditorHost} from "@cozemble/model-editor-sdk";
     import {applyValueChanged, modeFollowingValueChange, type UiMode} from "$lib/onValueChanged";
     import {writable, type Writable} from "svelte/store";
+    import {dataRecordFns} from "@cozemble/model-api";
 
     export let model: Model
     export let records: DataRecord[]
@@ -39,7 +39,7 @@
     }
 
     function addRecord() {
-        records = [...records, dataRecords.newInstance(model, "test-user")]
+        records = [...records, dataRecordFns.newInstance(model, "test-user")]
     }
 
     function setCellFocus(row: number, column: number) {

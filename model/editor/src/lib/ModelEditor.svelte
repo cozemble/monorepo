@@ -1,15 +1,19 @@
 <script lang="ts">
     import type {Model, Property} from "@cozemble/model-core";
-    import {properties as propertyFns} from "@cozemble/model-core";
     import PropertyEditor from "$lib/PropertyEditor.svelte";
     import {createEventDispatcher} from "svelte";
+    import {EditableName} from "@cozemble/ui-atoms";
+    import {propertyFns} from "@cozemble/model-api";
 
     export let model: Model
     let propertyBeingEdited: Property | null = null
     const dispatch = createEventDispatcher()
 
     function addProperty() {
-        model = {...model, properties: [...model.properties, {...propertyFns.nullInstance(), name: "Untitled property"}]}
+        model = {
+            ...model,
+            properties: [...model.properties, {...propertyFns.newInstance(), name: "Untitled property"}]
+        }
         dispatch("changed", {model})
     }
 
@@ -23,11 +27,17 @@
         propertyBeingEdited = null
         dispatch("changed", {model})
     }
+
+    function onNameChange(name: string) {
+        model = {...model, name}
+        dispatch("changed", {model})
+    }
 </script>
 
 {#if propertyBeingEdited}
     <PropertyEditor property={propertyBeingEdited} on:save={propertyEdited}/>
 {:else}
+    <EditableName nameable={{name:model.name}} {onNameChange} />
     <table>
         <thead>
         <tr>

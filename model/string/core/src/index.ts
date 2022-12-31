@@ -4,5 +4,6 @@ export {
     stringPropertyRegistration,
     stringProperties,
     stringPropertyOptions,
-    StringPropertyOption
+    StringPropertyOption,
+    stringPropertyType
 } from './stringProperty'

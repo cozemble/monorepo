@@ -2,11 +2,11 @@
     import {onMount} from 'svelte'
 
     import {registerAllProperties, registerAllPropertyConfigurers} from "@cozemble/model-assembled";
-    import {models} from "@cozemble/model-core";
     import ModelEditor from "$lib/ModelEditor.svelte";
+    import {modelFns} from "@cozemble/model-api";
 
     const storageKey = 'com.cozemble.model.editor.route.page'
-    let model = models.newInstance("My model")
+    let model = modelFns.newInstance("My model")
 
     let mounted = false
     onMount(() => {

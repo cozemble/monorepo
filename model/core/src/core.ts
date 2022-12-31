@@ -1,8 +1,24 @@
-import {clock, uuids} from "@cozemble/lang-util"
+export interface PropertyType {
+    _type: 'property.type'
+    type: string
+}
+
+export const propertyTypeFns = {
+    newInstance: (type: string): PropertyType => {
+        return {
+            _type: 'property.type',
+            type
+        }
+    },
+    equals: (a: PropertyType, b: PropertyType): boolean => {
+        return a.type === b.type
+    }
+}
+
 
 export interface PropertyDescriptor<T = Property> {
     _type: "property.descriptor"
-    id: string
+    propertyType: PropertyType
     name: DottedName
     newProperty: () => T
 
@@ -10,7 +26,7 @@ export interface PropertyDescriptor<T = Property> {
 }
 
 export interface Property<T = any> {
-    _type: string
+    _type: PropertyType
     id: string
     version: number
     name: string
@@ -19,20 +35,6 @@ export interface Property<T = any> {
     setValue(record: DataRecord, value: T | null): DataRecord
 
     getValue(record: DataRecord): T | null
-}
-
-export const properties = {
-    nullInstance(): Property {
-        return {
-            _type: "",
-            id: uuids.v4(),
-            version: 0,
-            name: "",
-            randomValue: () => null,
-            setValue: (record, value) => record,
-            getValue: (record) => null
-        }
-    }
 }
 
 export interface ModelId {
@@ -47,25 +49,6 @@ export interface Model {
     properties: Property[]
 }
 
-export let models = {
-    newInstance: (name: string, ...properties: Property[]): Model => {
-        return {
-            _type: "model",
-            id: {
-                _type: "model.id",
-                id: uuids.v4()
-            },
-            name,
-            properties
-        }
-    },
-    setPropertyValue<T = any>(model: Model, property: Property<T>, value: T | null, record: DataRecord): DataRecord {
-        return {
-            ...property.setValue(record, value),
-            updatedMillis: {_type: "timestamp.epoch.millis", value: clock.now().getTime()}
-        }
-    }
-}
 
 export interface DataRecordId {
     _type: "data.record.id"
@@ -104,28 +87,6 @@ export interface DataRecordPath<T = any> {
     setValue(record: DataRecord, t: T | null): DataRecord
 }
 
-export const dataRecordPaths = {
-    newInstance: <T = any>(property: Property<T>, ...parentElements: DataRecordPathElement[]): DataRecordPath<T> => {
-        return {
-            _type: "data.record.path",
-            parentElements,
-            property,
-            getValue: (record) => {
-                if (parentElements.length > 0) {
-                    throw new Error("Not implemented: dataRecordPaths with parent elements")
-                }
-                return property.getValue(record)
-            },
-            setValue: (record, value) => {
-                if (parentElements.length > 0) {
-                    throw new Error("Not implemented: dataRecordPaths with parent elements")
-                }
-                return property.setValue(record, value)
-            }
-        }
-    }
-}
-
 export interface DottedName {
     _type: "dotted.name"
     name: string
@@ -133,14 +94,14 @@ export interface DottedName {
 
 export const registeredProperties: PropertyDescriptor[] = []
 
-export const propertyRegistry = {
+export const propertyDescriptors = {
     register: (descriptor: PropertyDescriptor) => {
-        if (!registeredProperties.find(p => p.id === descriptor.id)) {
+        if (!registeredProperties.find(p => propertyTypeFns.equals(p.propertyType, descriptor.propertyType))) {
             registeredProperties.push(descriptor)
         }
     },
-    get: (id: string): PropertyDescriptor | null => {
-        return registeredProperties.find(p => p.id === id) ?? null
+    get: (propertyType: PropertyType): PropertyDescriptor | null => {
+        return registeredProperties.find(p => propertyTypeFns.equals(p.propertyType, propertyType)) ?? null
     },
     list: () => {
         return registeredProperties
