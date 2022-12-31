@@ -21,6 +21,20 @@ export interface Property<T = any> {
     getValue(record: DataRecord): T | null
 }
 
+export const properties = {
+    nullInstance(): Property {
+        return {
+            _type: "",
+            id: uuids.v4(),
+            version: 0,
+            name: "",
+            randomValue: () => null,
+            setValue: (record, value) => record,
+            getValue: (record) => null
+        }
+    }
+}
+
 export interface ModelId {
     _type: "model.id"
     id: string

@@ -1,6 +1,6 @@
 <script lang="ts">
     import type {Model, Property} from "@cozemble/model-core";
-    import {uuids} from "@cozemble/lang-util";
+    import {properties as propertyFns} from "@cozemble/model-core";
     import PropertyEditor from "$lib/PropertyEditor.svelte";
     import {createEventDispatcher} from "svelte";
 
@@ -9,7 +9,7 @@
     const dispatch = createEventDispatcher()
 
     function addProperty() {
-        model = {...model, properties: [...model.properties, {_type: "", id: uuids.v4(), name: "Untitled property"}]}
+        model = {...model, properties: [...model.properties, {...propertyFns.nullInstance(), name: "Untitled property"}]}
         dispatch("changed", {model})
     }
 

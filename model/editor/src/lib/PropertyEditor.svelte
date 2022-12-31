@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type {Property} from "@cozemble/model-core";
+    import type {Property, PropertyDescriptor} from "@cozemble/model-core";
     import {propertyRegistry} from "@cozemble/model-core";
     import {propertyConfigurerRegistry} from "@cozemble/model-assembled";
     import {editorHost, emptyFormErrorState} from "@cozemble/model-editor-sdk";
@@ -19,7 +19,7 @@
         if (propertyDescriptor) {
             property = {...propertyDescriptor.newProperty(), id: property.id, name: property.name}
         } else {
-            property = {...property, type: ""}
+            property = {...property, _type: ""}
         }
     }
 

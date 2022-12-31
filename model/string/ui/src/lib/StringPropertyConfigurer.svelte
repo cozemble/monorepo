@@ -32,7 +32,7 @@
 
 <br/>
 
-{#each property.validations as validation, index}
+{#each property.validations as _validation, index}
     <div class="validation-container">
         <div class="validation-configuration">
             <label>Regex validation</label><br/>

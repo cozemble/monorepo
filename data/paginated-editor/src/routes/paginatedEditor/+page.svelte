@@ -5,6 +5,7 @@
     import PaginatedEditor from "$lib/PaginatedEditor.svelte";
     import {onMount} from "svelte";
     import {registerAllProperties, registerAllPropertyViewers} from "@cozemble/model-assembled";
+    import {registerAllPropertyEditors} from "@cozemble/model-assembled";
 
     let model = models.newInstance("Customer",
         stringProperties.newInstance("First name", stringPropertyOptions.required),
@@ -25,6 +26,7 @@
     onMount(() => {
         registerAllProperties()
         registerAllPropertyViewers()
+        registerAllPropertyEditors()
         mounted = true
     })
 </script>

@@ -2,24 +2,20 @@
     import {onMount} from 'svelte'
 
     import {registerAllProperties, registerAllPropertyConfigurers} from "@cozemble/model-assembled";
-    import type {Model} from "@cozemble/model-core";
+    import {models} from "@cozemble/model-core";
     import ModelEditor from "$lib/ModelEditor.svelte";
 
     const storageKey = 'com.cozemble.model.editor.route.page'
-    let model: Model = {
-        _type: "model",
-        id: "1",
-        name: "My model",
-        properties: []
-    }
+    let model = models.newInstance("My model")
 
     let mounted = false
     onMount(() => {
         registerAllProperties()
         registerAllPropertyConfigurers()
         mounted = true
-        if(localStorage.getItem(storageKey)) {
-            model = JSON.parse(localStorage.getItem(storageKey))
+        const item = localStorage.getItem(storageKey)
+        if (item) {
+            model = JSON.parse(item)
         }
     })
 

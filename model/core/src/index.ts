@@ -9,7 +9,8 @@ export {
     UserId,
     TimestampEpochMillis,
     propertyRegistry,
-    models
+    models,
+    properties
 } from "./core"
 
 export {
