@@ -54,15 +54,16 @@
         const target = event.target as HTMLElement
         const cell = target.closest('td')
         if (cell) {
-            const rowIndex = cell.getAttribute('data-row-index')
-            const colIndex = cell.getAttribute('data-column-index')
-            if (rowIndex && colIndex) {
-                setCellFocus(parseInt(rowIndex), parseInt(colIndex))
+            const cellIndex = cell.getAttribute('data-cell-index')
+            if (cellIndex) {
+                const [row, column] = cellIndex.split('-').map(Number)
+                setCellFocus(row, column)
             }
         }
     }
 
     function keyup(event: KeyboardEvent) {
+        console.log({event})
         if ($mode === "navigate") {
             if (event.key === "Enter") {
                 $mode = "edit"
@@ -86,8 +87,7 @@
     {#each records as record, rowIndex}
         <tr>
             {#each model.properties as property, colIndex}
-                <td class:highlighted={isFocussed($focus,rowIndex, colIndex)} data-row-index={rowIndex}
-                    data-column-index={colIndex}>
+                <td class:highlighted={isFocussed($focus,rowIndex, colIndex)} data-cell-index="{rowIndex}-{colIndex}">
                     {#if $mode === "edit" && isFocussed($focus, rowIndex, colIndex)}
                         <PropertyEdit record={record} property={property}/>
                     {:else}
