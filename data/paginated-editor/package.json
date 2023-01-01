@@ -10,21 +10,23 @@
     "test": "svelte-check --tsconfig ./tsconfig.json --threshold error"
   },
   "devDependencies": {
+    "@cozemble/model-string-core": "workspace:*",
     "@sveltejs/adapter-auto": "^1.0.0",
     "@sveltejs/kit": "^1.0.0",
     "@sveltejs/package": "^1.0.0",
+    "cypress": "^12.2.0",
     "svelte": "^3.54.0",
     "svelte-check": "^2.9.2",
     "tslib": "^2.4.1",
     "typescript": "^4.9.3",
     "vite": "^4.0.0",
-    "@cozemble/model-string-core": "workspace:*"
+    "@originjs/vite-plugin-commonjs": "^1.0.3"
   },
   "type": "module",
   "dependencies": {
-    "@cozemble/model-core": "workspace:*",
     "@cozemble/model-api": "workspace:*",
     "@cozemble/model-assembled": "workspace:*",
+    "@cozemble/model-core": "workspace:*",
     "@cozemble/model-editor-sdk": "workspace:*"
   }
 }

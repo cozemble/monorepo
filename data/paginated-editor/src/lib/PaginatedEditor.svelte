@@ -104,7 +104,7 @@
     </tbody>
 </table>
 <div class="actions">
-    <button on:click={addRecord}>Add record</button>
+    <button type="button" class="add-record" on:click={addRecord} >Add record</button>
 </div>
 
 <style>
