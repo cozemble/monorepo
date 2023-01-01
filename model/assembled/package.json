@@ -21,6 +21,6 @@
     "@cozemble/lang-util": "workspace:*",
     "@cozemble/model-core": "workspace:*",
     "@cozemble/model-string-core": "workspace:*",
-    "@cozemble/model-string-ui": "workspace:*"
+    "@cozemble/model-string-ui": "workspace:0.0.1"
   }
 }

@@ -43,6 +43,7 @@ importers:
 
   data/paginated-editor/package:
     specifiers:
+      '@cozemble/model-api': workspace:*
       '@cozemble/model-assembled': workspace:*
       '@cozemble/model-core': workspace:*
       '@cozemble/model-editor-sdk': workspace:*
@@ -56,6 +57,7 @@ importers:
       typescript: ^4.9.3
       vite: ^4.0.0
     dependencies:
+      '@cozemble/model-api': link:../../../model/api
       '@cozemble/model-assembled': link:../../../model/assembled
       '@cozemble/model-core': link:../../../model/core
       '@cozemble/model-editor-sdk': link:../../../model/editor-sdk
@@ -109,7 +111,7 @@ importers:
       '@cozemble/lang-util': workspace:*
       '@cozemble/model-core': workspace:*
       '@cozemble/model-string-core': workspace:*
-      '@cozemble/model-string-ui': workspace:*
+      '@cozemble/model-string-ui': workspace:0.0.1
       '@types/jest': 28.1.7
       jest: 28.1.3
       ts-jest: 28.0.8
@@ -189,6 +191,7 @@ importers:
   model/editor/package:
     specifiers:
       '@cozemble/lang-util': workspace:*
+      '@cozemble/model-api': workspace:*
       '@cozemble/model-assembled': workspace:*
       '@cozemble/model-core': workspace:*
       '@cozemble/model-editor-sdk': workspace:*
@@ -203,6 +206,7 @@ importers:
       vite: ^4.0.0
     dependencies:
       '@cozemble/lang-util': link:../../../lang/util
+      '@cozemble/model-api': link:../../api
       '@cozemble/model-assembled': link:../../assembled
       '@cozemble/model-core': link:../../core
       '@cozemble/model-editor-sdk': link:../../editor-sdk
