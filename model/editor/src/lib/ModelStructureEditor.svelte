@@ -50,30 +50,34 @@
 {:else if propertyBeingEdited}
     <PropertyEditor property={propertyBeingEdited} on:save={propertyEdited}/>
 {:else}
-    <table>
-        <thead>
-        <tr>
-            {#each model.properties as property}
-                <th>{property.name}</th>
-            {/each}
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            {#each model.properties as property}
+    <div data-model-name={model.name}>
+        <table>
+            <thead>
+            <tr>
+                {#each model.properties as property}
+                    <th>{property.name}</th>
+                {/each}
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                {#each model.properties as property}
+                    <td>
+                        <button on:click={() => editProperty(property)} class="edit-property"
+                                data-property-name={property.name}>Edit
+                        </button>
+                    </td>
+                {/each}
                 <td>
-                    <button on:click={() => editProperty(property)}>Edit</button>
+                    <button on:click={addProperty} class="add-property">Add property</button>
                 </td>
-            {/each}
-            <td>
-                <button on:click={addProperty}>Add property</button>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <div class="actions">
-        <button on:click={addNestedModel}>Add nested model</button>
+            </tr>
+            </tbody>
+        </table>
+        <div class="actions">
+            <button on:click={addNestedModel} class="add-nested-model">Add nested model</button>
+        </div>
     </div>
 {/if}
 
@@ -92,6 +96,7 @@
     .relationship-container {
         margin-left: 30px;
     }
+
     table {
         border-collapse: collapse;
     }

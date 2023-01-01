@@ -16,7 +16,7 @@
 </script>
 
 {#if model}
-    <EditableName nameable={{name:model.name}} {onNameChange}/>
+    <EditableName nameable={{name:model.name}} {onNameChange} extraClass="model-name"/>
 
     <ModelStructureEditor {modelId} {host}/>
 {/if}

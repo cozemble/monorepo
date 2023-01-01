@@ -38,15 +38,14 @@
             dispatch("save", {property})
         }
     }
-
 </script>
 
 
 <form>
     <label>Property Name</label><br/>
-    <input bind:value={property.name}/><br/>
+    <input bind:value={property.name} class="property-name"/><br/>
     <label>Property Type</label><br/>
-    <select on:change={propertyTypeChanged}>
+    <select on:change={propertyTypeChanged} class="property-type">
         <option value="">----</option>
         {#each propertyDescriptors.list() as propertyDescriptor}
             <option value={propertyDescriptor.propertyType.type} selected={propertyTypeFns.equals(property._type,propertyDescriptor.propertyType)}>{propertyDescriptor.name.name}</option>
@@ -56,4 +55,4 @@
         <svelte:component this={configurer} property={property}/>
     {/if}
 </form>
-<button on:click|preventDefault={saveClicked} disabled={errors.size > 0}>Save</button>
+<button type="submit" on:click|preventDefault={saveClicked} disabled={errors.size > 0} class="save-property">Save</button>

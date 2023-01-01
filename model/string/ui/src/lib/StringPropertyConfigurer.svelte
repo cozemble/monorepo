@@ -11,23 +11,23 @@
     $: errors = stringPropertyRegistration.validate(property)
 
     function addRegexValidation() {
+        console.log("add regex validation")
         property.validations = [...property.validations, {_type: "regex.validation", regex: "", message: ""}]
     }
 
     function deleteValidation(index: number) {
         property.validations = property.validations.filter((_, i) => i !== index)
     }
-
 </script>
 
 <label class="label">
-    <input type="checkbox" name="checkbox" value="text" bind:checked={property.required}> Required
+    <input type="checkbox" name="checkbox" value="text" bind:checked={property.required} class="required-toggle"> Required
 </label>
 
 <br/>
 
 <label class="label">
-    <input type="checkbox" name="checkbox" value="text" bind:checked={property.unique}> Unique
+    <input type="checkbox" name="checkbox" value="text" bind:checked={property.unique} class="unique-toggle"> Unique
 </label>
 
 <br/>
@@ -36,21 +36,21 @@
     <div class="validation-container">
         <div class="validation-configuration">
             <label>Regex validation</label><br/>
-            <input bind:value={property.validations[index].regex}/><br/>
+            <input bind:value={property.validations[index].regex} class="regex"/><br/>
             <MaybeErrorMessage showErrors={$formSectionErrorState.showErrors} {errors} key="validations.{index}.regex"/>
             <label>Error message</label><br/>
-            <input bind:value={property.validations[index].message}/><br/>
+            <input bind:value={property.validations[index].message} class="message"/><br/>
             <MaybeErrorMessage showErrors={$formSectionErrorState.showErrors} {errors} key="validations.{index}.message"/>
         </div>
         <div class="validation-buttons">
-            <button on:click={() => deleteValidation(index)}>Delete</button>
+            <button on:click={() => deleteValidation(index)} class="delete-validation">Delete</button>
         </div>
     </div>
 {/each}
-<button class="add-regex-button" on:click={addRegexValidation}>Add regex validation</button>
+<button type="button" class="add-validation-button" on:click|preventDefault={addRegexValidation}>Add regex validation</button>
 
 <style>
-    .add-regex-button {
+    .add-validation-button {
         margin-top: 10px;
     }
 

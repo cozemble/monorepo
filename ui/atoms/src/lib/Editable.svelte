@@ -56,7 +56,7 @@
 {#if editing}
     <input type="text" class={extraClass} bind:value={editableValue} on:blur={finishedEditing} use:takeFocus/>
 {:else}
-    <div on:click={edit}>
+    <div on:click={edit} class={extraClass}>
         {value}
     </div>
 {/if}
