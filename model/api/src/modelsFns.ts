@@ -1,6 +1,6 @@
 import {Cardinality, DataRecord, Model, ModelId, ModelOption, Property} from "@cozemble/model-core";
 import {clock, options, uuids} from "@cozemble/lang-util";
-import {PropertyOption} from "@cozemble/model-core/dist/esm";
+import {propertyDescriptors, PropertyOption} from "@cozemble/model-core";
 import {propertyFns} from "./propertyFns";
 
 export const modelOptions = {
@@ -31,7 +31,7 @@ export let modelFns = {
     },
     setPropertyValue<T = any>(model: Model, property: Property<T>, value: T | null, record: DataRecord): DataRecord {
         return {
-            ...property.setValue(record, value),
+            ...propertyDescriptors.mandatory(property).setValue(property,record, value),
             updatedMillis: {_type: "timestamp.epoch.millis", value: clock.now().getTime()}
         }
     },

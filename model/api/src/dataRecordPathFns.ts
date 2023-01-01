@@ -1,4 +1,4 @@
-import {DataRecordPath, DataRecordPathElement, Property} from "@cozemble/model-core";
+import {DataRecordPath, DataRecordPathElement, Property, propertyDescriptors} from "@cozemble/model-core";
 
 export const dataRecordPathFns = {
     newInstance: <T = any>(property: Property<T>, ...parentElements: DataRecordPathElement[]): DataRecordPath<T> => {
@@ -10,13 +10,13 @@ export const dataRecordPathFns = {
                 if (parentElements.length > 0) {
                     throw new Error("Not implemented: dataRecordPaths with parent elements")
                 }
-                return property.getValue(record)
+                return propertyDescriptors.mandatory(property).getValue(property, record)
             },
             setValue: (record, value) => {
                 if (parentElements.length > 0) {
                     throw new Error("Not implemented: dataRecordPaths with parent elements")
                 }
-                return property.setValue(record, value)
+                return propertyDescriptors.mandatory(property).setValue(property, record, value)
             }
         }
     }

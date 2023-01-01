@@ -1,4 +1,4 @@
-import {Option} from "@cozemble/lang-util";
+import {mandatory, Option} from "@cozemble/lang-util";
 
 export interface PropertyType {
     _type: 'property.type'
@@ -17,14 +17,19 @@ export const propertyTypeFns = {
     }
 }
 
-
-export interface PropertyDescriptor<T = Property> {
+export interface PropertyDescriptor<P = Property, V = any> {
     _type: "property.descriptor"
     propertyType: PropertyType
     name: DottedName
-    newProperty: () => T
+    newProperty: () => P
 
-    validate(property: T): Map<string, string>
+    validate(property: P): Map<string, string>
+
+    randomValue: () => V
+
+    setValue(property: P, record: DataRecord, value: V | null): DataRecord
+
+    getValue(property: P, record: DataRecord): V | null
 }
 
 export interface Property<T = any> {
@@ -32,11 +37,6 @@ export interface Property<T = any> {
     id: string
     version: number
     name: string
-    randomValue: () => T
-
-    setValue(record: DataRecord, value: T | null): DataRecord
-
-    getValue(record: DataRecord): T | null
 }
 
 export interface ModelId {
@@ -120,6 +120,10 @@ export const propertyDescriptors = {
     },
     get: (propertyType: PropertyType): PropertyDescriptor | null => {
         return registeredProperties.find(p => propertyTypeFns.equals(p.propertyType, propertyType)) ?? null
+    },
+    mandatory: (p: Property | PropertyType): PropertyDescriptor => {
+        const propertyType = p._type === 'property.type' ? p : p._type
+        return mandatory(registeredProperties.find(p => propertyTypeFns.equals(p.propertyType, propertyType)), `No property descriptor registered for property type ${propertyType.type}`)
     },
     list: () => {
         return registeredProperties

@@ -35,11 +35,26 @@ function validate(property: StringProperty): Map<string, string> {
     return errors
 }
 
-export const stringPropertyRegistration: PropertyDescriptor<StringProperty> = {
+export const stringPropertyRegistration: PropertyDescriptor<StringProperty, string> = {
     _type: "property.descriptor",
     propertyType: stringPropertyType,
     name: {_type: "dotted.name", name: "String"},
     validate,
+    randomValue: (): string => {
+        return (Math.random() + 1).toString(36).substring(2)
+    },
+    setValue: (property, record, value) => {
+        return {
+            ...record,
+            values: {
+                ...record.values,
+                [property.id]: value
+            }
+        }
+    },
+    getValue: (property, record) => {
+        return record.values[property.id] ?? null
+    },
     newProperty: () => {
         const id = uuids.v4()
         return {
@@ -49,22 +64,7 @@ export const stringPropertyRegistration: PropertyDescriptor<StringProperty> = {
             name: "",
             required: false,
             unique: false,
-            validations: [],
-            randomValue: () => {
-                return (Math.random() + 1).toString(36).substring(2)
-            },
-            setValue: (record, value) => {
-                return {
-                    ...record,
-                    values: {
-                        ...record.values,
-                        [id]: value
-                    }
-                }
-            },
-            getValue: (record) => {
-                return record.values[id] ?? null
-            }
+            validations: []
         }
     }
 }
