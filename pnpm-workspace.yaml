@@ -1,5 +1,6 @@
 packages:
-  - "data/**"
+  - "data/*"
   - "lang/*"
-  - "model/**"
-  - "ui/**"
+  - "model/*"
+  - "model/string/*"
+  - "ui/*"

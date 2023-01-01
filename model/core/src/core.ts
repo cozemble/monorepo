@@ -1,3 +1,5 @@
+import {Option} from "@cozemble/lang-util";
+
 export interface PropertyType {
     _type: 'property.type'
     type: string
@@ -42,13 +44,29 @@ export interface ModelId {
     id: string
 }
 
+export interface HasOneRelationship {
+    _type: "has.one.relationship"
+    modelId: ModelId
+    name: string
+}
+
+export interface HasManyRelationship {
+    _type: "has.many.relationship"
+    modelId: ModelId
+    name: string
+}
+
+export type Cardinality = 'one' | 'many'
+export type Relationship = HasOneRelationship | HasManyRelationship
+
 export interface Model {
     _type: "model"
     id: ModelId
+    parentModelId?: ModelId
     name: string
     properties: Property[]
+    relationships: Relationship[]
 }
-
 
 export interface DataRecordId {
     _type: "data.record.id"
@@ -107,3 +125,6 @@ export const propertyDescriptors = {
         return registeredProperties
     }
 }
+
+export type ModelOption = Option<Model>
+export type PropertyOption = Option<Property>

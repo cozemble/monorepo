@@ -12,5 +12,11 @@ export {
     DataRecordPath,
     DataRecordPathElement,
     PropertyType,
-    propertyTypeFns
+    propertyTypeFns,
+    HasOneRelationship,
+    Relationship,
+    HasManyRelationship,
+    Cardinality,
+    ModelOption,
+    PropertyOption
 } from "./core"

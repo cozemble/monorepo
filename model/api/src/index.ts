@@ -1,4 +1,5 @@
-export {modelFns} from './modelsFns'
-export {propertyFns} from './propertyFns'
+export {modelFns, modelOptions} from './modelsFns'
+export {propertyFns, propertyOptions} from './propertyFns'
 export {dataRecordFns} from './dataRecordFns'
 export {dataRecordPathFns} from './dataRecordPathFns'
+export {modelIdFns} from './modelIdFns'
