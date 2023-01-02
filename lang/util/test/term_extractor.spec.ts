@@ -65,5 +65,5 @@ test("can deal with long strings", () => {
         "  }\n" +
         "}\n"
     const terms = extractTerms(str, "{", "}")
-    console.log(terms)
+    expect(terms).toBeDefined()
 })
