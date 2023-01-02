@@ -1,3 +1,4 @@
+import {test, expect} from 'vitest'
 import {TextBlockParser} from "../src/TextBlockParser";
 
 const beginWhereClause = (line:string) => line.indexOf("where:") > -1

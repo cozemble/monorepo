@@ -1,3 +1,4 @@
+import {test, expect} from 'vitest'
 import {extractTerms} from "../src";
 
 test("deals with empty strings", () => {

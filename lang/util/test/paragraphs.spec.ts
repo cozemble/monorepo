@@ -1,3 +1,4 @@
+import {test, expect} from 'vitest'
 import {strings} from "../src";
 
 test("can deal with empty content", () => {

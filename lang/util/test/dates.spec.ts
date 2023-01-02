@@ -1,3 +1,4 @@
+import {test, expect} from 'vitest'
 import {dates} from "../src";
 
 test("can format a date as ISO 8601 string", () => {

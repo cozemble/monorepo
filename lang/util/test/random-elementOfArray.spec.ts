@@ -1,3 +1,4 @@
+import {test, expect} from 'vitest'
 import {random} from "../src";
 
 test("can get random element of single element array", () => {

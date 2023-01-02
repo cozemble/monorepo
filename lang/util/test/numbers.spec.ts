@@ -1,3 +1,4 @@
+import {test, expect} from 'vitest'
 import {toDecimalPlaces} from "../src/numbers";
 
 test("can round to two decimal places", () => {

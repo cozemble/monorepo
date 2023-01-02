@@ -1,3 +1,4 @@
+import {test, expect} from 'vitest'
 import {splitAtFirst} from "../src/string";
 
 test("deals with empty string", () => {

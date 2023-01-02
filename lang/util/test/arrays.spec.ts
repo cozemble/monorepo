@@ -1,3 +1,4 @@
+import {test, expect} from 'vitest'
 import {compare, startsWith} from "../src/arrays";
 
 test("array startsWith", () => {
