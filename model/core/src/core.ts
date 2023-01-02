@@ -1,4 +1,4 @@
-import {mandatory, Option} from "@cozemble/lang-util";
+import {clock, mandatory, Option} from "@cozemble/lang-util";
 
 export interface PropertyType {
     _type: 'property.type'
@@ -79,6 +79,14 @@ export interface TimestampEpochMillis {
     _type: "timestamp.epoch.millis"
     value: number
 }
+
+export function timestampEpochMillis(value = clock.now().getTime()): TimestampEpochMillis {
+    return {
+        _type: "timestamp.epoch.millis",
+        value
+    }
+}
+
 
 export interface UserId {
     _type: "user.id"

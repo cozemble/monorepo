@@ -18,5 +18,6 @@ export {
     HasManyRelationship,
     Cardinality,
     ModelOption,
-    PropertyOption
+    PropertyOption,
+    timestampEpochMillis
 } from "./core"
