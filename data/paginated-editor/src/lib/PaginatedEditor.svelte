@@ -1,34 +1,19 @@
 <script lang="ts">
     import type {DataRecord, Model} from "@cozemble/model-core";
-    import PropertyView from "$lib/PropertyView.svelte";
     import type {CellFocus} from "$lib/CellFocus";
     import {cellFocus} from "$lib/CellFocus";
-    import PropertyEdit from "$lib/PropertyEdit.svelte";
-    import type {DataEditorClient, DataEditorEvent} from "@cozemble/model-editor-sdk";
-    import {dataEditorHost} from "@cozemble/model-editor-sdk";
-    import {applyValueChanged, modeFollowingValueChange, type UiMode} from "$lib/onValueChanged";
+    import type {UiMode} from "$lib/onValueChanged";
     import {writable, type Writable} from "svelte/store";
     import {dataRecordFns} from "@cozemble/model-api";
+    import RowEdit from "$lib/RowEdit.svelte";
+    import {isFocussedRow} from "$lib/CellFocus";
+    import DataTd from "$lib/DataTd.svelte";
 
     export let model: Model
     export let records: DataRecord[]
 
     let mode: Writable<UiMode> = writable("navigate")
     let focus: Writable<CellFocus | null> = writable(null)
-
-    const dataEditorClient: DataEditorClient = {
-        dispatchEditEvent(event: DataEditorEvent): void {
-            if (event._type === "value.changed") {
-                records = applyValueChanged(records, event)
-                modeFollowingValueChange(event, mode, focus)
-            }
-            if(event._type === "edit.aborted") {
-                mode.set("navigate")
-                focus.set(null)
-            }
-        }
-    }
-    dataEditorHost.setClient(dataEditorClient)
 
     function deleteRecord(_record: DataRecord) {
 
@@ -40,14 +25,12 @@
 
     function addRecord() {
         records = [...records, dataRecordFns.newInstance(model, "test-user")]
+        $mode = "edit"
+        setCellFocus(records.length - 1, 0)
     }
 
     function setCellFocus(row: number, column: number) {
         $focus = cellFocus(row, column)
-    }
-
-    function isFocussed(focus: CellFocus | null, row: number, column: number) {
-        return $focus && $focus.row === row && $focus.column === column
     }
 
     function bodyClicked(event: Event) {
@@ -63,12 +46,21 @@
     }
 
     function keyup(event: KeyboardEvent) {
-        console.log({event})
         if ($mode === "navigate") {
             if (event.key === "Enter") {
                 $mode = "edit"
             }
         }
+    }
+
+    function cancelRowEdit() {
+        $mode = "navigate"
+        focus.set(null)
+    }
+
+    function rowEditEscape() {
+        $mode = "navigate"
+        focus.set(null)
     }
 </script>
 
@@ -85,33 +77,27 @@
     </thead>
     <tbody on:click={bodyClicked}>
     {#each records as record, rowIndex}
-        <tr>
-            {#each model.properties as property, colIndex}
-                <td class:highlighted={isFocussed($focus,rowIndex, colIndex)} data-cell-index="{rowIndex}-{colIndex}">
-                    {#if $mode === "edit" && isFocussed($focus, rowIndex, colIndex)}
-                        <PropertyEdit record={record} property={property}/>
-                    {:else}
-                        <PropertyView record={record} property={property}/>
-                    {/if}
+        {#if $mode === "edit" && isFocussedRow($focus, rowIndex)}
+            <RowEdit {record} {rowIndex} model={model} {focus} on:cancel={cancelRowEdit} on:escape={rowEditEscape}/>
+        {:else}
+            <tr>
+                {#each model.properties as property, colIndex}
+                    <DataTd {focus} {rowIndex} {colIndex} {record} {property} />
+                {/each}
+                <td>
+                    <button on:click={() => editRecord(record)}>Edit</button>
+                    <button on:click={() => deleteRecord(record)}>Delete</button>
                 </td>
-            {/each}
-            <td>
-                <button on:click={() => editRecord(record)}>Edit</button>
-                <button on:click={() => deleteRecord(record)}>Delete</button>
-            </td>
-        </tr>
+            </tr>
+        {/if}
     {/each}
     </tbody>
 </table>
 <div class="actions">
-    <button type="button" class="add-record" on:click={addRecord} >Add record</button>
+    <button type="button" class="add-record" on:click={addRecord}>Add record</button>
 </div>
 
 <style>
-    .highlighted {
-        border-color: blue;
-        border-width: 2px;
-    }
 
     .data-cell {
         height: 100%;

@@ -1,14 +1,14 @@
 <script lang="ts">
     import type {StringProperty} from "@cozemble/model-string-core";
     import {editorClient} from "@cozemble/model-editor-sdk";
-    import {stringPropertyRegistration} from "@cozemble/model-string-core";
+    import {stringPropertyDescriptor} from "@cozemble/model-string-core";
     import MaybeErrorMessage from "$lib/MaybeErrorMessage.svelte";
 
     export let property: StringProperty
 
     const formSectionErrorState = editorClient.getErrorState()
 
-    $: errors = stringPropertyRegistration.validate(property)
+    $: errors = stringPropertyDescriptor.validateProperty(property)
 
     function addRegexValidation() {
         console.log("add regex validation")

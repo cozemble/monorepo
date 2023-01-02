@@ -11,3 +11,11 @@ export function cellFocus(row: number, column: number): CellFocus {
         column
     }
 }
+
+export function isFocussedCell(focus: CellFocus | null, row: number, column: number) {
+    return focus && focus.row === row && focus.column === column
+}
+
+export function isFocussedRow(focus: CellFocus | null, row: number) {
+    return focus && focus.row === row
+}

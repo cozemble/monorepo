@@ -1,13 +1,13 @@
 <script lang="ts">
     import type {DataRecord, DataRecordPath} from "@cozemble/model-core";
-    import {dataEditor, dataEditorEvents} from "@cozemble/model-editor-sdk";
+    import {dataRecordEditEvents, dataRecordEditor} from "@cozemble/model-editor-sdk";
 
     export let recordPath: DataRecordPath
     export let record: DataRecord
 
-    const dataEditorClient = dataEditor.getClient()
+    const dataRecordEditorClient = dataRecordEditor.getClient()
     const initialValue = recordPath.getValue(record) ?? null
-    const editableValue = recordPath.getValue(record) ?? ""
+    let editableValue = recordPath.getValue(record) ?? ""
 
     let valueContainerDomElement: HTMLDivElement | null
 
@@ -32,25 +32,34 @@
         }
     }
 
+    function handleEditFinished(terminatingKey: "Enter" | "Tab" | null = null) {
+        console.log("handleEditFinished", {valueContainerDomElement, terminatingKey})
+        if (valueContainerDomElement) {
+            const newValue = valueContainerDomElement.innerText
+            console.log("handleEditFinished", {editableValue, newValue})
+            if (newValue !== editableValue) {
+                editableValue = newValue
+                dataRecordEditorClient.dispatchEditEvent(dataRecordEditEvents.valueChanged(record, recordPath, initialValue, newValue, terminatingKey))
+            }
+        }
+    }
+
     function handleKeydown(event: KeyboardEvent) {
         if (event.key === "Enter" || event.key === "Tab") {
             event.preventDefault()
             event.stopPropagation()
-            if (valueContainerDomElement) {
-                const newValue = valueContainerDomElement.innerText
-                dataEditorClient.dispatchEditEvent(dataEditorEvents.valueChanged(record, recordPath,initialValue, newValue, event.key))
-            }
+            handleEditFinished(event.key)
         } else if (event.key === "Escape") {
             event.preventDefault()
             event.stopPropagation()
-            dataEditorClient.dispatchEditEvent(dataEditorEvents.editAborted(record, recordPath))
+            dataRecordEditorClient.dispatchEditEvent(dataRecordEditEvents.editAborted(record, recordPath))
         }
     }
 </script>
 
 <svelte:window on:keydown={handleKeydown}/>
 
-<div class="value-container" contenteditable="true" use:init>
+<div class="value-container" contenteditable="true" use:init on:blur={() => handleEditFinished()}>
     {editableValue}
 </div>
 

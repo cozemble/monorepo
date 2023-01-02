@@ -1,6 +1,14 @@
-import {Cardinality, DataRecord, Model, ModelId, ModelOption, Property} from "@cozemble/model-core";
+import {
+    Cardinality,
+    DataRecord,
+    Model,
+    ModelId,
+    ModelOption,
+    Property,
+    propertyDescriptors,
+    PropertyOption
+} from "@cozemble/model-core";
 import {clock, options, uuids} from "@cozemble/lang-util";
-import {propertyDescriptors, PropertyOption} from "@cozemble/model-core";
 import {propertyFns} from "./propertyFns";
 
 export const modelOptions = {
@@ -31,7 +39,7 @@ export let modelFns = {
     },
     setPropertyValue<T = any>(model: Model, property: Property<T>, value: T | null, record: DataRecord): DataRecord {
         return {
-            ...propertyDescriptors.mandatory(property).setValue(property,record, value),
+            ...propertyDescriptors.mandatory(property).setValue(property, record, value),
             updatedMillis: {_type: "timestamp.epoch.millis", value: clock.now().getTime()}
         }
     },
@@ -56,5 +64,15 @@ export let modelFns = {
             ...model,
             properties: [...model.properties, property]
         }
+    },
+    validate(model: Model, record: DataRecord): Map<string, string[]> {
+        return model.properties.reduce((errors, property) => {
+            const value = propertyDescriptors.mandatory(property).getValue(property, record)
+            const propertyErrors = propertyDescriptors.mandatory(property).validateValue(property, value)
+            if (propertyErrors.length > 0) {
+                errors.set(property.id, propertyErrors)
+            }
+            return errors
+        }, new Map<string, string[]>())
     }
 }

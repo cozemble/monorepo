@@ -1,11 +1,11 @@
-import {propertyDescriptors, PropertyType} from "@cozemble/model-core";
-import {stringPropertyRegistration} from "@cozemble/model-string-core";
+import {PropertyType} from "@cozemble/model-core";
 import {
     PropertyConfigurer as StringPropertyConfigurer,
     PropertyEditor as StringPropertyEditor,
     PropertyViewer as StringPropertyViewer
 } from "@cozemble/model-string-ui";
-import {stringPropertyType} from "@cozemble/model-string-core/dist/esm";
+import {stringPropertyType} from "@cozemble/model-string-core";
+import {registerStringProperty} from "@cozemble/model-string-core";
 
 export {propertyDescriptors} from "@cozemble/model-core";
 
@@ -41,7 +41,7 @@ export const propertyEditorRegistry = {
 }
 
 export function registerAllProperties() {
-    propertyDescriptors.register(stringPropertyRegistration)
+    registerStringProperty()
 }
 
 export function registerAllPropertyConfigurers() {

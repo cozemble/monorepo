@@ -27,12 +27,11 @@
     afterUpdate(() => console.log({property, errors}))
 
     $: configurer = propertyConfigurerRegistry.get(property._type)
-    $: errors = propertyDescriptor?.validate(property) ?? new Map()
+    $: errors = propertyDescriptor?.validateProperty(property) ?? new Map()
     const dispatch = createEventDispatcher()
 
     function saveClicked() {
-        const errors = propertyDescriptor?.validate(property) ?? new Map()
-        console.log({errors, propertyDescriptor})
+        const errors = propertyDescriptor?.validateProperty(property) ?? new Map()
         $formSectionErrorState.showErrors = errors.size > 0
         if (errors.size === 0) {
             dispatch("save", {property})

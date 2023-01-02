@@ -9,14 +9,14 @@ export interface RegexValidation {
     message: string
 }
 
-export interface StringProperty extends Property {
+export interface StringProperty extends Property<string> {
     _type: { _type: "property.type", type: "string.property" }
     required: boolean
     unique: boolean
     validations: RegexValidation[]
 }
 
-function validate(property: StringProperty): Map<string, string> {
+function validateProperty(property: StringProperty): Map<string, string> {
     const errors = new Map<string, string>()
     property.validations.forEach((validation, index) => {
         if (validation.regex.trim().length === 0) {
@@ -35,13 +35,19 @@ function validate(property: StringProperty): Map<string, string> {
     return errors
 }
 
-export const stringPropertyRegistration: PropertyDescriptor<StringProperty, string> = {
+export const stringPropertyDescriptor: PropertyDescriptor<StringProperty,string> = {
     _type: "property.descriptor",
     propertyType: stringPropertyType,
     name: {_type: "dotted.name", name: "String"},
-    validate,
+    validateProperty,
     randomValue: (): string => {
         return (Math.random() + 1).toString(36).substring(2)
+    },
+    validateValue: (property: StringProperty, value: string | null): string[] => {
+        if(property.required && value === null || value === undefined || value?.trim().length === 0) {
+            return ["Required"]
+        }
+        return []
     },
     setValue: (property, record, value) => {
         return {
@@ -95,6 +101,6 @@ export const stringPropertyOptions = {
 
 export const stringProperties = {
     newInstance: (name: string, ...opts: StringPropertyOption[]): StringProperty => {
-        return options.apply({...stringPropertyRegistration.newProperty(), name}, ...opts)
+        return options.apply({...stringPropertyDescriptor.newProperty(), name}, ...opts)
     }
 }

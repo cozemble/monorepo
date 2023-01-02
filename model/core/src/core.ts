@@ -17,15 +17,17 @@ export const propertyTypeFns = {
     }
 }
 
-export interface PropertyDescriptor<P = Property, V = any> {
+export interface PropertyDescriptor<P = any, V = any, > {
     _type: "property.descriptor"
     propertyType: PropertyType
     name: DottedName
     newProperty: () => P
 
-    validate(property: P): Map<string, string>
+    validateProperty(property: P): Map<string, string>
 
     randomValue: () => V
+
+    validateValue: (property: P, value: V | null) => string[]
 
     setValue(property: P, record: DataRecord, value: V | null): DataRecord
 

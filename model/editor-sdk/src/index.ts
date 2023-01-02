@@ -6,11 +6,11 @@ export {
 } from './propertyEditor'
 
 export {
-    DataEditorClient,
-    DataEditorEvent,
-    dataEditor,
-    dataEditorEvents,
-    dataEditorHost,
-    EditAborted,
-    ValueChanged
+    dataRecordEditorHost,
+    DataRecordEditorClient,
+    dataRecordEditor,
+    dataRecordEditEvents,
+    DataRecordValueChanged,
+    DataRecordEditAborted,
+    DataRecordEditEvent
 } from './dataEditor'

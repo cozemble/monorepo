@@ -16,6 +16,7 @@
     "svelte-check": "^2.9.2"
   },
   "dependencies": {
+    "@cozemble/lang-util": "workspace:*",
     "@cozemble/model-core": "workspace:*"
   }
 }

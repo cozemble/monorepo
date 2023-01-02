@@ -1,16 +1,17 @@
 import {getContext, setContext} from 'svelte';
 import {DataRecord, DataRecordPath} from "@cozemble/model-core";
+import {mandatory} from "@cozemble/lang-util";
 
-const dataEditorClientContext = "com.cozemble.data.editor.client.context";
+const dataRecordEditorClientContext = "com.cozemble.data.record.editor.client.context";
 
-export interface EditAborted {
-    _type: "edit.aborted"
+export interface DataRecordEditAborted {
+    _type: "data.record.edit.aborted"
     record: DataRecord
     path: DataRecordPath
 }
 
-export interface ValueChanged<T = any> {
-    _type: "value.changed"
+export interface DataRecordValueChanged<T = any> {
+    _type: "data.record.value.changed"
     record: DataRecord
     path: DataRecordPath
     oldValue: T | null
@@ -18,19 +19,19 @@ export interface ValueChanged<T = any> {
     confirmMethod: "Enter" | "Tab" | null
 }
 
-export type DataEditorEvent = EditAborted | ValueChanged
+export type DataRecordEditEvent = DataRecordEditAborted | DataRecordValueChanged
 
-export const dataEditorEvents = {
-    editAborted(record: DataRecord, path: DataRecordPath): EditAborted {
+export const dataRecordEditEvents = {
+    editAborted(record: DataRecord, path: DataRecordPath): DataRecordEditAborted {
         return {
-            _type: "edit.aborted",
+            _type: "data.record.edit.aborted",
             record,
             path
         }
     },
-    valueChanged<T>(record: DataRecord, path: DataRecordPath, oldValue: T | null, newValue: T | null, confirmMethod: "Enter" | "Tab" | null): ValueChanged<T> {
+    valueChanged<T>(record: DataRecord, path: DataRecordPath, oldValue: T | null, newValue: T | null, confirmMethod: "Enter" | "Tab" | null): DataRecordValueChanged<T> {
         return {
-            _type: "value.changed",
+            _type: "data.record.value.changed",
             record,
             path,
             oldValue,
@@ -40,18 +41,18 @@ export const dataEditorEvents = {
     }
 }
 
-export interface DataEditorClient {
-    dispatchEditEvent(event: DataEditorEvent): void
+export interface DataRecordEditorClient {
+    dispatchEditEvent(event: DataRecordEditEvent): void
 }
 
-export const dataEditor = {
-    getClient: (): DataEditorClient => {
-        return getContext(dataEditorClientContext)
+export const dataRecordEditor = {
+    getClient: (): DataRecordEditorClient => {
+        return mandatory(getContext(dataRecordEditorClientContext), `No data record editor client found in context`)
     }
 }
 
-export const dataEditorHost = {
-    setClient: (client: DataEditorClient) => {
-        return setContext(dataEditorClientContext, client)
+export const dataRecordEditorHost = {
+    setClient: (client: DataRecordEditorClient) => {
+        return setContext(dataRecordEditorClientContext, client)
     }
 }
