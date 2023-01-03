@@ -1,9 +1,13 @@
-import type {Model, ModelId} from "@cozemble/model-core";
+import type {Model, ModelEvent, ModelId} from "@cozemble/model-core";
+import type {EventSourcedModel} from "@cozemble/model-event-sourced";
 
-export interface ModelEditorHost {
-    modelChanged(model: Model): void
+export interface ModelChangeHandler {
+    modelChanged(id: ModelId, event: ModelEvent): void
+}
+
+export interface ModelEditorHost extends ModelChangeHandler {
 
     modelAdded(model: Model): void
 
-    modelWithId(id: ModelId): Model
+    modelWithId(allModels: EventSourcedModel[], id: ModelId): EventSourcedModel
 }

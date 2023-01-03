@@ -28,6 +28,7 @@
     "@cozemble/model-assembled": "workspace:*",
     "@cozemble/model-core": "workspace:*",
     "@cozemble/model-editor-sdk": "workspace:*",
+    "@cozemble/model-event-sourced": "workspace:*",
     "@cozemble/ui-atoms": "workspace:*"
   }
 }

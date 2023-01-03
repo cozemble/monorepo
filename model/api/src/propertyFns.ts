@@ -1,10 +1,10 @@
 import {options} from "@cozemble/lang-util";
 import {Property, PropertyOption} from "@cozemble/model-core";
-import {stringPropertyDescriptor} from "@cozemble/model-string-core";
+import {stringPropertyFns} from "@cozemble/model-string-core";
 
 export const propertyFns = {
     newInstance(...opts: PropertyOption[]): Property {
-        return options.apply(stringPropertyDescriptor.newProperty(), ...opts)
+        return options.apply(stringPropertyFns.newInstance("Untitled property"), ...opts)
     }
 }
 

@@ -1,6 +1,7 @@
 import {
     Cardinality,
     DataRecord,
+    emptyModel,
     Model,
     ModelId,
     ModelOption,
@@ -8,8 +9,9 @@ import {
     propertyDescriptors,
     PropertyOption
 } from "@cozemble/model-core";
-import {clock, options, uuids} from "@cozemble/lang-util";
+import {clock, options} from "@cozemble/lang-util";
 import {propertyFns} from "./propertyFns";
+import {relationshipFns} from "./relationshipFns";
 
 export const modelOptions = {
     withProperty(p: Property): ModelOption {
@@ -26,16 +28,7 @@ export const modelOptions = {
 }
 export let modelFns = {
     newInstance: (name: string, ...opts: ModelOption[]): Model => {
-        return options.apply({
-            _type: "model",
-            id: {
-                _type: "model.id",
-                id: uuids.v4()
-            },
-            name,
-            properties: [],
-            relationships: []
-        }, ...opts)
+        return options.apply(emptyModel(name), ...opts)
     },
     setPropertyValue<T = any>(model: Model, property: Property<T>, value: T | null, record: DataRecord): DataRecord {
         return {
@@ -49,11 +42,7 @@ export let modelFns = {
             ...model,
             relationships: [
                 ...model.relationships,
-                {
-                    _type: cardinality === "one" ? "has.one.relationship" : "has.many.relationship",
-                    modelId: relatedModel.id,
-                    name: relationshipName
-                }
+                relationshipFns.newInstance(relationshipName, relatedModel.id, cardinality)
             ]
         }
         return {model, relatedModel}
@@ -70,7 +59,7 @@ export let modelFns = {
             const value = propertyDescriptors.mandatory(property).getValue(property, record)
             const propertyErrors = propertyDescriptors.mandatory(property).validateValue(property, value)
             if (propertyErrors.length > 0) {
-                errors.set(property.id, propertyErrors)
+                errors.set(property.id.id, propertyErrors)
             }
             return errors
         }, new Map<string, string[]>())

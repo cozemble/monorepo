@@ -1,29 +1,30 @@
 <script lang="ts">
-    import type {ModelId, Property} from "@cozemble/model-core";
+    import type {Property} from "@cozemble/model-core";
+    import {propertyDescriptors} from "@cozemble/model-core";
     import PropertyEditor from "$lib/PropertyEditor.svelte";
-    import {modelFns, propertyOptions} from "@cozemble/model-api";
     import AddNestedModelDialog from "$lib/AddNestedModelDialog.svelte";
     import type {ModelEditorHost} from "$lib/ModelEditorHost";
-    import {afterUpdate} from "svelte";
+    import {modelFns, modelOptions} from "@cozemble/model-api";
+    import {coreModelEvents} from "@cozemble/model-event-sourced";
+    import type {EventSourcedModel} from "@cozemble/model-event-sourced";
 
-    export let modelId: ModelId
     export let host: ModelEditorHost
-    $: model = host.modelWithId(modelId)
+    export let allModels: EventSourcedModel[]
+    export let eventSourced: EventSourcedModel
+    $: model = eventSourced.model
     let propertyBeingEdited: Property | null = null
 
-    afterUpdate(() => console.log({model}))
-
     function addProperty() {
-        host.modelChanged(modelFns.addProperty(model, propertyOptions.named("Untitled property")))
+        host.modelChanged(model.id, propertyDescriptors.getDefault().newProperty())
     }
 
     function editProperty(p: Property) {
         propertyBeingEdited = p
     }
 
-    function propertyEdited(event: CustomEvent) {
-        const property = event.detail.property
-        host.modelChanged({...model, properties: model.properties.map(p => p.id === property.id ? property : p)})
+    function propertyEdited(_event: CustomEvent) {
+        // const property = event.detail.property
+        // host.modelChanged({...model, properties: model.properties.map(p => p.id === property.id ? property : p)})
         propertyBeingEdited = null
     }
 
@@ -33,22 +34,24 @@
         addingNestedModel = true
     }
 
-    function relationshipAdded(event: CustomEvent) {
+    function onRelationshipAdded(event: CustomEvent) {
         const {cardinality, modelName, relationshipName} = event.detail
-        const {model: mutated, relatedModel} = modelFns.addRelationship(cardinality, modelName, relationshipName, model)
+        const relatedModel = modelFns.newInstance(modelName, modelOptions.withParentModelId(model.id))
 
+        // const {model: mutated, relatedModel} = modelFns.addRelationship(cardinality, modelName, relationshipName, model)
         host.modelAdded(relatedModel)
-        host.modelChanged(mutated)
+        host.modelChanged(model.id,coreModelEvents.relationshipAdded(cardinality, relationshipName, relatedModel.id))
         addingNestedModel = false
     }
 </script>
 
 {#if addingNestedModel}
-    <AddNestedModelDialog on:relationshipAdded={relationshipAdded}
+    <AddNestedModelDialog on:relationshipAdded={onRelationshipAdded}
                           on:cancel={() => addingNestedModel = false}
                           parentModel={model}/>
 {:else if propertyBeingEdited}
-    <PropertyEditor property={propertyBeingEdited} on:save={propertyEdited}/>
+    <PropertyEditor property={propertyBeingEdited} modelChangeHandler={host}
+                    modelId={model.id} on:save={propertyEdited}/>
 {:else}
     <div data-model-name={model.name}>
         <table>
@@ -82,9 +85,10 @@
 {/if}
 
 {#each model.relationships as relationship}
+    {@const eventSourced = host.modelWithId(allModels, relationship.modelId)}
     <div class="relationship-container">
         <h5>{relationship.name}</h5>
-        <svelte:self modelId={relationship.modelId} {host}/>
+        <svelte:self {allModels} {eventSourced} {host}/>
     </div>
 {/each}
 

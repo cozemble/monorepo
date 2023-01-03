@@ -1,7 +1,9 @@
-import {Option, options, uuids} from "@cozemble/lang-util";
-import {Property, PropertyDescriptor, propertyTypeFns} from "@cozemble/model-core";
+import {Option, options} from "@cozemble/lang-util";
+import {Property, propertyTypeFns} from "@cozemble/model-core";
+import {propertyIdFns} from "@cozemble/model-core";
 
 export const stringPropertyType = propertyTypeFns.newInstance("string.property")
+
 
 export interface RegexValidation {
     _type: "regex.validation"
@@ -16,62 +18,17 @@ export interface StringProperty extends Property<string> {
     validations: RegexValidation[]
 }
 
-function validateProperty(property: StringProperty): Map<string, string> {
-    const errors = new Map<string, string>()
-    property.validations.forEach((validation, index) => {
-        if (validation.regex.trim().length === 0) {
-            errors.set(`validations.${index}.regex`, "Required")
-        } else {
-            try {
-                new RegExp(validation.regex)
-            } catch (e: any) {
-                errors.set(`validations.${index}.regex`, e.message)
-            }
-        }
-        if (validation.message.trim().length === 0) {
-            errors.set(`validations.${index}.message`, "Required")
-        }
-    })
-    return errors
-}
 
-export const stringPropertyDescriptor: PropertyDescriptor<StringProperty,string> = {
-    _type: "property.descriptor",
-    propertyType: stringPropertyType,
-    name: {_type: "dotted.name", name: "String"},
-    validateProperty,
-    randomValue: (): string => {
-        return (Math.random() + 1).toString(36).substring(2)
-    },
-    validateValue: (property: StringProperty, value: string | null): string[] => {
-        if(property.required && value === null || value === undefined || value?.trim().length === 0) {
-            return ["Required"]
-        }
-        return []
-    },
-    setValue: (property, record, value) => {
-        return {
-            ...record,
-            values: {
-                ...record.values,
-                [property.id]: value
-            }
-        }
-    },
-    getValue: (property, record) => {
-        return record.values[property.id] ?? null
-    },
-    newProperty: () => {
-        const id = uuids.v4()
-        return {
-            _type: {_type: "property.type", type: "string.property"},
-            id,
-            version: 1,
-            name: "",
-            required: false,
-            unique: false,
-            validations: []
-        }
+export function emptyProperty(name: string): StringProperty {
+    const id = propertyIdFns.newInstance()
+    return {
+        _type: {_type: "property.type", type: "string.property"},
+        id,
+        version: 1,
+        name,
+        required: false,
+        unique: false,
+        validations: []
     }
 }
 
@@ -99,8 +56,8 @@ export const stringPropertyOptions = {
     validation
 }
 
-export const stringProperties = {
+export const stringPropertyFns = {
     newInstance: (name: string, ...opts: StringPropertyOption[]): StringProperty => {
-        return options.apply({...stringPropertyDescriptor.newProperty(), name}, ...opts)
+        return options.apply({...emptyProperty(name), name}, ...opts)
     }
 }

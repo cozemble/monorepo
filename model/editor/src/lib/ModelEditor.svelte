@@ -3,20 +3,23 @@
     import type {ModelEditorHost} from "$lib/ModelEditorHost";
     import ModelStructureEditor from "$lib/ModelStructureEditor.svelte";
     import type {ModelId} from "@cozemble/model-core";
+    import type {EventSourcedModel} from "@cozemble/model-event-sourced";
+    import {coreModelEvents} from "@cozemble/model-event-sourced";
+    import type {Writable} from 'svelte/store';
 
     export let modelId: ModelId
     export let host: ModelEditorHost
+    export let allModels: Writable<EventSourcedModel[]>
 
-    $: model = host.modelWithId(modelId)
+    $: eventSourced = host.modelWithId($allModels, modelId)
 
     function onNameChange(name: string) {
-        model = {...model, name}
-        host.modelChanged(model)
+        host.modelChanged(modelId, coreModelEvents.modelRenamed(name))
     }
 </script>
 
-{#if model}
-    <EditableName nameable={{name:model.name}} {onNameChange} extraClass="model-name"/>
+{#if eventSourced}
+    <EditableName nameable={{name:eventSourced.model.name}} {onNameChange} extraClass="model-name"/>
 
-    <ModelStructureEditor {modelId} {host}/>
+    <ModelStructureEditor {eventSourced} {host} allModels={$allModels}/>
 {/if}

@@ -5,10 +5,8 @@ export {
     DottedName,
     Model,
     ModelId,
-    PropertyDescriptor,
     UserId,
     TimestampEpochMillis,
-    propertyDescriptors,
     DataRecordPath,
     DataRecordPathElement,
     PropertyType,
@@ -19,5 +17,20 @@ export {
     Cardinality,
     ModelOption,
     PropertyOption,
-    timestampEpochMillis
+    timestampEpochMillis,
+    emptyModel,
+    PropertyId
 } from "./core"
+
+export {propertyDescriptors} from "./propertyDescriptor";
+export {PropertyDescriptor} from "./propertyDescriptor";
+
+export {
+    ModelEvent,
+    ModelEventDescriptor,
+    modelEventDescriptors
+} from './events'
+
+export {
+    propertyIdFns,
+} from './propertyIdFns'

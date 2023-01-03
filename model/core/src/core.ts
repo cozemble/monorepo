@@ -1,4 +1,4 @@
-import {clock, mandatory, Option} from "@cozemble/lang-util";
+import {clock, Option, uuids} from "@cozemble/lang-util";
 
 export interface PropertyType {
     _type: 'property.type'
@@ -17,26 +17,14 @@ export const propertyTypeFns = {
     }
 }
 
-export interface PropertyDescriptor<P = any, V = any, > {
-    _type: "property.descriptor"
-    propertyType: PropertyType
-    name: DottedName
-    newProperty: () => P
-
-    validateProperty(property: P): Map<string, string>
-
-    randomValue: () => V
-
-    validateValue: (property: P, value: V | null) => string[]
-
-    setValue(property: P, record: DataRecord, value: V | null): DataRecord
-
-    getValue(property: P, record: DataRecord): V | null
+export interface PropertyId {
+    _type: "property.id"
+    id: string
 }
 
 export interface Property<T = any> {
     _type: PropertyType
-    id: string
+    id: PropertyId
     version: number
     name: string
 }
@@ -120,25 +108,15 @@ export interface DottedName {
     name: string
 }
 
-export const registeredProperties: PropertyDescriptor[] = []
-
-export const propertyDescriptors = {
-    register: (descriptor: PropertyDescriptor) => {
-        if (!registeredProperties.find(p => propertyTypeFns.equals(p.propertyType, descriptor.propertyType))) {
-            registeredProperties.push(descriptor)
-        }
-    },
-    get: (propertyType: PropertyType): PropertyDescriptor | null => {
-        return registeredProperties.find(p => propertyTypeFns.equals(p.propertyType, propertyType)) ?? null
-    },
-    mandatory: (p: Property | PropertyType): PropertyDescriptor => {
-        const propertyType = p._type === 'property.type' ? p : p._type
-        return mandatory(registeredProperties.find(p => propertyTypeFns.equals(p.propertyType, propertyType)), `No property descriptor registered for property type ${propertyType.type}`)
-    },
-    list: () => {
-        return registeredProperties
-    }
-}
-
 export type ModelOption = Option<Model>
 export type PropertyOption = Option<Property>
+
+export function emptyModel(name: string): Model {
+    return {
+        _type: "model",
+        id: {_type: "model.id", id: uuids.v4()},
+        name,
+        properties: [],
+        relationships: []
+    }
+}

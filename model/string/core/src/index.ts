@@ -1,11 +1,11 @@
 import {propertyDescriptors} from '@cozemble/model-core'
-import {stringPropertyDescriptor} from './stringProperty'
+import {registerModelEvents} from './events';
+import {stringPropertyDescriptor} from "./stringPropertyDescriptor";
 
 export {
     StringProperty,
     RegexValidation,
-    stringPropertyDescriptor,
-    stringProperties,
+    stringPropertyFns,
     stringPropertyOptions,
     StringPropertyOption,
     stringPropertyType
@@ -14,4 +14,8 @@ export {
 
 export function registerStringProperty() {
     propertyDescriptors.register(stringPropertyDescriptor)
+    propertyDescriptors.setDefault(stringPropertyDescriptor)
+    registerModelEvents()
 }
+
+export {stringPropertyDescriptor} from "./stringPropertyDescriptor";
