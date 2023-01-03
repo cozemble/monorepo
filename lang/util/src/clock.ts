@@ -9,7 +9,7 @@ export class SystemClock implements Clock {
 }
 
 export class FixedClock implements Clock {
-    constructor(private readonly when: Date) {
+    constructor(private readonly when: Date = new Date()) {
     }
 
     now() {

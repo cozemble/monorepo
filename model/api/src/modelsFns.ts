@@ -9,7 +9,7 @@ import {
     propertyDescriptors,
     PropertyOption
 } from "@cozemble/model-core";
-import {clock, options} from "@cozemble/lang-util";
+import {clock, mandatory, options} from "@cozemble/lang-util";
 import {propertyFns} from "./propertyFns";
 import {relationshipFns} from "./relationshipFns";
 
@@ -29,6 +29,9 @@ export const modelOptions = {
 export let modelFns = {
     newInstance: (name: string, ...opts: ModelOption[]): Model => {
         return options.apply(emptyModel(name), ...opts)
+    },
+    findById(models: Model[], modelId: ModelId): Model {
+        return mandatory(models.find(m => m.id === modelId), `Model not found: ${modelId.id}`)
     },
     setPropertyValue<T = any>(model: Model, property: Property<T>, value: T | null, record: DataRecord): DataRecord {
         return {

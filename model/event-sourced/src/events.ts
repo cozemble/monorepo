@@ -10,16 +10,18 @@ import {
 } from "@cozemble/model-core";
 import {relationshipFns} from "@cozemble/model-api";
 
-interface ModelRenamed extends ModelEvent {
+export interface ModelRenamed extends ModelEvent {
     _type: "model.renamed.event"
-    modelName: string
+    oldModelName: string
+    newModelName: string
 }
 
-function modelRenamed(modelName: string): ModelRenamed {
+function modelRenamed(oldModelName: string, newModelName: string): ModelRenamed {
     return {
         _type: "model.renamed.event",
         timestamp: timestampEpochMillis(),
-        modelName
+        oldModelName,
+        newModelName
     }
 }
 
@@ -29,23 +31,27 @@ const modelRenamedDescriptor: ModelEventDescriptor<ModelRenamed> = {
     applyEvent: (model, event) => {
         return {
             ...model,
-            name: event.modelName
+            name: event.newModelName
         }
     }
 }
 
-interface PropertyRenamed extends ModelEvent {
+export interface PropertyRenamed extends ModelEvent {
     _type: "property.renamed.event"
     propertyId: PropertyId
-    propertyName: string
+    modelName: string
+    oldPropertyName: string
+    newPropertyName: string
 }
 
-function propertyRenamed(propertyId: PropertyId, propertyName: string): PropertyRenamed {
+function propertyRenamed(modelName: string, propertyId: PropertyId, oldPropertyName: string, newPropertyName: string): PropertyRenamed {
     return {
         _type: "property.renamed.event",
         timestamp: timestampEpochMillis(),
         propertyId,
-        propertyName
+        modelName,
+        oldPropertyName,
+        newPropertyName
     }
 }
 
@@ -59,7 +65,7 @@ const propertyRenamedDescriptor: ModelEventDescriptor<PropertyRenamed> = {
                 if (propertyIdFns.equals(property.id, event.propertyId)) {
                     return {
                         ...property,
-                        name: event.propertyName
+                        name: event.newPropertyName
                     }
                 } else {
                     return property
@@ -69,7 +75,7 @@ const propertyRenamedDescriptor: ModelEventDescriptor<PropertyRenamed> = {
     }
 }
 
-interface RelationshipAdded extends ModelEvent {
+export interface RelationshipAdded extends ModelEvent {
     _type: "relationship.added.event"
     cardinality: Cardinality
     relationshipName: string
@@ -98,6 +104,20 @@ const relationshipAddedDescriptor: ModelEventDescriptor<RelationshipAdded> = {
     }
 }
 
+export interface ModelCreated extends ModelEvent {
+    _type: "model.created.event"
+    modelName: string
+}
+
+function modelCreated(modelName: string): ModelCreated {
+    return {
+        _type: "model.created.event",
+        timestamp: timestampEpochMillis(),
+        modelName
+    }
+}
+
+
 modelEventDescriptors.register(modelRenamedDescriptor)
 modelEventDescriptors.register(propertyRenamedDescriptor)
 modelEventDescriptors.register(relationshipAddedDescriptor)
@@ -105,5 +125,6 @@ modelEventDescriptors.register(relationshipAddedDescriptor)
 export const coreModelEvents = {
     modelRenamed,
     propertyRenamed,
-    relationshipAdded
+    relationshipAdded,
+    modelCreated
 }

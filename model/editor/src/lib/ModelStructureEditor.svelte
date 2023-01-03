@@ -51,7 +51,7 @@
                           parentModel={model}/>
 {:else if propertyBeingEdited}
     <PropertyEditor property={propertyBeingEdited} modelChangeHandler={host}
-                    modelId={model.id} on:save={propertyEdited}/>
+                    model={model} on:save={propertyEdited}/>
 {:else}
     <div data-model-name={model.name}>
         <table>

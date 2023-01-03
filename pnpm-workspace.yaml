@@ -3,4 +3,5 @@ packages:
   - "lang/*"
   - "model/*"
   - "model/string/*"
+  - "sql/*"
   - "ui/*"

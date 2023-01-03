@@ -1,6 +1,5 @@
-import {Model, ModelEvent, modelEventDescriptors} from "@cozemble/model-core";
-import {emptyModel} from "@cozemble/model-core";
-import {timestampEpochMillis} from "@cozemble/model-core";
+import {emptyModel, Model, ModelEvent, modelEventDescriptors} from "@cozemble/model-core";
+import {coreModelEvents} from "./events";
 
 export interface EventSourcedModel {
     _type: "event.sourced.model"
@@ -8,18 +7,6 @@ export interface EventSourcedModel {
     events: ModelEvent[]
 }
 
-interface ModelCreated extends ModelEvent {
-    _type: "model.created.event"
-    modelName: string
-}
-
-function modelCreated(modelName: string): ModelCreated {
-    return {
-        _type: "model.created.event",
-        timestamp: timestampEpochMillis(),
-        modelName
-    }
-}
 
 export const eventSourcedModelFns = {
     newInstance: (modelOrName: Model | string): EventSourcedModel => {
@@ -27,7 +14,7 @@ export const eventSourcedModelFns = {
         return {
             _type: "event.sourced.model",
             model,
-            events: [modelCreated(model.name)]
+            events: [coreModelEvents.modelCreated(model.name)]
         }
     },
     addEvent: (eventSourcedModel: EventSourcedModel, event: ModelEvent): EventSourcedModel => {

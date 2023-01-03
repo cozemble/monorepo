@@ -14,7 +14,7 @@
     $: eventSourced = host.modelWithId($allModels, modelId)
 
     function onNameChange(name: string) {
-        host.modelChanged(modelId, coreModelEvents.modelRenamed(name))
+        host.modelChanged(modelId, coreModelEvents.modelRenamed(eventSourced.model.name, name))
     }
 </script>
 

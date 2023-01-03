@@ -1,5 +1,9 @@
 export {
-    coreModelEvents
+    coreModelEvents,
+    ModelCreated,
+    PropertyRenamed,
+    RelationshipAdded,
+    ModelRenamed,
 } from './events'
 
 export {

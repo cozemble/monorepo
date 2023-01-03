@@ -26,5 +26,5 @@
 </script>
 
 {#if mounted}
-    <PropertyEditor {property} {modelChangeHandler} modelId={eventSourced.model.id}/>
+    <PropertyEditor {property} {modelChangeHandler} model={eventSourced.model}/>
 {/if}

@@ -1,15 +1,15 @@
 <script lang="ts">
-    import type {ModelId, Property, PropertyDescriptor} from "@cozemble/model-core";
+    import type {Model, Property, PropertyDescriptor} from "@cozemble/model-core";
     import {propertyDescriptors, propertyTypeFns} from "@cozemble/model-core";
     import {propertyConfigurerRegistry} from "@cozemble/model-assembled";
     import {editorHost, emptyFormErrorState} from "@cozemble/model-editor-sdk";
     import {writable} from 'svelte/store'
-    import {afterUpdate, createEventDispatcher} from 'svelte'
+    import {createEventDispatcher} from 'svelte'
     import type {ModelChangeHandler} from "$lib/ModelEditorHost";
     import {coreModelEvents} from "@cozemble/model-event-sourced";
 
     export let modelChangeHandler: ModelChangeHandler
-    export let modelId: ModelId
+    export let model: Model
     export let property: Property
 
     const formSectionErrorState = writable(emptyFormErrorState())
@@ -21,13 +21,11 @@
         const target = event.target as HTMLSelectElement
         propertyDescriptor = propertyDescriptors.get(propertyTypeFns.newInstance(target.value))
         if (propertyDescriptor) {
-            modelChangeHandler.modelChanged(modelId, propertyDescriptor.newProperty(property.id.id))
+            modelChangeHandler.modelChanged(model.id, propertyDescriptor.newProperty(property.id.id))
         } else {
             alert("No property descriptor found for " + target.value)
         }
     }
-
-    afterUpdate(() => console.log({property, errors}))
 
     $: configurer = propertyConfigurerRegistry.get(property._type)
     $: errors = propertyDescriptor?.validateProperty(property) ?? new Map()
@@ -43,7 +41,7 @@
 
     function propertyNameChanged(event: Event) {
         const target = event.target as HTMLInputElement
-        modelChangeHandler.modelChanged(modelId, coreModelEvents.propertyRenamed(property.id, target.value))
+        modelChangeHandler.modelChanged(model.id, coreModelEvents.propertyRenamed(model.name,property.id, property.name,target.value))
     }
 </script>
 
