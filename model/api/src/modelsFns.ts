@@ -7,11 +7,13 @@ import {
     ModelOption,
     Property,
     propertyDescriptors,
+    PropertyId,
     PropertyOption
 } from "@cozemble/model-core";
 import {clock, mandatory, options} from "@cozemble/lang-util";
 import {propertyFns} from "./propertyFns";
 import {relationshipFns} from "./relationshipFns";
+import {propertyIdFns} from "@cozemble/model-core";
 
 export const modelOptions = {
     withProperty(p: Property): ModelOption {
@@ -32,6 +34,9 @@ export let modelFns = {
     },
     findById(models: Model[], modelId: ModelId): Model {
         return mandatory(models.find(m => m.id === modelId), `Model not found: ${modelId.id}`)
+    },
+    propertyWithId(model: Model, propertyId: PropertyId): Property {
+        return mandatory(model.properties.find(p => propertyIdFns.equals(p.id, propertyId)), `Property not found: ${propertyId.id}`)
     },
     setPropertyValue<T = any>(model: Model, property: Property<T>, value: T | null, record: DataRecord): DataRecord {
         return {

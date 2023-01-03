@@ -19,3 +19,8 @@ export function registerStringProperty() {
 }
 
 export {stringPropertyDescriptor} from "./stringPropertyDescriptor";
+
+export {
+    newStringPropertyModelEvent,
+    NewStringPropertyModelEvent
+} from './events';

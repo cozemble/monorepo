@@ -210,6 +210,25 @@ importers:
       vite: 4.0.3
       vitest: 0.26.2
 
+  model/string/sql-actions:
+    specifiers:
+      '@cozemble/model-api': workspace:*
+      '@cozemble/model-sql-actions': workspace:*
+      '@cozemble/model-string-core': workspace:*
+      '@cozemble/sql-actions': workspace:*
+      typescript: ^4.9.3
+      vite: ^4.0.0
+      vitest: ^0.26.2
+    dependencies:
+      '@cozemble/model-api': link:../../api
+      '@cozemble/model-sql-actions': link:../../sql-actions
+      '@cozemble/model-string-core': link:../core
+      '@cozemble/sql-actions': link:../../../sql/actions
+    devDependencies:
+      typescript: 4.9.4
+      vite: 4.0.3
+      vitest: 0.26.2
+
   model/string/ui:
     specifiers:
       '@cozemble/model-core': workspace:*
