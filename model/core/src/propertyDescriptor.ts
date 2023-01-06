@@ -1,12 +1,21 @@
 import {mandatory} from "@cozemble/lang-util";
-import {DataRecord, DottedName, Property, PropertyType, propertyTypeFns} from "./core";
+import {
+    DataRecord,
+    DottedName,
+    ModelName,
+    Property,
+    PropertyId,
+    PropertyName,
+    PropertyType,
+    propertyTypeFns
+} from "./core";
 import {ModelEvent} from "./events";
 
 export interface PropertyDescriptor<P = any, V = any, > {
     _type: "property.descriptor"
     propertyType: PropertyType
     name: DottedName
-    newProperty: (propertyId?: string) => ModelEvent
+    newProperty: (modelName: ModelName, propertyName: PropertyName, propertyId?: PropertyId) => ModelEvent
 
     validateProperty(property: P): Map<string, string>
 

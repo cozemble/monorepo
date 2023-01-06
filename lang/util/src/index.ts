@@ -36,6 +36,7 @@ import {
     isUndefinedOrNullOrEmptyString,
     mask,
     paragraphs,
+    snakeCase,
     splitAtFirst
 } from "./string";
 import {getQueryParams} from "./urls";
@@ -113,6 +114,7 @@ export const errors = {
 const strings = {
     isUndefinedOrNullOrEmptyString,
     camelize,
+    snakeCase,
     extractTerms,
     paragraphs,
     splitAtFirst,

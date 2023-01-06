@@ -7,6 +7,7 @@
     import {createEventDispatcher} from 'svelte'
     import type {ModelChangeHandler} from "$lib/ModelEditorHost";
     import {coreModelEvents} from "@cozemble/model-event-sourced";
+    import {propertyNameFns} from "@cozemble/model-core";
 
     export let modelChangeHandler: ModelChangeHandler
     export let model: Model
@@ -21,7 +22,7 @@
         const target = event.target as HTMLSelectElement
         propertyDescriptor = propertyDescriptors.get(propertyTypeFns.newInstance(target.value))
         if (propertyDescriptor) {
-            modelChangeHandler.modelChanged(model.id, propertyDescriptor.newProperty(property.id.id))
+            modelChangeHandler.modelChanged(model.id, propertyDescriptor.newProperty(model.name,property.name,property.id))
         } else {
             alert("No property descriptor found for " + target.value)
         }
@@ -41,14 +42,14 @@
 
     function propertyNameChanged(event: Event) {
         const target = event.target as HTMLInputElement
-        modelChangeHandler.modelChanged(model.id, coreModelEvents.propertyRenamed(model.name, property.id, property.name, target.value))
+        modelChangeHandler.modelChanged(model.id, coreModelEvents.propertyRenamed(model.name, property.id, property.name, propertyNameFns.newInstance(target.value)))
     }
 </script>
 
 
 <form>
     <label>Property Name</label><br/>
-    <input value={property.name} class="property-name" on:change={propertyNameChanged}/><br/>
+    <input value={property.name.value} class="property-name" on:change={propertyNameChanged}/><br/>
     <label>Property Type</label><br/>
     <select on:change={propertyTypeChanged} class="property-type">
         <option value="">----</option>

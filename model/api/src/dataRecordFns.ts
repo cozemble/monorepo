@@ -28,7 +28,7 @@ export const dataRecordFns = {
             values: {}
         }
         return model.properties.reduce((record, property) => {
-            const value = givenValues[property.name] || propertyDescriptors.mandatory(property).randomValue()
+            const value = givenValues[property.name.value] || propertyDescriptors.mandatory(property).randomValue()
             return modelFns.setPropertyValue(model, property, value, record);
         }, record)
     }

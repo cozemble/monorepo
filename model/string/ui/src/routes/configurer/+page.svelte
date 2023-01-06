@@ -4,7 +4,7 @@
     import {writable} from "svelte/store";
     import {stringPropertyFns} from "@cozemble/model-string-core";
 
-    let property = stringPropertyFns.newInstance("Property #1")
+    let property = stringPropertyFns.newInstance("Property 1")
     const formErrorState = writable(emptyFormErrorState())
     editorHost.setErrorState(formErrorState)
 </script>

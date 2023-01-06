@@ -264,11 +264,13 @@ importers:
 
   sql/actions:
     specifiers:
+      '@cozemble/lang-util': workspace:*
       nanoid: 3.3.4
       typescript: ^4.9.3
       vite: ^4.0.0
       vitest: ^0.26.2
     dependencies:
+      '@cozemble/lang-util': link:../../lang/util
       nanoid: 3.3.4
     devDependencies:
       typescript: 4.9.4

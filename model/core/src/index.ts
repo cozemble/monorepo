@@ -19,7 +19,11 @@ export {
     PropertyOption,
     timestampEpochMillis,
     emptyModel,
-    PropertyId
+    PropertyId,
+    ModelName,
+    PropertyName,
+    modelNameFns,
+    propertyNameFns
 } from "./core"
 
 export {propertyDescriptors} from "./propertyDescriptor";

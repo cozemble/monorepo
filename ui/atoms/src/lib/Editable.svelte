@@ -19,6 +19,7 @@
     function finishedEditing() {
         if (editableValue !== value) {
             dispatch("edited", {oldValue: value, newValue: editableValue})
+            editableValue = value
         }
         editing = false
     }

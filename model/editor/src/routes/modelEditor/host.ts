@@ -4,6 +4,7 @@ import type {ModelEditorHost} from "$lib/ModelEditorHost";
 import {mandatory} from "@cozemble/lang-util";
 import {modelIdFns} from "@cozemble/model-api";
 import {type Writable, writable} from "svelte/store";
+import {modelNameFns} from "@cozemble/model-core/dist/esm";
 
 export const allModels: Writable<EventSourcedModel[]> = writable([])
 
@@ -36,7 +37,7 @@ export function bootstrapHost(localStorage: Storage) {
     if (stored) {
         allModels.set(JSON.parse(stored))
     } else {
-        allModels.set([eventSourcedModelFns.newInstance("My model")])
+        allModels.set([eventSourcedModelFns.newInstance(modelNameFns.newInstance("My model"))])
     }
     return allModels.subscribe(models => localStorage.setItem(storageKey, JSON.stringify(models)))
 }

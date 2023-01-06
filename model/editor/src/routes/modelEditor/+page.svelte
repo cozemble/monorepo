@@ -7,6 +7,7 @@
     import type {EventSourcedModel} from "@cozemble/model-event-sourced";
     import {sqlMigrations} from "./toSql";
     import {registerStringPropertyEventToSqlActions} from "@cozemble/model-string-sql-actions";
+    import {events} from "./toSql";
 
     let mounted = false
     let firstModel: EventSourcedModel | null = null
@@ -26,3 +27,5 @@
 {/if}
 <hr/>
 <pre>{#each $sqlMigrations as migration}{migration} <br/>{/each}</pre>
+
+<pre>events = {JSON.stringify($events, null, 2)}</pre>

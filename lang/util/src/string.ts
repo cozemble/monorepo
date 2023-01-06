@@ -14,6 +14,19 @@ export function camelize(str: string): string {
     }).replace(/\s+/g, '');
 }
 
+export function snakeCase(str: string) {
+    const splitCaps = (s: string) => s
+        .replace(/([a-z])([A-Z]+)/g, (m, s1, s2) => s1 + ' ' + s2)
+        .replace(/([A-Z])([A-Z]+)([^a-zA-Z0-9]*)$/, (m, s1, s2, s3) => s1 + s2.toLowerCase() + s3)
+        .replace(/([A-Z]+)([A-Z][a-z])/g,
+            (m, s1, s2) => s1.toLowerCase() + ' ' + s2);
+    return splitCaps(str)
+        .replace(/\W+/g, " ")
+        .split(/ |\B(?=[A-Z])/)
+        .map(word => word.toLowerCase())
+        .join('_');
+}
+
 export function isUndefinedOrNullOrEmptyString(str: string) {
     return str === undefined || str === null || str.toString() === "";
 }

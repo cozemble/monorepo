@@ -17,6 +17,7 @@
     "vitest": "^0.26.2"
   },
   "dependencies": {
+    "@cozemble/lang-util": "workspace:*",
     "nanoid": "3.3.4"
   }
 }

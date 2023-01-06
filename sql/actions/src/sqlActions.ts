@@ -1,3 +1,4 @@
+import {strings} from "@cozemble/lang-util"
 import {nanoid} from "nanoid"
 
 export type ColumnType = "text" | "jsonb" | "integer" | "timestamp" | "boolean"
@@ -15,20 +16,45 @@ export interface RenameTableAction {
     newName: TableName
 }
 
-class TableName {
-    constructor(private readonly name: string) {
+export class SqlName {
+    private readonly _value: string
+
+    constructor(name: string) {
+        this._value = strings.snakeCase(name)
     }
 
-    fqn(schema: Schema): string {
-        return `${schema.name}.${this.name.toLowerCase()}`
+    value(): string {
+        return this._value
     }
 
-    n(): string {
-        return this.name.toLowerCase()
+    toString(): string {
+        return this._value
     }
 }
 
-function tableName(name: string): TableName {
+export type ColumnName = SqlName
+
+export function columnName(name: string): ColumnName {
+    return new SqlName(name)
+}
+
+class TableName {
+    private readonly _name: SqlName
+
+    constructor(name: string) {
+        this._name = new SqlName(name)
+    }
+
+    fqn(schema: Schema): string {
+        return `${schema.name}.${this.n()}`
+    }
+
+    n(): string {
+        return this._name.value()
+    }
+}
+
+export function tableName(name: string): TableName {
     return new TableName(name)
 }
 
@@ -36,22 +62,22 @@ export interface AddColumnAction {
     _type: "add.column"
     meta: SqlActionMeta
     tableName: TableName
-    columnName: string
+    columnName: ColumnName
 }
 
 export interface RenameColumnAction {
     _type: "rename.column"
     meta: SqlActionMeta
     tableName: TableName
-    oldColumnName: string
-    newColumnName: string
+    oldColumnName: ColumnName
+    newColumnName: ColumnName
 }
 
 export interface ChangeColumnTypeAction {
     _type: "change.column.type"
     meta: SqlActionMeta
     tableName: TableName
-    columnName: string
+    columnName: ColumnName
     oldType: ColumnType
     newType: ColumnType
 }
@@ -60,21 +86,21 @@ export interface MakeColumnNonNullableAction {
     _type: "make.column.non.nullable"
     meta: SqlActionMeta
     tableName: TableName
-    columnName: string
+    columnName: ColumnName
 }
 
 export interface MakeColumnNullableAction {
     _type: "make.column.nullable"
     meta: SqlActionMeta
     tableName: TableName
-    columnName: string
+    columnName: ColumnName
 }
 
 export interface SetColumnDefaultAction {
     _type: "set.column.default"
     meta: SqlActionMeta
     tableName: TableName
-    columnName: string
+    columnName: ColumnName
     defaultValue: string | number | boolean | Date
 }
 
@@ -82,7 +108,7 @@ export interface DropColumnDefaultAction {
     _type: "drop.column.default"
     meta: SqlActionMeta
     tableName: TableName
-    columnName: string
+    columnName: ColumnName
     defaultValue: string | number | boolean | Date
 }
 
@@ -90,7 +116,7 @@ export interface AddColumnConstraintAction {
     _type: "add.column.constraint"
     meta: SqlActionMeta
     tableName: TableName
-    columnName: string
+    columnName: ColumnName
     constraint: Constraint
 }
 
@@ -98,7 +124,7 @@ export interface DropColumnConstraintAction {
     _type: "drop.column.constraint"
     meta: SqlActionMeta
     tableName: TableName
-    columnName: string
+    columnName: ColumnName
     constraint: Constraint
 }
 
@@ -106,7 +132,7 @@ export interface SetColumnToSequenceValueAction {
     _type: "set.column.to.sequence.value"
     meta: SqlActionMeta
     tableName: TableName
-    columnName: string
+    columnName: ColumnName
     current: CurrentColumnConfiguration
     name: SequenceName
 }
@@ -186,102 +212,116 @@ export class SqlActions {
         }
     }
 
-    addColumn(tn: string, columnName: string): AddColumnAction {
+    addColumn(tn: string, theColumnName: string): AddColumnAction {
+        const name = columnName(theColumnName)
         return {
             _type: "add.column",
             tableName: tableName(tn),
-            columnName,
-            meta: this._makeMeta(`add.column.${columnName}.to.table.${tn}`)
+            columnName: name,
+            meta: this._makeMeta(`add.column.${name.value()}.to.table.${tn}`)
         }
     }
 
     renameColumn(tn: string, oldColumnName: string, newColumnName: string): RenameColumnAction {
+        const old = columnName(oldColumnName)
+        const _new = columnName(newColumnName)
         return {
             _type: "rename.column",
             tableName: tableName(tn),
-            oldColumnName,
-            newColumnName,
-            meta: this._makeMeta(`rename.column.${oldColumnName}.to.${newColumnName}`)
+            oldColumnName: old,
+            newColumnName: _new,
+            meta: this._makeMeta(`rename.column.${old.value()}.to.${_new.value()}`)
         }
     }
 
-    changeColumnType(tn: string, columnName: string, oldType: ColumnType, newType: ColumnType): ChangeColumnTypeAction {
+    changeColumnType(tn: string, theColumnName: string, oldType: ColumnType, newType: ColumnType): ChangeColumnTypeAction {
+        const name = columnName(theColumnName)
         return {
             _type: "change.column.type",
             tableName: tableName(tn),
-            columnName,
+            columnName: name,
             oldType,
             newType,
-            meta: this._makeMeta(`change.type.of.column.${tn}.${columnName}.from.${oldType}.to.${newType}`)
+            meta: this._makeMeta(`change.type.of.column.${tn}.${name.value()}.from.${oldType}.to.${newType}`)
         }
     }
 
-    makeColumnNonNullable(tn: string, columnName: string): MakeColumnNonNullableAction {
+    makeColumnNonNullable(tn: string, theColumnName: string): MakeColumnNonNullableAction {
+        const name = columnName(theColumnName)
         return {
             _type: "make.column.non.nullable",
             tableName: tableName(tn),
-            columnName,
-            meta: this._makeMeta(`make.${tn}.${columnName}.non.nullable`)
+            columnName: name,
+            meta: this._makeMeta(`make.${tn}.${name.value()}.non.nullable`)
         }
     }
 
-    makeColumnNullable(tn: string, columnName: string): MakeColumnNullableAction {
+    makeColumnNullable(tn: string, theColumnName: string): MakeColumnNullableAction {
+        const name = columnName(theColumnName)
         return {
             _type: "make.column.nullable",
             tableName: tableName(tn),
-            columnName,
-            meta: this._makeMeta(`make.${tn}.${columnName}.nullable`)
+            columnName: name,
+            meta: this._makeMeta(`make.${tn}.${name.value()}.nullable`)
         }
     }
 
-    setColumnDefault(tn: string, columnName: string, defaultValue: DefaultValueType): SetColumnDefaultAction {
+    setColumnDefault(tn: string, theColumnName: string, defaultValue: DefaultValueType): SetColumnDefaultAction {
+        const name = columnName(theColumnName)
         return {
             _type: "set.column.default",
             tableName: tableName(tn),
-            columnName,
+            columnName: name,
             defaultValue,
-            meta: this._makeMeta(`set.default.for.${tn}.${columnName}.to.${defaultValue}`)
+            meta: this._makeMeta(`set.default.for.${tn}.${name.value()}.to.${defaultValue}`)
         }
     }
 
-    dropColumnDefault(tn: string, columnName: string, defaultValue: DefaultValueType): DropColumnDefaultAction {
+    dropColumnDefault(tn: string, theColumnName: string, defaultValue: DefaultValueType): DropColumnDefaultAction {
+        const name = columnName(theColumnName)
+
         return {
             _type: "drop.column.default",
             tableName: tableName(tn),
-            columnName,
+            columnName: name,
             defaultValue,
-            meta: this._makeMeta(`drop.default.for.${tn}.${columnName}.to.${defaultValue}`)
+            meta: this._makeMeta(`drop.default.for.${tn}.${name.value()}.to.${defaultValue}`)
         }
     }
 
-    addColumnConstraint(tn: string, columnName: string, constraint: Constraint): AddColumnConstraintAction {
+    addColumnConstraint(tn: string, theColumnName: string, constraint: Constraint): AddColumnConstraintAction {
+        const name = columnName(theColumnName)
+
         return {
             _type: "add.column.constraint",
             tableName: tableName(tn),
-            columnName,
+            columnName: name,
             constraint,
-            meta: this._makeMeta(`add.${constraint._type}.constraint.for.${tn}.${columnName}.named.${constraint.constraintName}`)
+            meta: this._makeMeta(`add.${constraint._type}.constraint.for.${tn}.${name.value()}.named.${constraint.constraintName}`)
         }
     }
 
-    dropColumnConstraint(tn: string, columnName: string, constraint: Constraint): DropColumnConstraintAction {
+    dropColumnConstraint(tn: string, theColumnName: string, constraint: Constraint): DropColumnConstraintAction {
+        const name = columnName(theColumnName)
+
         return {
             _type: "drop.column.constraint",
             tableName: tableName(tn),
-            columnName,
+            columnName: name,
             constraint,
-            meta: this._makeMeta(`drop.${constraint._type}.constraint.for.${tn}.${columnName}.named.${constraint.constraintName}`)
+            meta: this._makeMeta(`drop.${constraint._type}.constraint.for.${tn}.${name.value()}.named.${constraint.constraintName}`)
         }
     }
 
-    setColumnToSequenceValue(tn: string, columnName: string, current: CurrentColumnConfiguration, name: SequenceName): SetColumnToSequenceValueAction {
+    setColumnToSequenceValue(tn: string, theColumnName: string, current: CurrentColumnConfiguration, sequenceName: SequenceName): SetColumnToSequenceValueAction {
+        const name = columnName(theColumnName)
         return {
             _type: "set.column.to.sequence.value",
             tableName: tableName(tn),
-            columnName,
-            name,
+            columnName: name,
+            name: sequenceName,
             current,
-            meta: this._makeMeta(`set.${tn}.${columnName}.to.sequence.named.${name.name}`)
+            meta: this._makeMeta(`set.${tn}.${name.value()}.to.sequence.named.${sequenceName.name}`)
         }
     }
 
@@ -425,7 +465,7 @@ export function actionToSql(theSchema: Schema, action: SqlAction): SqlMigration 
         ],[
             `ALTER TABLE ${action.tableName.fqn(theSchema)} ALTER COLUMN ${action.columnName} TYPE ${action.current.currentType};`,
             action.current.currentNullable ? `ALTER TABLE ${action.tableName.fqn(theSchema)} ALTER COLUMN ${action.columnName} DROP NOT NULL;` : "",
-            action.current.currentHasDefault ? `ALTER TABLE ${action.tableName.fqn(theSchema)} ALTER COLUMN columnA SET DEFAULT '${action.current.currentDefault}';` : `ALTER TABLE ${action.tableName.fqn(theSchema)} ALTER COLUMN columnA DROP DEFAULT;`,
+            action.current.currentHasDefault ? `ALTER TABLE ${action.tableName.fqn(theSchema)} ALTER COLUMN ${action.columnName} SET DEFAULT '${action.current.currentDefault}';` : `ALTER TABLE ${action.tableName.fqn(theSchema)} ALTER COLUMN ${action.columnName} DROP DEFAULT;`,
             `DROP SEQUENCE ${theSchema.name}.${action.name.name};`
         ])
         // @formatter:on

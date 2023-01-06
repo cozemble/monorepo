@@ -1,6 +1,7 @@
 import {Option, options} from "@cozemble/lang-util";
 import {Property, propertyTypeFns} from "@cozemble/model-core";
 import {propertyIdFns} from "@cozemble/model-core";
+import {propertyNameFns} from "@cozemble/model-core";
 
 export const stringPropertyType = propertyTypeFns.newInstance("string.property")
 
@@ -25,7 +26,7 @@ export function emptyProperty(name: string): StringProperty {
         _type: {_type: "property.type", type: "string.property"},
         id,
         version: 1,
-        name,
+        name:propertyNameFns.newInstance(name),
         required: false,
         unique: false,
         validations: []
@@ -57,7 +58,8 @@ export const stringPropertyOptions = {
 }
 
 export const stringPropertyFns = {
-    newInstance: (name: string, ...opts: StringPropertyOption[]): StringProperty => {
-        return options.apply({...emptyProperty(name), name}, ...opts)
+    newInstance: (nameAsStr: string, ...opts: StringPropertyOption[]): StringProperty => {
+        const name = propertyNameFns.newInstance(nameAsStr)
+        return options.apply({...emptyProperty(nameAsStr), name}, ...opts)
     }
 }

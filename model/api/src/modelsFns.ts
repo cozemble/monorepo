@@ -14,6 +14,7 @@ import {clock, mandatory, options} from "@cozemble/lang-util";
 import {propertyFns} from "./propertyFns";
 import {relationshipFns} from "./relationshipFns";
 import {propertyIdFns} from "@cozemble/model-core";
+import {modelNameFns} from "@cozemble/model-core";
 
 export const modelOptions = {
     withProperty(p: Property): ModelOption {
@@ -30,7 +31,7 @@ export const modelOptions = {
 }
 export let modelFns = {
     newInstance: (name: string, ...opts: ModelOption[]): Model => {
-        return options.apply(emptyModel(name), ...opts)
+        return options.apply(emptyModel(modelNameFns.newInstance(name)), ...opts)
     },
     findById(models: Model[], modelId: ModelId): Model {
         return mandatory(models.find(m => m.id === modelId), `Model not found: ${modelId.id}`)

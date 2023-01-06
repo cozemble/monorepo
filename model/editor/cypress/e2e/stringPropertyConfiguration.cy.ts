@@ -4,7 +4,7 @@ describe('model editor', () => {
     cy.get(".model-name").click()
     cy.get("input.model-name").type("{selectall}Customer{enter}")
     cy.contains("Add property").click()
-    cy.get('.edit-property[data-property-name="Property #1"]').click()
+    cy.get('.edit-property[data-property-name="Property 1"]').click()
     cy.get("input.property-name").type("{selectall}Phone{enter}")
     cy.get("input.required-toggle").click()
     cy.get("input.unique-toggle").click()
@@ -20,12 +20,12 @@ describe('model editor', () => {
     cy.get("input.model-name").type("{selectall}Customer{enter}")
 
     cy.contains("Add property").click()
-    cy.get('.edit-property[data-property-name="Property #1"]').click()
+    cy.get('.edit-property[data-property-name="Property 1"]').click()
     cy.get("input.property-name").type("{selectall}First name{enter}")
     cy.get("button.save-property").click()
 
     cy.contains("Add property").click()
-    cy.get('.edit-property[data-property-name="Property #2"]').click()
+    cy.get('.edit-property[data-property-name="Property 2"]').click()
     cy.get("input.property-name").type("{selectall}Last name{enter}")
     cy.get("button.save-property").click()
   })

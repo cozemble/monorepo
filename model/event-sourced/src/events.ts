@@ -4,19 +4,21 @@ import {
     ModelEventDescriptor,
     modelEventDescriptors,
     ModelId,
+    ModelName,
     PropertyId,
     propertyIdFns,
     timestampEpochMillis
 } from "@cozemble/model-core";
 import {relationshipFns} from "@cozemble/model-api";
+import {PropertyName} from "@cozemble/model-core/dist/esm";
 
 export interface ModelRenamed extends ModelEvent {
     _type: "model.renamed.event"
-    oldModelName: string
-    newModelName: string
+    oldModelName: ModelName
+    newModelName: ModelName
 }
 
-function modelRenamed(oldModelName: string, newModelName: string): ModelRenamed {
+function modelRenamed(oldModelName: ModelName, newModelName: ModelName): ModelRenamed {
     return {
         _type: "model.renamed.event",
         timestamp: timestampEpochMillis(),
@@ -39,12 +41,12 @@ const modelRenamedDescriptor: ModelEventDescriptor<ModelRenamed> = {
 export interface PropertyRenamed extends ModelEvent {
     _type: "property.renamed.event"
     propertyId: PropertyId
-    modelName: string
-    oldPropertyName: string
-    newPropertyName: string
+    modelName: ModelName
+    oldPropertyName: PropertyName
+    newPropertyName: PropertyName
 }
 
-function propertyRenamed(modelName: string, propertyId: PropertyId, oldPropertyName: string, newPropertyName: string): PropertyRenamed {
+function propertyRenamed(modelName: ModelName, propertyId: PropertyId, oldPropertyName: PropertyName, newPropertyName: PropertyName): PropertyRenamed {
     return {
         _type: "property.renamed.event",
         timestamp: timestampEpochMillis(),
@@ -106,10 +108,10 @@ const relationshipAddedDescriptor: ModelEventDescriptor<RelationshipAdded> = {
 
 export interface ModelCreated extends ModelEvent {
     _type: "model.created.event"
-    modelName: string
+    modelName: ModelName
 }
 
-function modelCreated(modelName: string): ModelCreated {
+function modelCreated(modelName: ModelName): ModelCreated {
     return {
         _type: "model.created.event",
         timestamp: timestampEpochMillis(),

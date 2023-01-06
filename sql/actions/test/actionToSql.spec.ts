@@ -10,6 +10,12 @@ test("can create an empty table", () => {
     expect(mutation).toMatchObject(sqlMigration(["CREATE TABLE teamx.customer(id SERIAL PRIMARY KEY);"], ["DROP TABLE teamx.customer;"]))
 })
 
+test("table names have snake case", () => {
+    const action = sqlActions.newTable("Delivery Address")
+    const mutation = actionToSql(theSchema, action)
+    expect(mutation).toMatchObject(sqlMigration(["CREATE TABLE teamx.delivery_address(id SERIAL PRIMARY KEY);"], ["DROP TABLE teamx.delivery_address;"]))
+})
+
 test("can rename a table", () => {
     const action = sqlActions.renameModel("Customer", "Client")
     const mutation = actionToSql(theSchema, action)
@@ -17,59 +23,58 @@ test("can rename a table", () => {
 })
 
 test("can add a column to a table", () => {
-    const action = sqlActions.addColumn("Customer", "columnA")
+    const action = sqlActions.addColumn("Customer", "column_a")
     const mutation = actionToSql(theSchema, action)
-    expect(mutation).toMatchObject(sqlMigration(["ALTER TABLE teamx.customer ADD columnA text;"], ["ALTER TABLE teamx.customer DROP COLUMN columnA;"]))
+    expect(mutation).toMatchObject(sqlMigration(["ALTER TABLE teamx.customer ADD column_a text;"], ["ALTER TABLE teamx.customer DROP COLUMN column_a;"]))
 })
 
 test("can rename a column", () => {
-    const action = sqlActions.renameColumn("Customer", "columnA", "columnB")
+    const action = sqlActions.renameColumn("Customer", "column_a", "column_b")
     const mutation = actionToSql(theSchema, action)
-    expect(mutation).toMatchObject(sqlMigration(["ALTER TABLE teamx.customer RENAME columnA TO columnB;"], ["ALTER TABLE teamx.customer RENAME columnB TO columnA;"]))
+    expect(mutation).toMatchObject(sqlMigration(["ALTER TABLE teamx.customer RENAME column_a TO column_b;"], ["ALTER TABLE teamx.customer RENAME column_b TO column_a;"]))
 })
 
 test("can change the data type of a column", () => {
-    const action = sqlActions.changeColumnType("Customer", "columnA", "text", "integer")
+    const action = sqlActions.changeColumnType("Customer", "column_a", "text", "integer")
     const mutation = actionToSql(theSchema, action)
-    expect(mutation).toMatchObject(sqlMigration(["ALTER TABLE teamx.customer ALTER COLUMN columnA TYPE integer USING (trim(columnA)::integer);"], ["ALTER TABLE teamx.customer ALTER COLUMN columnA TYPE text;"]))
+    expect(mutation).toMatchObject(sqlMigration(["ALTER TABLE teamx.customer ALTER COLUMN column_a TYPE integer USING (trim(column_a)::integer);"], ["ALTER TABLE teamx.customer ALTER COLUMN column_a TYPE text;"]))
 })
 
 test("can make a column not null", () => {
-    const action = sqlActions.makeColumnNonNullable("Customer", "columnA")
+    const action = sqlActions.makeColumnNonNullable("Customer", "column_a")
     const mutation = actionToSql(theSchema, action)
-    expect(mutation).toMatchObject(sqlMigration(["ALTER TABLE teamx.customer ALTER COLUMN columnA SET NOT NULL;"], ["ALTER TABLE teamx.customer ALTER COLUMN columnA DROP NOT NULL;"]))
+    expect(mutation).toMatchObject(sqlMigration(["ALTER TABLE teamx.customer ALTER COLUMN column_a SET NOT NULL;"], ["ALTER TABLE teamx.customer ALTER COLUMN column_a DROP NOT NULL;"]))
 })
 
 test("can make a column null", () => {
-    const action = sqlActions.makeColumnNullable("Customer", "columnA")
+    const action = sqlActions.makeColumnNullable("Customer", "column_a")
     const mutation = actionToSql(theSchema, action)
-    expect(mutation).toMatchObject(sqlMigration(["ALTER TABLE teamx.customer ALTER COLUMN columnA DROP NOT NULL;"], ["ALTER TABLE teamx.customer ALTER COLUMN columnA SET NOT NULL;"]))
+    expect(mutation).toMatchObject(sqlMigration(["ALTER TABLE teamx.customer ALTER COLUMN column_a DROP NOT NULL;"], ["ALTER TABLE teamx.customer ALTER COLUMN column_a SET NOT NULL;"]))
 })
 
 test("can assign a default value to a column", () => {
-    const action = sqlActions.setColumnDefault("Customer", "columnA", "defaultValue")
+    const action = sqlActions.setColumnDefault("Customer", "column_a", "defaultValue")
     const mutation = actionToSql(theSchema, action)
-    expect(mutation).toMatchObject(sqlMigration(["ALTER TABLE teamx.customer ALTER COLUMN columnA SET DEFAULT 'defaultValue';"], ["ALTER TABLE teamx.customer ALTER COLUMN columnA DROP DEFAULT;"]))
+    expect(mutation).toMatchObject(sqlMigration(["ALTER TABLE teamx.customer ALTER COLUMN column_a SET DEFAULT 'defaultValue';"], ["ALTER TABLE teamx.customer ALTER COLUMN column_a DROP DEFAULT;"]))
 })
 
 test("can drop default value from a column", () => {
-    const action = sqlActions.dropColumnDefault("Customer", "columnA", "defaultValue")
+    const action = sqlActions.dropColumnDefault("Customer", "column_a", "defaultValue")
     const mutation = actionToSql(theSchema, action)
-    expect(mutation).toMatchObject(sqlMigration(["ALTER TABLE teamx.customer ALTER COLUMN columnA DROP DEFAULT;"], ["ALTER TABLE teamx.customer ALTER COLUMN columnA SET DEFAULT 'defaultValue';"]))
+    expect(mutation).toMatchObject(sqlMigration(["ALTER TABLE teamx.customer ALTER COLUMN column_a DROP DEFAULT;"], ["ALTER TABLE teamx.customer ALTER COLUMN column_a SET DEFAULT 'defaultValue';"]))
 })
 
 test("can add a unique constraint to a column", () => {
-    const action = sqlActions.addColumnConstraint("Customer", "columnA", constraints.unique("constraintName"))
+    const action = sqlActions.addColumnConstraint("Customer", "column_a", constraints.unique("constraintName"))
     const mutation = actionToSql(theSchema, action)
-    expect(mutation).toMatchObject(sqlMigration(["ALTER TABLE teamx.customer ADD CONSTRAINT constraintName UNIQUE (columnA);"], ["ALTER TABLE teamx.customer DROP CONSTRAINT constraintName;"]))
+    expect(mutation).toMatchObject(sqlMigration(["ALTER TABLE teamx.customer ADD CONSTRAINT constraintName UNIQUE (column_a);"], ["ALTER TABLE teamx.customer DROP CONSTRAINT constraintName;"]))
 })
 
 test("can drop a constraint from a column", () => {
-    const action = sqlActions.dropColumnConstraint("Customer", "columnA", constraints.unique("constraintName"))
+    const action = sqlActions.dropColumnConstraint("Customer", "column_a", constraints.unique("constraintName"))
     const mutation = actionToSql(theSchema, action)
-    expect(mutation).toMatchObject(sqlMigration(["ALTER TABLE teamx.customer DROP CONSTRAINT constraintName;"], ["ALTER TABLE teamx.customer ADD CONSTRAINT constraintName UNIQUE (columnA);"]))
+    expect(mutation).toMatchObject(sqlMigration(["ALTER TABLE teamx.customer DROP CONSTRAINT constraintName;"], ["ALTER TABLE teamx.customer ADD CONSTRAINT constraintName UNIQUE (column_a);"]))
 })
-
 
 test("can assign a column value to a sequence", () => {
     const action = sqlActions.setColumnToSequenceValue("Customer", "columnA", {
@@ -82,12 +87,12 @@ test("can assign a column value to a sequence", () => {
     expect(mutation).toMatchObject(sqlMigration(
         [
             "CREATE SEQUENCE teamx.theSequenceName;",
-            "ALTER TABLE teamx.customer ALTER COLUMN columnA TYPE integer NOT NULL DEFAULT nextval('teamx.theSequenceName');",
-            "ALTER SEQUENCE teamx.theSequenceName OWNED BY teamx.customer.columnA;"],
+            "ALTER TABLE teamx.customer ALTER COLUMN column_a TYPE integer NOT NULL DEFAULT nextval('teamx.theSequenceName');",
+            "ALTER SEQUENCE teamx.theSequenceName OWNED BY teamx.customer.column_a;"],
         [
-            "ALTER TABLE teamx.customer ALTER COLUMN columnA TYPE text;",
-            "ALTER TABLE teamx.customer ALTER COLUMN columnA DROP NOT NULL;",
-            "ALTER TABLE teamx.customer ALTER COLUMN columnA SET DEFAULT 'x';",
+            "ALTER TABLE teamx.customer ALTER COLUMN column_a TYPE text;",
+            "ALTER TABLE teamx.customer ALTER COLUMN column_a DROP NOT NULL;",
+            "ALTER TABLE teamx.customer ALTER COLUMN column_a SET DEFAULT 'x';",
             "DROP SEQUENCE teamx.theSequenceName;"
         ]))
 })
@@ -101,5 +106,5 @@ test("can set the starting value of a sequence", () => {
 test("can add a foreign key column", () => {
     const action = sqlActions.addColumnConstraint("Customer", "deliveryAddress", constraints.fk("Address", "customerDeliveryAddressFK"))
     const mutation = actionToSql(theSchema, action)
-    expect(mutation).toMatchObject(sqlMigration(["ALTER TABLE teamx.customer ADD CONSTRAINT customerDeliveryAddressFK FOREIGN KEY (deliveryAddress) REFERENCES teamx.address (id);"],["ALTER TABLE teamx.customer DROP CONSTRAINT customerDeliveryAddressFK;"]))
+    expect(mutation).toMatchObject(sqlMigration(["ALTER TABLE teamx.customer ADD CONSTRAINT customerDeliveryAddressFK FOREIGN KEY (delivery_address) REFERENCES teamx.address (id);"],["ALTER TABLE teamx.customer DROP CONSTRAINT customerDeliveryAddressFK;"]))
 })

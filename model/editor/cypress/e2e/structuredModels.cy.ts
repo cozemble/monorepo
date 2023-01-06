@@ -6,7 +6,7 @@ describe('model editor', () => {
     cy.get("input.model-name").type("{selectall}Delivery{enter}")
 
     cy.contains("Add property").click()
-    cy.get('.edit-property[data-property-name="Property #1"]').click()
+    cy.get('.edit-property[data-property-name="Property 1"]').click()
     cy.get("input.property-name").type("{selectall}Delivery ID{enter}")
     cy.get("button.save-property").click()
 
@@ -18,7 +18,7 @@ describe('model editor', () => {
     cy.get("button.save").click()
 
     cy.get('div[data-model-name="Product"] .add-property').click()
-    cy.get('.edit-property[data-property-name="Property #1"]').click()
+    cy.get('.edit-property[data-property-name="Property 1"]').click()
     cy.get("input.property-name").type("{selectall}Product ID{enter}")
     cy.get("button.save-property").click()
 
@@ -30,7 +30,7 @@ describe('model editor', () => {
     cy.get("button.save").click()
 
     cy.get('div[data-model-name="Batch"] .add-property').click()
-    cy.get('.edit-property[data-property-name="Property #1"]').click()
+    cy.get('.edit-property[data-property-name="Property 1"]').click()
     cy.get("input.property-name").type("{selectall}Batch ID{enter}")
     cy.get("button.save-property").click()
 
@@ -41,7 +41,7 @@ describe('model editor', () => {
     cy.get("button.save").click()
 
     cy.get('div[data-model-name="Summary"] .add-property').click()
-    cy.get('.edit-property[data-property-name="Property #1"]').click()
+    cy.get('.edit-property[data-property-name="Property 1"]').click()
     cy.get("input.property-name").type("{selectall}Description{enter}")
     cy.get("button.save-property").click()
   })

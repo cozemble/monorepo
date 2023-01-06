@@ -1,4 +1,4 @@
-import {emptyModel, Model, ModelEvent, modelEventDescriptors} from "@cozemble/model-core";
+import {emptyModel, Model, ModelEvent, modelEventDescriptors, ModelName} from "@cozemble/model-core";
 import {coreModelEvents} from "./events";
 
 export interface EventSourcedModel {
@@ -9,8 +9,9 @@ export interface EventSourcedModel {
 
 
 export const eventSourcedModelFns = {
-    newInstance: (modelOrName: Model | string): EventSourcedModel => {
-        const model = typeof modelOrName === 'string' ? emptyModel(modelOrName) : modelOrName
+    newInstance: (modelOrName: Model | ModelName): EventSourcedModel => {
+        const model = modelOrName._type === "model" ? modelOrName : emptyModel(modelOrName)
+        // const model = typeof modelOrName === 'string' ? emptyModel(modelOrName) : modelOrName
         return {
             _type: "event.sourced.model",
             model,

@@ -4,24 +4,26 @@ import {constraints, makeSqlActions} from "@cozemble/sql-actions";
 import {propertyIdFns} from "@cozemble/model-core";
 import {modelEventToSqlActions} from "../src/modelEventToSqlActions";
 import {modelFns, modelIdFns} from "@cozemble/model-api";
+import {modelNameFns} from "@cozemble/model-core";
+import {propertyNameFns} from "@cozemble/model-core/dist/esm";
 
 const stubSqlActions = makeSqlActions(() => new Date(0), () => "id")
 modelEventToSqlActions.setSqlActions(stubSqlActions)
 
 test("model created event maps to a new table sql action", () => {
-    const event = coreModelEvents.modelCreated("Customers")
+    const event = coreModelEvents.modelCreated(modelNameFns.newInstance("Customers"))
     const actions = modelEventToSqlActions.apply([], modelIdFns.newInstance(), event)
     expect(actions).toMatchObject([stubSqlActions.newTable("Customers")])
 })
 
 test("model renamed event maps to a rename table sql action", () => {
-    const event = coreModelEvents.modelRenamed("Customers", "Clients")
+    const event = coreModelEvents.modelRenamed(modelNameFns.newInstance("Customers"), modelNameFns.newInstance("Clients"))
     const actions = modelEventToSqlActions.apply([], modelIdFns.newInstance(), event)
     expect(actions).toMatchObject([stubSqlActions.renameModel("Customers", "Clients")])
 })
 
 test("can rename a property", () => {
-    const event = coreModelEvents.propertyRenamed("Customers", propertyIdFns.newInstance(), "Last Name", "Surname")
+    const event = coreModelEvents.propertyRenamed(modelNameFns.newInstance("Customers"), propertyIdFns.newInstance(), propertyNameFns.newInstance("Last Name"), propertyNameFns.newInstance("Surname"))
     const actions = modelEventToSqlActions.apply([], modelIdFns.newInstance(), event)
     expect(actions).toMatchObject([stubSqlActions.renameColumn("Customers", "Last Name", "Surname")])
 })

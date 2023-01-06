@@ -1,7 +1,7 @@
 import {Model, ModelEvent, ModelId} from "@cozemble/model-core";
 import {constraints, makeSqlActions, SqlAction, SqlActions} from "@cozemble/sql-actions";
 import {ModelCreated, ModelRenamed, PropertyRenamed} from "@cozemble/model-event-sourced";
-import {RelationshipAdded} from "@cozemble/model-event-sourced/dist/esm";
+import {RelationshipAdded} from "@cozemble/model-event-sourced";
 import {modelFns} from "@cozemble/model-api";
 import {strings} from "@cozemble/lang-util";
 
@@ -31,19 +31,19 @@ export const modelEventToSqlActions = {
 
 modelEventToSqlActions.register<ModelCreated>("model.created.event", {
     eventToSqlAction: (sqlActions, allModels, modelId, event) => {
-        return [sqlActions.newTable(event.modelName)]
+        return [sqlActions.newTable(event.modelName.value)]
     }
 })
 
 modelEventToSqlActions.register<ModelRenamed>("model.renamed.event", {
     eventToSqlAction: (sqlActions, allModels, modelId, event) => {
-        return [sqlActions.renameModel(event.oldModelName, event.newModelName)]
+        return [sqlActions.renameModel(event.oldModelName.value, event.newModelName.value)]
     }
 })
 
 modelEventToSqlActions.register<PropertyRenamed>("property.renamed.event", {
     eventToSqlAction: (sqlActions, allModels, modelId, event) => {
-        return [sqlActions.renameColumn(event.modelName, event.oldPropertyName, event.newPropertyName)]
+        return [sqlActions.renameColumn(event.modelName.value, event.oldPropertyName.value, event.newPropertyName.value)]
     }
 })
 
@@ -52,24 +52,24 @@ modelEventToSqlActions.register<RelationshipAdded>("relationship.added.event", {
         if (event.cardinality === "one") {
             const fromModel = modelFns.findById(allModels, modelId)
             const toModel = modelFns.findById(allModels, event.relatedModelId)
-            const fkColumnName = `${toModel.name} ID`
-            const fkConstraintName = strings.camelize(`${fromModel.name}${toModel.name}Fk`)
+            const fkColumnName = `${toModel.name.value} ID`
+            const fkConstraintName = strings.camelize(`${fromModel.name.value}${toModel.name.value}Fk`)
             return [
-                sqlActions.newTable(toModel.name),
-                sqlActions.addColumn(fromModel.name, fkColumnName),
-                sqlActions.changeColumnType(fromModel.name, fkColumnName, "text", "integer"),
-                sqlActions.addColumnConstraint(fromModel.name, fkColumnName, constraints.fk(toModel.name, fkConstraintName))
+                sqlActions.newTable(toModel.name.value),
+                sqlActions.addColumn(fromModel.name.value, fkColumnName),
+                sqlActions.changeColumnType(fromModel.name.value, fkColumnName, "text", "integer"),
+                sqlActions.addColumnConstraint(fromModel.name.value, fkColumnName, constraints.fk(toModel.name.value, fkConstraintName))
             ]
         } else {
             const fromModel = modelFns.findById(allModels, modelId) // customer
             const toModel = modelFns.findById(allModels, event.relatedModelId) // address
-            const fkColumnName = `${fromModel.name} ID`
-            const fkConstraintName = strings.camelize(`${fromModel.name}${toModel.name}Fk`)
+            const fkColumnName = `${fromModel.name.value} ID`
+            const fkConstraintName = strings.camelize(`${fromModel.name.value}${toModel.name.value}Fk`)
             return [
-                sqlActions.newTable(toModel.name),
-                sqlActions.addColumn(toModel.name, fkColumnName),
-                sqlActions.changeColumnType(toModel.name, fkColumnName, "text", "integer"),
-                sqlActions.addColumnConstraint(toModel.name, fkColumnName, constraints.fk(fromModel.name, fkConstraintName))
+                sqlActions.newTable(toModel.name.value),
+                sqlActions.addColumn(toModel.name.value, fkColumnName),
+                sqlActions.changeColumnType(toModel.name.value, fkColumnName, "text", "integer"),
+                sqlActions.addColumnConstraint(toModel.name.value, fkColumnName, constraints.fk(fromModel.name.value, fkConstraintName))
             ]
         }
     }

@@ -22,11 +22,25 @@ export interface PropertyId {
     id: string
 }
 
+export interface PropertyName {
+    _type: "property.name"
+    value: string
+}
+
+export const propertyNameFns = {
+    newInstance: (value: string): PropertyName => {
+        return {
+            _type: "property.name",
+            value
+        }
+    }
+}
+
 export interface Property<T = any> {
     _type: PropertyType
     id: PropertyId
     version: number
-    name: string
+    name: PropertyName
 }
 
 export interface ModelId {
@@ -49,11 +63,25 @@ export interface HasManyRelationship {
 export type Cardinality = 'one' | 'many'
 export type Relationship = HasOneRelationship | HasManyRelationship
 
+export interface ModelName {
+    _type: "model.name"
+    value: string
+}
+
+export const modelNameFns = {
+    newInstance: (value: string): ModelName => {
+        return {
+            _type: "model.name",
+            value
+        }
+    }
+}
+
 export interface Model {
     _type: "model"
     id: ModelId
     parentModelId?: ModelId
-    name: string
+    name: ModelName
     properties: Property[]
     relationships: Relationship[]
 }
@@ -111,7 +139,7 @@ export interface DottedName {
 export type ModelOption = Option<Model>
 export type PropertyOption = Option<Property>
 
-export function emptyModel(name: string): Model {
+export function emptyModel(name: ModelName): Model {
     return {
         _type: "model",
         id: {_type: "model.id", id: uuids.v4()},

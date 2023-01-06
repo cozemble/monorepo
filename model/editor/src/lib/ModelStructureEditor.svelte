@@ -7,6 +7,7 @@
     import {modelFns, modelOptions} from "@cozemble/model-api";
     import {coreModelEvents} from "@cozemble/model-event-sourced";
     import type {EventSourcedModel} from "@cozemble/model-event-sourced";
+    import {propertyNameFns} from "@cozemble/model-core";
 
     export let host: ModelEditorHost
     export let allModels: EventSourcedModel[]
@@ -15,7 +16,8 @@
     let propertyBeingEdited: Property | null = null
 
     function addProperty() {
-        host.modelChanged(model.id, propertyDescriptors.getDefault().newProperty())
+        const propertyName = `Property ${model.properties.length + 1}`
+        host.modelChanged(model.id, propertyDescriptors.getDefault().newProperty(model.name, propertyNameFns.newInstance(propertyName)))
     }
 
     function editProperty(p: Property) {
@@ -53,12 +55,12 @@
     <PropertyEditor property={propertyBeingEdited} modelChangeHandler={host}
                     model={model} on:save={propertyEdited}/>
 {:else}
-    <div data-model-name={model.name}>
+    <div data-model-name={model.name.value}>
         <table>
             <thead>
             <tr>
                 {#each model.properties as property}
-                    <th>{property.name}</th>
+                    <th>{property.name.value}</th>
                 {/each}
                 <th></th>
             </tr>
@@ -68,7 +70,7 @@
                 {#each model.properties as property}
                     <td>
                         <button on:click={() => editProperty(property)} class="edit-property"
-                                data-property-name={property.name}>Edit
+                                data-property-name={property.name.value}>Edit
                         </button>
                     </td>
                 {/each}
