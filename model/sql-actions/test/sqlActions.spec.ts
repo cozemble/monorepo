@@ -27,7 +27,6 @@ test("can rename a property", () => {
     expect(actions).toMatchObject([stubSqlActions.renameColumn("Customers", "Last Name", "Surname")])
 })
 
-// This is a guess for now, until I actually try it!
 test("can add a has one relationship", () => {
     const customerModel = modelFns.newInstance("Customer")
     const addressModel = modelFns.newInstance("Address")
@@ -37,14 +36,12 @@ test("can add a has one relationship", () => {
     const event = coreModelEvents.relationshipAdded(customerRef, addressRef, "one", relationshipNameFns.newInstance("Address"))
     const actions = modelEventToSqlActions.apply([customerModel, addressModel], customerModel.id, event)
     expect(actions).toMatchObject([
-        stubSqlActions.newTable("Address"),
         stubSqlActions.addColumn("Customer", "Address ID"),
         stubSqlActions.changeColumnType("Customer", "Address ID", "text", "integer"),
         stubSqlActions.addColumnConstraint("Customer", "Address ID", constraints.fk("Address", "customerAddressFk"))
     ])
 })
 
-// This is a guess for now, until I actually try it!
 test("can add a has many relationship", () => {
     const customerModel = modelFns.newInstance("Customer")
     const addressModel = modelFns.newInstance("Address")
@@ -53,7 +50,6 @@ test("can add a has many relationship", () => {
     const event = coreModelEvents.relationshipAdded(customerRef, addressRef, "many", relationshipNameFns.newInstance("Address"))
     const actions = modelEventToSqlActions.apply([customerModel, addressModel], customerModel.id, event)
     expect(actions).toMatchObject([
-        stubSqlActions.newTable("Address"),
         stubSqlActions.addColumn("Address", "Customer ID"),
         stubSqlActions.changeColumnType("Address", "Customer ID", "text", "integer"),
         stubSqlActions.addColumnConstraint("Address", "Customer ID", constraints.fk("Customer", "customerAddressFk"))

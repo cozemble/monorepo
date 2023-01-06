@@ -34,3 +34,4 @@ jspm_packages/
 .svelte-kit
 package
 dist
+sql/actions/data

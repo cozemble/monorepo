@@ -53,7 +53,6 @@ modelEventToSqlActions.register<RelationshipAdded>("relationship.added.event", {
             const fkColumnName = `${event.childModel.name.value} ID`
             const fkConstraintName = strings.camelize(`${event.parentModel.name.value}${event.childModel.name.value}Fk`)
             return [
-                sqlActions.newTable(event.childModel.name.value),
                 sqlActions.addColumn(event.parentModel.name.value, fkColumnName),
                 sqlActions.changeColumnType(event.parentModel.name.value, fkColumnName, "text", "integer"),
                 sqlActions.addColumnConstraint(event.parentModel.name.value, fkColumnName, constraints.fk(event.childModel.name.value, fkConstraintName))
@@ -64,7 +63,6 @@ modelEventToSqlActions.register<RelationshipAdded>("relationship.added.event", {
             const fkColumnName = `${event.parentModel.name.value} ID`
             const fkConstraintName = strings.camelize(`${event.parentModel.name.value}${event.childModel.name.value}Fk`)
             return [
-                sqlActions.newTable(event.childModel.name.value),
                 sqlActions.addColumn(event.childModel.name.value, fkColumnName),
                 sqlActions.changeColumnType(event.childModel.name.value, fkColumnName, "text", "integer"),
                 sqlActions.addColumnConstraint(event.childModel.name.value, fkColumnName, constraints.fk(event.parentModel.name.value, fkConstraintName))
