@@ -50,26 +50,24 @@ modelEventToSqlActions.register<PropertyRenamed>("property.renamed.event", {
 modelEventToSqlActions.register<RelationshipAdded>("relationship.added.event", {
     eventToSqlAction: (sqlActions, allModels, modelId, event) => {
         if (event.cardinality === "one") {
-            const fromModel = modelFns.findById(allModels, modelId)
-            const toModel = modelFns.findById(allModels, event.relatedModelId)
-            const fkColumnName = `${toModel.name.value} ID`
-            const fkConstraintName = strings.camelize(`${fromModel.name.value}${toModel.name.value}Fk`)
+            const fkColumnName = `${event.childModel.name.value} ID`
+            const fkConstraintName = strings.camelize(`${event.parentModel.name.value}${event.childModel.name.value}Fk`)
             return [
-                sqlActions.newTable(toModel.name.value),
-                sqlActions.addColumn(fromModel.name.value, fkColumnName),
-                sqlActions.changeColumnType(fromModel.name.value, fkColumnName, "text", "integer"),
-                sqlActions.addColumnConstraint(fromModel.name.value, fkColumnName, constraints.fk(toModel.name.value, fkConstraintName))
+                sqlActions.newTable(event.childModel.name.value),
+                sqlActions.addColumn(event.parentModel.name.value, fkColumnName),
+                sqlActions.changeColumnType(event.parentModel.name.value, fkColumnName, "text", "integer"),
+                sqlActions.addColumnConstraint(event.parentModel.name.value, fkColumnName, constraints.fk(event.childModel.name.value, fkConstraintName))
             ]
         } else {
-            const fromModel = modelFns.findById(allModels, modelId) // customer
-            const toModel = modelFns.findById(allModels, event.relatedModelId) // address
-            const fkColumnName = `${fromModel.name.value} ID`
-            const fkConstraintName = strings.camelize(`${fromModel.name.value}${toModel.name.value}Fk`)
+            // const fromModel = modelFns.findById(allModels, modelId) // customer
+            // const toModel = modelFns.findById(allModels, event.relatedModelId) // address
+            const fkColumnName = `${event.parentModel.name.value} ID`
+            const fkConstraintName = strings.camelize(`${event.parentModel.name.value}${event.childModel.name.value}Fk`)
             return [
-                sqlActions.newTable(toModel.name.value),
-                sqlActions.addColumn(toModel.name.value, fkColumnName),
-                sqlActions.changeColumnType(toModel.name.value, fkColumnName, "text", "integer"),
-                sqlActions.addColumnConstraint(toModel.name.value, fkColumnName, constraints.fk(fromModel.name.value, fkConstraintName))
+                sqlActions.newTable(event.childModel.name.value),
+                sqlActions.addColumn(event.childModel.name.value, fkColumnName),
+                sqlActions.changeColumnType(event.childModel.name.value, fkColumnName, "text", "integer"),
+                sqlActions.addColumnConstraint(event.childModel.name.value, fkColumnName, constraints.fk(event.parentModel.name.value, fkConstraintName))
             ]
         }
     }

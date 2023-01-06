@@ -23,7 +23,11 @@ export {
     ModelName,
     PropertyName,
     modelNameFns,
-    propertyNameFns
+    propertyNameFns,
+    ModelIdAndName,
+    modelIdAndNameFns,
+    RelationshipName,
+    relationshipNameFns,
 } from "./core"
 
 export {propertyDescriptors} from "./propertyDescriptor";

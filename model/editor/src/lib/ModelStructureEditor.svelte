@@ -8,6 +8,8 @@
     import {coreModelEvents} from "@cozemble/model-event-sourced";
     import type {EventSourcedModel} from "@cozemble/model-event-sourced";
     import {propertyNameFns} from "@cozemble/model-core";
+    import {modelIdAndNameFns} from "@cozemble/model-core";
+    import {relationshipNameFns} from "@cozemble/model-core";
 
     export let host: ModelEditorHost
     export let allModels: EventSourcedModel[]
@@ -39,10 +41,11 @@
     function onRelationshipAdded(event: CustomEvent) {
         const {cardinality, modelName, relationshipName} = event.detail
         const relatedModel = modelFns.newInstance(modelName, modelOptions.withParentModelId(model.id))
+        const parentModel = modelIdAndNameFns.newInstance(model.id, model.name)
+        const childModel = modelIdAndNameFns.newInstance(relatedModel.id, relatedModel.name)
 
-        // const {model: mutated, relatedModel} = modelFns.addRelationship(cardinality, modelName, relationshipName, model)
         host.modelAdded(relatedModel)
-        host.modelChanged(model.id,coreModelEvents.relationshipAdded(cardinality, relationshipName, relatedModel.id))
+        host.modelChanged(model.id,coreModelEvents.relationshipAdded(parentModel, childModel,cardinality, relationshipNameFns.newInstance(relationshipName)))
         addingNestedModel = false
     }
 </script>
@@ -89,7 +92,7 @@
 {#each model.relationships as relationship}
     {@const eventSourced = host.modelWithId(allModels, relationship.modelId)}
     <div class="relationship-container">
-        <h5>{relationship.name}</h5>
+        <h5>{relationship.name.value}</h5>
         <svelte:self {allModels} {eventSourced} {host}/>
     </div>
 {/each}

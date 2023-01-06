@@ -25,7 +25,7 @@
         }
     }
 </script>
-<h5>{`Add nested model to ${parentModel.name}`}</h5>
+<h5>{`Add nested model to ${parentModel.name.value}`}</h5>
 
 <label for="cardinality">Cardinality</label><br/>
 <select id="cardinality" bind:value={cardinality} class="cardinality">
@@ -39,9 +39,9 @@
     <input type="text" id="modelNameAsPlural" bind:value={modelNameAsPlural} class="model-name-as-plural"><br/>
 {/if}
 {#if cardinality === "one"}
-    <p>Every <strong>{parentModel.name}</strong> has one <em>{ifEmpty(modelName, '....')}</em></p>
+    <p>Every <strong>{parentModel.name.value}</strong> has one <em>{ifEmpty(modelName, '....')}</em></p>
 {:else}
-    <p>Every <strong>{parentModel.name}</strong> has zero, one or more
+    <p>Every <strong>{parentModel.name.value}</strong> has zero, one or more
         <em>{ifEmpty(modelNameAsPlural, '....')}</em> of type <em>{ifEmpty(modelName, '....')}</em></p>
 {/if}
 <button type="submit" on:click|preventDefault={apply} class="save">Apply</button>

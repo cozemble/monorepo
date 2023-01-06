@@ -1,11 +1,10 @@
 import {coreModelEvents} from "@cozemble/model-event-sourced";
 import {expect, test} from "vitest";
 import {constraints, makeSqlActions} from "@cozemble/sql-actions";
-import {propertyIdFns} from "@cozemble/model-core";
+import {modelIdAndNameFns, modelNameFns, propertyIdFns, propertyNameFns} from "@cozemble/model-core";
 import {modelEventToSqlActions} from "../src/modelEventToSqlActions";
 import {modelFns, modelIdFns} from "@cozemble/model-api";
-import {modelNameFns} from "@cozemble/model-core";
-import {propertyNameFns} from "@cozemble/model-core/dist/esm";
+import {relationshipNameFns} from "@cozemble/model-core";
 
 const stubSqlActions = makeSqlActions(() => new Date(0), () => "id")
 modelEventToSqlActions.setSqlActions(stubSqlActions)
@@ -32,7 +31,10 @@ test("can rename a property", () => {
 test("can add a has one relationship", () => {
     const customerModel = modelFns.newInstance("Customer")
     const addressModel = modelFns.newInstance("Address")
-    const event = coreModelEvents.relationshipAdded("one", "Address", addressModel.id)
+    const customerRef = modelIdAndNameFns.newInstance(customerModel.id, customerModel.name)
+    const addressRef = modelIdAndNameFns.newInstance(addressModel.id, addressModel.name)
+
+    const event = coreModelEvents.relationshipAdded(customerRef, addressRef, "one", relationshipNameFns.newInstance("Address"))
     const actions = modelEventToSqlActions.apply([customerModel, addressModel], customerModel.id, event)
     expect(actions).toMatchObject([
         stubSqlActions.newTable("Address"),
@@ -46,7 +48,9 @@ test("can add a has one relationship", () => {
 test("can add a has many relationship", () => {
     const customerModel = modelFns.newInstance("Customer")
     const addressModel = modelFns.newInstance("Address")
-    const event = coreModelEvents.relationshipAdded("many", "Addresses", addressModel.id)
+    const customerRef = modelIdAndNameFns.newInstance(customerModel.id, customerModel.name)
+    const addressRef = modelIdAndNameFns.newInstance(addressModel.id, addressModel.name)
+    const event = coreModelEvents.relationshipAdded(customerRef, addressRef, "many", relationshipNameFns.newInstance("Address"))
     const actions = modelEventToSqlActions.apply([customerModel, addressModel], customerModel.id, event)
     expect(actions).toMatchObject([
         stubSqlActions.newTable("Address"),

@@ -4,7 +4,7 @@ import type {ModelEditorHost} from "$lib/ModelEditorHost";
 import {mandatory} from "@cozemble/lang-util";
 import {modelIdFns} from "@cozemble/model-api";
 import {type Writable, writable} from "svelte/store";
-import {modelNameFns} from "@cozemble/model-core/dist/esm";
+import {modelNameFns} from "@cozemble/model-core";
 
 export const allModels: Writable<EventSourcedModel[]> = writable([])
 

@@ -48,16 +48,32 @@ export interface ModelId {
     id: string
 }
 
+export interface ModelIdAndName {
+    _type: "model.id.and.name"
+    id: ModelId
+    name: ModelName
+}
+
+export const modelIdAndNameFns = {
+    newInstance: (id: ModelId, name: ModelName): ModelIdAndName => {
+        return {
+            _type: "model.id.and.name",
+            id,
+            name
+        }
+    }
+}
+
 export interface HasOneRelationship {
     _type: "has.one.relationship"
     modelId: ModelId
-    name: string
+    name: RelationshipName
 }
 
 export interface HasManyRelationship {
     _type: "has.many.relationship"
     modelId: ModelId
-    name: string
+    name: RelationshipName
 }
 
 export type Cardinality = 'one' | 'many'
@@ -66,6 +82,20 @@ export type Relationship = HasOneRelationship | HasManyRelationship
 export interface ModelName {
     _type: "model.name"
     value: string
+}
+
+export interface RelationshipName {
+    _type: "relationship.name"
+    value: string
+}
+
+export const relationshipNameFns = {
+    newInstance: (value: string): RelationshipName => {
+        return {
+            _type: "relationship.name",
+            value
+        }
+    }
 }
 
 export const modelNameFns = {

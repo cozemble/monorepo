@@ -1,7 +1,6 @@
 import {options} from "@cozemble/lang-util";
-import {Property, PropertyOption} from "@cozemble/model-core";
+import {Property, PropertyName, propertyNameFns, PropertyOption} from "@cozemble/model-core";
 import {stringPropertyFns} from "@cozemble/model-string-core";
-import {PropertyName} from "@cozemble/model-core";
 
 export const propertyFns = {
     newInstance(...opts: PropertyOption[]): Property {
@@ -10,8 +9,8 @@ export const propertyFns = {
 }
 
 export const propertyOptions = {
-    named(name: PropertyName): PropertyOption {
+    named(name: string | PropertyName): PropertyOption {
         return property =>
-            ({...property, name})
+            ({...property, name: typeof name === "string" ? propertyNameFns.newInstance(name) : name})
     }
 }

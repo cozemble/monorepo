@@ -3,14 +3,15 @@ import {
     ModelEvent,
     ModelEventDescriptor,
     modelEventDescriptors,
-    ModelId,
+    ModelIdAndName,
     ModelName,
     PropertyId,
     propertyIdFns,
+    PropertyName,
+    RelationshipName,
     timestampEpochMillis
 } from "@cozemble/model-core";
 import {relationshipFns} from "@cozemble/model-api";
-import {PropertyName} from "@cozemble/model-core/dist/esm";
 
 export interface ModelRenamed extends ModelEvent {
     _type: "model.renamed.event"
@@ -80,17 +81,19 @@ const propertyRenamedDescriptor: ModelEventDescriptor<PropertyRenamed> = {
 export interface RelationshipAdded extends ModelEvent {
     _type: "relationship.added.event"
     cardinality: Cardinality
-    relationshipName: string
-    relatedModelId: ModelId
+    parentModel: ModelIdAndName
+    childModel: ModelIdAndName
+    relationshipName: RelationshipName
 }
 
-function relationshipAdded(cardinality: Cardinality, relationshipName: string, relatedModelId: ModelId): RelationshipAdded {
+function relationshipAdded(parentModel: ModelIdAndName, childModel: ModelIdAndName, cardinality: Cardinality, relationshipName: RelationshipName): RelationshipAdded {
     return {
         _type: "relationship.added.event",
         timestamp: timestampEpochMillis(),
+        parentModel,
+        childModel,
         cardinality,
         relationshipName,
-        relatedModelId
     }
 }
 
@@ -98,7 +101,7 @@ const relationshipAddedDescriptor: ModelEventDescriptor<RelationshipAdded> = {
     _type: "model.event.descriptor",
     modelEventType: "relationship.added.event",
     applyEvent: (model, event) => {
-        const newRelationship = relationshipFns.newInstance(event.relationshipName, event.relatedModelId, event.cardinality)
+        const newRelationship = relationshipFns.newInstance(event.relationshipName, event.childModel.id, event.cardinality)
         return {
             ...model,
             relationships: [...model.relationships, newRelationship]
