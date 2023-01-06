@@ -17,6 +17,7 @@ import {
     repeat,
     replaceElement,
     secondLast,
+    sortBy,
     startsWith,
     tail,
     take,
@@ -87,6 +88,7 @@ export const arrays = {
     dropNulls,
     findMandatory,
     compare,
+    sortBy
 }
 
 export {HeadAndTail} from './arrays'

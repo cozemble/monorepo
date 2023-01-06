@@ -1,4 +1,3 @@
-import {uuids} from "@cozemble/lang-util";
 import {
     Model,
     ModelEvent,
@@ -27,7 +26,7 @@ export const newStringPropertyModelEventDescriptor: ModelEventDescriptor = {
     _type: "model.event.descriptor",
     modelEventType: "new.string.property.model.event",
     applyEvent: (model: Model, event: NewStringPropertyModelEvent): Model => {
-        let newProperty = {...emptyProperty(`Property #${model.properties.length + 1}`)}
+        let newProperty = {...emptyProperty(`Property #${model.properties.length + 1}`), id: event.propertyId}
         if (model.properties.some(p => propertyIdFns.equals(p.id, event.propertyId))) {
             newProperty = {...newProperty, id: event.propertyId}
             return {

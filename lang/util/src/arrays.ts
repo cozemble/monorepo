@@ -1,4 +1,3 @@
-
 export function secondLast(arr: any[]): any {
     return arr[arr.length - 2]
 }
@@ -61,6 +60,16 @@ export function uniqueBy<T>(array: T[], keyGetter: (input: T) => string): T[] {
         return acc
     }, <any>{})
     return Object.values(hash)
+}
+
+export function sortBy<K, V>(list: Array<V>, keyGetter: (input: V) => K): Array<V> {
+    return [...list].sort((a, b) => {
+        const keyA = keyGetter(a)
+        const keyB = keyGetter(b)
+        if (keyA < keyB) return -1
+        if (keyA > keyB) return 1
+        return 0
+    })
 }
 
 export function groupBy<K, V>(list: Array<V>, keyGetter: (input: V) => K): Map<K, Array<V>> {

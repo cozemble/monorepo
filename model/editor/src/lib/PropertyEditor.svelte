@@ -41,14 +41,14 @@
 
     function propertyNameChanged(event: Event) {
         const target = event.target as HTMLInputElement
-        modelChangeHandler.modelChanged(model.id, coreModelEvents.propertyRenamed(model.name,property.id, property.name,target.value))
+        modelChangeHandler.modelChanged(model.id, coreModelEvents.propertyRenamed(model.name, property.id, property.name, target.value))
     }
 </script>
 
 
 <form>
     <label>Property Name</label><br/>
-    <input bind:value={property.name} class="property-name" on:change={propertyNameChanged}/><br/>
+    <input value={property.name} class="property-name" on:change={propertyNameChanged}/><br/>
     <label>Property Type</label><br/>
     <select on:change={propertyTypeChanged} class="property-type">
         <option value="">----</option>
