@@ -20,6 +20,7 @@ importers:
       '@cozemble/sql-actions': workspace:*
       '@cozemble/ui-atoms': workspace:*
       install: ^0.13.0
+      prettier: ^2.8.2
       turbo: latest
     dependencies:
       '@cozemble/data-paginated-editor': link:data/paginated-editor
@@ -39,6 +40,7 @@ importers:
       '@cozemble/ui-atoms': link:ui/atoms
     devDependencies:
       install: 0.13.0
+      prettier: 2.8.2
       turbo: 1.6.3
 
   backend/api:
@@ -3072,6 +3074,12 @@ packages:
     dependencies:
       xtend: 4.0.2
     dev: false
+
+  /prettier/2.8.2:
+    resolution: {integrity: sha512-BtRV9BcncDyI2tsuS19zzhzoxD8Dh8LiCx7j7tHzrkz8GFXAexeWFdi22mjE1d16dftH2qNaytVxqiRTGlMfpw==}
+    engines: {node: '>=10.13.0'}
+    hasBin: true
+    dev: true
 
   /pretty-bytes/5.6.0:
     resolution: {integrity: sha512-FFw039TmrBqFK8ma/7OL3sDz/VytdtJr044/QUJtH0wK9lb9jLq9tJyIxUwtQJHwar2BqtiA4iCWSwo9JLkzFg==}
