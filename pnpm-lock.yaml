@@ -60,6 +60,8 @@ importers:
   backend/api:
     specifiers:
       '@cozemble/model-event-sourced': workspace:*
+      '@cozemble/model-sql-actions': workspace:*
+      '@cozemble/model-string-sql-actions': workspace:*
       '@cozemble/sql-actions': workspace:*
       '@graphile-contrib/pg-simplify-inflector': ^6.1.0
       '@types/cors': ^2.8.13
@@ -75,6 +77,8 @@ importers:
       vitest: ^0.26.2
     dependencies:
       '@cozemble/model-event-sourced': link:../../model/event-sourced
+      '@cozemble/model-sql-actions': link:../../model/sql-actions
+      '@cozemble/model-string-sql-actions': link:../../model/string/sql-actions
       '@cozemble/sql-actions': link:../../sql/actions
       '@graphile-contrib/pg-simplify-inflector': 6.1.0
       cors: 2.8.5
