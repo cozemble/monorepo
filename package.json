@@ -8,7 +8,9 @@
     "test": "turbo run test",
     "dev": "turbo run dev --parallel",
     "format": "prettier --write --plugin-search-dir=. .",
-    "format:check": "prettier --check --plugin-search-dir=. ."
+    "format:check": "prettier --check --plugin-search-dir=. .",
+    "lint:check": "eslint --ext .js,.ts,.svelte .",
+    "lint:fix": "eslint --ext --fix .js,.ts,.svelte ."
   },
   "repository": {
     "type": "git",
@@ -21,6 +23,11 @@
   },
   "homepage": "https://github.com/cozemble/monorepo#readme",
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.48.0",
+    "@typescript-eslint/parser": "^5.48.0",
+    "eslint": "^8.31.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-svelte3": "^4.0.0",
     "install": "^0.13.0",
     "prettier": "^2.8.2",
     "prettier-plugin-svelte": "^2.9.0",
