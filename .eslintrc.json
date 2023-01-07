@@ -36,8 +36,9 @@
     "import/parsers": {
       "@typescript-eslint/parser": [".ts"]
     },
+    "@typescript-eslint/consistent-type-imports": "error",
     "import/resolver": {
-    "typescript": {
+      "typescript": {
         "alwaysTryTypes": true,
         "project": ["**/*/tsconfig.json"]
       }
