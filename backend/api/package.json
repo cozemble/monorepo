@@ -30,6 +30,7 @@
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "knex": "^2.4.0",
-    "postgraphile": "^4.12.12"
+    "postgraphile": "^4.12.12",
+    "postgraphile-plugin-nested-mutations": "^1.1.0"
   }
 }
