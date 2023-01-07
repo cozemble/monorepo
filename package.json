@@ -7,8 +7,8 @@
     "build": "turbo run build",
     "test": "turbo run test",
     "dev": "turbo run dev --parallel",
-    "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format": "prettier --write --plugin-search-dir=. .",
+    "format:check": "prettier --check --plugin-search-dir=. ."
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,7 @@
   "devDependencies": {
     "install": "^0.13.0",
     "prettier": "^2.8.2",
+    "prettier-plugin-svelte": "^2.9.0",
     "turbo": "latest"
   },
   "dependencies": {

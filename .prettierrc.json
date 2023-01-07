@@ -1,18 +1,27 @@
 {
   "semi": false,
-  "printWidth": 80,
+  "printWidth": 100,
   "singleQuote": true,
   "trailingComma": "all",
   "tabWidth": 2,
   "endOfLine": "lf",
   "arrowParens": "always",
   "bracketSpacing": true,
+  "plugins": ["prettier-plugin-svelte"],
   "overrides": [
     {
       "files": "*.md",
       "options": {
         "printWidth": 1000
       }
+    },
+    {
+      "files": "*.svelte",
+      "options": {
+        "printWidth": 80
+      }
     }
-  ]
+  ],
+  "svelteStrictMode": false,
+  "svelteIndentScriptAndStyle": false
 }
