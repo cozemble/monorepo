@@ -10,7 +10,7 @@
     "format": "prettier --write --plugin-search-dir=. .",
     "format:check": "prettier --check --plugin-search-dir=. .",
     "lint:check": "eslint --ext .js,.ts,.svelte .",
-    "lint:fix": "eslint --ext --fix .js,.ts,.svelte ."
+    "lint:fix": "eslint --ext .js,.ts,.svelte . --fix"
   },
   "repository": {
     "type": "git",
