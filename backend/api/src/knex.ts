@@ -64,19 +64,19 @@ function migrations(): SqlMigration[] {
 }
 
 export interface ModelTableRow {
-    model_id: string
-    name: string
-    definition: any
-    created_at: Date
-    updated_at: Date
+  model_id: string
+  name: string
+  definition: any
+  created_at: Date
+  updated_at: Date
 }
 
 export interface ModelEventTableRow {
-    model_event_id: string
-    model_id: string
-    definition: any
-    created_at: Date
-    updated_at: Date
+  model_event_id: string
+  model_id: string
+  definition: any
+  created_at: Date
+  updated_at: Date
 }
 
 function initialModelsTable(): SqlMigration {

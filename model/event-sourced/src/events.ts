@@ -1,140 +1,153 @@
 import {
-    Cardinality,
-    ModelEvent,
-    ModelEventDescriptor,
-    modelEventDescriptors,
-    ModelIdAndName,
-    ModelName,
-    PropertyId,
-    propertyIdFns,
-    PropertyName,
-    RelationshipName,
-    timestampEpochMillis
-} from "@cozemble/model-core";
-import {relationshipFns} from "@cozemble/model-api";
-import {modelEventIdFns} from "@cozemble/model-core";
+  Cardinality,
+  ModelEvent,
+  ModelEventDescriptor,
+  modelEventDescriptors,
+  ModelIdAndName,
+  ModelName,
+  PropertyId,
+  propertyIdFns,
+  PropertyName,
+  RelationshipName,
+  timestampEpochMillis,
+} from '@cozemble/model-core'
+import { relationshipFns } from '@cozemble/model-api'
+import { modelEventIdFns } from '@cozemble/model-core'
 
 export interface ModelRenamed extends ModelEvent {
-    _type: "model.renamed.event"
-    oldModelName: ModelName
-    newModelName: ModelName
+  _type: 'model.renamed.event'
+  oldModelName: ModelName
+  newModelName: ModelName
 }
 
 function modelRenamed(oldModelName: ModelName, newModelName: ModelName): ModelRenamed {
-    return {
-        _type: "model.renamed.event",
-        timestamp: timestampEpochMillis(),
-        id: modelEventIdFns.newInstance(),
-        oldModelName,
-        newModelName
-    }
+  return {
+    _type: 'model.renamed.event',
+    timestamp: timestampEpochMillis(),
+    id: modelEventIdFns.newInstance(),
+    oldModelName,
+    newModelName,
+  }
 }
 
 const modelRenamedDescriptor: ModelEventDescriptor<ModelRenamed> = {
-    _type: "model.event.descriptor",
-    modelEventType: "model.renamed.event",
-    applyEvent: (model, event) => {
-        return {
-            ...model,
-            name: event.newModelName
-        }
+  _type: 'model.event.descriptor',
+  modelEventType: 'model.renamed.event',
+  applyEvent: (model, event) => {
+    return {
+      ...model,
+      name: event.newModelName,
     }
+  },
 }
 
 export interface PropertyRenamed extends ModelEvent {
-    _type: "property.renamed.event"
-    propertyId: PropertyId
-    modelName: ModelName
-    oldPropertyName: PropertyName
-    newPropertyName: PropertyName
+  _type: 'property.renamed.event'
+  propertyId: PropertyId
+  modelName: ModelName
+  oldPropertyName: PropertyName
+  newPropertyName: PropertyName
 }
 
-function propertyRenamed(modelName: ModelName, propertyId: PropertyId, oldPropertyName: PropertyName, newPropertyName: PropertyName): PropertyRenamed {
-    return {
-        _type: "property.renamed.event",
-        timestamp: timestampEpochMillis(),
-        id: modelEventIdFns.newInstance(),
-        propertyId,
-        modelName,
-        oldPropertyName,
-        newPropertyName
-    }
+function propertyRenamed(
+  modelName: ModelName,
+  propertyId: PropertyId,
+  oldPropertyName: PropertyName,
+  newPropertyName: PropertyName,
+): PropertyRenamed {
+  return {
+    _type: 'property.renamed.event',
+    timestamp: timestampEpochMillis(),
+    id: modelEventIdFns.newInstance(),
+    propertyId,
+    modelName,
+    oldPropertyName,
+    newPropertyName,
+  }
 }
 
 const propertyRenamedDescriptor: ModelEventDescriptor<PropertyRenamed> = {
-    _type: "model.event.descriptor",
-    modelEventType: "property.renamed.event",
-    applyEvent: (model, event) => {
-        return {
-            ...model,
-            properties: model.properties.map(property => {
-                if (propertyIdFns.equals(property.id, event.propertyId)) {
-                    return {
-                        ...property,
-                        name: event.newPropertyName
-                    }
-                } else {
-                    return property
-                }
-            })
+  _type: 'model.event.descriptor',
+  modelEventType: 'property.renamed.event',
+  applyEvent: (model, event) => {
+    return {
+      ...model,
+      properties: model.properties.map((property) => {
+        if (propertyIdFns.equals(property.id, event.propertyId)) {
+          return {
+            ...property,
+            name: event.newPropertyName,
+          }
+        } else {
+          return property
         }
+      }),
     }
+  },
 }
 
 export interface RelationshipAdded extends ModelEvent {
-    _type: "relationship.added.event"
-    cardinality: Cardinality
-    parentModel: ModelIdAndName
-    childModel: ModelIdAndName
-    relationshipName: RelationshipName
+  _type: 'relationship.added.event'
+  cardinality: Cardinality
+  parentModel: ModelIdAndName
+  childModel: ModelIdAndName
+  relationshipName: RelationshipName
 }
 
-function relationshipAdded(parentModel: ModelIdAndName, childModel: ModelIdAndName, cardinality: Cardinality, relationshipName: RelationshipName): RelationshipAdded {
-    return {
-        _type: "relationship.added.event",
-        timestamp: timestampEpochMillis(),
-        id: modelEventIdFns.newInstance(),
-        parentModel,
-        childModel,
-        cardinality,
-        relationshipName,
-    }
+function relationshipAdded(
+  parentModel: ModelIdAndName,
+  childModel: ModelIdAndName,
+  cardinality: Cardinality,
+  relationshipName: RelationshipName,
+): RelationshipAdded {
+  return {
+    _type: 'relationship.added.event',
+    timestamp: timestampEpochMillis(),
+    id: modelEventIdFns.newInstance(),
+    parentModel,
+    childModel,
+    cardinality,
+    relationshipName,
+  }
 }
 
 const relationshipAddedDescriptor: ModelEventDescriptor<RelationshipAdded> = {
-    _type: "model.event.descriptor",
-    modelEventType: "relationship.added.event",
-    applyEvent: (model, event) => {
-        const newRelationship = relationshipFns.newInstance(event.relationshipName, event.childModel.id, event.cardinality)
-        return {
-            ...model,
-            relationships: [...model.relationships, newRelationship]
-        }
+  _type: 'model.event.descriptor',
+  modelEventType: 'relationship.added.event',
+  applyEvent: (model, event) => {
+    const newRelationship = relationshipFns.newInstance(
+      event.relationshipName,
+      event.childModel.id,
+      event.cardinality,
+    )
+    return {
+      ...model,
+      relationships: [...model.relationships, newRelationship],
     }
+  },
 }
 
 export interface ModelCreated extends ModelEvent {
-    _type: "model.created.event"
-    modelName: ModelName
+  _type: 'model.created.event'
+  modelName: ModelName
 }
 
 function modelCreated(modelName: ModelName): ModelCreated {
-    return {
-        _type: "model.created.event",
-        timestamp: timestampEpochMillis(),
-        id: modelEventIdFns.newInstance(),
-        modelName
-    }
+  return {
+    _type: 'model.created.event',
+    timestamp: timestampEpochMillis(),
+    id: modelEventIdFns.newInstance(),
+    modelName,
+  }
 }
-
 
 modelEventDescriptors.register(modelRenamedDescriptor)
 modelEventDescriptors.register(propertyRenamedDescriptor)
 modelEventDescriptors.register(relationshipAddedDescriptor)
 
 export const coreModelEvents = {
-    modelRenamed,
-    propertyRenamed,
-    relationshipAdded,
-    modelCreated
+  modelRenamed,
+  propertyRenamed,
+  relationshipAdded,
+  modelCreated,
 }
