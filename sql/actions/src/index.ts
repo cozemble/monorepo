@@ -11,4 +11,6 @@ export {
     constraints,
     ColumnType,
     sqlActionOps,
+    SqlMigration,
+    sqlMigration
 } from './sqlActions'

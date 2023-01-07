@@ -1,4 +1,5 @@
 packages:
+  - "backend/*"
   - "data/*"
   - "lang/*"
   - "model/*"

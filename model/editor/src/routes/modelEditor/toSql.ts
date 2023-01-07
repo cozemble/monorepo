@@ -18,6 +18,6 @@ export const sqlMigrations = derived([allModels, events], ([models, events]) => 
         console.log({event, allModels})
         return modelEventToSqlActions.apply(allModels, event.modelId, event.event);
     })
-    const theSchema = schema("teamx")
+    const theSchema = schema("app_public")
     return actions.map(a => actionToSql(theSchema, a)).flatMap(m => m.up)
 })
