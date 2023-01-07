@@ -6,10 +6,10 @@ import {
   modelNameFns,
   propertyIdFns,
   propertyNameFns,
+  relationshipNameFns,
 } from '@cozemble/model-core'
 import { modelEventToSqlActions } from '../src/modelEventToSqlActions'
 import { modelFns, modelIdFns } from '@cozemble/model-api'
-import { relationshipNameFns } from '@cozemble/model-core'
 
 const stubSqlActions = makeSqlActions(
   () => new Date(0),

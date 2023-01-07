@@ -1,5 +1,5 @@
 import { modelEventToSqlActions } from '@cozemble/model-sql-actions'
-import { NewStringPropertyModelEvent } from '@cozemble/model-string-core'
+import { type NewStringPropertyModelEvent } from '@cozemble/model-string-core'
 
 export function registerStringPropertyEventToSqlActions() {
   modelEventToSqlActions.register<NewStringPropertyModelEvent>('new.string.property.model.event', {

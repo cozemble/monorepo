@@ -1,5 +1,5 @@
 import knex, { Knex } from 'knex'
-import { SqlMigration, sqlMigration } from '@cozemble/sql-actions'
+import { type SqlMigration, sqlMigration } from '@cozemble/sql-actions'
 
 export async function cozembleKnex(connectionString: string): Promise<Knex> {
   const result = knex({

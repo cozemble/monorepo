@@ -1,7 +1,7 @@
 import {
-  DataRecordPath,
-  DataRecordPathElement,
-  Property,
+  type DataRecordPath,
+  type DataRecordPathElement,
+  type Property,
   propertyDescriptors,
 } from '@cozemble/model-core'
 

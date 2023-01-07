@@ -1,5 +1,6 @@
 import { options } from '@cozemble/lang-util'
-import { Property, PropertyName, propertyNameFns, PropertyOption } from '@cozemble/model-core'
+import type { Property, PropertyName, PropertyOption } from '@cozemble/model-core'
+import { propertyNameFns } from '@cozemble/model-core'
 import { stringPropertyFns } from '@cozemble/model-string-core'
 
 export const propertyFns = {

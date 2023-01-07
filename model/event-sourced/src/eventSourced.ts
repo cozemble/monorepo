@@ -1,9 +1,9 @@
 import {
   emptyModel,
-  Model,
-  ModelEvent,
+  type Model,
+  type ModelEvent,
   modelEventDescriptors,
-  ModelName,
+  type ModelName,
 } from '@cozemble/model-core'
 import { coreModelEvents } from './events'
 

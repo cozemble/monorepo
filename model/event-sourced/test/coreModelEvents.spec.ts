@@ -1,9 +1,19 @@
-import { modelFns } from '@cozemble/model-api'
+import {
+  modelFns,
+  modelOptions,
+  propertyFns,
+  propertyOptions,
+  relationshipFns,
+} from '@cozemble/model-api'
 import { expect, test } from 'vitest'
 import { coreModelEvents } from '../src'
-import { modelEventDescriptors, modelIdAndNameFns, relationshipNameFns } from '@cozemble/model-core'
-import { modelOptions, propertyFns, propertyOptions, relationshipFns } from '@cozemble/model-api'
-import { modelNameFns, propertyNameFns } from '@cozemble/model-core'
+import {
+  modelEventDescriptors,
+  modelIdAndNameFns,
+  relationshipNameFns,
+  modelNameFns,
+  propertyNameFns,
+} from '@cozemble/model-core'
 
 test('has event that renames a model', () => {
   const customer = modelFns.newInstance('Customer')

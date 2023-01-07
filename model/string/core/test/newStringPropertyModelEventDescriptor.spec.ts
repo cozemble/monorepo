@@ -1,8 +1,7 @@
-import { emptyModel } from '@cozemble/model-core'
+import { emptyModel, propertyNameFns } from '@cozemble/model-core'
 import { expect, test } from 'vitest'
 import { newStringPropertyModelEvent } from '../src'
 import { newStringPropertyModelEventDescriptor } from '../src/events'
-import { propertyNameFns } from '@cozemble/model-core'
 
 test('adding a new string property with existing ID', () => {
   const model = emptyModel('My Model')

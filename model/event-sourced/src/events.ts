@@ -1,16 +1,14 @@
-import {
+import type {
   Cardinality,
   ModelEvent,
   ModelEventDescriptor,
-  modelEventDescriptors,
   ModelIdAndName,
   ModelName,
   PropertyId,
-  propertyIdFns,
   PropertyName,
   RelationshipName,
-  timestampEpochMillis,
 } from '@cozemble/model-core'
+import { modelEventDescriptors, propertyIdFns, timestampEpochMillis } from '@cozemble/model-core'
 import { relationshipFns } from '@cozemble/model-api'
 import { modelEventIdFns } from '@cozemble/model-core'
 

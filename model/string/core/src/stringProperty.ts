@@ -1,7 +1,10 @@
-import { Option, options } from '@cozemble/lang-util'
-import { Property, propertyTypeFns } from '@cozemble/model-core'
-import { propertyIdFns } from '@cozemble/model-core'
-import { propertyNameFns } from '@cozemble/model-core'
+import { type Option, options } from '@cozemble/lang-util'
+import {
+  type Property,
+  propertyTypeFns,
+  propertyIdFns,
+  propertyNameFns,
+} from '@cozemble/model-core'
 
 export const stringPropertyType = propertyTypeFns.newInstance('string.property')
 

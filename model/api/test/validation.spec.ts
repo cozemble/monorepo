@@ -1,8 +1,10 @@
 import { expect, test } from 'vitest'
 import { dataRecordFns, modelFns, modelOptions } from '../src'
-import { stringPropertyOptions } from '@cozemble/model-string-core'
-import { registerStringProperty } from '@cozemble/model-string-core'
-import { stringPropertyFns } from '@cozemble/model-string-core'
+import {
+  stringPropertyOptions,
+  registerStringProperty,
+  stringPropertyFns,
+} from '@cozemble/model-string-core'
 
 registerStringProperty()
 

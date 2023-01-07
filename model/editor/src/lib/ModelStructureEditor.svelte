@@ -1,15 +1,15 @@
 <script lang="ts">
 import type { Property } from '@cozemble/model-core'
-import { propertyDescriptors } from '@cozemble/model-core'
+import { propertyDescriptors , propertyNameFns , modelIdAndNameFns , relationshipNameFns } from '@cozemble/model-core'
 import PropertyEditor from '$lib/PropertyEditor.svelte'
 import AddNestedModelDialog from '$lib/AddNestedModelDialog.svelte'
 import type { ModelEditorHost } from '$lib/ModelEditorHost'
 import { modelFns, modelOptions } from '@cozemble/model-api'
 import { coreModelEvents } from '@cozemble/model-event-sourced'
 import type { EventSourcedModel } from '@cozemble/model-event-sourced'
-import { propertyNameFns } from '@cozemble/model-core'
-import { modelIdAndNameFns } from '@cozemble/model-core'
-import { relationshipNameFns } from '@cozemble/model-core'
+
+
+
 
 export let host: ModelEditorHost
 export let allModels: EventSourcedModel[]

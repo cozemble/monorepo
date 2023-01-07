@@ -1,12 +1,12 @@
 import { modelFns, modelOptions } from '@cozemble/model-api'
-import { stringProperties, stringPropertyOptions } from '@cozemble/model-string-core'
+import { stringPropertyFns, stringPropertyOptions } from '@cozemble/model-string-core'
 
 export const customerModel = modelFns.newInstance(
   'Customer',
   modelOptions.withProperties(
-    stringProperties.newInstance('First name', stringPropertyOptions.required),
-    stringProperties.newInstance('Last name'),
-    stringProperties.newInstance(
+    stringPropertyFns.newInstance('First name', stringPropertyOptions.required),
+    stringPropertyFns.newInstance('Last name'),
+    stringPropertyFns.newInstance(
       'Phone',
       stringPropertyOptions.unique,
       stringPropertyOptions.validation(
@@ -14,7 +14,7 @@ export const customerModel = modelFns.newInstance(
         'Must be a valid phone number',
       ),
     ),
-    stringProperties.newInstance(
+    stringPropertyFns.newInstance(
       'Email',
       stringPropertyOptions.unique,
       stringPropertyOptions.validation(
