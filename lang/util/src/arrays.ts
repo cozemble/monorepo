@@ -210,16 +210,16 @@ export function compare<T = any>(
   right: T[],
   comparableProducer: (t: T) => any = (t: T) => t,
 ): { leftOnly: T[]; both: T[]; rightOnly: T[] } {
-  let leftOnly = left.filter(
+  const leftOnly = left.filter(
     (aLeft) =>
       right.find((aRight) => comparableProducer(aLeft) === comparableProducer(aRight)) ===
       undefined,
   )
-  let rightOnly = right.filter(
+  const rightOnly = right.filter(
     (aRight) =>
       left.find((aLeft) => comparableProducer(aLeft) === comparableProducer(aRight)) === undefined,
   )
-  let both = uniqueBy([...left, ...right], comparableProducer).filter(
+  const both = uniqueBy([...left, ...right], comparableProducer).filter(
     (aBoth) => leftOnly.indexOf(aBoth) === -1 && rightOnly.indexOf(aBoth) === -1,
   )
   return { leftOnly, both, rightOnly }

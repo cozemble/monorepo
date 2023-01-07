@@ -1,7 +1,7 @@
 import { StringKeyedObject } from './index'
 
 export function mapOf(...pairs: any[]): Map<any, any> {
-  let map = new Map()
+  const map = new Map()
   for (let i = 0; i < pairs.length; i = i + 2) {
     map.set(pairs[i], pairs[i + 1])
   }

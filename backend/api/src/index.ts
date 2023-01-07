@@ -22,7 +22,7 @@ routes.use('/model', modelRoute)
 
 app.use('/api/v1/', [], routes)
 
-const port: number = 3000
+const port = 3000
 const cozemblePostgraphileAppPort = 3001
 const appPostgraphilePort = 3002
 

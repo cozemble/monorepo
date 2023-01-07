@@ -212,7 +212,7 @@ function extractTermsIterative(
 ): string[] {
   let characterWindow = new Windower(openingDelimiter.length, input.split(''))
   let current = characterWindow.current()
-  let collector = new Collector()
+  const collector = new Collector()
   while (current !== null) {
     const currentString = current.join('')
     if (currentString === openingDelimiter) {
@@ -249,8 +249,8 @@ export function extractTerms(
 
 export function paragraphs(
   lines: string[],
-  beginParaPredicate: (line: string) => Boolean,
-  endParaPredicate: (line: string) => Boolean,
+  beginParaPredicate: (line: string) => boolean,
+  endParaPredicate: (line: string) => boolean,
 ): string[][] {
   const result: string[][] = []
   let currentPara: string[] | null = null
@@ -289,7 +289,7 @@ export function basename(path: string) {
 }
 
 export function dirname(path: string) {
-  let match = path.match(/.*\//)
+  const match = path.match(/.*\//)
   if (match === null) {
     throw new Error('match is null')
   }

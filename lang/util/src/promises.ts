@@ -4,8 +4,8 @@ export function promiseOf<T>(v: T): Promise<T> {
   })
 }
 
-export function truthPoller(predicate: () => Boolean, intervalMs = 50): Promise<Boolean> {
-  return new Promise<Boolean>((resolve) => {
+export function truthPoller(predicate: () => boolean, intervalMs = 50): Promise<boolean> {
+  return new Promise<boolean>((resolve) => {
     function poller() {
       if (predicate()) {
         return resolve(true)

@@ -16,4 +16,4 @@ export class FixedClock implements Clock {
   }
 }
 
-export let clock = new SystemClock()
+export const clock = new SystemClock()

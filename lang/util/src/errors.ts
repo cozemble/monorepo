@@ -51,7 +51,7 @@ function isGoogleApiError(error: any) {
 
 export function bestGuessAtMessageForUser(errorWithContext: ErrorWithContext) {
   let message = errorWithContext.messageForUser
-  let error = errorWithContext.error
+  const error = errorWithContext.error
   if (error && error.message) {
     message = message + ` (${error.message})`
   }
@@ -59,8 +59,8 @@ export function bestGuessAtMessageForUser(errorWithContext: ErrorWithContext) {
     message = message + ` (${error.name}: ${error.code})`
   }
   if (isGoogleApiError(error)) {
-    let googleMessage = error.result.error.message
-    let googleCode = error.result.error.message
+    const googleMessage = error.result.error.message
+    const googleCode = error.result.error.message
     message = message + ` (${googleCode}: ${googleMessage})`
   }
 

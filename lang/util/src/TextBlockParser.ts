@@ -1,4 +1,4 @@
-export type LinePredicate = (line: string) => Boolean
+export type LinePredicate = (line: string) => boolean
 
 const Never: LinePredicate = (s) => false
 

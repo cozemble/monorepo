@@ -27,7 +27,7 @@ export const modelOptions = {
     return (model) => ({ ...model, parentModelId })
   },
 }
-export let modelFns = {
+export const modelFns = {
   newInstance: (name: string, ...opts: ModelOption[]): Model => {
     return options.apply(emptyModel(modelNameFns.newInstance(name)), ...opts)
   },
