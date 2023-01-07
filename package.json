@@ -6,7 +6,9 @@
   "scripts": {
     "build": "turbo run build",
     "test": "turbo run test",
-    "dev": "turbo run dev --parallel"
+    "dev": "turbo run dev --parallel",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "repository": {
     "type": "git",
