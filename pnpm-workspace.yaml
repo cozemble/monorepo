@@ -1,8 +1,8 @@
 packages:
-  - "backend/*"
-  - "data/*"
-  - "lang/*"
-  - "model/*"
-  - "model/string/*"
-  - "sql/*"
-  - "ui/*"
+  - 'backend/*'
+  - 'data/*'
+  - 'lang/*'
+  - 'model/*'
+  - 'model/string/*'
+  - 'sql/*'
+  - 'ui/*'

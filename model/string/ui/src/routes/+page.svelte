@@ -1,1 +1,1 @@
-<a href="configurer">Configurer</a><br/>
+<a href="configurer">Configurer</a><br />

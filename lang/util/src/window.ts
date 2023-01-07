@@ -1,8 +1,5 @@
 export class Windower<T> {
-  constructor(private readonly size: number,
-              private readonly array: T[],
-              private offset = 0) {
-  }
+  constructor(private readonly size: number, private readonly array: T[], private offset = 0) {}
 
   current(): T[] | null {
     const endIndex = this.size + this.offset

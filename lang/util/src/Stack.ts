@@ -1,23 +1,23 @@
 export class Stack<T> {
-  private readonly storage: T[] = [];
+  private readonly storage: T[] = []
 
   constructor(initial: T[] = []) {
     this.storage = initial
   }
 
   push(item: T): void {
-    this.storage.push(item);
+    this.storage.push(item)
   }
 
   pop(): T | undefined {
-    return this.storage.pop();
+    return this.storage.pop()
   }
 
   peek(): T | undefined {
-    return this.storage[this.size() - 1];
+    return this.storage[this.size() - 1]
   }
 
   size(): number {
-    return this.storage.length;
+    return this.storage.length
   }
 }

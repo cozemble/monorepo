@@ -3,7 +3,7 @@
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**","package/**", ".svelte-kit/**"]
+      "outputs": ["dist/**", "package/**", ".svelte-kit/**"]
     },
     "test": {
       "dependsOn": ["build"],

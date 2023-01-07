@@ -5,13 +5,13 @@ function intBetween(min: number, max: number): number {
 }
 
 function elementOfArray<T>(array: T[]): T {
-  if(array.length === 0) {
-    throw new Error("asked to provide random element of empty array")
+  if (array.length === 0) {
+    throw new Error('asked to provide random element of empty array')
   }
   return array[intBetween(0, array.length - 1)]
 }
 
 export const random = {
   intBetween,
-  elementOfArray
+  elementOfArray,
 }

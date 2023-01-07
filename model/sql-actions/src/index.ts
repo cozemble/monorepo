@@ -1,3 +1,1 @@
-export {
-    modelEventToSqlActions
-} from './modelEventToSqlActions'
+export { modelEventToSqlActions } from './modelEventToSqlActions'

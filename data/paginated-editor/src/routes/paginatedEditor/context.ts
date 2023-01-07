@@ -1,1 +1,1 @@
-export const pageEditorLocalStorageKey = 'pageEditor';
+export const pageEditorLocalStorageKey = 'pageEditor'

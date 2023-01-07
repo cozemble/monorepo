@@ -1,28 +1,28 @@
-import {getContext, setContext} from 'svelte';
-import {Writable} from 'svelte/store';
+import { getContext, setContext } from 'svelte'
+import { Writable } from 'svelte/store'
 
-const formErrorStateContext = "com.cozemble.model.editor.property.edit.form.error.state.context";
+const formErrorStateContext = 'com.cozemble.model.editor.property.edit.form.error.state.context'
 
 export type FormErrorState = {
-    _type: "form.error.state"
-    showErrors: boolean
+  _type: 'form.error.state'
+  showErrors: boolean
 }
 
 export function emptyFormErrorState(): FormErrorState {
-    return {
-        _type: "form.error.state",
-        showErrors: false,
-    }
+  return {
+    _type: 'form.error.state',
+    showErrors: false,
+  }
 }
 
 export const editorHost = {
-    setErrorState: (state: Writable<FormErrorState>) => {
-        setContext(formErrorStateContext, state)
-    }
+  setErrorState: (state: Writable<FormErrorState>) => {
+    setContext(formErrorStateContext, state)
+  },
 }
 
 export const editorClient = {
-    getErrorState: (): Writable<FormErrorState> => {
-        return getContext(formErrorStateContext)
-    }
+  getErrorState: (): Writable<FormErrorState> => {
+    return getContext(formErrorStateContext)
+  },
 }
