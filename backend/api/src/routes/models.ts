@@ -1,6 +1,6 @@
 import { Request, Response, Router } from 'express'
-import { EventSourcedModel } from '@cozemble/model-event-sourced'
-import { ModelEvent, ModelId } from '@cozemble/model-core'
+import { type EventSourcedModel } from '@cozemble/model-event-sourced'
+import { type ModelEvent, type ModelId } from '@cozemble/model-core'
 import { arrays } from '@cozemble/lang-util'
 import { modelEventToSqlActions } from '@cozemble/model-sql-actions'
 import { actionToSql, schema } from '@cozemble/sql-actions'

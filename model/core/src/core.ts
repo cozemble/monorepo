@@ -1,4 +1,4 @@
-import { clock, Option, uuids } from '@cozemble/lang-util'
+import { clock, type Option, uuids } from '@cozemble/lang-util'
 
 export interface PropertyType {
   _type: 'property.type'

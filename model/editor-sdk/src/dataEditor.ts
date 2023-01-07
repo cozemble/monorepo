@@ -1,5 +1,5 @@
 import { getContext, setContext } from 'svelte'
-import { DataRecord, DataRecordPath } from '@cozemble/model-core'
+import type { DataRecord, DataRecordPath } from '@cozemble/model-core'
 import { mandatory } from '@cozemble/lang-util'
 
 const dataRecordEditorClientContext = 'com.cozemble.data.record.editor.client.context'

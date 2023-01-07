@@ -1,15 +1,14 @@
-import {
+import type {
   Cardinality,
   DataRecord,
-  emptyModel,
   Model,
   ModelId,
   ModelOption,
   Property,
-  propertyDescriptors,
   PropertyId,
   PropertyOption,
 } from '@cozemble/model-core'
+import { emptyModel, propertyDescriptors } from '@cozemble/model-core'
 import { clock, mandatory, options } from '@cozemble/lang-util'
 import { propertyFns } from './propertyFns'
 import { relationshipFns } from './relationshipFns'

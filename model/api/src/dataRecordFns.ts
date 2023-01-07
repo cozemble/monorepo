@@ -1,5 +1,5 @@
 import { clock, uuids } from '@cozemble/lang-util'
-import { DataRecord, Model, propertyDescriptors } from '@cozemble/model-core'
+import { type DataRecord, type Model, propertyDescriptors } from '@cozemble/model-core'
 import { modelFns } from './modelsFns'
 
 export const dataRecordFns = {

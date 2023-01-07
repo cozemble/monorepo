@@ -1,12 +1,12 @@
 import {
-  Model,
-  ModelEvent,
-  ModelEventDescriptor,
+  type Model,
+  type ModelEvent,
+  type ModelEventDescriptor,
   modelEventDescriptors,
-  ModelName,
-  PropertyId,
+  type ModelName,
+  type PropertyId,
   propertyIdFns,
-  PropertyName,
+  type PropertyName,
   timestampEpochMillis,
 } from '@cozemble/model-core'
 import { emptyProperty } from './stringProperty'

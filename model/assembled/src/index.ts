@@ -1,4 +1,4 @@
-import { PropertyType } from '@cozemble/model-core'
+import type { PropertyType } from '@cozemble/model-core'
 import {
   PropertyConfigurer as StringPropertyConfigurer,
   PropertyEditor as StringPropertyEditor,

@@ -1,5 +1,5 @@
 import { uuids } from '@cozemble/lang-util'
-import { ModelId } from '@cozemble/model-core'
+import type { ModelId } from '@cozemble/model-core'
 
 export const modelIdFns = {
   newInstance: (id = uuids.v4()): ModelId => {
