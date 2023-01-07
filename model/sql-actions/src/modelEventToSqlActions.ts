@@ -1,7 +1,12 @@
 import type { Model, ModelEvent, ModelId } from '@cozemble/model-core'
 import { constraints, makeSqlActions, type SqlAction, SqlActions } from '@cozemble/sql-actions'
-import type { ModelCreated, ModelRenamed, PropertyRenamed } from '@cozemble/model-event-sourced'
-import type { RelationshipAdded } from '@cozemble/model-event-sourced'
+import type {
+  ModelCreated,
+  ModelRenamed,
+  PropertyRenamed,
+  RelationshipAdded,
+} from '@cozemble/model-event-sourced'
+
 import { modelFns } from '@cozemble/model-api'
 import { strings } from '@cozemble/lang-util'
 

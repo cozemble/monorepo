@@ -1,5 +1,5 @@
-import type { Cardinality, ModelId, Relationship } from '@cozemble/model-core'
-import type { RelationshipName } from '@cozemble/model-core'
+import type { Cardinality, ModelId, Relationship, RelationshipName } from '@cozemble/model-core'
+
 import { relationshipNameFns } from '@cozemble/model-core'
 
 export const relationshipFns = {

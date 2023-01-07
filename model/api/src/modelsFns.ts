@@ -8,12 +8,10 @@ import type {
   PropertyId,
   PropertyOption,
 } from '@cozemble/model-core'
-import { emptyModel, propertyDescriptors } from '@cozemble/model-core'
+import { emptyModel, propertyDescriptors, propertyIdFns, modelNameFns } from '@cozemble/model-core'
 import { clock, mandatory, options } from '@cozemble/lang-util'
 import { propertyFns } from './propertyFns'
 import { relationshipFns } from './relationshipFns'
-import { propertyIdFns } from '@cozemble/model-core'
-import { modelNameFns } from '@cozemble/model-core'
 
 export const modelOptions = {
   withProperty(p: Property): ModelOption {

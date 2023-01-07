@@ -1,13 +1,13 @@
 <script lang="ts">
 import type { Model, Property, PropertyDescriptor } from '@cozemble/model-core'
-import { propertyDescriptors, propertyTypeFns } from '@cozemble/model-core'
+import { propertyDescriptors, propertyTypeFns , propertyNameFns } from '@cozemble/model-core'
 import { propertyConfigurerRegistry } from '@cozemble/model-assembled'
 import { editorHost, emptyFormErrorState } from '@cozemble/model-editor-sdk'
 import { writable } from 'svelte/store'
 import { createEventDispatcher } from 'svelte'
 import type { ModelChangeHandler } from '$lib/ModelEditorHost'
 import { coreModelEvents } from '@cozemble/model-event-sourced'
-import { propertyNameFns } from '@cozemble/model-core'
+
 
 export let modelChangeHandler: ModelChangeHandler
 export let model: Model

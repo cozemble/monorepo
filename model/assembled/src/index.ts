@@ -4,8 +4,7 @@ import {
   PropertyEditor as StringPropertyEditor,
   PropertyViewer as StringPropertyViewer,
 } from '@cozemble/model-string-ui'
-import { stringPropertyType } from '@cozemble/model-string-core'
-import { registerStringProperty } from '@cozemble/model-string-core'
+import { stringPropertyType, registerStringProperty } from '@cozemble/model-string-core'
 
 export { propertyDescriptors } from '@cozemble/model-core'
 

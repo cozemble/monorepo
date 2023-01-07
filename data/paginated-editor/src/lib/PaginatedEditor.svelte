@@ -1,12 +1,12 @@
 <script lang="ts">
 import type { DataRecord, Model } from '@cozemble/model-core'
 import type { CellFocus } from '$lib/CellFocus'
-import { cellFocus } from '$lib/CellFocus'
+import { cellFocus, isFocussedRow } from '$lib/CellFocus'
 import type { UiMode } from '$lib/onValueChanged'
 import { writable, type Writable } from 'svelte/store'
 import { dataRecordFns } from '@cozemble/model-api'
 import RowEdit from '$lib/RowEdit.svelte'
-import { isFocussedRow } from '$lib/CellFocus'
+
 import DataTd from '$lib/DataTd.svelte'
 
 export let model: Model
