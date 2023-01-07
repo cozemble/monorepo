@@ -24,6 +24,8 @@
   "dependencies": {
     "@cozemble/sql-actions": "workspace:*",
     "@cozemble/model-event-sourced": "workspace:*",
+    "@cozemble/model-sql-actions": "workspace:*",
+    "@cozemble/model-string-sql-actions": "workspace:*",
     "@graphile-contrib/pg-simplify-inflector": "^6.1.0",
     "cors": "^2.8.5",
     "express": "^4.18.2",
