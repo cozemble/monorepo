@@ -48,7 +48,8 @@
     "@cozemble/model-string-sql-actions": "workspace:*",
     "@cozemble/model-string-ui": "workspace:*",
     "@cozemble/sql-actions": "workspace:*",
-    "@cozemble/ui-atoms": "workspace:*"
+    "@cozemble/ui-atoms": "workspace:*",
+    "@cozemble/backend-api": "workspace:*"
   },
   "packageManager": "pnpm@7.9.3"
 }

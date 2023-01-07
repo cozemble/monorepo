@@ -4,6 +4,7 @@ importers:
 
   .:
     specifiers:
+      '@cozemble/backend-api': workspace:*
       '@cozemble/data-paginated-editor': workspace:*
       '@cozemble/data-postgraphile-api': workspace:*
       '@cozemble/lang-util': workspace:*
@@ -29,6 +30,7 @@ importers:
       prettier-plugin-svelte: ^2.9.0
       turbo: latest
     dependencies:
+      '@cozemble/backend-api': link:backend/api
       '@cozemble/data-paginated-editor': link:data/paginated-editor
       '@cozemble/data-postgraphile-api': link:data/postgraphile-api
       '@cozemble/lang-util': link:lang/util
