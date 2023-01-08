@@ -38,6 +38,13 @@ function asModelEventTableRow(e: ModelEventAndModelId): ModelEventTableRow {
   }
 }
 
+router.get('/list', async (req: Request, res: Response) => {
+  const knex = await appPublicKnex(pgUrl)
+  const models = await knex<ModelTableRow>('cozemble.models').select()
+  const result = models.map((m) => m.definition)
+  return res.status(200).json(result)
+})
+
 router.post('/apply/', async (req: Request, res: Response) => {
   const models: EventSourcedModel[] = req.body
   const events = models.flatMap((model) =>

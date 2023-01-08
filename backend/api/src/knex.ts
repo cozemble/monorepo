@@ -81,26 +81,26 @@ export interface ModelEventTableRow {
 
 function initialModelsTable(): SqlMigration {
   const up = `CREATE TABLE cozemble.models
-                (
-                    model_id   VARCHAR(255) PRIMARY KEY,
-                    name       VARCHAR(255) NOT NULL,
-                    definition JSONB        NOT NULL,
-                    created_at TIMESTAMP    NOT NULL DEFAULT NOW(),
-                    updated_at TIMESTAMP    NOT NULL DEFAULT NOW()
-                )`
+              (
+                model_id   VARCHAR(255) PRIMARY KEY,
+                name       VARCHAR(255) NOT NULL,
+                definition JSONB        NOT NULL,
+                created_at TIMESTAMP    NOT NULL DEFAULT NOW(),
+                updated_at TIMESTAMP    NOT NULL DEFAULT NOW()
+              )`
   const down = `DROP TABLE cozemble.models`
   return sqlMigration([up], [down])
 }
 
 function initialModelEventsTable(): SqlMigration {
   const up = `CREATE TABLE cozemble.model_events
-                (
-                    model_event_id   VARCHAR(255) PRIMARY KEY,
-                    model_id   VARCHAR(255) NOT NULL,
-                    definition JSONB        NOT NULL,
-                    created_at TIMESTAMP    NOT NULL DEFAULT NOW(),
-                    updated_at TIMESTAMP    NOT NULL DEFAULT NOW()
-                )`
+              (
+                model_event_id VARCHAR(255) PRIMARY KEY,
+                model_id       VARCHAR(255) NOT NULL,
+                definition     JSONB        NOT NULL,
+                created_at     TIMESTAMP    NOT NULL DEFAULT NOW(),
+                updated_at     TIMESTAMP    NOT NULL DEFAULT NOW()
+              )`
   const down = `DROP TABLE cozemble.model_events`
   return sqlMigration([up], [down])
 }
