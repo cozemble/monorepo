@@ -11,30 +11,40 @@
     export let records: DataRecord[]
 
     let focus: Writable<CellFocus | null> = writable(null)
-    let doAddNewRecord = false;
+    let doAddNewRecord = false
+    let recordBeingEdited: DataRecord | null = null
 
     function deleteRecord(_record: DataRecord) {
     }
 
-    function editRecord(_record: DataRecord) {
+    function editRecord(record: DataRecord) {
+        recordBeingEdited = record
     }
 
     function beginAddNewRecord() {
         doAddNewRecord = true
-        // records = [...records, dataRecordFns.newInstance(model, 'test-user')]
-        // $mode = 'edit'
-        // setCellFocus(records.length - 1, 0)
     }
 
 
-    function addNewRecord(_event: CustomEvent) {
+    function addNewRecord(event: CustomEvent) {
+        const newRecord = event.detail.record
+        records = [...records, newRecord]
+        doAddNewRecord = false
+    }
 
+    function recordEdited(event: CustomEvent) {
+        const editedRecord = event.detail.record
+        records = records.map(record => record.id.value === editedRecord.id.value ? editedRecord : record)
+        recordBeingEdited = null
     }
 </script>
 
 {#if doAddNewRecord}
     <EditRecord {models} {model} record={dataRecordFns.newInstance(model, 'test-user')} on:save={addNewRecord}
                 on:cancel={() => doAddNewRecord = false}/>
+{:else if recordBeingEdited !== null}
+    <EditRecord {models} {model} record={recordBeingEdited} on:save={recordEdited}
+                on:cancel={() => recordBeingEdited = null}/>
 {:else}
     <table>
         <thead>
@@ -47,13 +57,13 @@
         </thead>
         <tbody>
         {#each records as record, rowIndex}
-            <tr>
+            <tr data-row-index={rowIndex}>
                 {#each model.properties as property, colIndex}
                     <DataTd {focus} {rowIndex} {colIndex} {record} {property}/>
                 {/each}
                 <td>
-                    <button on:click={() => editRecord(record)}>Edit</button>
-                    <button on:click={() => deleteRecord(record)}>Delete</button>
+                    <button class="edit" on:click={() => editRecord(record)}>Edit</button>
+                    <button class="delete" on:click={() => deleteRecord(record)}>Delete</button>
                 </td>
             </tr>
         {/each}

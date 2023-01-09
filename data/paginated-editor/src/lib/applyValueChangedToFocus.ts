@@ -20,6 +20,8 @@ export function applyValueChangedToFocus(
     )
     const nextValue = allValues[indexOfFocus + 1]
     return nextValue ? nextValue.path : null
+  } else if (event.confirmMethod === 'Enter') {
+    return null
   }
   return focus
 }

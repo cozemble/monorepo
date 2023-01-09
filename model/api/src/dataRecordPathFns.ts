@@ -1,3 +1,4 @@
+import { strings } from '@cozemble/lang-util'
 import {
   DataRecord,
   type DataRecordPath,
@@ -74,7 +75,18 @@ export const dataRecordPathFns = {
     }, initialRecord)
     return initialRecord
   },
-  toDottedPath(path: DataRecordPath): DottedPath {
+  toDottedPath(path: DataRecordPath, pathType: 'id' | 'name' = 'id'): DottedPath {
+    if (pathType === 'name') {
+      const dotted = [
+        ...path.parentElements.map((e) =>
+          e._type === 'has.one.relationship' ? e.name.value : e.relationship.name.value,
+        ),
+        path.lastElement.name.value,
+      ]
+        .map((s) => strings.camelize(s))
+        .join('.')
+      return dottedPathFns.newInstance(dotted, 'name')
+    }
     const parentIds = path.parentElements.map((e) => {
       if (e._type === 'has.one.relationship') {
         return e.id.value
@@ -86,8 +98,9 @@ export const dataRecordPathFns = {
     return dottedPathFns.newInstance(parts.join('.'))
   },
   sameDottedPaths(path1: DataRecordPath, path2: DataRecordPath): boolean {
-    return (
-      dataRecordPathFns.toDottedPath(path1).value === dataRecordPathFns.toDottedPath(path2).value
+    return dottedPathFns.equals(
+      dataRecordPathFns.toDottedPath(path1),
+      dataRecordPathFns.toDottedPath(path2),
     )
   },
 }

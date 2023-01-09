@@ -10,7 +10,7 @@
 </script>
 {#if myErrors.length > 0}
     <hr/>
-    <div class="error">
+    <div class="validation-errors">
         {#each myErrors as error}
             <div>{error}</div>
         {/each}
@@ -18,7 +18,7 @@
 {/if}
 
 <style>
-    .error {
+    .validation-errors {
         color: red;
     }
 </style>

@@ -21,6 +21,10 @@
         const focusPath = dataRecordPathFns.toDottedPath(focus)
         return dottedPathFns.equals(propertyPath, focusPath)
     }
+
+    function dataRecordPathAsString(property: Property) {
+        return dataRecordPathFns.toDottedPath(dataRecordPathFns.newInstance(property, ...parentPath), 'name').value
+    }
 </script>
 
 <table>
@@ -35,7 +39,7 @@
     <tr>
         {#each model.properties as property}
             {@const focussed = isFocussed(focus, property)}
-            <td class:focussed>
+            <td class:focussed data-record-path={dataRecordPathAsString(property)}>
                 {#if focussed}
                     <PropertyEdit {parentPath} {property} {record}/>
                 {:else}
