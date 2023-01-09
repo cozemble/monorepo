@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {createEventDispatcher, onMount} from 'svelte';
+    import {createEventDispatcher, onMount, afterUpdate} from 'svelte';
     import type {DataRecord, DataRecordPath, Model} from "@cozemble/model-core";
     import DataRecordEditor from "$lib/DataRecordEditor.svelte";
     import type {DataRecordEditEvent, DataRecordEditorClient} from "@cozemble/model-editor-sdk";
@@ -42,6 +42,8 @@
     onMount(() => {
         focus.set(dataRecordPathFns.newInstance(model.properties[0]))
     })
+
+    afterUpdate(() => console.log({models, record,errors}))
 </script>
 
 <DataRecordEditor {models} {model} {record} {errors} focus={$focus}/>

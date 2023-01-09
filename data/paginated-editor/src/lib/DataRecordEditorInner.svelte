@@ -13,15 +13,12 @@
     export let errors: Map<DataRecordPath, string[]>
     export let focus: DataRecordPath | null
 
-    console.log({models, model, record, parentPath, errors})
-
     function isFocussed(focus: DataRecordPath | null, property: Property) {
         if (focus === null) {
             return false
         }
         const propertyPath = dataRecordPathFns.toDottedPath(dataRecordPathFns.newInstance(property, ...parentPath))
         const focusPath = dataRecordPathFns.toDottedPath(focus)
-        console.log({propertyPath, focusPath})
         return dottedPathFns.equals(propertyPath, focusPath)
     }
 </script>
