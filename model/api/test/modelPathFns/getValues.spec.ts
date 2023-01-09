@@ -9,7 +9,7 @@ import {
 } from '../../src'
 import { dataRecordRecordPathAndValue, modelPathFns } from '../../src/modelPathFns'
 import { registerStringProperty } from '@cozemble/model-string-core'
-import { HasOneRelationship } from '@cozemble/model-core/dist/esm'
+import { HasOneRelationship } from '@cozemble/model-core'
 
 registerStringProperty()
 

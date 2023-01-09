@@ -1,14 +1,15 @@
-import type { DataRecord } from '@cozemble/model-core'
+import type { DataRecord, Model } from '@cozemble/model-core'
 import type { CellFocus } from '$lib/CellFocus'
 import type { Writable } from 'svelte/store'
 import type { DataRecordValueChanged } from '@cozemble/model-editor-sdk'
 import { dataRecordPathFns } from '@cozemble/model-api'
 
 export function applyValueChangedToRecord(
+  models: Model[],
   r: DataRecord,
   event: DataRecordValueChanged,
 ): DataRecord {
-  return dataRecordPathFns.setValue(event.path, r, event.newValue)
+  return dataRecordPathFns.setValue(models, event.path, r, event.newValue)
 }
 
 export function adjustFocusFollowingValueChange(

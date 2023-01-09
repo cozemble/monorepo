@@ -1,6 +1,6 @@
 import { dataRecordPathFns, modelFns, modelPathFns } from '@cozemble/model-api'
 import type { DataRecordPath, Model, ModelPath, Property } from '@cozemble/model-core'
-import type { DataRecord } from '@cozemble/model-core/dist/esm'
+import type { DataRecord } from '@cozemble/model-core'
 import type { DataRecordValueChanged } from '@cozemble/model-editor-sdk'
 
 export function applyValueChangedToFocus(

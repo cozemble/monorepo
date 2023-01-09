@@ -27,7 +27,7 @@
     const dataRecordEditorClient: DataRecordEditorClient = {
         dispatchEditEvent(event: DataRecordEditEvent): void {
             if (event._type === "data.record.value.changed") {
-                record = applyValueChangedToRecord(record, event)
+                record = applyValueChangedToRecord(models,record, event)
                 if($focus) {
                     $focus = applyValueChangedToFocus($focus, models, record,event)
                 }

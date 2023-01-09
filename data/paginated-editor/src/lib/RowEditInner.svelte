@@ -18,7 +18,7 @@
     let showErrors = false
 
     function saveRecord() {
-        const errors = modelFns.validate(models,record)
+        const errors = modelFns.validate(models, record)
         if (errors.size > 0) {
             showErrors = true
         }
@@ -31,7 +31,7 @@
     const dataRecordEditorClient: DataRecordEditorClient = {
         dispatchEditEvent(event: DataRecordEditEvent): void {
             if (event._type === 'data.record.value.changed') {
-                record = applyValueChangedToRecord(record, event)
+                record = applyValueChangedToRecord(models, record, event)
                 adjustFocusFollowingValueChange(event, focus)
             }
             if (event._type === 'data.record.edit.aborted') {

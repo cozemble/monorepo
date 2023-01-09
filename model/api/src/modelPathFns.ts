@@ -8,7 +8,7 @@ import {
   propertyDescriptors,
 } from '@cozemble/model-core'
 import { dataRecordPathFns } from './dataRecordPathFns'
-import { DataRecordPathElement } from '@cozemble/model-core/dist/esm'
+import { DataRecordPathElement } from '@cozemble/model-core'
 
 export interface DataRecordPathAndValue<T = any> {
   _type: 'data.record.path.and.value'

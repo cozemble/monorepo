@@ -4,9 +4,12 @@ import {
   type DataRecordPathElement,
   type DottedPath,
   dottedPathFns,
+  Model,
   Property,
   propertyDescriptors,
 } from '@cozemble/model-core'
+import { dataRecordFns } from './dataRecordFns'
+import { modelFns } from './modelsFns'
 
 export const dataRecordPathFns = {
   newInstance: (
@@ -40,11 +43,36 @@ export const dataRecordPathFns = {
     const reducedPath = dataRecordPathFns.newInstance(path.lastElement)
     return dataRecordPathFns.getValue(reducedPath, deref)
   },
-  setValue<T>(path: DataRecordPath, record: DataRecord, t: T | null): DataRecord {
-    if (path.parentElements.length > 0) {
-      throw new Error('Not implemented: dataRecordPaths with parent elements')
+  setValue<T>(
+    models: Model[],
+    path: DataRecordPath,
+    initialRecord: DataRecord,
+    t: T | null,
+  ): DataRecord {
+    if (path.parentElements.length === 0) {
+      return propertyDescriptors
+        .mandatory(path.lastElement)
+        .setValue(path.lastElement, initialRecord, t)
     }
-    return propertyDescriptors.mandatory(path.lastElement).setValue(path.lastElement, record, t)
+    path.parentElements.reduce((record, parentElement, index) => {
+      if (parentElement._type === 'has.one.relationship') {
+        let nestedRecord = record.values[parentElement.id.value]
+        if (nestedRecord === undefined) {
+          const nestedModel = modelFns.findById(models, parentElement.modelId)
+          nestedRecord = dataRecordFns.newInstance(nestedModel, record.createdBy.value)
+        }
+        if (index === path.parentElements.length - 1) {
+          nestedRecord = propertyDescriptors
+            .mandatory(path.lastElement)
+            .setValue(path.lastElement, nestedRecord, t)
+        }
+        record.values[parentElement.id.value] = nestedRecord
+        return nestedRecord
+      } else {
+        throw new Error(`Not implemented: ${parentElement._type}`)
+      }
+    }, initialRecord)
+    return initialRecord
   },
   toDottedPath(path: DataRecordPath): DottedPath {
     const parentIds = path.parentElements.map((e) => {
