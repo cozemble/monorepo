@@ -33,7 +33,7 @@ function propertyTypeChanged(event: Event) {
   }
 }
 
-$: configurer = propertyConfigurerRegistry.get(property._type)
+$: configurer = propertyConfigurerRegistry.get(property.propertyType)
 $: errors = propertyDescriptor?.validateProperty(property) ?? new Map()
 const dispatch = createEventDispatcher()
 
@@ -73,7 +73,7 @@ function propertyNameChanged(event: Event) {
       <option
         value={propertyDescriptor.propertyType.type}
         selected={propertyTypeFns.equals(
-          property._type,
+          property.propertyType,
           propertyDescriptor.propertyType,
         )}>{propertyDescriptor.name.name}</option
       >

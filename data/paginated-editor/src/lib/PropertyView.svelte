@@ -6,7 +6,7 @@
     export let property: Property
     export let record: DataRecord
 
-    $: viewer = propertyViewerRegistry.get(property._type)
+    $: viewer = propertyViewerRegistry.get(property.propertyType)
 </script>
 
 {#if viewer}

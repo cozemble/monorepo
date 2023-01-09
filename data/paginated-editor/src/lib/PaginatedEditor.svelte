@@ -1,19 +1,17 @@
 <script lang="ts">
     import type {DataRecord, Model} from '@cozemble/model-core'
     import type {CellFocus} from '$lib/CellFocus'
-    import {cellFocus, isFocussedRow} from '$lib/CellFocus'
-    import type {UiMode} from '$lib/onValueChanged'
     import {writable, type Writable} from 'svelte/store'
-    import {dataRecordFns} from '@cozemble/model-api'
-    import RowEdit from '$lib/RowEdit.svelte'
-
     import DataTd from '$lib/DataTd.svelte'
+    import {dataRecordFns} from "@cozemble/model-api";
+    import EditRecord from "$lib/EditRecord.svelte";
 
+    export let models: Model[]
     export let model: Model
     export let records: DataRecord[]
 
-    let mode: Writable<UiMode> = writable('navigate')
     let focus: Writable<CellFocus | null> = writable(null)
+    let doAddNewRecord = false;
 
     function deleteRecord(_record: DataRecord) {
     }
@@ -21,70 +19,34 @@
     function editRecord(_record: DataRecord) {
     }
 
-    function addRecord() {
-        records = [...records, dataRecordFns.newInstance(model, 'test-user')]
-        $mode = 'edit'
-        setCellFocus(records.length - 1, 0)
+    function beginAddNewRecord() {
+        doAddNewRecord = true
+        // records = [...records, dataRecordFns.newInstance(model, 'test-user')]
+        // $mode = 'edit'
+        // setCellFocus(records.length - 1, 0)
     }
 
-    function setCellFocus(row: number, column: number) {
-        $focus = cellFocus(row, column)
-    }
 
-    function bodyClicked(event: Event) {
-        const target = event.target as HTMLElement
-        const cell = target.closest('td')
-        if (cell) {
-            const cellIndex = cell.getAttribute('data-cell-index')
-            if (cellIndex) {
-                const [row, column] = cellIndex.split('-').map(Number)
-                setCellFocus(row, column)
-            }
-        }
-    }
+    function addNewRecord(_event: CustomEvent) {
 
-    function keyup(event: KeyboardEvent) {
-        if ($mode === 'navigate') {
-            if (event.key === 'Enter') {
-                $mode = 'edit'
-            }
-        }
-    }
-
-    function cancelRowEdit() {
-        $mode = 'navigate'
-        focus.set(null)
-    }
-
-    function rowEditEscape() {
-        $mode = 'navigate'
-        focus.set(null)
     }
 </script>
 
-<svelte:window on:keyup={keyup}/>
-
-<table>
-    <thead>
-    <tr>
-        {#each model.properties as property}
-            <th class="data-cell">{property.name.value}</th>
-        {/each}
-        <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody on:click={bodyClicked}>
-    {#each records as record, rowIndex}
-        {#if $mode === 'edit' && isFocussedRow($focus, rowIndex)}
-            <RowEdit
-                    {record}
-                    {rowIndex}
-                    {model}
-                    {focus}
-                    on:cancel={cancelRowEdit}
-                    on:escape={rowEditEscape}
-            />
-        {:else}
+{#if doAddNewRecord}
+    <EditRecord {models} {model} record={dataRecordFns.newInstance(model, 'test-user')} on:save={addNewRecord}
+                on:cancel={() => doAddNewRecord = false}/>
+{:else}
+    <table>
+        <thead>
+        <tr>
+            {#each model.properties as property}
+                <th class="data-cell">{property.name.value}</th>
+            {/each}
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {#each records as record, rowIndex}
             <tr>
                 {#each model.properties as property, colIndex}
                     <DataTd {focus} {rowIndex} {colIndex} {record} {property}/>
@@ -94,16 +56,13 @@
                     <button on:click={() => deleteRecord(record)}>Delete</button>
                 </td>
             </tr>
-        {/if}
-    {/each}
-    </tbody>
-</table>
-<div class="actions">
-    <button type="button" class="add-record" on:click={addRecord}
-    >Add record
-    </button
-    >
-</div>
+        {/each}
+        </tbody>
+    </table>
+    <div class="actions">
+        <button type="button" class="add-record" on:click={beginAddNewRecord}>Add record</button>
+    </div>
+{/if}
 
 <style>
     .data-cell {

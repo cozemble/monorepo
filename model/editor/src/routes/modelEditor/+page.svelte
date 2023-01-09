@@ -8,7 +8,7 @@ import {
 import ModelEditor from '$lib/ModelEditor.svelte'
 import { allModels, bootstrapHost, host } from './host'
 import type { EventSourcedModel } from '@cozemble/model-event-sourced'
-import { events, sqlMigrations } from './toSql'
+import { sqlMigrations } from './toSql'
 import { registerStringPropertyEventToSqlActions } from '@cozemble/model-string-sql-actions'
 
 let mounted = false

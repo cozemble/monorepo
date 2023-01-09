@@ -8,6 +8,7 @@ import {
   propertyIdFns,
   type PropertyName,
   timestampEpochMillis,
+  Property,
 } from '@cozemble/model-core'
 import { emptyProperty } from './stringProperty'
 import { modelEventIdFns } from '@cozemble/model-core'

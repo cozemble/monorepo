@@ -4,11 +4,12 @@
     import type {Writable} from 'svelte/store'
     import DataTd from '$lib/DataTd.svelte'
     import {modelFns} from '@cozemble/model-api'
-    import {applyValueChangedToRecord} from '$lib/onValueChanged'
+    import {adjustFocusFollowingValueChange, applyValueChangedToRecord} from '$lib/onValueChanged'
     import type {DataRecordEditEvent, DataRecordEditorClient,} from '@cozemble/model-editor-sdk'
     import {dataRecordEditorHost} from '@cozemble/model-editor-sdk'
     import {createEventDispatcher} from 'svelte'
 
+    export let models: Model[]
     export let model: Model
     export let focus: Writable<CellFocus | null>
     export let rowIndex: number
@@ -17,8 +18,7 @@
     let showErrors = false
 
     function saveRecord() {
-        const errors = modelFns.validate(model, record)
-        console.log({errors})
+        const errors = modelFns.validate(models,record)
         if (errors.size > 0) {
             showErrors = true
         }
@@ -30,12 +30,12 @@
 
     const dataRecordEditorClient: DataRecordEditorClient = {
         dispatchEditEvent(event: DataRecordEditEvent): void {
-            console.log({event})
             if (event._type === 'data.record.value.changed') {
                 record = applyValueChangedToRecord(record, event)
+                adjustFocusFollowingValueChange(event, focus)
             }
             if (event._type === 'data.record.edit.aborted') {
-                dispatch('escape')
+                focus.set(null)
             }
         },
     }

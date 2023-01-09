@@ -1,19 +1,14 @@
-import {
-  modelFns,
-  modelOptions,
-  propertyFns,
-  propertyOptions,
-  relationshipFns,
-} from '@cozemble/model-api'
+import { modelFns, modelOptions, propertyFns, relationshipFns } from '@cozemble/model-api'
 import { expect, test } from 'vitest'
 import { coreModelEvents } from '../src'
 import {
   modelEventDescriptors,
   modelIdAndNameFns,
-  relationshipNameFns,
   modelNameFns,
   propertyNameFns,
+  relationshipNameFns,
 } from '@cozemble/model-core'
+import { arrays } from '@cozemble/lang-util'
 
 test('has event that renames a model', () => {
   const customer = modelFns.newInstance('Customer')
@@ -27,7 +22,7 @@ test('has event that renames a model', () => {
 test('has event that renames a property in a model model', () => {
   const customer = modelFns.newInstance(
     'Customer',
-    modelOptions.withProperty(propertyFns.newInstance(propertyOptions.named('name'))),
+    modelOptions.withProperty(propertyFns.newInstance('name')),
   )
   const nameProperty = customer.properties[0]
   const event = coreModelEvents.propertyRenamed(
@@ -57,7 +52,7 @@ test('has event that adds a relationship to a model', () => {
 
   const mutatedCustomer = modelEventDescriptors.applyEvent(customer, event)
 
-  expect(mutatedCustomer.relationships).toEqual([
-    relationshipFns.newInstance('Address', address.id, 'one'),
-  ])
+  expect(arrays.dropFields(mutatedCustomer.relationships, 'id')).toEqual(
+    arrays.dropFields([relationshipFns.newInstance('Address', address.id, 'one')], 'id'),
+  )
 })

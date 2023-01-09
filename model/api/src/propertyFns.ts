@@ -4,8 +4,8 @@ import { propertyNameFns } from '@cozemble/model-core'
 import { stringPropertyFns } from '@cozemble/model-string-core'
 
 export const propertyFns = {
-  newInstance(...opts: PropertyOption[]): Property {
-    return options.apply(stringPropertyFns.newInstance('Untitled property'), ...opts)
+  newInstance(name: string = 'Untitled Property', ...opts: PropertyOption[]): Property {
+    return options.apply(stringPropertyFns.newInstance(name), ...opts)
   },
 }
 

@@ -51,10 +51,12 @@ export const propertyDescriptors = {
     )
   },
   mandatory: (p: Property | PropertyType): PropertyDescriptor => {
-    const propertyType = p._type === 'property.type' ? p : p._type
+    const propertyType = p._type === 'property' ? p.propertyType : p
     return mandatory(
       registeredProperties.find((p) => propertyTypeFns.equals(p.propertyType, propertyType)),
-      `No property descriptor registered for property type ${propertyType.type}`,
+      `No property descriptor registered for property type ${
+        propertyType.type
+      }, available types are ${registeredProperties.map((rp) => rp.propertyType.type).join(', ')}`,
     )
   },
   list: () => {

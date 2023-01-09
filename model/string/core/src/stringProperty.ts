@@ -1,9 +1,9 @@
 import { type Option, options } from '@cozemble/lang-util'
 import {
   type Property,
-  propertyTypeFns,
   propertyIdFns,
   propertyNameFns,
+  propertyTypeFns,
 } from '@cozemble/model-core'
 
 export const stringPropertyType = propertyTypeFns.newInstance('string.property')
@@ -14,8 +14,8 @@ export interface RegexValidation {
   message: string
 }
 
-export interface StringProperty extends Property<string> {
-  _type: { _type: 'property.type'; type: 'string.property' }
+export interface StringProperty extends Property {
+  propertyType: { _type: 'property.type'; type: 'string.property' }
   required: boolean
   unique: boolean
   validations: RegexValidation[]
@@ -24,7 +24,8 @@ export interface StringProperty extends Property<string> {
 export function emptyProperty(name: string): StringProperty {
   const id = propertyIdFns.newInstance()
   return {
-    _type: { _type: 'property.type', type: 'string.property' },
+    _type: 'property',
+    propertyType: { _type: 'property.type', type: 'string.property' },
     id,
     version: 1,
     name: propertyNameFns.newInstance(name),

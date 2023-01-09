@@ -4,6 +4,7 @@
     import type {Writable} from 'svelte/store'
     import RowEditInner from '$lib/RowEditInner.svelte'
 
+    export let models: Model[]
     export let model: Model
     export let focus: Writable<CellFocus | null>
     export let rowIndex: number
@@ -12,4 +13,4 @@
     const clonedRecord = {...record}
 </script>
 
-<RowEditInner {model} {focus} {rowIndex} record={clonedRecord} on:cancel/>
+<RowEditInner {models} {model} {focus} {rowIndex} record={clonedRecord} on:cancel/>

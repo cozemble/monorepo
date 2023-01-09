@@ -28,6 +28,11 @@ export {
   modelIdAndNameFns,
   RelationshipName,
   relationshipNameFns,
+  relationshipIdFns,
+  HasManyRelationshipPathElement,
+  RelationshipId,
+  ModelPath,
+  ModelPathElement,
 } from './core'
 
 export { propertyDescriptors } from './propertyDescriptor'

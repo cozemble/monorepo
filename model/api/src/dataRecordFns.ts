@@ -8,29 +8,74 @@ export const dataRecordFns = {
       _type: 'data.record',
       id: {
         _type: 'data.record.id',
-        id: uuids.v4(),
+        value: uuids.v4(),
       },
-      createdBy: { _type: 'user.id', id: creatorId },
+      createdBy: { _type: 'user.id', value: creatorId },
       createdMillis: { _type: 'timestamp.epoch.millis', value: clock.now().getTime() },
       updatedMillis: { _type: 'timestamp.epoch.millis', value: clock.now().getTime() },
       modelId: model.id,
       values: {},
     }
   },
-  random: (model: Model, givenValues: { [key: string]: any }): DataRecord => {
-    const record: DataRecord = {
+  fullStructure(
+    models: Model[],
+    dataRecord: DataRecord,
+    createdBy = dataRecord.createdBy,
+  ): DataRecord {
+    const model = modelFns.findById(models, dataRecord.modelId)
+    return model.relationships.reduce((acc, rel) => {
+      if (rel._type === 'has.one.relationship') {
+        if (!acc.values[rel.id.value]) {
+          acc.values[rel.id.value] = dataRecordFns.newInstance(
+            modelFns.findById(models, rel.modelId),
+            createdBy.value,
+          )
+        }
+        acc.values[rel.id.value] = this.fullStructure(models, acc.values[rel.id.value])
+      } else {
+        if (!acc.values[rel.id.value]) {
+          acc.values[rel.id.value] = []
+        } else {
+          acc.values[rel.id.value] = acc.values[rel.id.value].map((r: DataRecord) =>
+            this.fullStructure(models, r),
+          )
+        }
+      }
+      return acc
+    }, dataRecord)
+  },
+  random: (models: Model[], model: Model, givenValues: { [key: string]: any } = {}): DataRecord => {
+    let record: DataRecord = {
       _type: 'data.record',
-      id: { _type: 'data.record.id', id: uuids.v4() },
+      id: { _type: 'data.record.id', value: uuids.v4() },
       modelId: model.id,
-      createdBy: { _type: 'user.id', id: 'random' },
+      createdBy: { _type: 'user.id', value: 'random' },
       createdMillis: { _type: 'timestamp.epoch.millis', value: clock.now().getTime() },
       updatedMillis: { _type: 'timestamp.epoch.millis', value: clock.now().getTime() },
       values: {},
     }
-    return model.properties.reduce((record, property) => {
-      const value =
-        givenValues[property.name.value] || propertyDescriptors.mandatory(property).randomValue()
+    record = model.properties.reduce((record, property) => {
+      const givenValue = givenValues[property.name.value]
+      const hasGivenValue = givenValue !== undefined
+      const value = hasGivenValue
+        ? givenValue
+        : propertyDescriptors.mandatory(property).randomValue()
       return modelFns.setPropertyValue(model, property, value, record)
     }, record)
+    record = model.relationships.reduce((record, relationship) => {
+      if (relationship._type === 'has.one.relationship') {
+        const givenValue = givenValues[relationship.name.value]
+        if (givenValue) {
+          const relatedModel = modelFns.findById(models, relationship.modelId)
+          record.values[relationship.id.value] = dataRecordFns.random(
+            models,
+            relatedModel,
+            givenValue,
+          )
+        }
+      }
+      return record
+    }, record)
+    return record
   },
 }

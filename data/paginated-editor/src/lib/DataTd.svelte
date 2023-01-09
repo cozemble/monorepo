@@ -1,5 +1,4 @@
 <script lang="ts">
-    import PropertyEdit from '$lib/PropertyEdit.svelte'
     import PropertyView from '$lib/PropertyView.svelte'
     import {type CellFocus, isFocussedCell} from '$lib/CellFocus'
     import type {DataRecord, Property} from '@cozemble/model-core'
@@ -23,15 +22,8 @@
     afterUpdate(() => console.log({showErrors, errors, record}))
 </script>
 
-<td
-        class:highlighted={isFocussedCell($focus, rowIndex, colIndex)}
-        data-cell-index="{rowIndex}-{colIndex}"
->
-    {#if isFocussedCell($focus, rowIndex, colIndex)}
-        <PropertyEdit {record} {property}/>
-    {:else}
-        <PropertyView {record} {property}/>
-    {/if}
+<td class:highlighted={isFocussedCell($focus, rowIndex, colIndex)} data-cell-index="{rowIndex}-{colIndex}">
+    <PropertyView {record} {property}/>
     {#if showErrors && errors.length > 0}
         <div class="validation-errors">
             {#each errors as error}

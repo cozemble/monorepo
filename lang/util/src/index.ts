@@ -1,6 +1,7 @@
 import {
   compare,
   drop,
+  dropFields,
   dropLast,
   dropNulls,
   ensureArray,
@@ -96,6 +97,7 @@ export const arrays = {
   findMandatory,
   compare,
   sortBy,
+  dropFields,
 }
 
 export { HeadAndTail } from './arrays'

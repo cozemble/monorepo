@@ -20,7 +20,7 @@ type ModelEventAndModelId = { event: ModelEvent; modelId: ModelId }
 
 function asModelTableRow(e: EventSourcedModel): ModelTableRow {
   return {
-    model_id: e.model.id.id,
+    model_id: e.model.id.value,
     name: e.model.name.value,
     definition: JSON.stringify(e.model),
     created_at: new Date(),
@@ -31,7 +31,7 @@ function asModelTableRow(e: EventSourcedModel): ModelTableRow {
 function asModelEventTableRow(e: ModelEventAndModelId): ModelEventTableRow {
   return {
     model_event_id: e.event.id.value,
-    model_id: e.modelId.id,
+    model_id: e.modelId.value,
     definition: JSON.stringify(e.event),
     created_at: new Date(),
     updated_at: new Date(),

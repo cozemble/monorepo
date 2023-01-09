@@ -15,7 +15,7 @@ modelEventToSqlActions.setSqlActions(stubSqlActions)
 test('generates the correct sql actions for adding a new string property', () => {
   const customerModel = modelFns.newInstance(
     'Customer',
-    modelOptions.withProperty(propertyFns.newInstance()),
+    modelOptions.withProperty(propertyFns.newInstance('Untitled Property')),
   )
   const property = customerModel.properties[0]
   const event = newStringPropertyModelEvent(customerModel.name, property.name, property.id)

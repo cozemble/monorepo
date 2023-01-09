@@ -36,8 +36,9 @@ export const propertyNameFns = {
   },
 }
 
-export interface Property<T = any> {
-  _type: PropertyType
+export interface Property {
+  _type: 'property'
+  propertyType: PropertyType
   id: PropertyId
   version: number
   name: PropertyName
@@ -45,7 +46,7 @@ export interface Property<T = any> {
 
 export interface ModelId {
   _type: 'model.id'
-  id: string
+  value: string
 }
 
 export interface ModelIdAndName {
@@ -66,14 +67,16 @@ export const modelIdAndNameFns = {
 
 export interface HasOneRelationship {
   _type: 'has.one.relationship'
-  modelId: ModelId
+  id: RelationshipId
   name: RelationshipName
+  modelId: ModelId
 }
 
 export interface HasManyRelationship {
   _type: 'has.many.relationship'
-  modelId: ModelId
+  id: RelationshipId
   name: RelationshipName
+  modelId: ModelId
 }
 
 export type Cardinality = 'one' | 'many'
@@ -89,10 +92,24 @@ export interface RelationshipName {
   value: string
 }
 
+export interface RelationshipId {
+  _type: 'relationship.id'
+  value: string
+}
+
 export const relationshipNameFns = {
   newInstance: (value: string): RelationshipName => {
     return {
       _type: 'relationship.name',
+      value,
+    }
+  },
+}
+
+export const relationshipIdFns = {
+  newInstance: (value: string = uuids.v4()): RelationshipId => {
+    return {
+      _type: 'relationship.id',
       value,
     }
   },
@@ -116,9 +133,17 @@ export interface Model {
   relationships: Relationship[]
 }
 
+export type ModelPathElement = Relationship | Property
+
+export interface ModelPath<E extends ModelPathElement> {
+  _type: 'model.path'
+  lastElement: E
+  parentElements: ModelPathElement[]
+}
+
 export interface DataRecordId {
   _type: 'data.record.id'
-  id: string
+  value: string
 }
 
 export interface TimestampEpochMillis {
@@ -135,7 +160,7 @@ export function timestampEpochMillis(value = clock.now().getTime()): TimestampEp
 
 export interface UserId {
   _type: 'user.id'
-  id: string
+  value: string
 }
 
 export interface DataRecord {
@@ -148,16 +173,18 @@ export interface DataRecord {
   values: { [key: string]: any }
 }
 
-export type DataRecordPathElement = Property
+export interface HasManyRelationshipPathElement {
+  _type: 'has.many.relationship.path.element'
+  relationship: HasManyRelationship
+  recordId: DataRecordId
+}
 
-export interface DataRecordPath<T = any> {
+export type DataRecordPathElement = HasManyRelationshipPathElement | HasOneRelationship
+
+export interface DataRecordPath<> {
   _type: 'data.record.path'
   parentElements: DataRecordPathElement[]
-  property: Property<T>
-
-  getValue(record: DataRecord): T | null
-
-  setValue(record: DataRecord, t: T | null): DataRecord
+  lastElement: Property
 }
 
 export interface DottedName {
@@ -171,7 +198,7 @@ export type PropertyOption = Option<Property>
 export function emptyModel(name: ModelName): Model {
   return {
     _type: 'model',
-    id: { _type: 'model.id', id: uuids.v4() },
+    id: { _type: 'model.id', value: uuids.v4() },
     name,
     properties: [],
     relationships: [],

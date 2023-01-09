@@ -224,3 +224,13 @@ export function compare<T = any>(
   )
   return { leftOnly, both, rightOnly }
 }
+
+export function dropFields<T>(array: T[], ...fieldNames: string[]): T[] {
+  return array.map((item) => {
+    const newItem = { ...item } as any
+    for (const fieldName of fieldNames) {
+      delete newItem[fieldName]
+    }
+    return newItem
+  })
+}

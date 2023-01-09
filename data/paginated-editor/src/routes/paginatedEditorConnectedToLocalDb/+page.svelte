@@ -44,6 +44,6 @@
 {/each}
 {#if model}
     {#key model.id}
-        <PaginatedEditor {model} records={[]}/>
+        <PaginatedEditor {models} {model} records={[]}/>
     {/key}
 {/if}
