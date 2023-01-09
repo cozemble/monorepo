@@ -14,8 +14,8 @@
 
     function init(el: HTMLDivElement) {
         valueContainerDomElement = el
-        // el.focus()
-        // setEndOfContenteditable(el)
+        el.focus()
+        setEndOfContenteditable(el)
     }
 
     function setEndOfContenteditable(contentEditableElement: HTMLElement) {

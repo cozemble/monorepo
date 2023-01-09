@@ -4,8 +4,6 @@ import type { Writable } from 'svelte/store'
 import type { DataRecordValueChanged } from '@cozemble/model-editor-sdk'
 import { dataRecordPathFns } from '@cozemble/model-api'
 
-export type UiMode = 'navigate' | 'edit'
-
 export function applyValueChangedToRecord(
   r: DataRecord,
   event: DataRecordValueChanged,

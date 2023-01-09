@@ -33,6 +33,8 @@ export {
   RelationshipId,
   ModelPath,
   ModelPathElement,
+  DottedPath,
+  dottedPathFns,
 } from './core'
 
 export { propertyDescriptors } from './propertyDescriptor'

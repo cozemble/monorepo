@@ -50,7 +50,7 @@ export const modelFns = {
   propertyWithId(model: Model, propertyId: PropertyId): Property {
     return mandatory(
       model.properties.find((p) => propertyIdFns.equals(p.id, propertyId)),
-      `Property not found: ${propertyId.id}`,
+      `Property not found: ${propertyId.value}`,
     )
   },
   setPropertyValue(
@@ -107,7 +107,6 @@ export const modelFns = {
         .mandatory(path.lastElement)
         .validateValue(path.lastElement, value.value)
       if (propertyErrors.length > 0) {
-        console.log({ path, value, propertyErrors })
         errors.set(value.path, propertyErrors)
       }
       return errors

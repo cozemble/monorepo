@@ -19,7 +19,7 @@ export const propertyTypeFns = {
 
 export interface PropertyId {
   _type: 'property.id'
-  id: string
+  value: string
 }
 
 export interface PropertyName {
@@ -195,7 +195,8 @@ export interface DottedName {
 export type ModelOption = Option<Model>
 export type PropertyOption = Option<Property>
 
-export function emptyModel(name: ModelName): Model {
+export function emptyModel(name: string | ModelName): Model {
+  name = typeof name === 'string' ? modelNameFns.newInstance(name) : name
   return {
     _type: 'model',
     id: { _type: 'model.id', value: uuids.v4() },
@@ -203,4 +204,23 @@ export function emptyModel(name: ModelName): Model {
     properties: [],
     relationships: [],
   }
+}
+
+export interface DottedPath {
+  _type: 'dotted.path'
+  partType: 'id' | 'name'
+  value: string
+}
+
+export const dottedPathFns = {
+  newInstance: (value: string, partType: 'id' | 'name' = 'id'): DottedPath => {
+    return {
+      _type: 'dotted.path',
+      partType,
+      value,
+    }
+  },
+  equals: (a: DottedPath, b: DottedPath): boolean => {
+    return a.value === b.value && a.partType === b.partType
+  },
 }

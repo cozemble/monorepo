@@ -1,13 +1,19 @@
 <script lang="ts">
-    import {createEventDispatcher} from 'svelte';
-    import type {DataRecord, Model} from "@cozemble/model-core";
+    import {createEventDispatcher, onMount} from 'svelte';
+    import type {DataRecord, DataRecordPath, Model} from "@cozemble/model-core";
     import DataRecordEditor from "$lib/DataRecordEditor.svelte";
     import type {DataRecordEditEvent, DataRecordEditorClient} from "@cozemble/model-editor-sdk";
     import {dataRecordEditorHost} from "@cozemble/model-editor-sdk";
+    import {dataRecordPathFns, modelFns} from "@cozemble/model-api";
+    import {applyValueChangedToRecord} from "$lib/onValueChanged";
+    import {type Writable, writable} from "svelte/store";
+    import {applyValueChangedToFocus} from "$lib/applyValueChangedToFocus";
 
     export let models: Model[]
     export let model: Model
     export let record: DataRecord
+    export let focus: Writable<DataRecordPath | null> = writable(null)
+    let errors: Map<DataRecordPath, string[]> = new Map()
 
     const dispatch = createEventDispatcher();
 
@@ -20,14 +26,25 @@
 
     const dataRecordEditorClient: DataRecordEditorClient = {
         dispatchEditEvent(event: DataRecordEditEvent): void {
-            console.log({event})
+            if (event._type === "data.record.value.changed") {
+                record = applyValueChangedToRecord(record, event)
+                if($focus) {
+                    $focus = applyValueChangedToFocus($focus, models, record,event)
+                }
+                errors = modelFns.validate(models, record)
+            } else if (event._type === "data.record.edit.aborted") {
+                console.log({event})
+            }
         },
     }
     dataRecordEditorHost.setClient(dataRecordEditorClient)
 
+    onMount(() => {
+        focus.set(dataRecordPathFns.newInstance(model.properties[0]))
+    })
 </script>
 
-<DataRecordEditor {models} {model} {record}/>
+<DataRecordEditor {models} {model} {record} {errors} focus={$focus}/>
 
 <div class="buttons">
     <button type="button" on:click={handleSave}>Save</button>

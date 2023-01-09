@@ -2,8 +2,10 @@ import {
   DataRecord,
   type DataRecordPath,
   type DataRecordPathElement,
-  propertyDescriptors,
+  type DottedPath,
+  dottedPathFns,
   Property,
+  propertyDescriptors,
 } from '@cozemble/model-core'
 
 export const dataRecordPathFns = {
@@ -43,5 +45,21 @@ export const dataRecordPathFns = {
       throw new Error('Not implemented: dataRecordPaths with parent elements')
     }
     return propertyDescriptors.mandatory(path.lastElement).setValue(path.lastElement, record, t)
+  },
+  toDottedPath(path: DataRecordPath): DottedPath {
+    const parentIds = path.parentElements.map((e) => {
+      if (e._type === 'has.one.relationship') {
+        return e.id.value
+      } else {
+        return e.relationship.id.value
+      }
+    })
+    const parts = [...parentIds, path.lastElement.id.value]
+    return dottedPathFns.newInstance(parts.join('.'))
+  },
+  sameDottedPaths(path1: DataRecordPath, path2: DataRecordPath): boolean {
+    return (
+      dataRecordPathFns.toDottedPath(path1).value === dataRecordPathFns.toDottedPath(path2).value
+    )
   },
 }
