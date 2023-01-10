@@ -24,21 +24,23 @@ export const dataRecordFns = {
   ): DataRecord {
     const model = modelFns.findById(models, dataRecord.modelId)
     return model.relationships.reduce((acc, rel) => {
-      if (rel._type === 'has.one.relationship') {
-        if (!acc.values[rel.id.value]) {
-          acc.values[rel.id.value] = dataRecordFns.newInstance(
-            modelFns.findById(models, rel.modelId),
-            createdBy.value,
-          )
-        }
-        acc.values[rel.id.value] = this.fullStructure(models, acc.values[rel.id.value])
-      } else {
-        if (!acc.values[rel.id.value]) {
-          acc.values[rel.id.value] = []
+      if (rel._type === 'relationship') {
+        if (rel.subType === 'has.one.relationship') {
+          if (!acc.values[rel.id.value]) {
+            acc.values[rel.id.value] = dataRecordFns.newInstance(
+              modelFns.findById(models, rel.modelId),
+              createdBy.value,
+            )
+          }
+          acc.values[rel.id.value] = this.fullStructure(models, acc.values[rel.id.value])
         } else {
-          acc.values[rel.id.value] = acc.values[rel.id.value].map((r: DataRecord) =>
-            this.fullStructure(models, r),
-          )
+          if (!acc.values[rel.id.value]) {
+            acc.values[rel.id.value] = []
+          } else {
+            acc.values[rel.id.value] = acc.values[rel.id.value].map((r: DataRecord) =>
+              this.fullStructure(models, r),
+            )
+          }
         }
       }
       return acc
@@ -63,7 +65,10 @@ export const dataRecordFns = {
       return modelFns.setPropertyValue(model, property, value, record)
     }, record)
     record = model.relationships.reduce((record, relationship) => {
-      if (relationship._type === 'has.one.relationship') {
+      if (
+        relationship._type === 'relationship' &&
+        relationship.subType === 'has.one.relationship'
+      ) {
         const givenValue = givenValues[relationship.name.value]
         if (givenValue) {
           const relatedModel = modelFns.findById(models, relationship.modelId)

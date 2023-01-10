@@ -234,3 +234,9 @@ export function dropFields<T>(array: T[], ...fieldNames: string[]): T[] {
     return newItem
   })
 }
+
+export function splitLast<T>(array: T[]): [T[], T] {
+  const last = array[array.length - 1]
+  const rest = array.slice(0, array.length - 1)
+  return [rest, last]
+}

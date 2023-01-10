@@ -66,14 +66,16 @@ export const modelIdAndNameFns = {
 }
 
 export interface HasOneRelationship {
-  _type: 'has.one.relationship'
+  _type: 'relationship'
+  subType: 'has.one.relationship'
   id: RelationshipId
   name: RelationshipName
   modelId: ModelId
 }
 
 export interface HasManyRelationship {
-  _type: 'has.many.relationship'
+  _type: 'relationship'
+  subType: 'has.many.relationship'
   id: RelationshipId
   name: RelationshipName
   modelId: ModelId
@@ -219,6 +221,15 @@ export const dottedPathFns = {
       partType,
       value,
     }
+  },
+  dottedNamePath(value: string): DottedPath {
+    return dottedPathFns.newInstance(value, 'name')
+  },
+  dottedIdPath(value: string): DottedPath {
+    return dottedPathFns.newInstance(value, 'id')
+  },
+  split(dottedPath: DottedPath): string[] {
+    return dottedPath.value.split('.')
   },
   equals: (a: DottedPath, b: DottedPath): boolean => {
     return a.value === b.value && a.partType === b.partType

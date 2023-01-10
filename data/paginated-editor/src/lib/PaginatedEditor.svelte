@@ -40,10 +40,10 @@
 </script>
 
 {#if doAddNewRecord}
-    <EditRecord {models} {model} record={dataRecordFns.newInstance(model, 'test-user')} on:save={addNewRecord}
+    <EditRecord {models} {model} record={dataRecordFns.newInstance(model, 'test-user')} on:save={addNewRecord} title="Add new {model.name.value}"
                 on:cancel={() => doAddNewRecord = false}/>
 {:else if recordBeingEdited !== null}
-    <EditRecord {models} {model} record={recordBeingEdited} on:save={recordEdited}
+    <EditRecord {models} {model} record={recordBeingEdited} on:save={recordEdited} title="Edit {model.name.value}"
                 on:cancel={() => recordBeingEdited = null}/>
 {:else}
     <table>
@@ -70,7 +70,7 @@
         </tbody>
     </table>
     <div class="actions">
-        <button type="button" class="add-record" on:click={beginAddNewRecord}>Add record</button>
+        <button type="button" class="add-record" on:click={beginAddNewRecord}>Add {model.name.value}</button>
     </div>
 {/if}
 

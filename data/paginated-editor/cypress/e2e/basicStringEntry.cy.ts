@@ -1,13 +1,22 @@
 import { pageEditorLocalStorageKey } from '../../src/routes/paginatedEditor/context'
-import { customerModel } from './customerModel'
+import { allModels } from '../../src/routes/testModels'
+
+function enterData(param: { [key: string]: string }) {
+  Object.keys(param).forEach((key) => {
+    const value = param[key]
+    cy.get(`td[data-record-path="${key}"]`).click()
+    cy.get(`td[data-record-path="${key}"] .value-container`).type(`${value}{enter}`)
+  })
+}
 
 describe('paginated editor', () => {
-  beforeEach(() => localStorage.setItem(pageEditorLocalStorageKey, JSON.stringify(customerModel)))
+  beforeEach(() => localStorage.setItem(pageEditorLocalStorageKey, JSON.stringify(allModels)))
 
   it('permits basic data entry by tabbing', () => {
     cy.visit('http://localhost:5173/paginatedEditor')
     cy.get('button.add-record').click()
 
+    enterData({ invoiceID: '1234', 'customer.firstName': 'Mike', 'customer.lastName': 'Smith' })
     cy.get('div.value-container').type('Mike')
     cy.get('div.value-container').trigger('keydown', { key: 'Tab' })
 

@@ -1,8 +1,8 @@
 import { pageEditorLocalStorageKey } from '../../src/routes/paginatedEditor/context'
-import { customerModel } from './customerModel'
+import { allModels } from '../../src/routes/testModels'
 
 describe('paginated editor', () => {
-  beforeEach(() => localStorage.setItem(pageEditorLocalStorageKey, JSON.stringify(customerModel)))
+  beforeEach(() => localStorage.setItem(pageEditorLocalStorageKey, JSON.stringify(allModels)))
 
   it('performs validation as configured by properties', () => {
     cy.visit('http://localhost:5173/paginatedEditor')

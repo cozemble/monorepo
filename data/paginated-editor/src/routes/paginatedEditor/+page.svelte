@@ -8,9 +8,7 @@
         registerAllPropertyViewers,
     } from '@cozemble/model-assembled'
     import {pageEditorLocalStorageKey} from './context'
-    import {modelFns, modelOptions} from '@cozemble/model-api'
-    import {stringPropertyFns, stringPropertyOptions,} from '@cozemble/model-string-core'
-    import {relationshipFns} from "@cozemble/model-api";
+    import {allModels, invoiceModel} from "../testModels";
 
     let models: Model[]
     let model: Model | null = null
@@ -20,58 +18,15 @@
         registerAllProperties()
         registerAllPropertyViewers()
         registerAllPropertyEditors()
-        const item = localStorage.getItem(pageEditorLocalStorageKey)
-        if (item) {
-            model = JSON.parse(item) as Model
-            models = [model]
+        const localStored = localStorage.getItem(pageEditorLocalStorageKey)
+        if (localStored) {
+            models = JSON.parse(localStored) as Model[]
+            model = models[0]
             console.log('Loaded model from local storage', model)
         } else {
-            const addressModel = modelFns.newInstance(
-                'Address',
-                modelOptions.withProperties(
-                    stringPropertyFns.newInstance(
-                        'Line 1',
-                        stringPropertyOptions.required,
-                    ),
-                    stringPropertyFns.newInstance('Line 2'),
-                    stringPropertyFns.newInstance(
-                        'Post code',
-                        stringPropertyOptions.required,
-                    ),
-                ),
-            )
-            const customerModel = modelFns.newInstance(
-                'Customer',
-                modelOptions.withProperties(
-                    stringPropertyFns.newInstance(
-                        'First name',
-                        stringPropertyOptions.required,
-                    ),
-                    stringPropertyFns.newInstance('Last name'),
-                    stringPropertyFns.newInstance(
-                        'Phone',
-                        stringPropertyOptions.unique,
-                        stringPropertyOptions.validation(
-                            '^[\\+]?[(]?[0-9]{3}[)]?[-\\s\\.]?[0-9]{3}[-\\s\\.]?[0-9]{4,6}$',
-                            'Must be a valid phone number',
-                        ),
-                    ),
-                    stringPropertyFns.newInstance(
-                        'Email',
-                        stringPropertyOptions.unique,
-                        stringPropertyOptions.validation(
-                            '^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$',
-                            'Must be a valid email address',
-                        ),
-                    ),
-                ),
-                modelOptions.withRelationships(
-                    relationshipFns.newInstance('Address', addressModel.id, "one"),
-                )
-            )
 
-            models = [customerModel, addressModel]
-            model = customerModel
+            models = [...allModels]
+            model = invoiceModel
         }
     })
 </script>

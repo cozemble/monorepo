@@ -48,7 +48,7 @@ export const modelPathFns = {
   ): DataRecordPathAndValue {
     let parentElements: DataRecordPathElement[] = []
     record = path.parentElements.reduce((record, element) => {
-      if (element._type === 'has.one.relationship') {
+      if (element._type === 'relationship' && element.subType === 'has.one.relationship') {
         parentElements = [...parentElements, element]
         return record.values[element.id.value]
       }

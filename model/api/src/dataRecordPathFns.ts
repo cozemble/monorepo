@@ -1,4 +1,4 @@
-import { strings } from '@cozemble/lang-util'
+import { arrays, errors, strings } from '@cozemble/lang-util'
 import {
   DataRecord,
   type DataRecordPath,
@@ -6,11 +6,43 @@ import {
   type DottedPath,
   dottedPathFns,
   Model,
+  ModelPathElement,
   Property,
   propertyDescriptors,
 } from '@cozemble/model-core'
 import { dataRecordFns } from './dataRecordFns'
 import { modelFns } from './modelsFns'
+
+function modelElementsToDataRecordPath(lastElement: Property, parentElements: ModelPathElement[]) {
+  const parentRecordPathElements: DataRecordPathElement[] = parentElements.map((element) => {
+    if (element._type === 'relationship') {
+      if (element.subType === 'has.one.relationship') {
+        return element
+      }
+      throw new Error(`Invalid element in path: ${element.subType}`)
+    }
+    throw new Error(`Invalid element in path: ${element._type}`)
+  })
+  return dataRecordPathFns.newInstance(lastElement, ...parentRecordPathElements)
+}
+
+function fromDottedIdPath(models: Model[], model: Model, dottedPath: DottedPath): DataRecordPath {
+  const elements = modelFns.elementsById(models, model, dottedPathFns.split(dottedPath))
+  const [parentElements, lastElement] = arrays.splitLast(elements)
+  if (lastElement._type !== 'property') {
+    throw new Error(`Last element of path must be a property: ${dottedPath.value}`)
+  }
+  return modelElementsToDataRecordPath(lastElement, parentElements)
+}
+
+function fromDottedNamePath(models: Model[], model: Model, dottedPath: DottedPath): DataRecordPath {
+  const elements = modelFns.elementsByName(models, model, dottedPathFns.split(dottedPath))
+  const [parentElements, lastElement] = arrays.splitLast(elements)
+  if (lastElement._type !== 'property') {
+    throw new Error(`Last element of path must be a property: ${dottedPath.value}`)
+  }
+  return modelElementsToDataRecordPath(lastElement, parentElements)
+}
 
 export const dataRecordPathFns = {
   newInstance: (
@@ -34,12 +66,11 @@ export const dataRecordPathFns = {
       if (acc === undefined) {
         return undefined
       }
-      if (parentElement._type === 'has.one.relationship') {
-        return acc.values[parentElement.id.value]
+      if (parentElement._type === 'relationship') {
+        if (parentElement.subType === 'has.one.relationship') {
+          return acc.values[parentElement.id.value]
+        }
       }
-      return acc.values[parentElement.relationship.id.value].find(
-        (r: DataRecord) => r.id.value === parentElement.recordId.value,
-      )
     }, record)
     const reducedPath = dataRecordPathFns.newInstance(path.lastElement)
     return dataRecordPathFns.getValue(reducedPath, deref)
@@ -56,46 +87,69 @@ export const dataRecordPathFns = {
         .setValue(path.lastElement, initialRecord, t)
     }
     path.parentElements.reduce((record, parentElement, index) => {
-      if (parentElement._type === 'has.one.relationship') {
-        let nestedRecord = record.values[parentElement.id.value]
-        if (nestedRecord === undefined) {
-          const nestedModel = modelFns.findById(models, parentElement.modelId)
-          nestedRecord = dataRecordFns.newInstance(nestedModel, record.createdBy.value)
+      if (parentElement._type === 'relationship') {
+        if (parentElement.subType === 'has.one.relationship') {
+          let nestedRecord = record.values[parentElement.id.value]
+          if (nestedRecord === undefined) {
+            const nestedModel = modelFns.findById(models, parentElement.modelId)
+            nestedRecord = dataRecordFns.newInstance(nestedModel, record.createdBy.value)
+          }
+          if (index === path.parentElements.length - 1) {
+            nestedRecord = propertyDescriptors
+              .mandatory(path.lastElement)
+              .setValue(path.lastElement, nestedRecord, t)
+          }
+          record.values[parentElement.id.value] = nestedRecord
+          return nestedRecord
+        } else {
+          throw new Error(`Not implemented: ${parentElement.subType}`)
         }
-        if (index === path.parentElements.length - 1) {
-          nestedRecord = propertyDescriptors
-            .mandatory(path.lastElement)
-            .setValue(path.lastElement, nestedRecord, t)
-        }
-        record.values[parentElement.id.value] = nestedRecord
-        return nestedRecord
-      } else {
-        throw new Error(`Not implemented: ${parentElement._type}`)
       }
     }, initialRecord)
     return initialRecord
   },
   toDottedPath(path: DataRecordPath, pathType: 'id' | 'name' = 'id'): DottedPath {
-    if (pathType === 'name') {
-      const dotted = [
-        ...path.parentElements.map((e) =>
-          e._type === 'has.one.relationship' ? e.name.value : e.relationship.name.value,
-        ),
-        path.lastElement.name.value,
-      ]
-        .map((s) => strings.camelize(s))
-        .join('.')
-      return dottedPathFns.newInstance(dotted, 'name')
-    }
-    const parentIds = path.parentElements.map((e) => {
-      if (e._type === 'has.one.relationship') {
-        return e.id.value
-      } else {
-        return e.relationship.id.value
+    try {
+      if (pathType === 'name') {
+        const dotted = [
+          ...path.parentElements.map((element) => {
+            if (element._type === 'relationship') {
+              return element.name.value
+            }
+            throw new Error(`Invalid element in path: ${element._type}`)
+          }),
+          path.lastElement.name.value,
+        ]
+          .map((s) => strings.camelize(s))
+          .join('.')
+        return dottedPathFns.newInstance(dotted, 'name')
       }
-    })
-    const parts = [...parentIds, path.lastElement.id.value]
-    return dottedPathFns.newInstance(parts.join('.'))
+      const parentIds = path.parentElements.map((e) => {
+        if (e._type === 'relationship') {
+          return e.id.value
+        }
+        throw new Error(`Invalid element in path: ${e._type}`)
+      })
+      const parts = [...parentIds, path.lastElement.id.value]
+      return dottedPathFns.newInstance(parts.join('.'))
+    } catch (e) {
+      throw errors.prependToMessage(
+        e,
+        `Error converting path to dotted path: ${JSON.stringify(path)}`,
+      )
+    }
+  },
+  fromDottedPath(models: Model[], model: Model, dottedPath: DottedPath): DataRecordPath {
+    try {
+      return dottedPath.partType === 'name'
+        ? fromDottedNamePath(models, model, dottedPath)
+        : fromDottedIdPath(models, model, dottedPath)
+    } catch (e) {
+      throw errors.prependToMessage(
+        e,
+        `While hydrating path: ${dottedPath.value} in model: ${model.name.value}`,
+      )
+    }
   },
   sameDottedPaths(path1: DataRecordPath, path2: DataRecordPath): boolean {
     return dottedPathFns.equals(

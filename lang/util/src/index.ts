@@ -19,6 +19,7 @@ import {
   replaceElement,
   secondLast,
   sortBy,
+  splitLast,
   startsWith,
   tail,
   take,
@@ -98,6 +99,7 @@ export const arrays = {
   compare,
   sortBy,
   dropFields,
+  splitLast,
 }
 
 export { HeadAndTail } from './arrays'

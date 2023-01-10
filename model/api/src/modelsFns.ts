@@ -18,7 +18,7 @@ import {
   propertyIdFns,
   Relationship,
 } from '@cozemble/model-core'
-import { clock, mandatory, options } from '@cozemble/lang-util'
+import { clock, mandatory, options, strings } from '@cozemble/lang-util'
 import { propertyFns } from './propertyFns'
 import { relationshipFns } from './relationshipFns'
 import { modelPathFns } from './modelPathFns'
@@ -96,6 +96,40 @@ export const modelFns = {
     })
     return [...propertyPaths, ...relationshipPaths]
   },
+  elementByName(model: Model, name: string): ModelPathElement {
+    return mandatory(
+      model.properties.find((p) => p.name.value === name) ||
+        model.properties.find((p) => strings.camelize(p.name.value) === name) ||
+        model.relationships.find((r) => r.name.value === name) ||
+        model.relationships.find((r) => strings.camelize(r.name.value) === name),
+      `Model element not found, name = ${name}, model = ${model.name.value}`,
+    )
+  },
+  elementById(model: Model, id: string): ModelPathElement {
+    return mandatory(
+      model.properties.find((p) => p.id.value === id) ||
+        model.relationships.find((r) => r.id.value === id),
+      `Model element not found, id = ${name}, model = ${model.name.value}`,
+    )
+  },
+  elementsByName(models: Model[], model: Model, names: string[]): ModelPathElement[] {
+    return names.reduce((elements, name) => {
+      const element = modelFns.elementByName(model, name)
+      if (element._type === 'relationship') {
+        model = modelFns.findById(models, element.modelId)
+      }
+      return [...elements, element]
+    }, [] as ModelPathElement[])
+  },
+  elementsById(models: Model[], model: Model, ids: string[]): ModelPathElement[] {
+    return ids.reduce((elements, id) => {
+      const element = modelFns.elementById(model, id)
+      if (element._type === 'relationship') {
+        model = modelFns.findById(models, element.modelId)
+      }
+      return [...elements, element]
+    }, [] as ModelPathElement[])
+  },
   validate(models: Model[], record: DataRecord): Map<DataRecordPath, string[]> {
     const model = modelFns.findById(models, record.modelId)
     const pathsToProperties: ModelPath<Property>[] = modelFns
@@ -111,24 +145,5 @@ export const modelFns = {
       }
       return errors
     }, new Map<DataRecordPath, string[]>())
-    // const propertyErrors = model.properties.reduce((errors, property) => {
-    //   const value = propertyDescriptors.mandatory(property).getValue(property, record)
-    //   const propertyErrors = propertyDescriptors.mandatory(property).validateValue(property, value)
-    //   if (propertyErrors.length > 0) {
-    //     errors.set(dataRecordPathFns.newInstance(property), propertyErrors)
-    //   }
-    //   return errors
-    // }, new Map<DataRecordPath, string[]>())
-    // return model.relationships.reduce((errors, relationship) => {
-    //   if (relationship._type === 'has.one.relationship') {
-    //     const value = record.values[relationship.id.value]
-    //     if (value === null) {
-    //       return errors
-    //     }
-    //   } else {
-    //     throw new Error('Not implemented - has many relationships')
-    //   }
-    //   return errors
-    // }, propertyErrors)
   },
 }
