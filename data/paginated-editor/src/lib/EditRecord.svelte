@@ -1,54 +1,33 @@
 <script lang="ts">
-    import {afterUpdate, createEventDispatcher} from 'svelte';
-    import type {DataRecord, DataRecordPath, Model} from "@cozemble/model-core";
     import DataRecordEditor from "$lib/DataRecordEditor.svelte";
     import type {DataRecordEditEvent, DataRecordEditorClient} from "@cozemble/model-editor-sdk";
     import {dataRecordEditorHost} from "@cozemble/model-editor-sdk";
-    import {modelFns} from "@cozemble/model-api";
-    import {applyValueChangedToRecord} from "$lib/onValueChanged";
-    import {type Writable, writable} from "svelte/store";
-    import {DataRecordPathFocus} from "./DataRecordPathFocus";
+    import type {RecordEditContext} from "$lib/RecordEditContext";
+    import {afterUpdate} from "svelte";
 
-    export let models: Model[]
-    export let model: Model
-    export let record: DataRecord
-    export let focus: Writable<DataRecordPathFocus> = writable(new DataRecordPathFocus(models, () => record).setInitial(model))
-    export let title: string
-    let errors: Map<DataRecordPath, string[]> = new Map()
-
-    const dispatch = createEventDispatcher()
+    export let recordEditContext: RecordEditContext
+    export let pushContext: (context: RecordEditContext) => void
+    export let popContext: () => void
 
     function handleCancel() {
-        dispatch("cancel")
+        recordEditContext.cancel()
     }
 
     function handleSave() {
-        errors = modelFns.validate(models, record)
-        if (errors.size > 0) {
-            return
-        }
-        dispatch("save", {record})
+        recordEditContext.attemptSave()
     }
 
     const dataRecordEditorClient: DataRecordEditorClient = {
         dispatchEditEvent(event: DataRecordEditEvent): void {
-            if (event._type === "data.record.value.changed") {
-                record = applyValueChangedToRecord(models, record, event)
-                console.log({mutatedRecord: record, event})
-                $focus = $focus.applyValueChangedToFocus(event)
-                errors = modelFns.validate(models, record)
-            } else if (event._type === "data.record.edit.aborted") {
-                console.log({event})
-            }
+            recordEditContext.handleDataRecordEditEvent(event)
         },
     }
     dataRecordEditorHost.setClient(dataRecordEditorClient)
 
-
-    afterUpdate(() => console.log({models, record, errors, focus: $focus}))
+    afterUpdate(() => console.log({recordEditContext}))
 </script>
 
-<DataRecordEditor {models} {model} {record} {errors} {focus} {title}/>
+<DataRecordEditor {recordEditContext} {pushContext} {popContext}/>
 
 <div class="buttons">
     <button type="button" class="save" on:click={handleSave}>Save</button>

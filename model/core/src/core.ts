@@ -183,7 +183,7 @@ export interface HasManyRelationshipPathElement {
 
 export type DataRecordPathElement = HasManyRelationshipPathElement | HasOneRelationship
 
-export interface DataRecordPath<> {
+export interface DataRecordPath {
   _type: 'data.record.path'
   parentElements: DataRecordPathElement[]
   lastElement: Property

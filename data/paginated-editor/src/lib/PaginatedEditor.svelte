@@ -4,7 +4,8 @@
     import {writable, type Writable} from 'svelte/store'
     import DataTd from '$lib/DataTd.svelte'
     import {dataRecordFns} from "@cozemble/model-api";
-    import EditRecord from "$lib/EditRecord.svelte";
+    import StackingRecordEditor from "./StackingRecordEditor.svelte";
+    import {RecordEditContext} from "./RecordEditContext";
 
     export let models: Model[]
     export let model: Model
@@ -25,26 +26,23 @@
         doAddNewRecord = true
     }
 
-
-    function addNewRecord(event: CustomEvent) {
-        const newRecord = event.detail.record
-        records = [...records, newRecord]
-        doAddNewRecord = false
-    }
-
-    function recordEdited(event: CustomEvent) {
-        const editedRecord = event.detail.record
+    function recordEdited(editedRecord: DataRecord) {
         records = records.map(record => record.id.value === editedRecord.id.value ? editedRecord : record)
         recordBeingEdited = null
+    }
+
+    function saveNewRecord(newRecord: DataRecord) {
+        records = [...records, newRecord]
+        doAddNewRecord = false
     }
 </script>
 
 {#if doAddNewRecord}
-    <EditRecord {models} {model} record={dataRecordFns.newInstance(model, 'test-user')} on:save={addNewRecord} title="Add new {model.name.value}"
-                on:cancel={() => doAddNewRecord = false}/>
+    <StackingRecordEditor
+            recordEditContext={new RecordEditContext(models, dataRecordFns.newInstance(model, 'test-user'), saveNewRecord, () => doAddNewRecord = false, `Add new ${model.name.value}`)}/>
 {:else if recordBeingEdited !== null}
-    <EditRecord {models} {model} record={recordBeingEdited} on:save={recordEdited} title="Edit {model.name.value}"
-                on:cancel={() => recordBeingEdited = null}/>
+    <StackingRecordEditor
+            recordEditContext={new RecordEditContext(models, recordBeingEdited, recordEdited, () => recordBeingEdited = null, `Edit ${model.name.value}`)}/>
 {:else}
     <table>
         <thead>

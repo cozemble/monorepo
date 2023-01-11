@@ -1,20 +1,26 @@
 <script lang="ts">
-    import type {DataRecord, DataRecordPath, Model} from "@cozemble/model-core";
     import DataRecordEditorInner from "$lib/DataRecordEditorInner.svelte";
-    import {dataRecordFns} from "@cozemble/model-api";
-    import type {DataRecordPathFocus} from "$lib/DataRecordPathFocus";
-    import type {Writable} from 'svelte/store';
+    import type {RecordEditContext} from "$lib/RecordEditContext";
+    import {afterUpdate} from 'svelte';
 
-    export let models: Model[]
-    export let model: Model
-    export let record: DataRecord
-    export let errors: Map<DataRecordPath, string[]>
-    export let focus: Writable<DataRecordPathFocus>
-    export let title: string
+    export let recordEditContext: RecordEditContext
+    export let pushContext: (context: RecordEditContext) => void
+    export let popContext: () => void
 
+    const record = recordEditContext.record
+    const errors = recordEditContext.errors
+    const focus = recordEditContext.focus
+    const showErrors = recordEditContext.showErrors
+
+    afterUpdate(() => {
+        console.log({showErrors: $showErrors})
+    })
+
+    $: console.log({record: $record, showErrors: $showErrors})
 </script>
 
-<h2>{title}</h2>
+<h2>{recordEditContext.title}</h2>
 
-<DataRecordEditorInner {models} {model} record={dataRecordFns.fullStructure(models, record)} parentPath={[]} {errors}
-                       {focus}/>
+<DataRecordEditorInner models={recordEditContext.models} model={recordEditContext.model}
+                       record={$record} parentPath={[]} errors={$errors} showErrors={$showErrors}
+                       {focus} {pushContext} {popContext}/>

@@ -10,6 +10,7 @@
     export let parentPath: DataRecordPathElement[]
     export let errors: Map<DataRecordPath, string[]>
     export let focus: Writable<DataRecordPathFocus>
+    export let showErrors: boolean
 
 </script>
 
@@ -24,7 +25,7 @@
     <tbody>
     <tr>
         {#each model.properties as property}
-            <DataRecordTableTd {property} {record} {parentPath} {errors} {focus}/>
+            <DataRecordTableTd {property} {record} {parentPath} {errors} {focus} {showErrors}/>
         {/each}
     </tbody>
 </table>

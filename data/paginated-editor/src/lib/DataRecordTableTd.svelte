@@ -7,11 +7,11 @@
     import MaybeError from "$lib/MaybeError.svelte";
     import {dataRecordPathFns} from "@cozemble/model-api";
 
-
     export let property: Property
     export let record: DataRecord
     export let parentPath: DataRecordPathElement[]
     export let errors: Map<DataRecordPath, string[]>
+    export let showErrors: boolean
     export let focus: Writable<DataRecordPathFocus>
 
     function dataRecordPathAsString(property: Property) {
@@ -28,7 +28,7 @@
     {:else}
         <PropertyView {property} {record}/>
     {/if}
-    <MaybeError {parentPath} {property} {errors}/>
+    <MaybeError {parentPath} {property} {errors} {showErrors}/>
 </td>
 
 <style>
