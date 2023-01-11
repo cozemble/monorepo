@@ -1,9 +1,8 @@
 import type { DataRecord, DataRecordPath, Model } from '@cozemble/model-core'
 import { DataRecordPathFocus } from '$lib/DataRecordPathFocus'
 import { writable, type Writable } from 'svelte/store'
-import { dataRecordFns, modelFns } from '@cozemble/model-api'
+import { dataRecordFns, dataRecordPathFns, modelFns } from '@cozemble/model-api'
 import type { DataRecordEditEvent } from '@cozemble/model-editor-sdk'
-import { applyValueChangedToRecord } from '$lib/onValueChanged'
 import { uuids } from '@cozemble/lang-util'
 
 export class RecordEditContext {
@@ -30,14 +29,22 @@ export class RecordEditContext {
 
   handleDataRecordEditEvent(event: DataRecordEditEvent) {
     if (event._type === 'data.record.value.changed') {
-      this._record = applyValueChangedToRecord(this.models, this._record, event)
+      this._setRecord(
+        dataRecordPathFns.setValue(this.models, event.path, this._record, event.newValue),
+      )
       this.focus.update((f) => f.applyValueChangedToFocus(event))
-      this._errors = modelFns.validate(this.models, this._record)
-      this.record.set(this._record)
-      this.errors.set(this._errors)
-      console.log({ mutatedRecord: this._record })
     } else if (event._type === 'data.record.edit.aborted') {
       console.log({ event })
+    } else if (event._type === 'data.record.has.many.item.added') {
+      this._setRecord(
+        dataRecordPathFns.addHasManyItem(
+          this.models,
+          event.parentPath,
+          event.relationship,
+          this._record,
+          event.newRecord,
+        ),
+      )
     }
   }
 
@@ -47,7 +54,6 @@ export class RecordEditContext {
       this.onSave(this._record)
     } else {
       this.showErrors.set(true)
-      console.log("Can't save because of errors")
     }
   }
 
@@ -57,5 +63,13 @@ export class RecordEditContext {
 
   prefixTitle(prefix: string) {
     this.title = `${prefix} ${this.title}`
+  }
+
+  private _setRecord(record: DataRecord) {
+    this._record = record
+    this.record.set(record)
+    this._errors = modelFns.validate(this.models, this._record)
+    this.errors.set(this._errors)
+    console.log({ mutatedRecord: this._record })
   }
 }

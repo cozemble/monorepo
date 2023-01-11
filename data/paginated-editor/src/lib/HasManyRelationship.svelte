@@ -12,6 +12,7 @@
     import {dataRecordFns, modelFns} from "@cozemble/model-api";
     import DataRecordTableTd from "$lib/DataRecordTableTd.svelte";
     import {RecordEditContext} from "./RecordEditContext";
+    import {dataRecordEditEvents, dataRecordEditor} from "@cozemble/model-editor-sdk";
 
     export let models: Model[]
     export let record: DataRecord
@@ -23,6 +24,8 @@
     export let pushContext: (context: RecordEditContext) => void
     export let popContext: () => void
 
+    const dataRecordEditorClient = dataRecordEditor.getClient()
+
     $: model = modelFns.findById(models, relationship.modelId)
     $: records = record.values[relationship.id.value] ?? []
 
@@ -30,10 +33,19 @@
         console.log({newRecord})
         popContext()
         // dataRecordFns.addRecordToRelationship(record, relationship, newRecord)
+        dataRecordEditorClient.dispatchEditEvent(
+            dataRecordEditEvents.hasManyItemAdded(
+                record,
+                parentPath,
+                relationship,
+                newRecord,
+            ),
+        )
+
     }
 
     function addItem() {
-        pushContext(new RecordEditContext(models, dataRecordFns.newInstance(model, 'test-user'),onNewItemSaved,popContext,`New ${model.name.value}`))
+        pushContext(new RecordEditContext(models, dataRecordFns.newInstance(model, 'test-user'), onNewItemSaved, popContext, `New ${model.name.value}`))
     }
 </script>
 

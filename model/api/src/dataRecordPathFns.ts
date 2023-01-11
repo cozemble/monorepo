@@ -12,6 +12,8 @@ import {
 } from '@cozemble/model-core'
 import { dataRecordFns } from './dataRecordFns'
 import { modelFns } from './modelsFns'
+import { HasManyRelationship } from '@cozemble/model-core/dist/esm'
+import { relationshipFns } from './relationshipFns'
 
 function modelElementsToDataRecordPath(lastElement: Property, parentElements: ModelPathElement[]) {
   const parentRecordPathElements: DataRecordPathElement[] = parentElements.map((element) => {
@@ -156,5 +158,23 @@ export const dataRecordPathFns = {
       dataRecordPathFns.toDottedPath(path1),
       dataRecordPathFns.toDottedPath(path2),
     )
+  },
+  addHasManyItem(
+    models: Model[],
+    parentPath: DataRecordPathElement[],
+    relationship: HasManyRelationship,
+    initialRecord: DataRecord,
+    item: DataRecord,
+  ): DataRecord {
+    if (parentPath.length === 0) {
+      let items: DataRecord[] = (relationshipFns.getValue(initialRecord, relationship) ??
+        []) as DataRecord[]
+      items = [...items, item]
+      return {
+        ...initialRecord,
+        values: { ...initialRecord.values, [relationship.id.value]: items },
+      }
+    }
+    throw new Error('Not implemented: addHasManyItem with parent paths')
   },
 }

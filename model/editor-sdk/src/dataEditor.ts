@@ -1,5 +1,10 @@
 import { getContext, setContext } from 'svelte'
-import type { DataRecord, DataRecordPath } from '@cozemble/model-core'
+import type {
+  DataRecord,
+  DataRecordPath,
+  DataRecordPathElement,
+  HasManyRelationship,
+} from '@cozemble/model-core'
 import { mandatory } from '@cozemble/lang-util'
 
 const dataRecordEditorClientContext = 'com.cozemble.data.record.editor.client.context'
@@ -19,7 +24,15 @@ export interface DataRecordValueChanged<T = any> {
   confirmMethod: 'Enter' | 'Tab' | null
 }
 
-export type DataRecordEditEvent = DataRecordEditAborted | DataRecordValueChanged
+export interface HasManyItemAdded {
+  _type: 'data.record.has.many.item.added'
+  record: DataRecord
+  parentPath: DataRecordPathElement[]
+  relationship: HasManyRelationship
+  newRecord: DataRecord
+}
+
+export type DataRecordEditEvent = DataRecordEditAborted | DataRecordValueChanged | HasManyItemAdded
 
 export const dataRecordEditEvents = {
   editAborted(record: DataRecord, path: DataRecordPath): DataRecordEditAborted {
@@ -43,6 +56,20 @@ export const dataRecordEditEvents = {
       oldValue,
       newValue,
       confirmMethod,
+    }
+  },
+  hasManyItemAdded(
+    record: DataRecord,
+    parentPath: DataRecordPathElement[],
+    relationship: HasManyRelationship,
+    newRecord: DataRecord,
+  ): HasManyItemAdded {
+    return {
+      _type: 'data.record.has.many.item.added',
+      record,
+      parentPath,
+      relationship,
+      newRecord,
     }
   },
 }

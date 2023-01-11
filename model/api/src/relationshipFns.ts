@@ -1,5 +1,6 @@
 import type { Cardinality, ModelId, Relationship, RelationshipName } from '@cozemble/model-core'
 import { relationshipIdFns, relationshipNameFns } from '@cozemble/model-core'
+import { DataRecord } from '@cozemble/model-core/dist/esm'
 
 export const relationshipFns = {
   newInstance: (
@@ -14,5 +15,14 @@ export const relationshipFns = {
       id: relationshipIdFns.newInstance(),
       name: typeof name === 'string' ? relationshipNameFns.newInstance(name) : name,
     }
+  },
+  getValue(record: DataRecord, relationship: Relationship): DataRecord | DataRecord[] | null {
+    if (record === null || record === undefined) {
+      return null
+    }
+    if (relationship.subType === 'has.one.relationship') {
+      return record.values[relationship.id.value]
+    }
+    return record.values[relationship.id.value] ?? []
   },
 }
