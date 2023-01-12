@@ -5,6 +5,8 @@ import {
   type DataRecordPathElement,
   type DottedPath,
   dottedPathFns,
+  HasManyRelationship,
+  HasManyRelationshipPathElement,
   Model,
   ModelPathElement,
   Property,
@@ -12,7 +14,6 @@ import {
 } from '@cozemble/model-core'
 import { dataRecordFns } from './dataRecordFns'
 import { modelFns } from './modelsFns'
-import { HasManyRelationship } from '@cozemble/model-core/dist/esm'
 import { relationshipFns } from './relationshipFns'
 
 function modelElementsToDataRecordPath(lastElement: Property, parentElements: ModelPathElement[]) {
@@ -69,9 +70,10 @@ export const dataRecordPathFns = {
         return undefined
       }
       if (parentElement._type === 'relationship') {
-        if (parentElement.subType === 'has.one.relationship') {
-          return acc.values[parentElement.id.value]
-        }
+        return acc.values[parentElement.id.value]
+      } else if (parentElement._type === 'has.many.relationship.path.element') {
+        const relationshipRecords = acc.values[parentElement.relationship.id.value] ?? []
+        return relationshipRecords[parentElement.recordReference.index]
       }
     }, record)
     const reducedPath = dataRecordPathFns.newInstance(path.lastElement)
@@ -176,5 +178,53 @@ export const dataRecordPathFns = {
       }
     }
     throw new Error('Not implemented: addHasManyItem with parent paths')
+  },
+  newHasManyRelationshipPathElement(
+    relationship: HasManyRelationship,
+    index: number,
+  ): HasManyRelationshipPathElement {
+    return {
+      _type: 'has.many.relationship.path.element',
+      relationship,
+      recordReference: { _type: 'by.index.record.reference', index },
+    }
+  },
+  fromNames(models: Model[], model: Model, ...names: string[]) {
+    const [parentNames, propertyName] = arrays.splitLast(names)
+    const elements: DataRecordPathElement[] = parentNames.map((name) => {
+      if (name.indexOf('.') !== -1) {
+        const parts = name.split('.')
+        if (parts.length !== 2) {
+          throw new Error(`Invalid path: ${name}`)
+        }
+        const [relationshipName, index] = parts
+        const relationshipElement = modelFns.elementByName(model, relationshipName)
+        if (
+          relationshipElement._type !== 'relationship' ||
+          relationshipElement.subType !== 'has.many.relationship'
+        ) {
+          throw new Error(`Invalid path: ${name}`)
+        }
+        model = modelFns.findById(models, relationshipElement.modelId)
+        return dataRecordPathFns.newHasManyRelationshipPathElement(
+          relationshipElement,
+          parseInt(index),
+        )
+      }
+      const element = modelFns.elementByName(model, name)
+      if (element._type === 'property') {
+        throw new Error(`Invalid path: ${name} - found a property in the parent path`)
+      }
+      if (element.subType === 'has.many.relationship') {
+        throw new Error(`Invalid path: ${name} - found a has many relationship in the parent path`)
+      }
+      model = modelFns.findById(models, element.modelId)
+      return element
+    })
+    const lastElement = modelFns.elementByName(model, propertyName)
+    if (lastElement._type !== 'property') {
+      throw new Error(`Invalid path: ${names.join('.')} - last element is not a property`)
+    }
+    return dataRecordPathFns.newInstance(lastElement, ...elements)
   },
 }

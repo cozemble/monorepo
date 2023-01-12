@@ -1,3 +1,4 @@
+import { arrays } from '@cozemble/lang-util'
 import {
   DataRecord,
   DataRecordPath,
@@ -5,10 +6,12 @@ import {
   ModelPath,
   ModelPathElement,
   Property,
-  propertyDescriptors,
+  Cardinality,
+  DottedPath,
+  dottedPathFns,
 } from '@cozemble/model-core'
-import { dataRecordPathFns } from './dataRecordPathFns'
-import { DataRecordPathElement } from '@cozemble/model-core'
+import { modelFns } from './modelsFns'
+import { valuesForModelPath, ValuesForModelPathResponse } from './valuesForModelPath'
 
 export interface DataRecordPathAndValue<T = any> {
   _type: 'data.record.path.and.value'
@@ -38,6 +41,12 @@ export const modelPathFns = {
       parentElements,
     }
   },
+  cardinality<E extends ModelPathElement>(path: ModelPath<E>): Cardinality {
+    const hasAtLeastOneMany = path.parentElements.some(
+      (element) => element._type === 'relationship' && element.subType === 'has.many.relationship',
+    )
+    return hasAtLeastOneMany ? 'many' : 'one'
+  },
   prefix<E extends ModelPathElement>(element: E, p: ModelPath<E>): ModelPath<E> {
     return { ...p, parentElements: [element, ...p.parentElements] }
   },
@@ -45,24 +54,36 @@ export const modelPathFns = {
     models: Model[],
     path: ModelPath<Property>,
     record: DataRecord,
-  ): DataRecordPathAndValue {
-    let parentElements: DataRecordPathElement[] = []
-    record = path.parentElements.reduce((record, element) => {
-      if (element._type === 'relationship' && element.subType === 'has.one.relationship') {
-        parentElements = [...parentElements, element]
-        return record.values[element.id.value]
-      }
-      return null
-    }, record)
-    const value = record
-      ? propertyDescriptors.mandatory(path.lastElement).getValue(path.lastElement, record)
-      : null
-    return dataRecordRecordPathAndValue(
-      dataRecordPathFns.newInstance(path.lastElement, ...parentElements),
-      value,
-    )
+  ): ValuesForModelPathResponse {
+    return valuesForModelPath(models, path, record)
   },
   isPathToProperty<E extends ModelPathElement>(path: ModelPath<E>): boolean {
     return path.lastElement._type === 'property'
+  },
+  fromNames<E extends ModelPathElement>(
+    models: Model[],
+    model: Model,
+    ...names: string[]
+  ): ModelPath<E> {
+    const elements = names.map((name) => {
+      const element = modelFns.elementByName(model, name)
+      if (element._type === 'relationship') {
+        model = modelFns.findById(models, element.modelId)
+      }
+      return element
+    })
+    const [parentElements, lastElement] = arrays.splitLast(elements)
+    return {
+      _type: 'model.path',
+      lastElement: lastElement as E,
+      parentElements,
+    }
+  },
+  toDottedNamePath<E extends ModelPathElement>(path: ModelPath<E>): DottedPath {
+    const namePath = [
+      ...path.parentElements.map((element) => element.name.value),
+      path.lastElement.name.value,
+    ].join('.')
+    return dottedPathFns.dottedNamePath(namePath)
   },
 }

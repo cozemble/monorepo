@@ -11,7 +11,7 @@ import {
   stringPropertyFns,
   stringPropertyOptions,
 } from '@cozemble/model-string-core'
-import { HasOneRelationship } from '@cozemble/model-core'
+import { HasManyRelationship, HasOneRelationship } from '@cozemble/model-core'
 
 registerStringProperty()
 
@@ -59,6 +59,37 @@ describe('Given a model with a required string property in a has-one relationshi
     const errors = modelFns.validate([addressModel, customerModel], record)
     const expected = new Map([
       [dataRecordPathFns.newInstance(requiredPostcode, addressRelationship), ['Required']],
+    ])
+    expect(errors).toEqual(expected)
+  })
+})
+
+describe('Given a model with a required string property in a has-many relationship', () => {
+  const requiredPostcode = stringPropertyFns.newInstance('postcode', stringPropertyOptions.required)
+  const addressModel = modelFns.newInstance('Address', modelOptions.withProperty(requiredPostcode))
+  const emptyAddress = dataRecordFns.newInstance(addressModel, 'test-user')
+  const addressRelationship = relationshipFns.newInstance(
+    'address',
+    addressModel.id,
+    'many',
+  ) as HasManyRelationship
+  const customerModel = modelFns.newInstance(
+    'Customer',
+    modelOptions.withRelationships(addressRelationship),
+  )
+
+  test('validation fails record for relationship is missing', () => {
+    const record = dataRecordFns.newInstance(customerModel, 'test-user')
+    record.values[addressRelationship.id.value] = [emptyAddress]
+    const errors = modelFns.validate([addressModel, customerModel], record)
+    const expected = new Map([
+      [
+        dataRecordPathFns.newInstance(
+          requiredPostcode,
+          dataRecordPathFns.newHasManyRelationshipPathElement(addressRelationship, 0),
+        ),
+        ['Required'],
+      ],
     ])
     expect(errors).toEqual(expected)
   })

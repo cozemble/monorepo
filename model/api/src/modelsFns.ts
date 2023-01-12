@@ -22,6 +22,11 @@ import { clock, mandatory, options, strings } from '@cozemble/lang-util'
 import { propertyFns } from './propertyFns'
 import { relationshipFns } from './relationshipFns'
 import { modelPathFns } from './modelPathFns'
+import {
+  ManyCardinalityValuesForModelPathResponse,
+  singleCardinalityValuesForModelPathResponse,
+  SingleCardinalityValuesForModelPathResponse,
+} from './valuesForModelPath'
 
 export const modelOptions = {
   withProperty(p: Property): ModelOption {
@@ -37,6 +42,26 @@ export const modelOptions = {
     return (model) => ({ ...model, parentModelId })
   },
 }
+
+function validateValues(
+  path: ModelPath<Property>,
+  value: SingleCardinalityValuesForModelPathResponse | ManyCardinalityValuesForModelPathResponse,
+  errors: Map<DataRecordPath, string[]>,
+) {
+  if (value._type === 'single.cardinality.values.for.model.path.response') {
+    const property = path.lastElement
+    const propertyDescriptor = propertyDescriptors.mandatory(property)
+    const propertyErrors = propertyDescriptor.validateValue(property, value.value.value)
+    if (propertyErrors.length > 0) {
+      errors.set(value.value.path, propertyErrors)
+    }
+  } else {
+    value.value.forEach((v) => {
+      validateValues(path, singleCardinalityValuesForModelPathResponse(v), errors)
+    })
+  }
+}
+
 export const modelFns = {
   newInstance: (name: string, ...opts: ModelOption[]): Model => {
     return options.apply(emptyModel(modelNameFns.newInstance(name)), ...opts)
@@ -105,6 +130,13 @@ export const modelFns = {
       `Model element not found, name = ${name}, model = ${model.name.value}`,
     )
   },
+  maybeElementById(model: Model, id: string): ModelPathElement | null {
+    return (
+      model.properties.find((p) => p.id.value === id) ||
+      model.relationships.find((r) => r.id.value === id) ||
+      null
+    )
+  },
   elementById(model: Model, id: string): ModelPathElement {
     return mandatory(
       model.properties.find((p) => p.id.value === id) ||
@@ -137,12 +169,7 @@ export const modelFns = {
       .filter((p) => modelPathFns.isPathToProperty(p)) as ModelPath<Property>[]
     return pathsToProperties.reduce((errors, path) => {
       const value = modelPathFns.getValues(models, path, record)
-      const propertyErrors = propertyDescriptors
-        .mandatory(path.lastElement)
-        .validateValue(path.lastElement, value.value)
-      if (propertyErrors.length > 0) {
-        errors.set(value.path, propertyErrors)
-      }
+      validateValues(path, value, errors)
       return errors
     }, new Map<DataRecordPath, string[]>())
   },

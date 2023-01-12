@@ -1,3 +1,4 @@
+import { HasManyRelationship } from '@cozemble/model-core'
 import { stringPropertyFns, stringPropertyOptions } from '@cozemble/model-string-core'
 import { modelFns, modelOptions } from './modelsFns'
 import { relationshipFns } from './relationshipFns'
@@ -54,5 +55,10 @@ export const invoiceModel = modelFns.newInstance(
     relationshipFns.newInstance('Line Items', lineItemModel.id, 'many'),
   ),
 )
+
+export const invoiceLineItemsRelationship = modelFns.elementByName(
+  invoiceModel,
+  'Line Items',
+) as HasManyRelationship
 
 export const invoiceModels = [invoiceModel, customerModel, lineItemModel, addressModel]

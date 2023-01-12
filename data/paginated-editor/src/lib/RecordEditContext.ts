@@ -49,7 +49,7 @@ export class RecordEditContext {
   }
 
   attemptSave() {
-    console.log('attemptSave', { record: this._record, errors: this._errors })
+    console.log('attemptSave', { model: this.model, record: this._record, errors: this._errors })
     if (this._errors.size === 0) {
       this.onSave(this._record)
     } else {
@@ -70,6 +70,6 @@ export class RecordEditContext {
     this.record.set(record)
     this._errors = modelFns.validate(this.models, this._record)
     this.errors.set(this._errors)
-    console.log({ mutatedRecord: this._record })
+    console.log({ models: this.models, mutatedRecord: this._record, errors: this._errors })
   }
 }

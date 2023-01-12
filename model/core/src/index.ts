@@ -35,6 +35,8 @@ export {
   ModelPathElement,
   DottedPath,
   dottedPathFns,
+  ByIndexRecordReference,
+  RecordReference,
 } from './core'
 
 export { propertyDescriptors } from './propertyDescriptor'

@@ -9,8 +9,8 @@ describe('paginated editor', () => {
     cy.get('button.add-record').click()
     cy.get('button.save').click()
 
-    cy.get('td[data-record-path="firstName"] .validation-errors').should('contain.text', 'Required')
-    cy.get('td[data-record-path="firstName"] .value-container').type('Mike{enter}')
-    cy.get('td[data-record-path="firstName"] .validation-errors').should('not.exist')
+    cy.get('td[data-record-path="invoiceID"] .validation-errors').should('contain.text', 'Required')
+    cy.get('td[data-record-path="invoiceID"] .value-container').type('Invoice 22{enter}')
+    cy.get('td[data-record-path="invoiceID"] .validation-errors').should('not.exist')
   })
 })

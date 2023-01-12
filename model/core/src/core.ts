@@ -175,10 +175,17 @@ export interface DataRecord {
   values: { [key: string]: any }
 }
 
+export interface ByIndexRecordReference {
+  _type: 'by.index.record.reference'
+  index: number
+}
+
+export type RecordReference = ByIndexRecordReference
+
 export interface HasManyRelationshipPathElement {
   _type: 'has.many.relationship.path.element'
   relationship: HasManyRelationship
-  recordId: DataRecordId
+  recordReference: RecordReference
 }
 
 export type DataRecordPathElement = HasManyRelationshipPathElement | HasOneRelationship
