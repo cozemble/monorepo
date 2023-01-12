@@ -23,9 +23,9 @@ import { propertyFns } from './propertyFns'
 import { relationshipFns } from './relationshipFns'
 import { modelPathFns } from './modelPathFns'
 import {
-  ManyCardinalityValuesForModelPathResponse,
+  ManyCardinalityValuesForModelPath,
   singleCardinalityValuesForModelPathResponse,
-  SingleCardinalityValuesForModelPathResponse,
+  SingleCardinalityValuesForModelPath,
 } from './valuesForModelPath'
 
 export const modelOptions = {
@@ -45,7 +45,7 @@ export const modelOptions = {
 
 function validateValues(
   path: ModelPath<Property>,
-  value: SingleCardinalityValuesForModelPathResponse | ManyCardinalityValuesForModelPathResponse,
+  value: SingleCardinalityValuesForModelPath | ManyCardinalityValuesForModelPath,
   errors: Map<DataRecordPath, string[]>,
 ) {
   if (value._type === 'single.cardinality.values.for.model.path.response') {

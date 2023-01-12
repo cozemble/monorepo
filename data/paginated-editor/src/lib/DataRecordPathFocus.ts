@@ -1,4 +1,9 @@
-import { dataRecordPathFns, modelFns, modelPathFns } from '@cozemble/model-api'
+import {
+  dataRecordPathFns,
+  modelFns,
+  modelPathFns,
+  valuesForModelPathFns,
+} from '@cozemble/model-api'
 import type {
   DataRecord,
   DataRecordPath,
@@ -37,12 +42,14 @@ export class DataRecordPathFocus {
       const allPaths = modelFns
         .allPaths(models, model)
         .filter((p) => p.lastElement._type === 'property') as ModelPath<Property>[]
-      const allValues = allPaths.flatMap((p) => modelPathFns.getValues(models, p, record))
+      const allValues = allPaths.flatMap((p) =>
+        valuesForModelPathFns.flatten(modelPathFns.getValues(models, p, record)),
+      )
       const indexOfFocus = allValues.findIndex((v) =>
-        dataRecordPathFns.sameDottedPaths(v.path, focus),
+        dataRecordPathFns.sameDottedPaths(v.value.path, focus),
       )
       const nextValue = allValues[indexOfFocus + 1]
-      return this._newFocus(nextValue ? nextValue.path : null)
+      return this._newFocus(nextValue ? nextValue.value.path : null)
     } else if (event.confirmMethod === 'Enter') {
       return this._newFocus(null)
     }
@@ -56,7 +63,6 @@ export class DataRecordPathFocus {
       model,
       dottedPathFns.dottedNamePath(dottedNamePath),
     )
-    console.log({ dottedNamePath, newFocus })
     return this._newFocus(newFocus)
   }
 

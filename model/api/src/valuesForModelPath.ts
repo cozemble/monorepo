@@ -66,43 +66,53 @@ function getValuesRecursive(
   }
 }
 
-export interface SingleCardinalityValuesForModelPathResponse {
+export interface SingleCardinalityValuesForModelPath {
   _type: 'single.cardinality.values.for.model.path.response'
   value: DataRecordPathAndValue
 }
 
 export function singleCardinalityValuesForModelPathResponse(
   value: DataRecordPathAndValue,
-): SingleCardinalityValuesForModelPathResponse {
+): SingleCardinalityValuesForModelPath {
   return {
     _type: 'single.cardinality.values.for.model.path.response',
     value,
   }
 }
 
-export interface ManyCardinalityValuesForModelPathResponse {
+export interface ManyCardinalityValuesForModelPath {
   _type: 'many.cardinality.values.for.model.path.response'
   value: DataRecordPathAndValue[]
 }
 
 export function manyCardinalityValuesForModelPathResponse(
   value: DataRecordPathAndValue[],
-): ManyCardinalityValuesForModelPathResponse {
+): ManyCardinalityValuesForModelPath {
   return {
     _type: 'many.cardinality.values.for.model.path.response',
     value,
   }
 }
 
-export type ValuesForModelPathResponse =
-  | SingleCardinalityValuesForModelPathResponse
-  | ManyCardinalityValuesForModelPathResponse
+export type ValuesForModelPath =
+  | SingleCardinalityValuesForModelPath
+  | ManyCardinalityValuesForModelPath
+
+export const valuesForModelPathFns = {
+  flatten: (values: ValuesForModelPath): DataRecordPathAndValue[] => {
+    if (values._type === 'single.cardinality.values.for.model.path.response') {
+      return [values.value]
+    } else {
+      return values.value
+    }
+  },
+}
 
 export function valuesForModelPath(
   models: Model[],
   path: ModelPath<Property>,
   record: DataRecord,
-): ValuesForModelPathResponse {
+): ValuesForModelPath {
   const values = getValuesRecursive(models, path.lastElement, path.parentElements, [
     {
       parentElements: [],
