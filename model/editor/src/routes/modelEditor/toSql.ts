@@ -14,10 +14,13 @@ export const events = derived(allModels, (models) => {
   return arrays.sortBy(events, (e: ModelEventAndModelId) => e.event.timestamp.value)
 })
 
+export const eventTypes = derived(events, (events) => {
+  return events.map((e) => e.event._type)
+})
+
 export const sqlMigrations = derived([allModels, events], ([models, events]) => {
   const allModels = models.map((model) => model.model)
   const actions = events.flatMap((event) => {
-    console.log({ event, allModels })
     return modelEventToSqlActions.apply(allModels, event.modelId, event.event)
   })
   const theSchema = schema('app_public')
