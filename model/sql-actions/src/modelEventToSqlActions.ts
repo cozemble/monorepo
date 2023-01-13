@@ -1,13 +1,12 @@
 import type { Model, ModelEvent, ModelId } from '@cozemble/model-core'
 import { constraints, makeSqlActions, type SqlAction, SqlActions } from '@cozemble/sql-actions'
 import type {
+  BooleanPropertyChanged,
   ModelCreated,
   ModelRenamed,
   PropertyRenamed,
   RelationshipAdded,
 } from '@cozemble/model-event-sourced'
-
-import { modelFns } from '@cozemble/model-api'
 import { strings } from '@cozemble/lang-util'
 
 export interface ModelEventToSqlAction<E extends ModelEvent> {
@@ -79,8 +78,6 @@ modelEventToSqlActions.register<RelationshipAdded>('relationship.added.event', {
         ),
       ]
     } else {
-      // const fromModel = modelFns.findById(allModels, modelId) // customer
-      // const toModel = modelFns.findById(allModels, event.relatedModelId) // address
       const fkColumnName = `${event.parentModel.name.value} ID`
       const fkConstraintName = strings.camelize(
         `${event.parentModel.name.value}${event.childModel.name.value}Fk`,
@@ -95,5 +92,41 @@ modelEventToSqlActions.register<RelationshipAdded>('relationship.added.event', {
         ),
       ]
     }
+  },
+})
+
+modelEventToSqlActions.register<BooleanPropertyChanged>('boolean.property.changed.event', {
+  eventToSqlAction: (sqlActions, allModels, modelId, event) => {
+    if (event.booleanPropertyName === 'required') {
+      if (event.newValue === true) {
+        return [sqlActions.makeColumnNonNullable(event.modelName.value, event.propertyName.value)]
+      } else {
+        return [sqlActions.makeColumnNullable(event.modelName.value, event.propertyName.value)]
+      }
+    }
+    if (event.booleanPropertyName === 'unique') {
+      const constraintName = strings.camelize(
+        `${event.modelName.value}${event.propertyName.value}Unique`,
+      )
+      const constraint = constraints.unique(constraintName)
+      if (event.newValue === true) {
+        return [
+          sqlActions.addColumnConstraint(
+            event.modelName.value,
+            event.propertyName.value,
+            constraint,
+          ),
+        ]
+      } else {
+        return [
+          sqlActions.dropColumnConstraint(
+            event.modelName.value,
+            event.propertyName.value,
+            constraint,
+          ),
+        ]
+      }
+    }
+    return []
   },
 })

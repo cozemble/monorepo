@@ -104,19 +104,13 @@
                     </td>
                 {/each}
                 <td>
-                    <button on:click={addProperty} class="add-property"
-                    >Add property
-                    </button
-                    >
+                    <button on:click={addProperty} class="add-property">Add property</button>
                 </td>
             </tr>
             </tbody>
         </table>
         <div class="actions">
-            <button on:click={addNestedModel} class="add-nested-model"
-            >Add nested model
-            </button
-            >
+            <button on:click={addNestedModel} class="add-nested-model">Add nested model</button>
         </div>
     </div>
 {/if}

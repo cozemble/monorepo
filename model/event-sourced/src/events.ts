@@ -8,9 +8,13 @@ import type {
   PropertyName,
   RelationshipName,
 } from '@cozemble/model-core'
-import { modelEventDescriptors, propertyIdFns, timestampEpochMillis } from '@cozemble/model-core'
+import {
+  modelEventDescriptors,
+  modelEventIdFns,
+  propertyIdFns,
+  timestampEpochMillis,
+} from '@cozemble/model-core'
 import { relationshipFns } from '@cozemble/model-api'
-import { modelEventIdFns } from '@cozemble/model-core'
 
 export interface ModelRenamed extends ModelEvent {
   _type: 'model.renamed.event'
@@ -139,13 +143,51 @@ function modelCreated(modelName: ModelName): ModelCreated {
   }
 }
 
+export interface BooleanPropertyChanged extends ModelEvent {
+  _type: 'boolean.property.changed.event'
+  propertyName: PropertyName
+  modelName: ModelName
+  booleanPropertyName: 'required' | 'unique'
+  newValue: boolean
+}
+
+function booleanPropertyChanged(
+  modelName: ModelName,
+  propertyName: PropertyName,
+  booleanPropertyName: 'required' | 'unique',
+  newValue: boolean,
+): BooleanPropertyChanged {
+  return {
+    _type: 'boolean.property.changed.event',
+    timestamp: timestampEpochMillis(),
+    id: modelEventIdFns.newInstance(),
+    propertyName,
+    modelName,
+    booleanPropertyName,
+    newValue,
+  }
+}
+
+const booleanPropertyChangeDescriptor: ModelEventDescriptor<BooleanPropertyChanged> = {
+  _type: 'model.event.descriptor',
+  modelEventType: 'boolean.property.changed.event',
+  applyEvent: (model, event) => {
+    return {
+      ...model,
+      [event.booleanPropertyName]: event.newValue,
+    }
+  },
+}
+
 modelEventDescriptors.register(modelRenamedDescriptor)
 modelEventDescriptors.register(propertyRenamedDescriptor)
 modelEventDescriptors.register(relationshipAddedDescriptor)
+modelEventDescriptors.register(booleanPropertyChangeDescriptor)
 
 export const coreModelEvents = {
   modelRenamed,
   propertyRenamed,
   relationshipAdded,
   modelCreated,
+  booleanPropertyChanged,
 }

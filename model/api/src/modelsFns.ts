@@ -24,12 +24,15 @@ import { relationshipFns } from './relationshipFns'
 import { modelPathFns } from './modelPathFns'
 import {
   ManyCardinalityValuesForModelPath,
-  singleCardinalityValuesForModelPathResponse,
   SingleCardinalityValuesForModelPath,
+  singleCardinalityValuesForModelPathResponse,
 } from './valuesForModelPath'
 
 export const modelOptions = {
-  withProperty(p: Property): ModelOption {
+  withProperty(p: Property | string): ModelOption {
+    if (typeof p === 'string') {
+      p = propertyFns.newInstance(p)
+    }
     return this.withProperties(p)
   },
   withProperties(...ps: Property[]): ModelOption {

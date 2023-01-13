@@ -11,7 +11,6 @@
     $: errors = stringPropertyDescriptor.validateProperty(property)
 
     function addRegexValidation() {
-        console.log('add regex validation')
         property.validations = [
             ...property.validations,
             {_type: 'regex.validation', regex: '', message: ''},
@@ -22,30 +21,6 @@
         property.validations = property.validations.filter((_, i) => i !== index)
     }
 </script>
-
-<label class="label">
-    <input
-            type="checkbox"
-            name="checkbox"
-            value="text"
-            bind:checked={property.required}
-            class="required-toggle"
-    /> Required
-</label>
-
-<br/>
-
-<label class="label">
-    <input
-            type="checkbox"
-            name="checkbox"
-            value="text"
-            bind:checked={property.unique}
-            class="unique-toggle"
-    /> Unique
-</label>
-
-<br/>
 
 {#each property.validations as _validation, index}
     <div class="validation-container">

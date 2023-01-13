@@ -9,7 +9,7 @@ import {
   relationshipNameFns,
 } from '@cozemble/model-core'
 import { modelEventToSqlActions } from '../src/modelEventToSqlActions'
-import { modelFns, modelIdFns } from '@cozemble/model-api'
+import { modelFns, modelIdFns, modelOptions } from '@cozemble/model-api'
 
 const stubSqlActions = makeSqlActions(
   () => new Date(0),
@@ -94,6 +94,70 @@ test('can add a has many relationship', () => {
       'Address',
       'Customer ID',
       constraints.fk('Customer', 'customerAddressFk'),
+    ),
+  ])
+})
+
+test('can mark a property as required', () => {
+  const customerModel = modelFns.newInstance('Customer', modelOptions.withProperty('First name'))
+  const firstNameProperty = customerModel.properties[0]
+  const event = coreModelEvents.booleanPropertyChanged(
+    customerModel.name,
+    firstNameProperty.name,
+    'required',
+    true,
+  )
+  const actions = modelEventToSqlActions.apply([customerModel], customerModel.id, event)
+  expect(actions).toMatchObject([stubSqlActions.makeColumnNonNullable('Customer', 'First Name')])
+})
+
+test('can mark a property as not required', () => {
+  const customerModel = modelFns.newInstance('Customer', modelOptions.withProperty('First name'))
+  const firstNameProperty = customerModel.properties[0]
+  const event = coreModelEvents.booleanPropertyChanged(
+    customerModel.name,
+    firstNameProperty.name,
+    'required',
+    false,
+  )
+  const actions = modelEventToSqlActions.apply([customerModel], customerModel.id, event)
+  expect(actions).toMatchObject([stubSqlActions.makeColumnNullable('Customer', 'First Name')])
+})
+
+test('can mark a property as unique', () => {
+  const customerModel = modelFns.newInstance('Customer', modelOptions.withProperty('Email'))
+  const emailProperty = customerModel.properties[0]
+  const event = coreModelEvents.booleanPropertyChanged(
+    customerModel.name,
+    emailProperty.name,
+    'unique',
+    true,
+  )
+  const actions = modelEventToSqlActions.apply([customerModel], customerModel.id, event)
+  expect(actions).toMatchObject([
+    stubSqlActions.addColumnConstraint(
+      'Customer',
+      'Email',
+      constraints.unique(`customerEmailUnique`),
+    ),
+  ])
+})
+
+test('can mark a property as not unique', () => {
+  const customerModel = modelFns.newInstance('Customer', modelOptions.withProperty('Email'))
+  const emailProperty = customerModel.properties[0]
+  const event = coreModelEvents.booleanPropertyChanged(
+    customerModel.name,
+    emailProperty.name,
+    'unique',
+    false,
+  )
+  const actions = modelEventToSqlActions.apply([customerModel], customerModel.id, event)
+  expect(actions).toMatchObject([
+    stubSqlActions.dropColumnConstraint(
+      'Customer',
+      'Email',
+      constraints.unique(`customerEmailUnique`),
     ),
   ])
 })

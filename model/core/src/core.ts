@@ -42,6 +42,8 @@ export interface Property {
   id: PropertyId
   version: number
   name: PropertyName
+  required: boolean
+  unique: boolean
 }
 
 export interface ModelId {
