@@ -3,7 +3,7 @@
 
     import {registerAllProperties, registerAllPropertyConfigurers,} from '@cozemble/model-assembled'
     import ModelEditor from '$lib/ModelEditor.svelte'
-    import {allModels, bootstrapHost, host} from './host'
+    import {allModels, bootstrapHost, host,clearLocalStorage} from './host'
     import type {EventSourcedModel} from '@cozemble/model-event-sourced'
     import {events, eventTypes, sqlMigrations} from './toSql'
     import {registerStringPropertyEventToSqlActions} from '@cozemble/model-string-sql-actions'
@@ -17,6 +17,7 @@
         registerAllPropertyConfigurers()
         mounted = true
         bootstrapHost(localStorage)
+        console.log({allModels:$allModels})
         firstModel = $allModels[0]
     })
 
@@ -39,6 +40,10 @@
     function showModel(index: number) {
         modelIndexToShow = index
     }
+
+    function clearClicked() {
+        clearLocalStorage(localStorage)
+    }
 </script>
 
 {#if mounted && firstModel}
@@ -48,6 +53,7 @@
 <pre>{#each $sqlMigrations as migration}{migration} <br/>{/each}</pre>
 <br/>
 <button type="button" on:click={apply}>Apply to database</button>
+<hr/>
 <br/>
 <div class="inspector">
     <div class="events-inspector">
@@ -78,6 +84,9 @@
         {/if}
     </div>
 </div>
+<div class="controls">
+    <button type="button" on:click={clearClicked}>Clear</button>
+</div>
 
 <style>
     .inspector {
@@ -87,5 +96,9 @@
 
     .events-inspector {
         margin-right: 1rem;
+    }
+
+    .controls {
+        margin-top: 1rem;
     }
 </style>

@@ -156,7 +156,16 @@ const booleanPropertyChangeDescriptor: ModelEventDescriptor<BooleanPropertyChang
   applyEvent: (model, event) => {
     return {
       ...model,
-      [event.booleanPropertyName]: event.newValue,
+      properties: model.properties.map((property) => {
+        if (propertyIdFns.equals(property.id, event.propertyId)) {
+          return {
+            ...property,
+            [event.booleanPropertyName]: event.newValue,
+          }
+        } else {
+          return property
+        }
+      }),
     }
   },
 }

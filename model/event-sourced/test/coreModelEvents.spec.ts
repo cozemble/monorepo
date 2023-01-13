@@ -55,3 +55,55 @@ test('has event that adds a relationship to a model', () => {
     arrays.dropFields([relationshipFns.newInstance('Address', address.id, 'one')], 'id'),
   )
 })
+
+test('has event that makes a property required', () => {
+  const customer = modelFns.newInstance(
+    'Customer',
+    modelOptions.withProperty(propertyFns.newInstance('name')),
+  )
+  const nameProperty = customer.properties[0]
+  const makeRequiredEvent = coreModelEvents.booleanPropertyChanged(
+    customer.id,
+    nameProperty.id,
+    'required',
+    true,
+  )
+
+  let mutatedCustomer = modelEventDescriptors.applyEvent(customer, makeRequiredEvent)
+  expect(mutatedCustomer.properties[0].required).toEqual(true)
+
+  const makeNonRequiredEvent = coreModelEvents.booleanPropertyChanged(
+    customer.id,
+    nameProperty.id,
+    'required',
+    false,
+  )
+  mutatedCustomer = modelEventDescriptors.applyEvent(customer, makeNonRequiredEvent)
+  expect(mutatedCustomer.properties[0].required).toEqual(false)
+})
+
+test('has event that makes a property unique', () => {
+  const customer = modelFns.newInstance(
+    'Customer',
+    modelOptions.withProperty(propertyFns.newInstance('name')),
+  )
+  const nameProperty = customer.properties[0]
+  const makeUniqueEvent = coreModelEvents.booleanPropertyChanged(
+    customer.id,
+    nameProperty.id,
+    'unique',
+    true,
+  )
+
+  let mutatedCustomer = modelEventDescriptors.applyEvent(customer, makeUniqueEvent)
+  expect(mutatedCustomer.properties[0].unique).toEqual(true)
+
+  const makeNonUniqueEvent = coreModelEvents.booleanPropertyChanged(
+    customer.id,
+    nameProperty.id,
+    'unique',
+    false,
+  )
+  mutatedCustomer = modelEventDescriptors.applyEvent(customer, makeNonUniqueEvent)
+  expect(mutatedCustomer.properties[0].unique).toEqual(false)
+})

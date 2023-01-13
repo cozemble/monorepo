@@ -1,12 +1,13 @@
 import type { Model, ModelEvent, ModelId } from '@cozemble/model-core'
-import { eventSourcedModelFns, type EventSourcedModel } from '@cozemble/model-event-sourced'
+import { modelNameFns } from '@cozemble/model-core'
+import { type EventSourcedModel, eventSourcedModelFns } from '@cozemble/model-event-sourced'
 import type { ModelEditorHost } from '$lib/ModelEditorHost'
 import { mandatory } from '@cozemble/lang-util'
 import { modelIdFns } from '@cozemble/model-api'
 import { type Writable, writable } from 'svelte/store'
-import { modelNameFns } from '@cozemble/model-core'
 
 export const allModels: Writable<EventSourcedModel[]> = writable([])
+const storageKey = 'com.cozemble.model.editor.route.page'
 
 export const host: ModelEditorHost = {
   modelChanged(id: ModelId, event: ModelEvent) {
@@ -33,7 +34,12 @@ export const host: ModelEditorHost = {
   },
 }
 
-const storageKey = 'com.cozemble.model.editor.route.page'
+export function clearLocalStorage(localStorage: Storage) {
+  localStorage.removeItem(storageKey)
+  allModels.set([eventSourcedModelFns.newInstance(modelNameFns.newInstance('My model'))])
+}
+
+let localStorageSubscribed = false
 
 export function bootstrapHost(localStorage: Storage) {
   const stored = localStorage.getItem(storageKey)
@@ -42,5 +48,8 @@ export function bootstrapHost(localStorage: Storage) {
   } else {
     allModels.set([eventSourcedModelFns.newInstance(modelNameFns.newInstance('My model'))])
   }
-  return allModels.subscribe((models) => localStorage.setItem(storageKey, JSON.stringify(models)))
+  if (!localStorageSubscribed) {
+    allModels.subscribe((models) => localStorage.setItem(storageKey, JSON.stringify(models)))
+    localStorageSubscribed = true
+  }
 }

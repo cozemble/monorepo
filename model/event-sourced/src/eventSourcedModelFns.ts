@@ -4,9 +4,9 @@ import {
   type Model,
   type ModelEvent,
   modelEventDescriptors,
+  modelEventFns,
   type ModelId,
   type ModelName,
-  modelEventFns,
 } from '@cozemble/model-core'
 import { coreModelEvents, ModelCreated } from './events'
 import { EventSourcedModel } from './EventSourcedModel'
@@ -29,9 +29,11 @@ export const eventSourcedModelFns = {
   },
   addEvent: (eventSourcedModel: EventSourcedModel, event: ModelEvent): EventSourcedModel => {
     event = modelEventFns.withOptions(event, { insertionOrder: eventSourcedModel.events.length })
+    const mutatedModel = modelEventDescriptors.applyEvent(eventSourcedModel.model, event)
+    console.log({ event, mutatedModel })
     return {
       ...eventSourcedModel,
-      model: modelEventDescriptors.applyEvent(eventSourcedModel.model, event),
+      model: mutatedModel,
       events: [...eventSourcedModel.events, event],
     }
   },
