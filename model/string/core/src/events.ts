@@ -3,12 +3,11 @@ import {
   type ModelEvent,
   type ModelEventDescriptor,
   modelEventDescriptors,
-  modelEventIdFns,
+  modelEventFns,
   type ModelId,
   type PropertyId,
   propertyIdFns,
   type PropertyName,
-  timestampEpochMillis,
 } from '@cozemble/model-core'
 import { emptyProperty } from './stringProperty'
 
@@ -25,9 +24,7 @@ export function newStringPropertyModelEvent(
 ): NewStringPropertyModelEvent {
   return {
     _type: 'new.string.property.model.event',
-    timestamp: timestampEpochMillis(),
-    id: modelEventIdFns.newInstance(),
-    modelId,
+    ...modelEventFns.coreParts(modelId),
     propertyName,
     propertyId: propertyId ?? propertyIdFns.newInstance(),
   }

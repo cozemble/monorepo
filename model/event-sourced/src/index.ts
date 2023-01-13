@@ -7,4 +7,5 @@ export {
   BooleanPropertyChanged,
 } from './events'
 
-export { eventSourcedModelFns, EventSourcedModel } from './eventSourced'
+export { eventSourcedModelFns } from './eventSourcedModelFns'
+export { EventSourcedModel } from './EventSourcedModel'

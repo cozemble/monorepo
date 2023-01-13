@@ -9,13 +9,8 @@ import type {
   PropertyName,
   RelationshipName,
 } from '@cozemble/model-core'
-import {
-  modelEventDescriptors,
-  modelEventIdFns,
-  propertyIdFns,
-  timestampEpochMillis,
-} from '@cozemble/model-core'
-import { relationshipFns, modelIdFns } from '@cozemble/model-api'
+import { modelEventDescriptors, modelEventFns, propertyIdFns } from '@cozemble/model-core'
+import { modelIdFns, relationshipFns } from '@cozemble/model-api'
 
 export interface ModelRenamed extends ModelEvent {
   _type: 'model.renamed.event'
@@ -25,9 +20,7 @@ export interface ModelRenamed extends ModelEvent {
 function modelRenamed(modelId: ModelId, newModelName: ModelName): ModelRenamed {
   return {
     _type: 'model.renamed.event',
-    timestamp: timestampEpochMillis(),
-    id: modelEventIdFns.newInstance(),
-    modelId,
+    ...modelEventFns.coreParts(modelId),
     newModelName,
   }
 }
@@ -56,9 +49,7 @@ function propertyRenamed(
 ): PropertyRenamed {
   return {
     _type: 'property.renamed.event',
-    timestamp: timestampEpochMillis(),
-    id: modelEventIdFns.newInstance(),
-    modelId,
+    ...modelEventFns.coreParts(modelId),
     propertyId,
     newPropertyName,
   }
@@ -100,9 +91,7 @@ function relationshipAdded(
 ): RelationshipAdded {
   return {
     _type: 'relationship.added.event',
-    timestamp: timestampEpochMillis(),
-    id: modelEventIdFns.newInstance(),
-    modelId: parentModel.id,
+    ...modelEventFns.coreParts(parentModel.id),
     parentModel,
     childModel,
     cardinality,
@@ -134,9 +123,7 @@ export interface ModelCreated extends ModelEvent {
 function modelCreated(modelName: ModelName, modelId = modelIdFns.newInstance()): ModelCreated {
   return {
     _type: 'model.created.event',
-    timestamp: timestampEpochMillis(),
-    id: modelEventIdFns.newInstance(),
-    modelId,
+    ...modelEventFns.coreParts(modelId),
     modelName,
   }
 }
@@ -156,9 +143,7 @@ function booleanPropertyChanged(
 ): BooleanPropertyChanged {
   return {
     _type: 'boolean.property.changed.event',
-    timestamp: timestampEpochMillis(),
-    id: modelEventIdFns.newInstance(),
-    modelId,
+    ...modelEventFns.coreParts(modelId),
     propertyId,
     booleanPropertyName,
     newValue,

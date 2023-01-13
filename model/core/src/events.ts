@@ -1,4 +1,4 @@
-import { Model, ModelId, TimestampEpochMillis } from './core'
+import { Model, ModelId, timestampEpochMillis, TimestampEpochMillis } from './core'
 import { uuids } from '@cozemble/lang-util'
 
 export interface ModelEventId {
@@ -20,6 +20,24 @@ export interface ModelEvent {
   id: ModelEventId
   modelId: ModelId
   timestamp: TimestampEpochMillis
+  insertionOrder: number
+}
+
+export const modelEventFns = {
+  coreParts: (modelId: ModelId): Omit<ModelEvent, '_type'> => {
+    return {
+      id: modelEventIdFns.newInstance(),
+      modelId,
+      timestamp: timestampEpochMillis(),
+      insertionOrder: 0,
+    }
+  },
+  withOptions: (event: ModelEvent, options: Partial<ModelEvent>): ModelEvent => {
+    return {
+      ...event,
+      ...options,
+    }
+  },
 }
 
 export interface ModelEventDescriptor<E = any> {

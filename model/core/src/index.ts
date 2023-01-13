@@ -48,6 +48,7 @@ export {
   modelEventDescriptors,
   ModelEventId,
   modelEventIdFns,
+  modelEventFns,
 } from './events'
 
 export { propertyIdFns } from './propertyIdFns'

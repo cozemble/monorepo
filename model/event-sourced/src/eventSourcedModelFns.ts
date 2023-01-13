@@ -6,14 +6,10 @@ import {
   modelEventDescriptors,
   type ModelId,
   type ModelName,
+  modelEventFns,
 } from '@cozemble/model-core'
 import { coreModelEvents, ModelCreated } from './events'
-
-export interface EventSourcedModel {
-  _type: 'event.sourced.model'
-  model: Model
-  events: ModelEvent[]
-}
+import { EventSourcedModel } from './EventSourcedModel'
 
 export const eventSourcedModelFns = {
   newInstance: (modelOrName: Model | ModelName): EventSourcedModel => {
@@ -32,6 +28,7 @@ export const eventSourcedModelFns = {
     }
   },
   addEvent: (eventSourcedModel: EventSourcedModel, event: ModelEvent): EventSourcedModel => {
+    event = modelEventFns.withOptions(event, { insertionOrder: eventSourcedModel.events.length })
     return {
       ...eventSourcedModel,
       model: modelEventDescriptors.applyEvent(eventSourcedModel.model, event),
@@ -48,7 +45,7 @@ export const eventSourcedModelFns = {
     events: ModelEvent[],
     onEachEvent: (event: ModelEvent, oldModel: Model | null, currentModels: Model[]) => void,
   ): EventSourcedModel[] => {
-    events = arrays.sortBy(events, (e: ModelEvent) => e.timestamp.value)
+    events = arrays.sortBy(events, (e: ModelEvent) => e.timestamp.value + e.insertionOrder)
     return events.reduce((models, event) => {
       if (event._type === 'model.created.event') {
         const newModel = eventSourcedModelFns.fromCreatedEvent(event as ModelCreated)
