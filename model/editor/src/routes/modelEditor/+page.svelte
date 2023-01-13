@@ -60,21 +60,22 @@
         {#if eventIndexToShow !== null}
             <div class="event-type">
                 <h5>Event {eventIndexToShow}</h5>
-                <pre>{JSON.stringify($events[eventIndexToShow], null, 2)}</pre>
+                <pre>{JSON.stringify($events[eventIndexToShow].event, null, 2)}</pre>
             </div>
         {/if}
     </div>
     <div class="models-inspector">
         <h5>Models</h5>
         {#each $allModels as model, index}
-            <a href="#!" class="model-name" on:click={() => showModel(index)}>{index}. {model.model.name.value}</a>
-            {#if modelIndexToShow !== null}
-                <div class="model-type">
-                    <h5>Showing model {model.model.name.value}</h5>
-                    <pre>{JSON.stringify($allModels[modelIndexToShow].model, null, 2)}</pre>
-                </div>
-            {/if}
+            <a href="#!" class="model-name" on:click={() => showModel(index)}>{index}. {model.model.name.value}</a><br/>
         {/each}
+        {#if modelIndexToShow !== null}
+            {@const model = $allModels[modelIndexToShow]}
+            <div class="model-type">
+                <h5>Showing model {model.model.name.value}</h5>
+                <pre>{JSON.stringify($allModels[modelIndexToShow].model, null, 2)}</pre>
+            </div>
+        {/if}
     </div>
 </div>
 
