@@ -16,8 +16,6 @@ export interface RegexValidation {
 
 export interface StringProperty extends Property {
   propertyType: { _type: 'property.type'; type: 'string.property' }
-  required: boolean
-  unique: boolean
   validations: RegexValidation[]
 }
 
