@@ -2,6 +2,7 @@ import type {
   Cardinality,
   ModelEvent,
   ModelEventDescriptor,
+  ModelId,
   ModelIdAndName,
   ModelName,
   PropertyId,
@@ -14,20 +15,19 @@ import {
   propertyIdFns,
   timestampEpochMillis,
 } from '@cozemble/model-core'
-import { relationshipFns } from '@cozemble/model-api'
+import { relationshipFns, modelIdFns } from '@cozemble/model-api'
 
 export interface ModelRenamed extends ModelEvent {
   _type: 'model.renamed.event'
-  oldModelName: ModelName
   newModelName: ModelName
 }
 
-function modelRenamed(oldModelName: ModelName, newModelName: ModelName): ModelRenamed {
+function modelRenamed(modelId: ModelId, newModelName: ModelName): ModelRenamed {
   return {
     _type: 'model.renamed.event',
     timestamp: timestampEpochMillis(),
     id: modelEventIdFns.newInstance(),
-    oldModelName,
+    modelId,
     newModelName,
   }
 }
@@ -46,24 +46,20 @@ const modelRenamedDescriptor: ModelEventDescriptor<ModelRenamed> = {
 export interface PropertyRenamed extends ModelEvent {
   _type: 'property.renamed.event'
   propertyId: PropertyId
-  modelName: ModelName
-  oldPropertyName: PropertyName
   newPropertyName: PropertyName
 }
 
 function propertyRenamed(
-  modelName: ModelName,
+  modelId: ModelId,
   propertyId: PropertyId,
-  oldPropertyName: PropertyName,
   newPropertyName: PropertyName,
 ): PropertyRenamed {
   return {
     _type: 'property.renamed.event',
     timestamp: timestampEpochMillis(),
     id: modelEventIdFns.newInstance(),
+    modelId,
     propertyId,
-    modelName,
-    oldPropertyName,
     newPropertyName,
   }
 }
@@ -106,6 +102,7 @@ function relationshipAdded(
     _type: 'relationship.added.event',
     timestamp: timestampEpochMillis(),
     id: modelEventIdFns.newInstance(),
+    modelId: parentModel.id,
     parentModel,
     childModel,
     cardinality,
@@ -134,26 +131,26 @@ export interface ModelCreated extends ModelEvent {
   modelName: ModelName
 }
 
-function modelCreated(modelName: ModelName): ModelCreated {
+function modelCreated(modelName: ModelName, modelId = modelIdFns.newInstance()): ModelCreated {
   return {
     _type: 'model.created.event',
     timestamp: timestampEpochMillis(),
     id: modelEventIdFns.newInstance(),
+    modelId,
     modelName,
   }
 }
 
 export interface BooleanPropertyChanged extends ModelEvent {
   _type: 'boolean.property.changed.event'
-  propertyName: PropertyName
-  modelName: ModelName
+  propertyId: PropertyId
   booleanPropertyName: 'required' | 'unique'
   newValue: boolean
 }
 
 function booleanPropertyChanged(
-  modelName: ModelName,
-  propertyName: PropertyName,
+  modelId: ModelId,
+  propertyId: PropertyId,
   booleanPropertyName: 'required' | 'unique',
   newValue: boolean,
 ): BooleanPropertyChanged {
@@ -161,8 +158,8 @@ function booleanPropertyChanged(
     _type: 'boolean.property.changed.event',
     timestamp: timestampEpochMillis(),
     id: modelEventIdFns.newInstance(),
-    propertyName,
-    modelName,
+    modelId,
+    propertyId,
     booleanPropertyName,
     newValue,
   }

@@ -21,7 +21,7 @@
             model.id,
             propertyDescriptors
                 .getDefault()
-                .newProperty(model.name, propertyNameFns.newInstance(propertyName)),
+                .newProperty(model.id, propertyNameFns.newInstance(propertyName)),
         )
     }
 

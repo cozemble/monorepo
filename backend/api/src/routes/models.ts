@@ -2,10 +2,10 @@ import { Request, Response, Router } from 'express'
 import { type EventSourcedModel } from '@cozemble/model-event-sourced'
 import { type ModelEvent, type ModelId } from '@cozemble/model-core'
 import { arrays } from '@cozemble/lang-util'
-import { modelEventToSqlActions } from '@cozemble/model-sql-actions'
 import { actionToSql, schema } from '@cozemble/sql-actions'
 import { appPublicKnex, ModelEventTableRow, ModelTableRow, SqlMigrationsKnexSource } from '../knex'
 import { pgUrl } from '../config'
+import { sqlActionsPlayer } from '@cozemble/model-sql-actions-player'
 
 const router: Router = Router()
 
@@ -52,10 +52,7 @@ router.post('/apply/', async (req: Request, res: Response) => {
   )
   const sorted = arrays.sortBy(events, (e: ModelEventAndModelId) => e.event.timestamp.value)
 
-  const allModels = models.map((model) => model.model)
-  const actions = sorted.flatMap((event) => {
-    return modelEventToSqlActions.apply(allModels, event.modelId, event.event)
-  })
+  const actions = sqlActionsPlayer.play(models)
   const theSchema = schema('app_public')
   const migrations = actions.map((a) => actionToSql(theSchema, a))
   const knex = await appPublicKnex(pgUrl)

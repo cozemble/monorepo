@@ -2,7 +2,7 @@ import { mandatory } from '@cozemble/lang-util'
 import {
   DataRecord,
   DottedName,
-  ModelName,
+  ModelId,
   Property,
   PropertyId,
   PropertyName,
@@ -15,11 +15,7 @@ export interface PropertyDescriptor<P = any, V = any> {
   _type: 'property.descriptor'
   propertyType: PropertyType
   name: DottedName
-  newProperty: (
-    modelName: ModelName,
-    propertyName: PropertyName,
-    propertyId?: PropertyId,
-  ) => ModelEvent
+  newProperty: (modelId: ModelId, propertyName: PropertyName, propertyId?: PropertyId) => ModelEvent
 
   validateProperty(property: P): Map<string, string>
 

@@ -12,7 +12,7 @@ import { arrays } from '@cozemble/lang-util'
 
 test('has event that renames a model', () => {
   const customer = modelFns.newInstance('Customer')
-  const event = coreModelEvents.modelRenamed(customer.name, modelNameFns.newInstance('Person'))
+  const event = coreModelEvents.modelRenamed(customer.id, modelNameFns.newInstance('Person'))
 
   const mutatedCustomer = modelEventDescriptors.applyEvent(customer, event)
 
@@ -26,9 +26,8 @@ test('has event that renames a property in a model model', () => {
   )
   const nameProperty = customer.properties[0]
   const event = coreModelEvents.propertyRenamed(
-    customer.name,
+    customer.id,
     nameProperty.id,
-    nameProperty.name,
     propertyNameFns.newInstance('fullName'),
   )
 

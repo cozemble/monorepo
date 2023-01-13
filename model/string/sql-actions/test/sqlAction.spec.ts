@@ -18,7 +18,7 @@ test('generates the correct sql actions for adding a new string property', () =>
     modelOptions.withProperty(propertyFns.newInstance('Untitled Property')),
   )
   const property = customerModel.properties[0]
-  const event = newStringPropertyModelEvent(customerModel.name, property.name, property.id)
-  const actions = modelEventToSqlActions.apply([customerModel], customerModel.id, event)
+  const event = newStringPropertyModelEvent(customerModel.id, property.name, property.id)
+  const actions = modelEventToSqlActions.apply([customerModel], event, customerModel)
   expect(actions).toMatchObject([stubSqlActions.addColumn('Customer', property.name.value)])
 })

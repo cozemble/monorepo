@@ -1,5 +1,5 @@
 import { StringProperty, stringPropertyType } from './stringProperty'
-import type { ModelName, PropertyDescriptor, PropertyId, PropertyName } from '@cozemble/model-core'
+import type { ModelId, PropertyDescriptor, PropertyId, PropertyName } from '@cozemble/model-core'
 import { newStringPropertyModelEvent } from './events'
 
 function validateProperty(property: StringProperty): Map<string, string> {
@@ -51,6 +51,6 @@ export const stringPropertyDescriptor: PropertyDescriptor<StringProperty, string
   getValue: (property, record) => {
     return record.values[property.id.value] ?? null
   },
-  newProperty: (modelName: ModelName, propertyName: PropertyName, propertyId?: PropertyId) =>
-    newStringPropertyModelEvent(modelName, propertyName, propertyId),
+  newProperty: (modelId: ModelId, propertyName: PropertyName, propertyId?: PropertyId) =>
+    newStringPropertyModelEvent(modelId, propertyName, propertyId),
 }

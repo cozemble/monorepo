@@ -25,7 +25,7 @@
         if (propertyDescriptor) {
             modelChangeHandler.modelChanged(
                 model.id,
-                propertyDescriptor.newProperty(model.name, property.name, property.id),
+                propertyDescriptor.newProperty(model.id, property.name, property.id),
             )
         } else {
             alert('No property descriptor found for ' + target.value)
@@ -49,9 +49,8 @@
         modelChangeHandler.modelChanged(
             model.id,
             coreModelEvents.propertyRenamed(
-                model.name,
+                model.id,
                 property.id,
-                property.name,
                 propertyNameFns.newInstance(target.value),
             ),
         )
@@ -62,8 +61,8 @@
         modelChangeHandler.modelChanged(
             model.id,
             coreModelEvents.booleanPropertyChanged(
-                model.name,
-                property.name,
+                model.id,
+                property.id,
                 booleanName,
                 target.checked,
             ),

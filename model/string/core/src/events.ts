@@ -3,25 +3,23 @@ import {
   type ModelEvent,
   type ModelEventDescriptor,
   modelEventDescriptors,
-  type ModelName,
+  modelEventIdFns,
+  type ModelId,
   type PropertyId,
   propertyIdFns,
   type PropertyName,
   timestampEpochMillis,
-  Property,
 } from '@cozemble/model-core'
 import { emptyProperty } from './stringProperty'
-import { modelEventIdFns } from '@cozemble/model-core'
 
 export interface NewStringPropertyModelEvent extends ModelEvent {
   _type: 'new.string.property.model.event'
-  modelName: ModelName
   propertyName: PropertyName
   propertyId: PropertyId
 }
 
 export function newStringPropertyModelEvent(
-  modelName: ModelName,
+  modelId: ModelId,
   propertyName: PropertyName,
   propertyId?: PropertyId,
 ): NewStringPropertyModelEvent {
@@ -29,7 +27,7 @@ export function newStringPropertyModelEvent(
     _type: 'new.string.property.model.event',
     timestamp: timestampEpochMillis(),
     id: modelEventIdFns.newInstance(),
-    modelName,
+    modelId,
     propertyName,
     propertyId: propertyId ?? propertyIdFns.newInstance(),
   }
@@ -40,8 +38,9 @@ export const newStringPropertyModelEventDescriptor: ModelEventDescriptor = {
   modelEventType: 'new.string.property.model.event',
   applyEvent: (model: Model, event: NewStringPropertyModelEvent): Model => {
     let newProperty = {
-      ...emptyProperty(`Property ${model.properties.length + 1}`),
+      ...emptyProperty(`Property`),
       id: event.propertyId,
+      name: event.propertyName,
     }
     if (model.properties.some((p) => propertyIdFns.equals(p.id, event.propertyId))) {
       newProperty = { ...newProperty, id: event.propertyId }

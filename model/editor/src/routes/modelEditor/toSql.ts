@@ -3,7 +3,7 @@ import type { ModelEvent, ModelId } from '@cozemble/model-core'
 import { derived } from 'svelte/store'
 import { allModels } from './host'
 import { actionToSql, schema } from '@cozemble/sql-actions'
-import { modelEventToSqlActions } from '@cozemble/model-sql-actions'
+import { sqlActionsPlayer } from '@cozemble/model-sql-actions-player'
 
 type ModelEventAndModelId = { event: ModelEvent; modelId: ModelId }
 
@@ -18,11 +18,8 @@ export const eventTypes = derived(events, (events) => {
   return events.map((e) => e.event._type)
 })
 
-export const sqlMigrations = derived([allModels, events], ([models, events]) => {
-  const allModels = models.map((model) => model.model)
-  const actions = events.flatMap((event) => {
-    return modelEventToSqlActions.apply(allModels, event.modelId, event.event)
-  })
+export const sqlMigrations = derived(allModels, (models) => {
+  const actions = sqlActionsPlayer.play(models)
   const theSchema = schema('app_public')
   return actions.map((a) => actionToSql(theSchema, a)).flatMap((m) => m.up)
 })

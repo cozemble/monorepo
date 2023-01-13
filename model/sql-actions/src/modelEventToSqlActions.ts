@@ -7,14 +7,15 @@ import type {
   PropertyRenamed,
   RelationshipAdded,
 } from '@cozemble/model-event-sourced'
-import { strings } from '@cozemble/lang-util'
+import { strings, mandatory } from '@cozemble/lang-util'
+import { modelFns } from '@cozemble/model-api'
 
 export interface ModelEventToSqlAction<E extends ModelEvent> {
   eventToSqlAction: (
     sqlActions: SqlActions,
     allModels: Model[],
-    modelId: ModelId,
     event: E,
+    oldModel: Model | null,
   ) => SqlAction[]
 }
 
@@ -27,10 +28,10 @@ export const modelEventToSqlActions = {
   register: <E extends ModelEvent>(eventType: string, descriptor: ModelEventToSqlAction<E>) => {
     registeredModelEventToSqlActions.set(eventType, descriptor)
   },
-  apply: (allModels: Model[], modelId: ModelId, event: ModelEvent): SqlAction[] => {
+  apply: (allModels: Model[], event: ModelEvent, oldModel: Model | null): SqlAction[] => {
     const descriptor = registeredModelEventToSqlActions.get(event._type)
     if (descriptor) {
-      return descriptor.eventToSqlAction(sqlActions, allModels, modelId, event)
+      return descriptor.eventToSqlAction(sqlActions, allModels, event, oldModel)
     } else {
       throw new Error(`Unknown event type: ${event._type}`)
     }
@@ -38,31 +39,35 @@ export const modelEventToSqlActions = {
 }
 
 modelEventToSqlActions.register<ModelCreated>('model.created.event', {
-  eventToSqlAction: (sqlActions, allModels, modelId, event) => {
+  eventToSqlAction: (sqlActions, allModels, event, _oldModel) => {
     return [sqlActions.newTable(event.modelName.value)]
   },
 })
 
+function mandatoryOldModel(oldModel: Model | null): Model {
+  return mandatory(oldModel, 'old model required, but was null')
+}
+
 modelEventToSqlActions.register<ModelRenamed>('model.renamed.event', {
-  eventToSqlAction: (sqlActions, allModels, modelId, event) => {
-    return [sqlActions.renameModel(event.oldModelName.value, event.newModelName.value)]
+  eventToSqlAction: (sqlActions, allModels, event, oldModel) => {
+    return [
+      sqlActions.renameModel(mandatoryOldModel(oldModel).name.value, event.newModelName.value),
+    ]
   },
 })
 
 modelEventToSqlActions.register<PropertyRenamed>('property.renamed.event', {
-  eventToSqlAction: (sqlActions, allModels, modelId, event) => {
+  eventToSqlAction: (sqlActions, allModels, event, oldModel) => {
+    const model = modelFns.findById(allModels, event.modelId)
+    const property = modelFns.propertyWithId(mandatoryOldModel(oldModel), event.propertyId)
     return [
-      sqlActions.renameColumn(
-        event.modelName.value,
-        event.oldPropertyName.value,
-        event.newPropertyName.value,
-      ),
+      sqlActions.renameColumn(model.name.value, property.name.value, event.newPropertyName.value),
     ]
   },
 })
 
 modelEventToSqlActions.register<RelationshipAdded>('relationship.added.event', {
-  eventToSqlAction: (sqlActions, allModels, modelId, event) => {
+  eventToSqlAction: (sqlActions, allModels, event, _oldModel) => {
     if (event.cardinality === 'one') {
       const fkColumnName = `${event.childModel.name.value} ID`
       const fkConstraintName = strings.camelize(
@@ -96,35 +101,23 @@ modelEventToSqlActions.register<RelationshipAdded>('relationship.added.event', {
 })
 
 modelEventToSqlActions.register<BooleanPropertyChanged>('boolean.property.changed.event', {
-  eventToSqlAction: (sqlActions, allModels, modelId, event) => {
+  eventToSqlAction: (sqlActions, allModels, event, _oldModel) => {
+    const model = modelFns.findById(allModels, event.modelId)
+    const property = modelFns.propertyWithId(model, event.propertyId)
     if (event.booleanPropertyName === 'required') {
       if (event.newValue === true) {
-        return [sqlActions.makeColumnNonNullable(event.modelName.value, event.propertyName.value)]
+        return [sqlActions.makeColumnNonNullable(model.name.value, property.name.value)]
       } else {
-        return [sqlActions.makeColumnNullable(event.modelName.value, event.propertyName.value)]
+        return [sqlActions.makeColumnNullable(model.name.value, property.name.value)]
       }
     }
     if (event.booleanPropertyName === 'unique') {
-      const constraintName = strings.camelize(
-        `${event.modelName.value}${event.propertyName.value}Unique`,
-      )
+      const constraintName = strings.camelize(`${model.name.value}${property.name.value}Unique`)
       const constraint = constraints.unique(constraintName)
       if (event.newValue === true) {
-        return [
-          sqlActions.addColumnConstraint(
-            event.modelName.value,
-            event.propertyName.value,
-            constraint,
-          ),
-        ]
+        return [sqlActions.addColumnConstraint(model.name.value, property.name.value, constraint)]
       } else {
-        return [
-          sqlActions.dropColumnConstraint(
-            event.modelName.value,
-            event.propertyName.value,
-            constraint,
-          ),
-        ]
+        return [sqlActions.dropColumnConstraint(model.name.value, property.name.value, constraint)]
       }
     }
     return []

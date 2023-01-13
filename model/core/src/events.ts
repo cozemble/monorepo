@@ -1,4 +1,4 @@
-import { Model, TimestampEpochMillis } from './core'
+import { Model, ModelId, TimestampEpochMillis } from './core'
 import { uuids } from '@cozemble/lang-util'
 
 export interface ModelEventId {
@@ -18,6 +18,7 @@ export const modelEventIdFns = {
 export interface ModelEvent {
   _type: string
   id: ModelEventId
+  modelId: ModelId
   timestamp: TimestampEpochMillis
 }
 

@@ -18,7 +18,7 @@ function onNameChange(name: string) {
   host.modelChanged(
     modelId,
     coreModelEvents.modelRenamed(
-      eventSourced.model.name,
+      eventSourced.model.id,
       modelNameFns.newInstance(name),
     ),
   )
