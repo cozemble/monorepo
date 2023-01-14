@@ -29,11 +29,9 @@ export const eventSourcedModelFns = {
   },
   addEvent: (eventSourcedModel: EventSourcedModel, event: ModelEvent): EventSourcedModel => {
     event = modelEventFns.withOptions(event, { insertionOrder: eventSourcedModel.events.length })
-    const mutatedModel = modelEventDescriptors.applyEvent(eventSourcedModel.model, event)
-    console.log({ event, mutatedModel })
     return {
       ...eventSourcedModel,
-      model: mutatedModel,
+      model: modelEventDescriptors.applyEvent(eventSourcedModel.model, event),
       events: [...eventSourcedModel.events, event],
     }
   },

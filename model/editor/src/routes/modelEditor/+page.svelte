@@ -17,7 +17,6 @@
         registerAllPropertyConfigurers()
         mounted = true
         bootstrapHost(localStorage)
-        console.log({allModels:$allModels})
         firstModel = $allModels[0]
     })
 
@@ -43,6 +42,7 @@
 
     function clearClicked() {
         clearLocalStorage(localStorage)
+        firstModel = $allModels[0]
     }
 </script>
 
