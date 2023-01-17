@@ -13,7 +13,7 @@ import type {
   Property,
 } from '@cozemble/model-core'
 import { dottedPathFns } from '@cozemble/model-core'
-import type { DataRecordValueChanged } from '@cozemble/model-editor-sdk'
+import type { DataRecordValueChanged } from '@cozemble/data-editor-sdk'
 
 export class DataRecordPathFocus {
   constructor(

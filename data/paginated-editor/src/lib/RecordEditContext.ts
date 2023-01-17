@@ -2,7 +2,7 @@ import type { DataRecord, DataRecordPath, Model } from '@cozemble/model-core'
 import { DataRecordPathFocus } from '$lib/DataRecordPathFocus'
 import { writable, type Writable } from 'svelte/store'
 import { dataRecordFns, dataRecordPathFns, modelFns } from '@cozemble/model-api'
-import type { DataRecordEditEvent } from '@cozemble/model-editor-sdk'
+import type { DataRecordEditEvent } from '@cozemble/data-editor-sdk'
 import { uuids } from '@cozemble/lang-util'
 
 export class RecordEditContext {

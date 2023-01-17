@@ -27,6 +27,7 @@
   "dependencies": {
     "@cozemble/model-core": "workspace:*",
     "@cozemble/model-string-core": "workspace:*",
-    "@cozemble/model-editor-sdk": "workspace:*"
+    "@cozemble/model-editor-sdk": "workspace:*",
+    "@cozemble/data-editor-sdk": "workspace:*"
   }
 }

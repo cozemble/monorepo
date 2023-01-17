@@ -12,7 +12,7 @@
     import {dataRecordFns, modelFns} from "@cozemble/model-api";
     import DataRecordTableTd from "$lib/DataRecordTableTd.svelte";
     import {RecordEditContext} from "./RecordEditContext";
-    import {dataRecordEditEvents, dataRecordEditor} from "@cozemble/model-editor-sdk";
+    import {dataRecordEditEvents, dataRecordEditor} from "@cozemble/data-editor-sdk";
 
     export let models: Model[]
     export let record: DataRecord

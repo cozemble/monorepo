@@ -1,6 +1,6 @@
 <script lang="ts">
     import type {DataRecord, DataRecordPath} from '@cozemble/model-core'
-    import {dataRecordEditEvents, dataRecordEditor,} from '@cozemble/model-editor-sdk'
+    import {dataRecordEditEvents, dataRecordEditor,} from '@cozemble/data-editor-sdk'
     import {dataRecordPathFns} from "@cozemble/model-api";
 
     export let recordPath: DataRecordPath

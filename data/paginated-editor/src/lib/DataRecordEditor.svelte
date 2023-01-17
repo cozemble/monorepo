@@ -1,7 +1,6 @@
 <script lang="ts">
     import DataRecordEditorInner from "$lib/DataRecordEditorInner.svelte";
     import type {RecordEditContext} from "$lib/RecordEditContext";
-    import {afterUpdate} from 'svelte';
 
     export let recordEditContext: RecordEditContext
     export let pushContext: (context: RecordEditContext) => void
@@ -11,12 +10,6 @@
     const errors = recordEditContext.errors
     const focus = recordEditContext.focus
     const showErrors = recordEditContext.showErrors
-
-    afterUpdate(() => {
-        console.log({showErrors: $showErrors})
-    })
-
-    $: console.log({record: $record, showErrors: $showErrors})
 </script>
 
 <h2>{recordEditContext.title}</h2>

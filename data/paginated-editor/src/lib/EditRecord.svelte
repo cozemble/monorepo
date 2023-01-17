@@ -1,7 +1,7 @@
 <script lang="ts">
     import DataRecordEditor from "$lib/DataRecordEditor.svelte";
-    import type {DataRecordEditEvent, DataRecordEditorClient} from "@cozemble/model-editor-sdk";
-    import {dataRecordEditorHost} from "@cozemble/model-editor-sdk";
+    import type {DataRecordEditEvent, DataRecordEditorClient} from "@cozemble/data-editor-sdk";
+    import {dataRecordEditorHost} from "@cozemble/data-editor-sdk";
     import type {RecordEditContext} from "$lib/RecordEditContext";
     import {afterUpdate} from "svelte";
 
