@@ -7,4 +7,9 @@ export {
   dataRecordEditorHost,
   HasManyItemAdded,
   DataRecordValueChanged,
+  dataRecordControlEvents,
+  DataRecordCreatedEvent,
+  DataRecordControlEvent,
 } from './dataRecordEditEvents'
+
+export { EventSourcedDataRecord, eventSourcedDataRecordFns } from './EventSourcedDataRecord'

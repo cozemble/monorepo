@@ -4,10 +4,25 @@ import type {
   DataRecordPath,
   DataRecordPathElement,
   HasManyRelationship,
+  ModelId,
 } from '@cozemble/model-core'
 import { mandatory } from '@cozemble/lang-util'
 
 const dataRecordEditorClientContext = 'com.cozemble.data.record.editor.client.context'
+
+export interface DataRecordCreatedEvent {
+  _type: 'data.record.created'
+  modelId: ModelId
+  creatorId: string
+}
+
+function dataRecordCreatedEvent(modelId: ModelId, creatorId: string): DataRecordCreatedEvent {
+  return {
+    _type: 'data.record.created',
+    modelId,
+    creatorId,
+  }
+}
 
 export interface DataRecordEditAborted {
   _type: 'data.record.edit.aborted'
@@ -32,9 +47,10 @@ export interface HasManyItemAdded {
   newRecord: DataRecord
 }
 
-export type DataRecordEditEvent = DataRecordEditAborted | DataRecordValueChanged | HasManyItemAdded
+export type DataRecordEditEvent = DataRecordValueChanged | HasManyItemAdded | DataRecordCreatedEvent
+export type DataRecordControlEvent = DataRecordEditAborted
 
-export const dataRecordEditEvents = {
+export const dataRecordControlEvents = {
   editAborted(record: DataRecord, path: DataRecordPath): DataRecordEditAborted {
     return {
       _type: 'data.record.edit.aborted',
@@ -42,6 +58,9 @@ export const dataRecordEditEvents = {
       path,
     }
   },
+}
+export const dataRecordEditEvents = {
+  recordCreated: dataRecordCreatedEvent,
   valueChanged<T>(
     record: DataRecord,
     path: DataRecordPath,
@@ -75,6 +94,8 @@ export const dataRecordEditEvents = {
 }
 
 export interface DataRecordEditorClient {
+  dispatchControlEvent(event: DataRecordControlEvent): void
+
   dispatchEditEvent(event: DataRecordEditEvent): void
 }
 

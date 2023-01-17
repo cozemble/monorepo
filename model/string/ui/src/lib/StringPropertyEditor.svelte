@@ -1,6 +1,6 @@
 <script lang="ts">
     import type {DataRecord, DataRecordPath} from '@cozemble/model-core'
-    import {dataRecordEditEvents, dataRecordEditor,} from '@cozemble/data-editor-sdk'
+    import {dataRecordControlEvents, dataRecordEditEvents, dataRecordEditor} from '@cozemble/data-editor-sdk'
     import {dataRecordPathFns} from "@cozemble/model-api";
 
     export let recordPath: DataRecordPath
@@ -62,8 +62,8 @@
         } else if (event.key === 'Escape') {
             event.preventDefault()
             event.stopPropagation()
-            dataRecordEditorClient.dispatchEditEvent(
-                dataRecordEditEvents.editAborted(record, recordPath),
+            dataRecordEditorClient.dispatchControlEvent(
+                dataRecordControlEvents.editAborted(record, recordPath),
             )
         }
     }

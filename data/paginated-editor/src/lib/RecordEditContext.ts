@@ -33,8 +33,6 @@ export class RecordEditContext {
         dataRecordPathFns.setValue(this.models, event.path, this._record, event.newValue),
       )
       this.focus.update((f) => f.applyValueChangedToFocus(event))
-    } else if (event._type === 'data.record.edit.aborted') {
-      console.log({ event })
     } else if (event._type === 'data.record.has.many.item.added') {
       this._setRecord(
         dataRecordPathFns.addHasManyItem(

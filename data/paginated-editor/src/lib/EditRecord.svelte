@@ -1,6 +1,6 @@
 <script lang="ts">
     import DataRecordEditor from "$lib/DataRecordEditor.svelte";
-    import type {DataRecordEditEvent, DataRecordEditorClient} from "@cozemble/data-editor-sdk";
+    import type {DataRecordControlEvent, DataRecordEditEvent, DataRecordEditorClient} from "@cozemble/data-editor-sdk";
     import {dataRecordEditorHost} from "@cozemble/data-editor-sdk";
     import type {RecordEditContext} from "$lib/RecordEditContext";
     import {afterUpdate} from "svelte";
@@ -20,6 +20,9 @@
     const dataRecordEditorClient: DataRecordEditorClient = {
         dispatchEditEvent(event: DataRecordEditEvent): void {
             recordEditContext.handleDataRecordEditEvent(event)
+        },
+        dispatchControlEvent(event: DataRecordControlEvent): void {
+            console.log({event})
         },
     }
     dataRecordEditorHost.setClient(dataRecordEditorClient)
