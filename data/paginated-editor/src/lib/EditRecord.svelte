@@ -3,11 +3,14 @@
     import type {DataRecordControlEvent, DataRecordEditEvent, DataRecordEditorClient} from "@cozemble/data-editor-sdk";
     import {dataRecordEditorHost} from "@cozemble/data-editor-sdk";
     import type {RecordEditContext} from "$lib/RecordEditContext";
-    import {afterUpdate} from "svelte";
+    import {getEditRecordListener} from "$lib/EditRecordListener";
+    import {getContext, onMount, onDestroy} from 'svelte'
 
     export let recordEditContext: RecordEditContext
     export let pushContext: (context: RecordEditContext) => void
     export let popContext: () => void
+
+    const editListener = getEditRecordListener(getContext)
 
     function handleCancel() {
         recordEditContext.cancel()
@@ -19,6 +22,7 @@
 
     const dataRecordEditorClient: DataRecordEditorClient = {
         dispatchEditEvent(event: DataRecordEditEvent): void {
+            editListener.onEvent(recordEditContext, event)
             recordEditContext.handleDataRecordEditEvent(event)
         },
         dispatchControlEvent(event: DataRecordControlEvent): void {
@@ -27,7 +31,13 @@
     }
     dataRecordEditorHost.setClient(dataRecordEditorClient)
 
-    afterUpdate(() => console.log({recordEditContext}))
+    onMount(() => {
+        editListener.beginEdit(recordEditContext)
+    })
+    onDestroy(() => {
+        editListener.popEdit()
+    })
+
 </script>
 
 <DataRecordEditor {recordEditContext} {pushContext} {popContext}/>

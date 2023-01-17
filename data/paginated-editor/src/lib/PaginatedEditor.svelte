@@ -5,8 +5,8 @@
     import DataTd from '$lib/DataTd.svelte'
     import StackingRecordEditor from "./StackingRecordEditor.svelte";
     import {RecordEditContext} from "./RecordEditContext";
+    import type {EventSourcedDataRecord} from "@cozemble/data-editor-sdk";
     import {eventSourcedDataRecordFns} from "@cozemble/data-editor-sdk";
-    import type {EventSourcedDataRecord} from "@cozemble/data-editor-sdk/dist/esm";
 
     export let models: Model[]
     export let model: Model

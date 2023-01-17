@@ -45,9 +45,13 @@ export class DataRecordPathFocus {
       const allValues = allPaths.flatMap((p) =>
         valuesForModelPathFns.flatten(modelPathFns.getValues(models, p, record)),
       )
-      const indexOfFocus = allValues.findIndex((v) =>
-        dataRecordPathFns.sameDottedPaths(v.value.path, focus),
+      const indexOfFocus = allValues.findIndex(
+        (v) => v.value && v.value.path && dataRecordPathFns.sameDottedPaths(v.value.path, focus),
       )
+      console.log({ indexOfFocus })
+      if (indexOfFocus === -1) {
+        return this._newFocus(null)
+      }
       const nextValue = allValues[indexOfFocus + 1]
       return this._newFocus(nextValue ? nextValue.value.path : null)
     } else if (event.confirmMethod === 'Enter') {

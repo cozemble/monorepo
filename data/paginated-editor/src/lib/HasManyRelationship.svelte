@@ -13,7 +13,7 @@
     import DataRecordTableTd from "$lib/DataRecordTableTd.svelte";
     import {RecordEditContext} from "./RecordEditContext";
     import {dataRecordEditEvents, dataRecordEditor, eventSourcedDataRecordFns} from "@cozemble/data-editor-sdk";
-    import type {EventSourcedDataRecord} from "@cozemble/data-editor-sdk/dist/esm";
+    import type {EventSourcedDataRecord} from "@cozemble/data-editor-sdk";
 
     export let models: Model[]
     export let record: DataRecord
@@ -31,7 +31,6 @@
     $: records = record.values[relationship.id.value] ?? []
 
     function onNewItemSaved(newRecord: EventSourcedDataRecord) {
-        console.log({newRecord})
         popContext()
         // dataRecordFns.addRecordToRelationship(record, relationship, newRecord)
         dataRecordEditorClient.dispatchEditEvent(

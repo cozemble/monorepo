@@ -12,7 +12,7 @@ import { uuids } from '@cozemble/lang-util'
 export class RecordEditContext {
   constructor(
     public models: Model[],
-    private eventSourcedRecord: EventSourcedDataRecord,
+    public eventSourcedRecord: EventSourcedDataRecord,
     public onSave: (record: EventSourcedDataRecord) => void,
     public onCancel: () => void,
     public title: string,
