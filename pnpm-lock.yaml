@@ -105,12 +105,14 @@ importers:
   data/editor-sdk:
     specifiers:
       '@cozemble/lang-util': workspace:*
+      '@cozemble/model-api': workspace:*
       '@cozemble/model-core': workspace:*
       svelte: ^3.54.0
       svelte-check: ^2.9.2
       typescript: ^4.9.3
     dependencies:
       '@cozemble/lang-util': link:../../lang/util
+      '@cozemble/model-api': link:../../model/api
       '@cozemble/model-core': link:../../model/core
     devDependencies:
       svelte: 3.55.0

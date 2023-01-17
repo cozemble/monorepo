@@ -3,9 +3,10 @@
     import type {CellFocus} from '$lib/CellFocus'
     import {writable, type Writable} from 'svelte/store'
     import DataTd from '$lib/DataTd.svelte'
-    import {dataRecordFns} from "@cozemble/model-api";
     import StackingRecordEditor from "./StackingRecordEditor.svelte";
     import {RecordEditContext} from "./RecordEditContext";
+    import {eventSourcedDataRecordFns} from "@cozemble/data-editor-sdk";
+    import type {EventSourcedDataRecord} from "@cozemble/data-editor-sdk/dist/esm";
 
     export let models: Model[]
     export let model: Model
@@ -26,23 +27,23 @@
         doAddNewRecord = true
     }
 
-    function recordEdited(editedRecord: DataRecord) {
-        records = records.map(record => record.id.value === editedRecord.id.value ? editedRecord : record)
+    function recordEdited(editedRecord: EventSourcedDataRecord) {
+        records = records.map(record => record.id.value === editedRecord.record.id.value ? editedRecord.record : record)
         recordBeingEdited = null
     }
 
-    function saveNewRecord(newRecord: DataRecord) {
-        records = [...records, newRecord]
+    function saveNewRecord(newRecord: EventSourcedDataRecord) {
+        records = [...records, newRecord.record]
         doAddNewRecord = false
     }
 </script>
 
 {#if doAddNewRecord}
     <StackingRecordEditor
-            recordEditContext={new RecordEditContext(models, dataRecordFns.newInstance(model, 'test-user'), saveNewRecord, () => doAddNewRecord = false, `Add new ${model.name.value}`)}/>
+            recordEditContext={new RecordEditContext(models, eventSourcedDataRecordFns.newInstance(models, model.id,  'test-user'), saveNewRecord, () => doAddNewRecord = false, `Add new ${model.name.value}`)}/>
 {:else if recordBeingEdited !== null}
     <StackingRecordEditor
-            recordEditContext={new RecordEditContext(models, recordBeingEdited, recordEdited, () => recordBeingEdited = null, `Edit ${model.name.value}`)}/>
+            recordEditContext={new RecordEditContext(models, eventSourcedDataRecordFns.fromRecord(models,recordBeingEdited), recordEdited, () => recordBeingEdited = null, `Edit ${model.name.value}`)}/>
 {:else}
     <table>
         <thead>

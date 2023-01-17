@@ -9,10 +9,11 @@
     } from "@cozemble/model-core";
     import type {Writable} from "svelte/store";
     import {dataRecordTableClicked} from "./dataRecordTableClicked";
-    import {dataRecordFns, modelFns} from "@cozemble/model-api";
+    import {modelFns} from "@cozemble/model-api";
     import DataRecordTableTd from "$lib/DataRecordTableTd.svelte";
     import {RecordEditContext} from "./RecordEditContext";
-    import {dataRecordEditEvents, dataRecordEditor} from "@cozemble/data-editor-sdk";
+    import {dataRecordEditEvents, dataRecordEditor, eventSourcedDataRecordFns} from "@cozemble/data-editor-sdk";
+    import type {EventSourcedDataRecord} from "@cozemble/data-editor-sdk/dist/esm";
 
     export let models: Model[]
     export let record: DataRecord
@@ -29,7 +30,7 @@
     $: model = modelFns.findById(models, relationship.modelId)
     $: records = record.values[relationship.id.value] ?? []
 
-    function onNewItemSaved(newRecord: DataRecord) {
+    function onNewItemSaved(newRecord: EventSourcedDataRecord) {
         console.log({newRecord})
         popContext()
         // dataRecordFns.addRecordToRelationship(record, relationship, newRecord)
@@ -38,14 +39,14 @@
                 record,
                 parentPath,
                 relationship,
-                newRecord,
+                newRecord.record,
             ),
         )
 
     }
 
     function addItem() {
-        pushContext(new RecordEditContext(models, dataRecordFns.newInstance(model, 'test-user'), onNewItemSaved, popContext, `New ${model.name.value}`))
+        pushContext(new RecordEditContext(models, eventSourcedDataRecordFns.newInstance(models, model.id, 'test-user'), onNewItemSaved, popContext, `New ${model.name.value}`))
     }
 </script>
 
