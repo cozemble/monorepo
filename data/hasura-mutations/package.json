@@ -19,6 +19,7 @@
     "@cozemble/lang-util": "workspace:*",
     "@cozemble/model-core": "workspace:*",
     "@cozemble/data-editor-sdk": "workspace:*",
-    "@cozemble/graphql-util": "workspace:*"
+    "@cozemble/graphql-util": "workspace:*",
+    "@cozemble/model-string-core": "workspace:*"
   }
 }

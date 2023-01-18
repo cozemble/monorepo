@@ -125,6 +125,7 @@ importers:
       '@cozemble/graphql-util': workspace:*
       '@cozemble/lang-util': workspace:*
       '@cozemble/model-core': workspace:*
+      '@cozemble/model-string-core': workspace:*
       typescript: ^4.9.3
       vite: ^4.0.0
       vitest: ^0.26.2
@@ -133,6 +134,7 @@ importers:
       '@cozemble/graphql-util': link:../../graphql/util
       '@cozemble/lang-util': link:../../lang/util
       '@cozemble/model-core': link:../../model/core
+      '@cozemble/model-string-core': link:../../model/string/core
     devDependencies:
       typescript: 4.9.4
       vite: 4.0.4

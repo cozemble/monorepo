@@ -4,8 +4,10 @@ import { dataRecordFns, dataRecordPathFns, modelFns, testExports } from '@cozemb
 import { uuids } from '@cozemble/lang-util'
 import type { DataRecord } from '@cozemble/model-core'
 import { gqlMutation } from '../src/graphql/core'
-import { hasuraMutationFromEvents } from '../src/HasuraInsertMutationBuilder'
+import { hasuraMutationFromEvents } from '../src'
+import { registerStringProperty } from '@cozemble/model-string-core'
 
+registerStringProperty()
 /**
  * mutation MyMutation {
  *   insert_address(objects: {line_1: "Flat 6", postcode: "CM23 XXX"}) {
@@ -71,7 +73,9 @@ import { hasuraMutationFromEvents } from '../src/HasuraInsertMutationBuilder'
 
 const addressModel = testExports.addressModel
 const invoiceModel = testExports.invoiceModel
+const lineItemModel = testExports.lineItemModel
 const invoiceModels = testExports.invoiceModels
+const invoiceLineItemsRelationship = testExports.invoiceLineItemsRelationship
 
 test('can create a simple object mutation', () => {
   const addressRecord = dataRecordFns.newInstance(addressModel, 'test-user')
@@ -131,6 +135,49 @@ test('can create a simple object mutation with a nested-nested object', () => {
     }
   }
 }`,
+    ),
+  )
+})
+
+test('can create a object mutation with a nested array', () => {
+  const invoiceRecord = dataRecordFns.newInstance(invoiceModel, 'user1')
+  const twoApples = dataRecordFns.random(invoiceModels, lineItemModel, {
+    Name: 'apple',
+    Price: '0.85',
+    Quantity: '2',
+  })
+  const onePear = dataRecordFns.random(invoiceModels, lineItemModel, {
+    Name: 'pear',
+    Price: '0.98',
+    Quantity: '1',
+  })
+  const events = [
+    dataRecordEditEvents.recordCreated(invoiceModel.id, 'user1'),
+    valueChanged(invoiceRecord, '22', 'Invoice ID'),
+    dataRecordEditEvents.hasManyItemAdded(
+      invoiceRecord,
+      [],
+      invoiceLineItemsRelationship,
+      twoApples,
+    ),
+    dataRecordEditEvents.hasManyItemAdded(invoiceRecord, [], invoiceLineItemsRelationship, onePear),
+  ]
+  const mutation = hasuraMutationFromEvents(invoiceModels, events)
+  expect(mutation).toEqual(
+    gqlMutation(
+      `mutation MyMutation {
+  insert_invoice(objects: {invoice_id: "22", line_items: {data: [{quantity: "2", name: "apple", price: "0.85"}, {quantity: "1", name: "pear", price: "0.98"}]}}) {
+    returning {
+      invoice_id
+      line_items {
+        quantity
+        name
+        price
+      }
+    }
+  }
+}
+`,
     ),
   )
 })

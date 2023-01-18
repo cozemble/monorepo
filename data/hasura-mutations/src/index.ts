@@ -1,1 +1,1 @@
-export { hasuraMutationFromEvents } from './HasuraInsertMutationBuilder'
+export { hasuraMutationFromEvents } from './hasuraMutationFromEvents'

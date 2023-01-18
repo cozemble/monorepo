@@ -1,6 +1,46 @@
 import { gql } from '@cozemble/graphql-util'
 import { strings } from '@cozemble/lang-util'
 
+export interface GqlObject {
+  _type: 'gql.object'
+  values: ValueAssignment[]
+  relationships: GqlRelationship[]
+}
+
+export function gqlObject(
+  values: ValueAssignment[] = [],
+  relationships: GqlRelationship[] = [],
+): GqlObject {
+  return {
+    _type: 'gql.object',
+    values,
+    relationships,
+  }
+}
+
+export const gqlObjectFns = {
+  addValue(object: GqlObject, value: ValueAssignment): void {
+    object.values.push(value)
+  },
+  addRelationship(object: GqlObject, relationship: GqlRelationship): void {
+    object.relationships.push(relationship)
+  },
+}
+
+export interface GqlReturningClause {
+  _type: 'gql.returning.clause'
+  value: string[]
+}
+
+export const gqlReturningClauseFns = {
+  empty(): GqlReturningClause {
+    return { _type: 'gql.returning.clause', value: [] }
+  },
+  addReturning(clause: GqlReturningClause, value: string): void {
+    clause.value.push(strings.snakeCase(value))
+  },
+}
+
 export interface ValueAssignment {
   name: string
   value: string
@@ -18,60 +58,40 @@ export function value(name: string, value: string): ValueAssignment {
 export interface ObjectRelationship {
   _type: 'object.relationship'
   name: string
-  returning: string[]
-  values: ValueAssignment[]
-  relationships: GqlRelationship[]
+  returning: GqlReturningClause
+  object: GqlObject
 }
 
 export function objectRelationship(
   name: string,
-  values: ValueAssignment[] = [],
-  returning: string[] = [],
-  relationships: GqlRelationship[] = [],
+  returning: GqlReturningClause = gqlReturningClauseFns.empty(),
+  object: GqlObject = gqlObject(),
 ): ObjectRelationship {
   return {
     _type: 'object.relationship',
     name: strings.snakeCase(name),
     returning,
-    values,
-    relationships,
-  }
-}
-
-export interface ArrayRelationshipItem {
-  _type: 'array.relationship.item'
-  values: ValueAssignment[]
-  relationships: GqlRelationship[]
-}
-
-export function item(
-  values: ValueAssignment[] = [],
-  relationships: GqlRelationship[] = [],
-): ArrayRelationshipItem {
-  return {
-    _type: 'array.relationship.item',
-    values,
-    relationships,
+    object,
   }
 }
 
 export interface ArrayRelationship {
   _type: 'array.relationship'
   name: string
-  returning: string[]
-  items: ArrayRelationshipItem[]
+  returning: GqlReturningClause
+  objects: GqlObject[]
 }
 
 export function arrayRelationship(
   name: string,
-  returning: string[] = [],
-  items: ArrayRelationshipItem[] = [],
+  returning: GqlReturningClause = gqlReturningClauseFns.empty(),
+  objects: GqlObject[] = [],
 ): ArrayRelationship {
   return {
     _type: 'array.relationship',
-    name,
+    name: strings.snakeCase(name),
     returning,
-    items,
+    objects,
   }
 }
 
@@ -125,25 +145,27 @@ export function printLines(lines: Line[]): string {
 export const gqlRelationshipFns = {
   printReturning(relationship: GqlRelationship): Line[] {
     if (relationship._type === 'object.relationship') {
-      const myReturns = relationship.returning.map(line)
-      const childReturns = relationship.relationships.flatMap((child) =>
+      const myReturns = relationship.returning.value.map(line)
+      const childReturns = relationship.object.relationships.flatMap((child) =>
         wrap(child.name, gqlRelationshipFns.printReturning(child)),
       )
 
       return [...myReturns, ...childReturns]
     } else {
-      return relationship.returning.map(line)
+      return relationship.returning.value.map(line)
     }
   },
   printSetStatement(relationship: GqlRelationship): string {
     if (relationship._type === 'object.relationship') {
-      const valueAssignments = relationship.values.map((v) => `${v.name}: "${v.value}"`).join(', ')
-      const childAssignments = relationship.relationships.map(
+      const valueAssignments = relationship.object.values
+        .map((v) => `${v.name}: "${v.value}"`)
+        .join(', ')
+      const childAssignments = relationship.object.relationships.map(
         (r) => `${r.name}: {data: ${gqlRelationshipFns.printSetStatement(r)}}`,
       )
       return `{${[valueAssignments, ...childAssignments].join(', ')}}`
     } else {
-      const setStatements = relationship.items
+      const setStatements = relationship.objects
         .map((item) => {
           return item.values.map((v) => `${v.name}: "${v.value}"`).join(', ')
         })
@@ -152,31 +174,30 @@ export const gqlRelationshipFns = {
       return `[${setStatements}]`
     }
   },
-  addReturning<T extends GqlRelationship>(relationship: T, returning: string): T {
-    relationship.returning.push(strings.snakeCase(returning))
-    return relationship
-  },
-  addValue(relationship: ObjectRelationship, value: ValueAssignment): ObjectRelationship {
-    relationship.values.push(value)
-    return relationship
-  },
-  getOrCreateObjectRelationship(
-    relationship: ObjectRelationship,
-    name: string,
-  ): ObjectRelationship {
-    name = strings.snakeCase(name)
-    const maybe = relationship.relationships.find((r) => r.name === name)
-    if (maybe) {
-      if (maybe._type === 'object.relationship') {
-        return maybe
-      }
-      throw new Error(`Relationship ${name} is not an object relationship`)
-    }
-    const obj = objectRelationship(name)
-    relationship.relationships.push(obj)
-    return {
-      ...relationship,
-      relationships: [...relationship.relationships, objectRelationship(name)],
-    }
-  },
+  // addReturning<T extends GqlRelationship>(relationship: T, returning: string): T {
+  //   relationship.returning.push(strings.snakeCase(returning))
+  //   return relationship
+  // },
+  // addValue(object: GqlObject, value: ValueAssignment): void {
+  //   object.values.push(value)
+  // },
+  // getOrCreateObjectRelationship(
+  //   relationship: ObjectRelationship,
+  //   name: string,
+  // ): ObjectRelationship {
+  //   name = strings.snakeCase(name)
+  //   const maybe = relationship.object.relationships.find((r) => r.name === name)
+  //   if (maybe) {
+  //     if (maybe._type === 'object.relationship') {
+  //       return maybe
+  //     }
+  //     throw new Error(`Relationship ${name} is not an object relationship`)
+  //   }
+  //   const obj = objectRelationship(name)
+  //   relationship.relationships.push(obj)
+  //   return {
+  //     ...relationship,
+  //     relationships: [...relationship.relationships, objectRelationship(name)],
+  //   }
+  // },
 }
