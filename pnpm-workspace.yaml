@@ -1,6 +1,7 @@
 packages:
   - 'backend/*'
   - 'data/*'
+  - 'graphql/*'
   - 'lang/*'
   - 'model/*'
   - 'model/string/*'
