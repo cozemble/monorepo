@@ -27,6 +27,7 @@
     "@cozemble/model-api": "workspace:*",
     "@cozemble/model-assembled": "workspace:*",
     "@cozemble/model-core": "workspace:*",
-    "@cozemble/data-editor-sdk": "workspace:*"
+    "@cozemble/data-editor-sdk": "workspace:*",
+    "@cozemble/data-hasura-mutations": "workspace:*"
   }
 }

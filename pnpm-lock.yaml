@@ -141,6 +141,7 @@ importers:
   data/paginated-editor:
     specifiers:
       '@cozemble/data-editor-sdk': workspace:*
+      '@cozemble/data-hasura-mutations': workspace:*
       '@cozemble/model-api': workspace:*
       '@cozemble/model-assembled': workspace:*
       '@cozemble/model-core': workspace:*
@@ -157,6 +158,7 @@ importers:
       vite: ^4.0.0
     dependencies:
       '@cozemble/data-editor-sdk': link:../editor-sdk
+      '@cozemble/data-hasura-mutations': link:../hasura-mutations
       '@cozemble/model-api': link:../../model/api
       '@cozemble/model-assembled': link:../../model/assembled
       '@cozemble/model-core': link:../../model/core
