@@ -4,22 +4,6 @@ importers:
 
   .:
     specifiers:
-      '@cozemble/backend-api': workspace:*
-      '@cozemble/data-paginated-editor': workspace:*
-      '@cozemble/data-postgraphile-api': workspace:*
-      '@cozemble/lang-util': workspace:*
-      '@cozemble/model-api': workspace:*
-      '@cozemble/model-assembled': workspace:*
-      '@cozemble/model-core': workspace:*
-      '@cozemble/model-editor': workspace:*
-      '@cozemble/model-editor-sdk': workspace:*
-      '@cozemble/model-event-sourced': workspace:*
-      '@cozemble/model-sql-actions': workspace:*
-      '@cozemble/model-string-core': workspace:*
-      '@cozemble/model-string-sql-actions': workspace:*
-      '@cozemble/model-string-ui': workspace:*
-      '@cozemble/sql-actions': workspace:*
-      '@cozemble/ui-atoms': workspace:*
       '@typescript-eslint/eslint-plugin': ^5.48.0
       '@typescript-eslint/parser': ^5.48.0
       eslint: ^8.31.0
@@ -31,23 +15,6 @@ importers:
       prettier: ^2.8.2
       prettier-plugin-svelte: ^2.9.0
       turbo: latest
-    dependencies:
-      '@cozemble/backend-api': link:backend/api
-      '@cozemble/data-paginated-editor': link:data/paginated-editor
-      '@cozemble/data-postgraphile-api': link:data/postgraphile-api
-      '@cozemble/lang-util': link:lang/util
-      '@cozemble/model-api': link:model/api
-      '@cozemble/model-assembled': link:model/assembled
-      '@cozemble/model-core': link:model/core
-      '@cozemble/model-editor': link:model/editor
-      '@cozemble/model-editor-sdk': link:model/editor-sdk
-      '@cozemble/model-event-sourced': link:model/event-sourced
-      '@cozemble/model-sql-actions': link:model/sql-actions
-      '@cozemble/model-string-core': link:model/string/core
-      '@cozemble/model-string-sql-actions': link:model/string/sql-actions
-      '@cozemble/model-string-ui': link:model/string/ui
-      '@cozemble/sql-actions': link:sql/actions
-      '@cozemble/ui-atoms': link:ui/atoms
     devDependencies:
       '@typescript-eslint/eslint-plugin': 5.48.0_m2kn7xiag5lymyarkgri27ztxm
       '@typescript-eslint/parser': 5.48.0_eslint@8.31.0

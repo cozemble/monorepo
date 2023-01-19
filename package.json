@@ -36,22 +36,6 @@
     "turbo": "latest"
   },
   "dependencies": {
-    "@cozemble/backend-api": "workspace:*",
-    "@cozemble/data-paginated-editor": "workspace:*",
-    "@cozemble/data-postgraphile-api": "workspace:*",
-    "@cozemble/lang-util": "workspace:*",
-    "@cozemble/model-api": "workspace:*",
-    "@cozemble/model-assembled": "workspace:*",
-    "@cozemble/model-core": "workspace:*",
-    "@cozemble/model-editor": "workspace:*",
-    "@cozemble/model-editor-sdk": "workspace:*",
-    "@cozemble/model-event-sourced": "workspace:*",
-    "@cozemble/model-sql-actions": "workspace:*",
-    "@cozemble/model-string-core": "workspace:*",
-    "@cozemble/model-string-sql-actions": "workspace:*",
-    "@cozemble/model-string-ui": "workspace:*",
-    "@cozemble/sql-actions": "workspace:*",
-    "@cozemble/ui-atoms": "workspace:*"
   },
   "packageManager": "pnpm@7.9.3"
 }
