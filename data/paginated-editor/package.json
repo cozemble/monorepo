@@ -28,6 +28,7 @@
     "@cozemble/model-assembled": "workspace:*",
     "@cozemble/model-core": "workspace:*",
     "@cozemble/data-editor-sdk": "workspace:*",
-    "@cozemble/data-hasura-mutations": "workspace:*"
+    "@cozemble/data-hasura-mutations": "workspace:*",
+    "@cozemble/graphql-client": "workspace:*"
   }
 }

@@ -1,19 +1,19 @@
 import {
   arrayRelationship,
-  ArrayRelationship,
+  type ArrayRelationship,
   gqlMutation,
-  GqlMutation,
+  type GqlMutation,
   gqlObject,
-  GqlObject,
+  type GqlObject,
   gqlObjectFns,
   gqlRelationshipFns,
-  GqlReturningClause,
+  type GqlReturningClause,
   gqlReturningClauseFns,
-  ObjectRelationship,
+  type ObjectRelationship,
   objectRelationship,
   printLines,
   value,
-} from './graphql/core'
+} from '@cozemble/graphql-core'
 import {
   type DataRecord,
   type DataRecordPathElement,

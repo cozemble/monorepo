@@ -1,5 +1,5 @@
 {
-  "name": "@cozemble/graphql-util",
+  "name": "@cozemble/graphql-client",
   "version": "1.0.0",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -17,8 +17,7 @@
     "vitest": "^0.26.2"
   },
   "dependencies": {
-    "@cozemble/lang-util": "workspace:*",
-    "graphql": "16.6.0",
-    "graphql-tag": "2.12.6"
+    "@cozemble/graphql-core": "workspace:*",
+    "axios": "^1.2.3"
   }
 }

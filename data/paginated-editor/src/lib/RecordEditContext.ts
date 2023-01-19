@@ -20,11 +20,15 @@ export function recordSaveSucceeded(record: DataRecord): RecordSaveSucceeded {
 
 export interface RecordSaveFailed {
   _type: 'record.save.failed'
-  errors: Map<DataRecordPath, string[]>
+  errors: string[]
+  dataErrors: Map<DataRecordPath, string[]>
 }
 
-export function recordSaveFailed(errors: Map<DataRecordPath, string[]>): RecordSaveFailed {
-  return { _type: 'record.save.failed', errors }
+export function recordSaveFailed(
+  errors: string[],
+  dataErrors: Map<DataRecordPath, string[]>,
+): RecordSaveFailed {
+  return { _type: 'record.save.failed', errors, dataErrors }
 }
 
 export type RecordSaveOutcome = RecordSaveSucceeded | RecordSaveFailed

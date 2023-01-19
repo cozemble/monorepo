@@ -4,13 +4,15 @@
     import {writable, type Writable} from 'svelte/store'
     import DataTd from '$lib/DataTd.svelte'
     import StackingRecordEditor from "./StackingRecordEditor.svelte";
-    import {RecordEditContext, recordSaveSucceeded} from "./RecordEditContext";
+    import {RecordEditContext, type RecordSaveOutcome} from "./RecordEditContext";
     import type {EventSourcedDataRecord} from "@cozemble/data-editor-sdk";
     import {eventSourcedDataRecordFns} from "@cozemble/data-editor-sdk";
+    import type {PaginatedEditorHost} from "$lib/PaginatedEditorHost";
 
     export let models: Model[]
     export let model: Model
     export let records: DataRecord[]
+    export let paginatedEditorHost: PaginatedEditorHost
 
     let focus: Writable<CellFocus | null> = writable(null)
     let doAddNewRecord = false
@@ -27,16 +29,21 @@
         doAddNewRecord = true
     }
 
-    async function recordEdited(editedRecord: EventSourcedDataRecord) {
-        records = records.map(record => record.id.value === editedRecord.record.id.value ? editedRecord.record : record)
-        recordBeingEdited = null
-        return recordSaveSucceeded(editedRecord.record)
+    async function recordEdited(editedRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
+        const outcome = await paginatedEditorHost.recordEdited(editedRecord)
+        if(outcome._type === "record.save.succeeded") {
+            recordBeingEdited = null
+        }
+        return outcome
     }
 
-    async function saveNewRecord(newRecord: EventSourcedDataRecord) {
-        records = [...records, newRecord.record]
-        doAddNewRecord = false
-        return recordSaveSucceeded(newRecord.record)
+    async function saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
+        const outcome = await paginatedEditorHost.saveNewRecord(newRecord)
+        if(outcome._type === "record.save.succeeded") {
+            doAddNewRecord = false
+        }
+        return outcome
+
     }
 </script>
 

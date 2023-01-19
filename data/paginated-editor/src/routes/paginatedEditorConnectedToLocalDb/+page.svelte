@@ -7,6 +7,9 @@
         registerAllPropertyEditors,
         registerAllPropertyViewers,
     } from '@cozemble/model-assembled'
+    import type {PaginatedEditorHost} from "$lib/PaginatedEditorHost";
+    import type {RecordSaveOutcome} from "$lib/RecordEditContext";
+    import type {EventSourcedDataRecord} from "@cozemble/data-editor-sdk";
 
     let models: Model[] = []
     let model: Model | null = null
@@ -37,6 +40,17 @@
     function useModel(m: Model) {
         model = m
     }
+
+    const paginatedEditorHost: PaginatedEditorHost = {
+        async recordEdited(editedRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
+            throw new Error('Not implemented')
+        },
+
+        async saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
+            throw new Error('Not implemented')
+        }
+    }
+
 </script>
 
 {#each models as model}
@@ -44,6 +58,6 @@
 {/each}
 {#if model}
     {#key model.id}
-        <PaginatedEditor {models} {model} records={[]}/>
+        <PaginatedEditor {models} {model} records={[]} {paginatedEditorHost}/>
     {/key}
 {/if}

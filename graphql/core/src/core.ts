@@ -1,5 +1,5 @@
-import { gql } from '@cozemble/graphql-util'
 import { strings } from '@cozemble/lang-util'
+import { gql } from './gql'
 
 export interface GqlObject {
   _type: 'gql.object'
@@ -174,30 +174,6 @@ export const gqlRelationshipFns = {
       return `[${setStatements}]`
     }
   },
-  // addReturning<T extends GqlRelationship>(relationship: T, returning: string): T {
-  //   relationship.returning.push(strings.snakeCase(returning))
-  //   return relationship
-  // },
-  // addValue(object: GqlObject, value: ValueAssignment): void {
-  //   object.values.push(value)
-  // },
-  // getOrCreateObjectRelationship(
-  //   relationship: ObjectRelationship,
-  //   name: string,
-  // ): ObjectRelationship {
-  //   name = strings.snakeCase(name)
-  //   const maybe = relationship.object.relationships.find((r) => r.name === name)
-  //   if (maybe) {
-  //     if (maybe._type === 'object.relationship') {
-  //       return maybe
-  //     }
-  //     throw new Error(`Relationship ${name} is not an object relationship`)
-  //   }
-  //   const obj = objectRelationship(name)
-  //   relationship.relationships.push(obj)
-  //   return {
-  //     ...relationship,
-  //     relationships: [...relationship.relationships, objectRelationship(name)],
-  //   }
-  // },
 }
+
+export type GqlRequest = GqlMutation
