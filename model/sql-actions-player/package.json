@@ -22,6 +22,8 @@
     "@cozemble/model-api": "workspace:*",
     "@cozemble/model-event-sourced": "workspace:*",
     "@cozemble/sql-actions": "workspace:*",
-    "@cozemble/model-sql-actions": "workspace:*"
+    "@cozemble/model-sql-actions": "workspace:*",
+    "@cozemble/model-string-core": "workspace:*",
+    "@cozemble/model-string-sql-actions": "workspace:*"
   }
 }

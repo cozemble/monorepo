@@ -30,9 +30,12 @@ importers:
 
   backend/api:
     specifiers:
+      '@cozemble/lang-util': workspace:*
+      '@cozemble/model-core': workspace:*
       '@cozemble/model-event-sourced': workspace:*
       '@cozemble/model-sql-actions': workspace:*
       '@cozemble/model-sql-actions-player': workspace:*
+      '@cozemble/model-string-core': workspace:*
       '@cozemble/model-string-sql-actions': workspace:*
       '@cozemble/sql-actions': workspace:*
       '@graphile-contrib/pg-simplify-inflector': ^6.1.0
@@ -49,9 +52,12 @@ importers:
       vite: ^4.0.0
       vitest: ^0.26.2
     dependencies:
+      '@cozemble/lang-util': link:../../lang/util
+      '@cozemble/model-core': link:../../model/core
       '@cozemble/model-event-sourced': link:../../model/event-sourced
       '@cozemble/model-sql-actions': link:../../model/sql-actions
       '@cozemble/model-sql-actions-player': link:../../model/sql-actions-player
+      '@cozemble/model-string-core': link:../../model/string/core
       '@cozemble/model-string-sql-actions': link:../../model/string/sql-actions
       '@cozemble/sql-actions': link:../../sql/actions
       '@graphile-contrib/pg-simplify-inflector': 6.1.0
@@ -315,12 +321,14 @@ importers:
 
   model/event-sourced:
     specifiers:
+      '@cozemble/lang-util': workspace:*
       '@cozemble/model-api': workspace:*
       '@cozemble/model-core': workspace:*
       typescript: ^4.9.3
       vite: ^4.0.0
       vitest: ^0.26.2
     dependencies:
+      '@cozemble/lang-util': link:../../lang/util
       '@cozemble/model-api': link:../api
       '@cozemble/model-core': link:../core
     devDependencies:
@@ -356,6 +364,8 @@ importers:
       '@cozemble/model-core': workspace:*
       '@cozemble/model-event-sourced': workspace:*
       '@cozemble/model-sql-actions': workspace:*
+      '@cozemble/model-string-core': workspace:*
+      '@cozemble/model-string-sql-actions': workspace:*
       '@cozemble/sql-actions': workspace:*
       typescript: ^4.9.3
       vite: ^4.0.0
@@ -366,6 +376,8 @@ importers:
       '@cozemble/model-core': link:../core
       '@cozemble/model-event-sourced': link:../event-sourced
       '@cozemble/model-sql-actions': link:../sql-actions
+      '@cozemble/model-string-core': link:../string/core
+      '@cozemble/model-string-sql-actions': link:../string/sql-actions
       '@cozemble/sql-actions': link:../../sql/actions
     devDependencies:
       typescript: 4.9.4
