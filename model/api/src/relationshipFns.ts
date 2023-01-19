@@ -6,11 +6,11 @@ import type {
   RelationshipName,
 } from '@cozemble/model-core'
 import {
-  DataRecord,
-  HasOneRelationship,
+  type DataRecord,
+  type HasOneRelationship,
+  type HasManyRelationship,
   relationshipIdFns,
   relationshipNameFns,
-  HasManyRelationship,
 } from '@cozemble/model-core'
 import { modelFns } from './modelsFns'
 

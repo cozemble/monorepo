@@ -11,7 +11,7 @@ import {
   stringPropertyFns,
   stringPropertyOptions,
 } from '@cozemble/model-string-core'
-import { HasManyRelationship, HasOneRelationship } from '@cozemble/model-core'
+import type { HasManyRelationship, HasOneRelationship } from '@cozemble/model-core'
 
 registerStringProperty()
 

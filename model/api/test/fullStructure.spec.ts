@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest'
 import { dataRecordFns, modelFns, modelOptions, propertyFns, relationshipFns } from '../src'
-import { DataRecord } from '@cozemble/model-core'
+import type { DataRecord } from '@cozemble/model-core'
 
 test('one level deep has-one relationship', () => {
   const child = modelFns.newInstance('child', modelOptions.withProperty(propertyFns.newInstance()))

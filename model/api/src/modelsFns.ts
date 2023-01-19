@@ -9,14 +9,14 @@ import type {
   PropertyOption,
 } from '@cozemble/model-core'
 import {
-  DataRecordPath,
   emptyModel,
   modelNameFns,
-  ModelPath,
-  ModelPathElement,
   propertyDescriptors,
   propertyIdFns,
-  Relationship,
+  type DataRecordPath,
+  type ModelPath,
+  type ModelPathElement,
+  type Relationship,
 } from '@cozemble/model-core'
 import { clock, mandatory, options, strings } from '@cozemble/lang-util'
 import { propertyFns } from './propertyFns'

@@ -1,4 +1,4 @@
-import { HasManyRelationship } from '@cozemble/model-core'
+import type { HasManyRelationship } from '@cozemble/model-core'
 import { stringPropertyFns, stringPropertyOptions } from '@cozemble/model-string-core'
 import { modelFns, modelOptions } from './modelsFns'
 import { relationshipFns } from './relationshipFns'

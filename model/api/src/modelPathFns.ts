@@ -1,5 +1,5 @@
 import { arrays } from '@cozemble/lang-util'
-import {
+import type {
   DataRecord,
   DataRecordPath,
   Model,
@@ -8,8 +8,8 @@ import {
   Property,
   Cardinality,
   DottedPath,
-  dottedPathFns,
 } from '@cozemble/model-core'
+import { dottedPathFns } from '@cozemble/model-core'
 import { modelFns } from './modelsFns'
 import { valuesForModelPath, ValuesForModelPath } from './valuesForModelPath'
 

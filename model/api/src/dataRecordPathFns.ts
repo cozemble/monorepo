@@ -1,17 +1,16 @@
 import { arrays, errors, strings } from '@cozemble/lang-util'
-import {
+import type {
   DataRecord,
-  type DataRecordPath,
-  type DataRecordPathElement,
-  type DottedPath,
-  dottedPathFns,
+  DataRecordPath,
+  DataRecordPathElement,
+  DottedPath,
   HasManyRelationship,
   HasManyRelationshipPathElement,
   Model,
   ModelPathElement,
   Property,
-  propertyDescriptors,
 } from '@cozemble/model-core'
+import { propertyDescriptors, dottedPathFns } from '@cozemble/model-core'
 import { dataRecordFns } from './dataRecordFns'
 import { modelFns } from './modelsFns'
 import { relationshipFns } from './relationshipFns'

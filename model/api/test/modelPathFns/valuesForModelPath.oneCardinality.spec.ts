@@ -8,7 +8,7 @@ import {
   relationshipFns,
 } from '../../src'
 import { describe, expect, test } from 'vitest'
-import { HasOneRelationship, Property, propertyDescriptors } from '@cozemble/model-core'
+import { type HasOneRelationship, type Property, propertyDescriptors } from '@cozemble/model-core'
 import {
   singleCardinalityValuesForModelPathResponse,
   valuesForModelPath,

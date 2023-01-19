@@ -9,9 +9,9 @@ import {
 } from '../../src'
 import { describe, expect, test } from 'vitest'
 import {
-  HasManyRelationship,
-  HasOneRelationship,
-  Property,
+  type HasManyRelationship,
+  type HasOneRelationship,
+  type Property,
   propertyDescriptors,
 } from '@cozemble/model-core'
 import { dataRecordRecordPathAndValue } from '../../src/modelPathFns'

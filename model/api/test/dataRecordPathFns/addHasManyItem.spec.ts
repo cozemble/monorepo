@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest'
 import { dataRecordFns, dataRecordPathFns, modelFns, relationshipFns } from '../../src'
 import { invoiceModel, invoiceModels, lineItemModel } from '../../src/invoiceModel'
-import { DataRecord, HasManyRelationship } from '@cozemble/model-core'
+import type { DataRecord, HasManyRelationship } from '@cozemble/model-core'
 import { registerStringProperty } from '@cozemble/model-string-core'
 
 registerStringProperty()

@@ -1,12 +1,12 @@
-import {
+import type {
   DataRecord,
   DataRecordPathElement,
   Model,
   ModelPath,
   ModelPathElement,
   Property,
-  propertyDescriptors,
 } from '@cozemble/model-core'
+import { propertyDescriptors } from '@cozemble/model-core'
 import { dataRecordPathFns } from './dataRecordPathFns'
 import { DataRecordPathAndValue, dataRecordRecordPathAndValue, modelPathFns } from './modelPathFns'
 import { modelFns } from './modelsFns'

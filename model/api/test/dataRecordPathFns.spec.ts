@@ -8,7 +8,7 @@ import {
   relationshipFns,
 } from '../src'
 import { registerStringProperty } from '@cozemble/model-string-core'
-import { HasOneRelationship } from '@cozemble/model-core'
+import type { HasOneRelationship } from '@cozemble/model-core'
 
 registerStringProperty()
 
