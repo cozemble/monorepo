@@ -4,7 +4,7 @@
     import {writable, type Writable} from 'svelte/store'
     import DataTd from '$lib/DataTd.svelte'
     import StackingRecordEditor from "./StackingRecordEditor.svelte";
-    import {RecordEditContext} from "./RecordEditContext";
+    import {RecordEditContext, recordSaveSucceeded} from "./RecordEditContext";
     import type {EventSourcedDataRecord} from "@cozemble/data-editor-sdk";
     import {eventSourcedDataRecordFns} from "@cozemble/data-editor-sdk";
 
@@ -27,14 +27,16 @@
         doAddNewRecord = true
     }
 
-    function recordEdited(editedRecord: EventSourcedDataRecord) {
+    async function recordEdited(editedRecord: EventSourcedDataRecord) {
         records = records.map(record => record.id.value === editedRecord.record.id.value ? editedRecord.record : record)
         recordBeingEdited = null
+        return recordSaveSucceeded(editedRecord.record)
     }
 
-    function saveNewRecord(newRecord: EventSourcedDataRecord) {
+    async function saveNewRecord(newRecord: EventSourcedDataRecord) {
         records = [...records, newRecord.record]
         doAddNewRecord = false
+        return recordSaveSucceeded(newRecord.record)
     }
 </script>
 

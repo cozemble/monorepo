@@ -16,8 +16,9 @@
         recordEditContext.cancel()
     }
 
-    function handleSave() {
-        recordEditContext.attemptSave()
+    async function handleSave() {
+        console.log("Saving record")
+        await recordEditContext.attemptSave()
     }
 
     const dataRecordEditorClient: DataRecordEditorClient = {

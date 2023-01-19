@@ -1,4 +1,4 @@
-import type { DataRecordPath, Model } from '@cozemble/model-core'
+import type { DataRecord, DataRecordPath, Model } from '@cozemble/model-core'
 import { DataRecordPathFocus } from '$lib/DataRecordPathFocus'
 import { writable, type Writable } from 'svelte/store'
 import { modelFns } from '@cozemble/model-api'
@@ -9,11 +9,33 @@ import {
 } from '@cozemble/data-editor-sdk'
 import { uuids } from '@cozemble/lang-util'
 
+export interface RecordSaveSucceeded {
+  _type: 'record.save.succeeded'
+  record: DataRecord
+}
+
+export function recordSaveSucceeded(record: DataRecord): RecordSaveSucceeded {
+  return { _type: 'record.save.succeeded', record }
+}
+
+export interface RecordSaveFailed {
+  _type: 'record.save.failed'
+  errors: Map<DataRecordPath, string[]>
+}
+
+export function recordSaveFailed(errors: Map<DataRecordPath, string[]>): RecordSaveFailed {
+  return { _type: 'record.save.failed', errors }
+}
+
+export type RecordSaveOutcome = RecordSaveSucceeded | RecordSaveFailed
+
+export type RecordSaveFunction = (record: EventSourcedDataRecord) => Promise<RecordSaveOutcome>
+
 export class RecordEditContext {
   constructor(
     public models: Model[],
     public eventSourcedRecord: EventSourcedDataRecord,
-    public onSave: (record: EventSourcedDataRecord) => void,
+    public onSave: RecordSaveFunction,
     public onCancel: () => void,
     public title: string,
     public _errors: Map<DataRecordPath, string[]> = new Map(),
@@ -37,14 +59,14 @@ export class RecordEditContext {
     }
   }
 
-  attemptSave() {
+  async attemptSave() {
     console.log('attemptSave', {
       model: this.model,
       record: this.eventSourcedRecord,
       errors: this._errors,
     })
     if (this._errors.size === 0) {
-      this.onSave(this.eventSourcedRecord)
+      await this.onSave(this.eventSourcedRecord)
     } else {
       this.showErrors.set(true)
     }

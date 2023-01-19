@@ -11,7 +11,7 @@
     import {dataRecordTableClicked} from "./dataRecordTableClicked";
     import {modelFns} from "@cozemble/model-api";
     import DataRecordTableTd from "$lib/DataRecordTableTd.svelte";
-    import {RecordEditContext} from "./RecordEditContext";
+    import {RecordEditContext, recordSaveSucceeded} from "./RecordEditContext";
     import {dataRecordEditEvents, dataRecordEditor, eventSourcedDataRecordFns} from "@cozemble/data-editor-sdk";
     import type {EventSourcedDataRecord} from "@cozemble/data-editor-sdk";
 
@@ -30,9 +30,8 @@
     $: model = modelFns.findById(models, relationship.modelId)
     $: records = record.values[relationship.id.value] ?? []
 
-    function onNewItemSaved(newRecord: EventSourcedDataRecord) {
+    async function onNewItemSaved(newRecord: EventSourcedDataRecord) {
         popContext()
-        // dataRecordFns.addRecordToRelationship(record, relationship, newRecord)
         dataRecordEditorClient.dispatchEditEvent(
             dataRecordEditEvents.hasManyItemAdded(
                 record,
@@ -41,7 +40,7 @@
                 newRecord.record,
             ),
         )
-
+        return recordSaveSucceeded(newRecord.record)
     }
 
     function addItem() {
