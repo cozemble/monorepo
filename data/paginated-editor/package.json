@@ -24,6 +24,7 @@
   },
   "type": "module",
   "dependencies": {
+    "@cozemble/lang-util": "workspace:*",
     "@cozemble/model-api": "workspace:*",
     "@cozemble/model-assembled": "workspace:*",
     "@cozemble/model-core": "workspace:*",

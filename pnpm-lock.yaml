@@ -97,6 +97,7 @@ importers:
       '@cozemble/data-editor-sdk': workspace:*
       '@cozemble/graphql-core': workspace:*
       '@cozemble/lang-util': workspace:*
+      '@cozemble/model-api': workspace:*
       '@cozemble/model-core': workspace:*
       '@cozemble/model-string-core': workspace:*
       typescript: ^4.9.3
@@ -106,6 +107,7 @@ importers:
       '@cozemble/data-editor-sdk': link:../editor-sdk
       '@cozemble/graphql-core': link:../../graphql/core
       '@cozemble/lang-util': link:../../lang/util
+      '@cozemble/model-api': link:../../model/api
       '@cozemble/model-core': link:../../model/core
       '@cozemble/model-string-core': link:../../model/string/core
     devDependencies:
@@ -118,6 +120,7 @@ importers:
       '@cozemble/data-editor-sdk': workspace:*
       '@cozemble/data-hasura-mutations': workspace:*
       '@cozemble/graphql-client': workspace:*
+      '@cozemble/lang-util': workspace:*
       '@cozemble/model-api': workspace:*
       '@cozemble/model-assembled': workspace:*
       '@cozemble/model-core': workspace:*
@@ -136,6 +139,7 @@ importers:
       '@cozemble/data-editor-sdk': link:../editor-sdk
       '@cozemble/data-hasura-mutations': link:../hasura-mutations
       '@cozemble/graphql-client': link:../../graphql/client
+      '@cozemble/lang-util': link:../../lang/util
       '@cozemble/model-api': link:../../model/api
       '@cozemble/model-assembled': link:../../model/assembled
       '@cozemble/model-core': link:../../model/core

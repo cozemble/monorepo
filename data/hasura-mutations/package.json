@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@cozemble/lang-util": "workspace:*",
+    "@cozemble/model-api": "workspace:*",
     "@cozemble/model-core": "workspace:*",
     "@cozemble/data-editor-sdk": "workspace:*",
     "@cozemble/graphql-core": "workspace:*",
