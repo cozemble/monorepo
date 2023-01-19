@@ -64,7 +64,6 @@
             const mutation = hasuraMutationFromEvents(models, newRecord.events)
             try {
                 const outcome = await localHasuraClient.execute(mutation)
-                console.log({outcome})
                 if (outcome._type === "gql.data") {
                     records = [...records, newRecord.record]
                     return recordSaveSucceeded(newRecord.record)

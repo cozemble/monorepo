@@ -18,4 +18,5 @@ export {
   ValueAssignment,
   printLines,
   GqlRequest,
+  returning,
 } from './core'

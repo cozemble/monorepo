@@ -19,6 +19,7 @@ export function gqlObject(
 }
 
 export const gqlObjectFns = {
+  newInstance: gqlObject,
   addValue(object: GqlObject, value: ValueAssignment): void {
     object.values.push(value)
   },
@@ -36,9 +37,16 @@ export const gqlReturningClauseFns = {
   empty(): GqlReturningClause {
     return { _type: 'gql.returning.clause', value: [] }
   },
+  from(...names: string[]): GqlReturningClause {
+    return { _type: 'gql.returning.clause', value: names }
+  },
   addReturning(clause: GqlReturningClause, value: string): void {
     clause.value.push(strings.snakeCase(value))
   },
+}
+
+export function returning(...names: string[]): GqlReturningClause {
+  return gqlReturningClauseFns.from(...names)
 }
 
 export interface ValueAssignment {

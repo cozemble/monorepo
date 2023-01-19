@@ -3,9 +3,9 @@ import { dataRecordEditEvents } from '@cozemble/data-editor-sdk'
 import { dataRecordFns, dataRecordPathFns, modelFns, testExports } from '@cozemble/model-api'
 import { uuids } from '@cozemble/lang-util'
 import type { DataRecord } from '@cozemble/model-core'
-import { gqlMutation } from '../src/graphql/core'
 import { hasuraMutationFromEvents } from '../src'
 import { registerStringProperty } from '@cozemble/model-string-core'
+import { gqlMutation } from '@cozemble/graphql-core/dist/esm'
 
 registerStringProperty()
 /**
