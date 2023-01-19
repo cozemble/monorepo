@@ -425,6 +425,7 @@ importers:
   model/string/ui:
     specifiers:
       '@cozemble/data-editor-sdk': workspace:*
+      '@cozemble/model-api': workspace:*
       '@cozemble/model-core': workspace:*
       '@cozemble/model-editor-sdk': workspace:*
       '@cozemble/model-string-core': workspace:*
@@ -438,6 +439,7 @@ importers:
       vite: ^4.0.0
     dependencies:
       '@cozemble/data-editor-sdk': link:../../../data/editor-sdk
+      '@cozemble/model-api': link:../../api
       '@cozemble/model-core': link:../../core
       '@cozemble/model-editor-sdk': link:../../editor-sdk
       '@cozemble/model-string-core': link:../core
