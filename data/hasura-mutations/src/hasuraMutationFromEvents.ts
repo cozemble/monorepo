@@ -214,8 +214,8 @@ function hasuraUpdateMutation(
 ): GqlMutation {
   const flattened: RecordIdAndObjectRelationship[] = flattenUpdateEvents(models, events)
 
-  const lines = flattened.map((r) => {
-    return `update_${r.relationship.name}(where: {id: {_eq: "${
+  const lines = flattened.map((r, index) => {
+    return `update${index}: update_${r.relationship.name}(where: {id: {_eq: "${
       r.recordId.value
     }"}}, _set: ${gqlRelationshipFns.printSetStatement(r.relationship)}) {
     returning {${printLines(gqlRelationshipFns.printReturning(r.relationship))}}}`
