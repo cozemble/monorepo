@@ -61,7 +61,7 @@
         },
 
         async saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
-            const mutation = hasuraMutationFromEvents(models, newRecord.events)
+            const mutation = hasuraMutationFromEvents(models, newRecord.record,newRecord.events)
             try {
                 const outcome = await localHasuraClient.execute(mutation)
                 if (outcome._type === "gql.data") {

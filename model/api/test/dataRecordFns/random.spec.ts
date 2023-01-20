@@ -42,7 +42,7 @@ describe('Given a model with two nested properties', () => {
     expect(record.values[address.id.value]).toBe(undefined)
   })
 
-  test('Prompting with values for the nested property fills the nested record', () => {
+  test('Prompting with values for a nested property fills the nested record', () => {
     const record = dataRecordFns.random([customerModel, addressModel], customerModel, {
       Address: { Street: 'Main Street' },
     })
@@ -52,5 +52,14 @@ describe('Given a model with two nested properties', () => {
       'Main Street',
     )
     expect(propertyDescriptors.mandatory(town).getValue(town, addressRecord)).toBeDefined()
+  })
+
+  test('Prompting with a record for a nested property uses the prompted record', () => {
+    const givenAddressRecord = dataRecordFns.random([addressModel], addressModel)
+    const record = dataRecordFns.random([customerModel, addressModel], customerModel, {
+      Address: givenAddressRecord,
+    })
+    const addressRecord = record.values[address.id.value]
+    expect(addressRecord).toEqual(givenAddressRecord)
   })
 })

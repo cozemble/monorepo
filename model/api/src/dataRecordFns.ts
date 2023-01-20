@@ -71,12 +71,16 @@ export const dataRecordFns = {
       ) {
         const givenValue = givenValues[relationship.name.value]
         if (givenValue) {
-          const relatedModel = modelFns.findById(models, relationship.modelId)
-          record.values[relationship.id.value] = dataRecordFns.random(
-            models,
-            relatedModel,
-            givenValue,
-          )
+          if (givenValue._type === 'data.record') {
+            record.values[relationship.id.value] = givenValue
+          } else {
+            const relatedModel = modelFns.findById(models, relationship.modelId)
+            record.values[relationship.id.value] = dataRecordFns.random(
+              models,
+              relatedModel,
+              givenValue,
+            )
+          }
         }
       }
       return record

@@ -38,7 +38,10 @@ export const gqlReturningClauseFns = {
     return { _type: 'gql.returning.clause', value: [] }
   },
   from(...names: string[]): GqlReturningClause {
-    return { _type: 'gql.returning.clause', value: names }
+    return names.reduce((clause, name) => {
+      gqlReturningClauseFns.addReturning(clause, name)
+      return clause
+    }, gqlReturningClauseFns.empty())
   },
   addReturning(clause: GqlReturningClause, value: string): void {
     clause.value.push(strings.snakeCase(value))

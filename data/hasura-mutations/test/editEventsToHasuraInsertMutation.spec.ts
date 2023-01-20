@@ -1,11 +1,11 @@
 import { expect, test } from 'vitest'
 import { dataRecordEditEvents } from '@cozemble/data-editor-sdk'
-import { dataRecordFns, dataRecordPathFns, modelFns, testExports } from '@cozemble/model-api'
+import { dataRecordFns, testExports } from '@cozemble/model-api'
 import { uuids } from '@cozemble/lang-util'
-import type { DataRecord } from '@cozemble/model-core'
 import { hasuraMutationFromEvents } from '../src'
 import { registerStringProperty } from '@cozemble/model-string-core'
-import { gqlMutation } from '@cozemble/graphql-core/dist/esm'
+import { gqlMutation } from '@cozemble/graphql-core'
+import { valueChanged } from './helpers'
 
 registerStringProperty()
 /**
@@ -87,12 +87,13 @@ test('can create a simple object mutation', () => {
     valueChanged(addressRecord, addressPostcode, 'Post code'),
   ]
 
-  const mutation = hasuraMutationFromEvents(invoiceModels, events)
+  const mutation = hasuraMutationFromEvents(invoiceModels, addressRecord, events)
   expect(mutation).toEqual(
     gqlMutation(
       `mutation MyMutation {
   insert_address(objects: {line_1: "${addressLine1}", post_code: "${addressPostcode}"}) {
     returning {
+      id
       line_1
       line_2
       post_code
@@ -114,19 +115,22 @@ test('can create a simple object mutation with a nested-nested object', () => {
     valueChanged(invoiceRecord, '1 Main Street', 'Customer', 'Address', 'Line 1'),
     valueChanged(invoiceRecord, 'CM22 6JH', 'Customer', 'Address', 'Post code'),
   ]
-  const mutation = hasuraMutationFromEvents(invoiceModels, events)
+  const mutation = hasuraMutationFromEvents(invoiceModels, invoiceRecord, events)
   expect(mutation).toEqual(
     gqlMutation(
       `mutation MyMutation {
   insert_invoice(objects: {invoice_id: "123", customer: {data: {first_name: "John", phone: "555-5555-555", email: "john@email.com",address: {data: {line_1: "1 Main Street", post_code: "CM22 6JH"}}}}}) {
     returning {
+      id
       invoice_id
       customer {
+        id
         first_name
         last_name
         phone
         email
         address {
+          id
           line_1
           line_2
           post_code
@@ -162,14 +166,16 @@ test('can create a object mutation with a nested array', () => {
     ),
     dataRecordEditEvents.hasManyItemAdded(invoiceRecord, [], invoiceLineItemsRelationship, onePear),
   ]
-  const mutation = hasuraMutationFromEvents(invoiceModels, events)
+  const mutation = hasuraMutationFromEvents(invoiceModels, invoiceRecord, events)
   expect(mutation).toEqual(
     gqlMutation(
       `mutation MyMutation {
   insert_invoice(objects: {invoice_id: "22", line_items: {data: [{quantity: "2", name: "apple", price: "0.85"}, {quantity: "1", name: "pear", price: "0.98"}]}}) {
     returning {
+      id
       invoice_id
       line_items {
+        id
         quantity
         name
         price
@@ -181,14 +187,3 @@ test('can create a object mutation with a nested array', () => {
     ),
   )
 })
-
-function valueChanged(record: DataRecord, value: string, ...pathNames: string[]) {
-  const model = modelFns.findById(invoiceModels, record.modelId)
-  return dataRecordEditEvents.valueChanged(
-    record,
-    dataRecordPathFns.fromNames(invoiceModels, model, ...pathNames),
-    null,
-    value,
-    null,
-  )
-}

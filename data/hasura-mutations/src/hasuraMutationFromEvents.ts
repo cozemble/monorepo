@@ -16,6 +16,7 @@ import {
 } from '@cozemble/graphql-core'
 import {
   type DataRecord,
+  type DataRecordId,
   type DataRecordPathElement,
   type Model,
   type ModelId,
@@ -27,8 +28,16 @@ import type {
   DataRecordValueChanged,
   HasManyItemAdded,
 } from '@cozemble/data-editor-sdk'
-import { modelFns } from '@cozemble/model-api'
+import { dataRecordPathElementFns, modelFns } from '@cozemble/model-api'
 import { strings } from '@cozemble/lang-util'
+
+function ensureReturningId(returning: GqlReturningClause): GqlReturningClause {
+  if (returning.value.find((l) => l === 'id')) {
+    return returning
+  }
+  gqlReturningClauseFns.addReturning(returning, 'id')
+  return returning
+}
 
 function addAllReturningLines(
   models: Model[],
@@ -39,7 +48,7 @@ function addAllReturningLines(
   model.properties.reduce((clause, property) => {
     gqlReturningClauseFns.addReturning(clause, property.name.value)
     return clause
-  }, returning)
+  }, ensureReturningId(returning))
 }
 
 function getOrCreateAddressedObject(
@@ -152,16 +161,84 @@ function hasuraInsertMutation(
   )
 }
 
+function flattenUpdateEvent(
+  models: Model[],
+  event: DataRecordEditEvent,
+  acc: RecordIdAndObjectRelationship[],
+) {
+  if (event._type === 'data.record.value.changed') {
+    const addressedRecord = dataRecordPathElementFns.getChildRecord(
+      models,
+      event.record,
+      event.path.parentElements,
+    )
+    if (addressedRecord === null) {
+      throw new Error('Change event path addressed a null record')
+    }
+    let recordIdAndObjectRelationship = acc.find(
+      (r) => r.recordId.value === addressedRecord.id.value,
+    )
+    if (!recordIdAndObjectRelationship) {
+      const model = modelFns.findById(models, addressedRecord.modelId)
+      const newObjectRelationship = objectRelationship(model.name.value)
+      addAllReturningLines(models, model.id, newObjectRelationship.returning)
+      recordIdAndObjectRelationship = {
+        recordId: addressedRecord.id,
+        relationship: newObjectRelationship,
+      }
+      acc.push(recordIdAndObjectRelationship)
+    }
+    gqlObjectFns.addValue(
+      recordIdAndObjectRelationship.relationship.object,
+      value(event.path.lastElement.name.value, event.newValue),
+    )
+
+    return acc
+  }
+  return acc
+}
+
+function flattenUpdateEvents(models: Model[], events: DataRecordEditEvent[]) {
+  return events.reduce(
+    (acc, event) => flattenUpdateEvent(models, event, acc),
+    [] as RecordIdAndObjectRelationship[],
+  )
+}
+
+type RecordIdAndObjectRelationship = { recordId: DataRecordId; relationship: ObjectRelationship }
+
+function hasuraUpdateMutation(
+  models: Model[],
+  record: DataRecord,
+  events: DataRecordEditEvent[],
+): GqlMutation {
+  const flattened: RecordIdAndObjectRelationship[] = flattenUpdateEvents(models, events)
+
+  const lines = flattened.map((r) => {
+    return `update_${r.relationship.name}(where: {id: {_eq: "${
+      r.recordId.value
+    }"}}, _set: ${gqlRelationshipFns.printSetStatement(r.relationship)}) {
+    returning {${printLines(gqlRelationshipFns.printReturning(r.relationship))}}}`
+  })
+
+  return gqlMutation(
+    `mutation MyMutation {
+    ${lines}
+}`,
+  )
+}
+
 export function hasuraMutationFromEvents(
   models: Model[],
+  record: DataRecord,
   events: DataRecordEditEvent[],
 ): GqlMutation {
   if (events.length === 0) {
     throw new Error('No events')
   }
   const [firstEvent, ...remainingEvents] = events
-  if (firstEvent._type !== 'data.record.created') {
-    throw new Error('First event must be a data.record.created')
+  if (firstEvent._type === 'data.record.created') {
+    return hasuraInsertMutation(models, firstEvent, remainingEvents)
   }
-  return hasuraInsertMutation(models, firstEvent, remainingEvents)
+  return hasuraUpdateMutation(models, record, events)
 }

@@ -16,7 +16,7 @@
     <div class="gql-container">
         {#if firstContext}
             <h4>GraphQL</h4>
-            <pre>{hasuraMutationFromEvents(firstContext.models,firstContext.eventSourcedRecord.events).mutation}</pre>
+            <pre>{hasuraMutationFromEvents(firstContext.models,firstContext.eventSourcedRecord.record,firstContext.eventSourcedRecord.events).mutation}</pre>
         {/if}
     </div>
 </div>
