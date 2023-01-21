@@ -46,13 +46,11 @@ onDestroy(() => {
 
 <DataRecordEditor {recordEditContext} {pushContext} {popContext} />
 
-<div class="buttons">
-  <button type="button" class="save" on:click={handleSave}>Save</button>
-  <button type="button" class="cancel" on:click={handleCancel}>Cancel</button>
+<div class="buttons btn-group my-4">
+  <button type="button" class="save btn btn-primary" on:click={handleSave}
+    >Save</button
+  >
+  <button type="button" class="cancel btn btn-error" on:click={handleCancel}
+    >Cancel</button
+  >
 </div>
-
-<style>
-.buttons {
-  margin-top: 1rem;
-}
-</style>

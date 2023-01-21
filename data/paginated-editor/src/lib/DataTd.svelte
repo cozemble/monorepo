@@ -17,15 +17,3 @@ export let property: Property
 >
   <PropertyView {record} {property} />
 </td>
-
-<style>
-.highlighted {
-  border-color: blue;
-  border-width: 2px;
-}
-
-td {
-  border: 1px solid black;
-  padding: 0.5rem;
-}
-</style>

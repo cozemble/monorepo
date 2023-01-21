@@ -37,14 +37,3 @@ $: focussed = $focus.isPropertyFocussed(property, parentPath)
   {/if}
   <MaybeError {parentPath} {property} {errors} {showErrors} />
 </td>
-
-<style>
-.focussed {
-  border: solid 2px blue;
-}
-
-td {
-  border: 1px solid black;
-  padding: 0.5rem;
-}
-</style>

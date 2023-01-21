@@ -138,27 +138,24 @@ function persistenceMethodChanged(event: Event) {
 }
 </script>
 
-<div class="persistence-method-container" on:change={persistenceMethodChanged}>
-  <label for="persistenceSelect">Persistence method</label><br />
-  <select id="persistenceSelect">
-    <option selected={selectedHost === noOpEditorHost}>------</option>
-    <option
-      value="localHasura"
-      selected={selectedHost === localHasuraEditorHost}
-      >Local Hasura (http://localhost:8080/v1/graphql)
-    </option>
-  </select>
+<div class="bg-base-100 rounded-lg" on:change={persistenceMethodChanged}>
+  <div class="form-control w-full max-w-xs">
+    <label for="persistenceSelect" class="label">Persistence method</label><br
+    />
+
+    <select id="persistenceSelect" class="select select-bordered">
+      <option selected={selectedHost === noOpEditorHost}>------</option>
+      <option
+        value="localHasura"
+        selected={selectedHost === localHasuraEditorHost}
+        >Local Hasura (http://localhost:8080/v1/graphql)
+      </option>
+    </select>
+  </div>
+
+  {#if model}
+    <PaginatedEditor {models} {model} {records} {paginatedEditorHost} />
+  {/if}
+
+  <EditEventInspector {editContexts} />
 </div>
-{#if model}
-  <PaginatedEditor {models} {model} {records} {paginatedEditorHost} />
-{/if}
-
-<hr />
-
-<EditEventInspector {editContexts} />
-
-<style>
-.persistence-method-container {
-  margin-bottom: 1em;
-}
-</style>

@@ -18,8 +18,12 @@ export let focus: Writable<DataRecordPathFocus>
 export let showErrors: boolean
 </script>
 
-<table on:click={(event) => dataRecordTableClicked(focus, event)}>
-  <thead>
+<table
+  on:click={(event) => dataRecordTableClicked(focus, event)}
+  on:keyup={(event) => dataRecordTableClicked(focus, event)}
+  class="table"
+>
+  <thead class="">
     <tr>
       {#each model.properties as property}
         <th>{property.name.value}</th>
@@ -41,14 +45,3 @@ export let showErrors: boolean
     </tr></tbody
   >
 </table>
-
-<style>
-table {
-  border-collapse: collapse;
-}
-
-th {
-  border: 1px solid black;
-  padding: 0.5rem;
-}
-</style>

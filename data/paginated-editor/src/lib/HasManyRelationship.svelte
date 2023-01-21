@@ -60,7 +60,11 @@ function addItem() {
 }
 </script>
 
-<table on:click={(event) => dataRecordTableClicked(focus, event)}>
+<table
+  on:click={(event) => dataRecordTableClicked(focus, event)}
+  on:keyup={(event) => dataRecordTableClicked(focus, event)}
+  class="table"
+>
   <thead>
     <tr>
       {#each model.properties as property}
@@ -85,21 +89,8 @@ function addItem() {
     {/each}
   </tbody>
 </table>
-<div class="bottom-buttons">
-  <button type="button" on:click={addItem}>Add {model.name.value}</button>
+<div class="bottom-buttons btn-group">
+  <button type="button" on:click={addItem} class="btn btn-sm"
+    >Add {model.name.value}</button
+  >
 </div>
-
-<style>
-.bottom-buttons {
-  margin-top: 1rem;
-}
-
-table {
-  border-collapse: collapse;
-}
-
-th {
-  border: 1px solid black;
-  padding: 0.5rem;
-}
-</style>

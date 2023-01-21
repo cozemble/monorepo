@@ -12,7 +12,7 @@ const focus = recordEditContext.focus
 const showErrors = recordEditContext.showErrors
 </script>
 
-<h2>{recordEditContext.title}</h2>
+<h2 class="font-bold text-xl">{recordEditContext.title}</h2>
 
 <DataRecordEditorInner
   models={recordEditContext.models}

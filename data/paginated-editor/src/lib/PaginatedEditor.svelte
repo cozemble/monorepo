@@ -79,7 +79,7 @@ async function saveNewRecord(
     )}
   />
 {:else}
-  <table>
+  <table class="table">
     <thead>
       <tr>
         {#each model.properties as property}
@@ -95,11 +95,13 @@ async function saveNewRecord(
             <DataTd {focus} {rowIndex} {colIndex} {record} {property} />
           {/each}
           <td>
-            <button class="edit" on:click={() => editRecord(record)}
-              >Edit</button
+            <button
+              class="edit btn btn-warning"
+              on:click={() => editRecord(record)}>Edit</button
             >
-            <button class="delete" on:click={() => deleteRecord(record)}
-              >Delete</button
+            <button
+              class="delete btn btn-error"
+              on:click={() => deleteRecord(record)}>Delete</button
             >
           </td>
         </tr>
@@ -107,32 +109,8 @@ async function saveNewRecord(
     </tbody>
   </table>
   <div class="actions">
-    <button type="button" class="add-record" on:click={beginAddNewRecord}
+    <button type="button" class="add-record btn" on:click={beginAddNewRecord}
       >Add {model.name.value}</button
     >
   </div>
 {/if}
-
-<style>
-.data-cell {
-  height: 100%;
-}
-
-.actions {
-  margin-top: 20px;
-}
-
-table {
-  border-collapse: collapse;
-}
-
-th,
-td {
-  border: 1px solid black;
-  padding: 0.5rem;
-}
-
-.error {
-  color: red;
-}
-</style>
