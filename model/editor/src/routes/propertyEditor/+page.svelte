@@ -20,7 +20,7 @@ onMount(() => {
 let eventSourced = eventSourcedModelFns.newInstance(
   modelFns.newInstance(
     'My model',
-    modelOptions.withProperty(propertyFns.newInstance("Untitled Property")),
+    modelOptions.withProperty(propertyFns.newInstance('Untitled Property')),
   ),
 )
 $: property = eventSourced.model.properties[0]
