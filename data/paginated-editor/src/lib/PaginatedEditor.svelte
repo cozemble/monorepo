@@ -17,6 +17,7 @@
     let focus: Writable<CellFocus | null> = writable(null)
     let doAddNewRecord = false
     let recordBeingEdited: DataRecord | null = null
+    let modelLevelErrors: string[] = []
 
     function deleteRecord(_record: DataRecord) {
     }
@@ -31,22 +32,31 @@
 
     async function recordEdited(editedRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
         const outcome = await paginatedEditorHost.recordEdited(editedRecord)
-        if(outcome._type === "record.save.succeeded") {
+        if (outcome._type === "record.save.succeeded") {
             recordBeingEdited = null
         }
         return outcome
     }
 
     async function saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
+        modelLevelErrors = []
         const outcome = await paginatedEditorHost.saveNewRecord(newRecord)
-        if(outcome._type === "record.save.succeeded") {
+        if (outcome._type === "record.save.succeeded") {
             doAddNewRecord = false
+        } else {
+            modelLevelErrors = outcome.errors
         }
         return outcome
 
     }
 </script>
 
+
+{#each modelLevelErrors as error}
+    <div class="error" role="alert">
+        {error}
+    </div>
+{/each}
 {#if doAddNewRecord}
     <StackingRecordEditor
             recordEditContext={new RecordEditContext(models, eventSourcedDataRecordFns.newInstance(models, model.id,  'test-user'), saveNewRecord, () => doAddNewRecord = false, `Add new ${model.name.value}`)}/>
@@ -99,5 +109,9 @@
     td {
         border: 1px solid black;
         padding: 0.5rem;
+    }
+
+    .error {
+        color: red;
     }
 </style>

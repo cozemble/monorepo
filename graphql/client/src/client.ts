@@ -15,10 +15,10 @@ function gqlData(data: Record<string, unknown>): GqlData {
 
 export interface GqlError {
   _type: 'gql.error'
-  errors: Record<string, unknown>[]
+  errors: any
 }
 
-function gqlError(errors: Record<string, unknown>[]): GqlError {
+function gqlError(errors: any): GqlError {
   return {
     _type: 'gql.error',
     errors,

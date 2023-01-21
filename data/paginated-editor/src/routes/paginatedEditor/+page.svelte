@@ -18,6 +18,7 @@
     import type {PaginatedEditorHost} from "$lib/PaginatedEditorHost";
     import {AxiosGraphQlClient} from "@cozemble/graphql-client";
     import {hasuraMutationFromEvents} from "@cozemble/data-hasura-mutations";
+    import {modelLevelHasuraErrors} from "./recordPathErrorsFromHasuraError";
 
     let models: Model[]
     let model: Model | null = null
@@ -34,7 +35,6 @@
             model = models[0]
             console.log('Loaded model from local storage', model)
         } else {
-
             models = [...allModels]
             model = invoiceModel
         }
@@ -61,14 +61,15 @@
         },
 
         async saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
-            const mutation = hasuraMutationFromEvents(models, newRecord.record,newRecord.events)
+            const mutation = hasuraMutationFromEvents(models, newRecord.record, newRecord.events)
             try {
                 const outcome = await localHasuraClient.execute(mutation)
+                console.log('Outcome', outcome)
                 if (outcome._type === "gql.data") {
                     records = [...records, newRecord.record]
                     return recordSaveSucceeded(newRecord.record)
                 }
-                return recordSaveFailed([outcome.errors.toString()], new Map())
+                return recordSaveFailed(modelLevelHasuraErrors(outcome.errors), new Map())
             } catch (e: any) {
                 console.error(e)
                 return recordSaveFailed([e.message], new Map())
