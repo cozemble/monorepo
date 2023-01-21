@@ -1,7 +1,10 @@
 import type { DataRecordPathFocus } from './DataRecordPathFocus'
 import type { Writable } from 'svelte/store'
 
-export function dataRecordTableClicked(focus: Writable<DataRecordPathFocus>, event: MouseEvent) {
+export function dataRecordTableClicked(
+  focus: Writable<DataRecordPathFocus>,
+  event: MouseEvent | KeyboardEvent,
+) {
   const target = event.target as HTMLElement
   const nearestTd = target.closest('td')
   if (nearestTd) {
