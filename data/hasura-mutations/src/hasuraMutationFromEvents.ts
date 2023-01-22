@@ -242,23 +242,53 @@ function flattenUpdateEvents(
 
 type RecordIdAndObjectRelationship = { recordId: DataRecordId; relationship: ObjectRelationship }
 
-function hasuraUpdateMutation(
+function updateGqlLines(
   models: Model[],
   record: DataRecord,
   events: DataRecordEditEvent[],
-): GqlMutation {
-  const flattened: RecordIdAndObjectRelationship[] = flattenUpdateEvents(models, record, events)
-
-  const lines = flattened.map((r, index) => {
+): string[] {
+  const updateStatements = flattenUpdateEvents(models, record, events).map((r, index) => {
     return `update${index}: update_${r.relationship.name}(where: {id: {_eq: "${
       r.recordId.value
     }"}}, _set: ${gqlRelationshipFns.printSetStatement(r.relationship)}) {
     returning {${printLines(gqlRelationshipFns.printReturning(r.relationship))}}}`
   })
+  return updateStatements
+}
+
+function deleteGqlLines(
+  models: Model[],
+  record: DataRecord,
+  events: DataRecordEditEvent[],
+): string[] {
+  return events.flatMap((event, index) => {
+    if (event._type === 'data.record.deleted') {
+      const model = modelFns.findById(models, event.modelId)
+      return [
+        `delete${index}: delete_${strings.snakeCase(model.name.value)}(where: {id: {_eq: "${
+          record.id.value
+        }"}}) {
+    affected_rows
+  }`,
+      ]
+    } else {
+      return []
+    }
+  })
+}
+
+function hasuraUpdateMutation(
+  models: Model[],
+  record: DataRecord,
+  events: DataRecordEditEvent[],
+): GqlMutation {
+  const updateLines = updateGqlLines(models, record, events)
+  const deleteLines = deleteGqlLines(models, record, events)
 
   return gqlMutation(
     `mutation MyMutation {
-    ${lines}
+    ${updateLines}
+    ${deleteLines}
 }`,
   )
 }

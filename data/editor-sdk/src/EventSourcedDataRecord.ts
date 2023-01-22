@@ -3,7 +3,7 @@ import { DataRecordEditEvent, dataRecordEditEvents } from './dataRecordEditEvent
 import { dataRecordFns, dataRecordPathFns, modelFns } from '@cozemble/model-api'
 
 export interface EventSourcedDataRecord {
-  _type: 'event.sourced.daya.record'
+  _type: 'event.sourced.data.record'
   models: Model[]
   record: DataRecord
   events: DataRecordEditEvent[]
@@ -30,7 +30,7 @@ export const eventSourcedDataRecordFns = {
     const model = modelFns.findById(models, modelId)
     const record = dataRecordFns.fullStructure(models, dataRecordFns.newInstance(model, creatorId))
     return {
-      _type: 'event.sourced.daya.record',
+      _type: 'event.sourced.data.record',
       models,
       record,
       events: [dataRecordEditEvents.recordCreated(modelId, record.id, creatorId)],
@@ -38,7 +38,7 @@ export const eventSourcedDataRecordFns = {
   },
   fromRecord(models: Model[], record: DataRecord): EventSourcedDataRecord {
     return {
-      _type: 'event.sourced.daya.record',
+      _type: 'event.sourced.data.record',
       models,
       record,
       events: [],
