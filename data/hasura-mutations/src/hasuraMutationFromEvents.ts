@@ -247,13 +247,12 @@ function updateGqlLines(
   record: DataRecord,
   events: DataRecordEditEvent[],
 ): string[] {
-  const updateStatements = flattenUpdateEvents(models, record, events).map((r, index) => {
+  return flattenUpdateEvents(models, record, events).map((r, index) => {
     return `update${index}: update_${r.relationship.name}(where: {id: {_eq: "${
       r.recordId.value
     }"}}, _set: ${gqlRelationshipFns.printSetStatement(r.relationship)}) {
     returning {${printLines(gqlRelationshipFns.printReturning(r.relationship))}}}`
   })
-  return updateStatements
 }
 
 function deleteGqlLines(
@@ -266,7 +265,7 @@ function deleteGqlLines(
       const model = modelFns.findById(models, event.modelId)
       return [
         `delete${index}: delete_${strings.snakeCase(model.name.value)}(where: {id: {_eq: "${
-          record.id.value
+          event.recordId.value
         }"}}) {
     affected_rows
   }`,
