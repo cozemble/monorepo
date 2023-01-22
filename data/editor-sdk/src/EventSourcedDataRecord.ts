@@ -33,7 +33,7 @@ export const eventSourcedDataRecordFns = {
       _type: 'event.sourced.daya.record',
       models,
       record,
-      events: [dataRecordEditEvents.recordCreated(modelId, creatorId)],
+      events: [dataRecordEditEvents.recordCreated(modelId, record.id, creatorId)],
     }
   },
   fromRecord(models: Model[], record: DataRecord): EventSourcedDataRecord {

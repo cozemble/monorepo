@@ -1,6 +1,7 @@
 import { getContext, setContext } from 'svelte'
 import type {
   DataRecord,
+  DataRecordId,
   DataRecordPath,
   DataRecordPathElement,
   HasManyRelationship,
@@ -13,13 +14,19 @@ const dataRecordEditorClientContext = 'com.cozemble.data.record.editor.client.co
 export interface DataRecordCreatedEvent {
   _type: 'data.record.created'
   modelId: ModelId
+  recordId: DataRecordId
   creatorId: string
 }
 
-function dataRecordCreatedEvent(modelId: ModelId, creatorId: string): DataRecordCreatedEvent {
+function dataRecordCreatedEvent(
+  modelId: ModelId,
+  recordId: DataRecordId,
+  creatorId: string,
+): DataRecordCreatedEvent {
   return {
     _type: 'data.record.created',
     modelId,
+    recordId,
     creatorId,
   }
 }

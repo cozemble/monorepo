@@ -1,6 +1,14 @@
 import type { DataRecord, DataRecordPathElement, DottedPath, Model } from '@cozemble/model-core'
+import {
+  dottedPathFns,
+  type HasManyRelationshipPathElement,
+  hasManyRelationshipPathElement,
+  type HasOneRelationship,
+} from '@cozemble/model-core'
+import { modelFns } from './modelsFns'
 
 export const dataRecordPathElementFns = {
+  hasManyRelationshipPathElement,
   toDottedNamePath(elements: DataRecordPathElement[]): DottedPath {
     return {
       _type: 'dotted.path',
@@ -40,5 +48,41 @@ export const dataRecordPathElementFns = {
       }
     }
     return currentRecord
+  },
+  fromDottedNamePath(
+    models: Model[],
+    model: Model,
+    dottedNamePath: DottedPath,
+  ): DataRecordPathElement[] {
+    const names = dottedPathFns.split(dottedNamePath)
+    return names.map((name) => {
+      if (name.indexOf('.') !== -1) {
+        const parts = name.split('.')
+        if (parts.length !== 2) {
+          throw new Error(`Invalid name: ${name}`)
+        }
+        const [relationshipName, recordIndex] = parts
+        const relationship = model.relationships.find(
+          (relationship) => relationship.name.value === relationshipName,
+        )
+        if (!relationship) {
+          throw new Error(`Relationship not found: ${relationshipName}`)
+        }
+        if (relationship.subType !== 'has.many.relationship') {
+          throw new Error(`Expected has many relationship: ${relationshipName}`)
+        }
+        const result: HasManyRelationshipPathElement = {
+          _type: 'has.many.relationship.path.element',
+          relationship,
+          recordReference: { _type: 'by.index.record.reference', index: parseInt(recordIndex) },
+        }
+        return result
+      } else {
+        return modelFns.elementByName(model, name) as HasOneRelationship
+      }
+    })
+  },
+  same(a: DataRecordPathElement[], b: DataRecordPathElement[]): boolean {
+    return this.toDottedNamePath(a).value === this.toDottedNamePath(b).value
   },
 }

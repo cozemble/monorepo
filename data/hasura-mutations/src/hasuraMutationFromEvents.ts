@@ -16,6 +16,7 @@ import {
 } from '@cozemble/graphql-core'
 import {
   type DataRecord,
+  type DataRecordAndPath,
   type DataRecordId,
   type DataRecordPathElement,
   type Model,
@@ -29,7 +30,7 @@ import type {
   HasManyItemAdded,
 } from '@cozemble/data-editor-sdk'
 import { dataRecordPathElementFns, modelFns } from '@cozemble/model-api'
-import { strings } from '@cozemble/lang-util'
+import { mandatory, strings } from '@cozemble/lang-util'
 
 function ensureReturningId(returning: GqlReturningClause): GqlReturningClause {
   if (returning.value.find((l) => l === 'id')) {
@@ -55,6 +56,7 @@ function getOrCreateAddressedObject(
   models: Model[],
   object: GqlObject,
   parentElements: DataRecordPathElement[],
+  allRecords: DataRecordAndPath[],
 ): GqlObject {
   return parentElements.reduce((obj, pathElement) => {
     if (pathElement._type === 'has.many.relationship.path.element') {
@@ -67,6 +69,11 @@ function getOrCreateAddressedObject(
       return maybeExistingRelationship.object
     }
     const newRelationship = objectRelationship(pathElement.name.value)
+    const record = mandatory(
+      allRecords.find((r) => dataRecordPathElementFns.same(r.parentElements, parentElements)),
+      `Could not find record for path`,
+    )
+    gqlObjectFns.addValue(newRelationship.object, value('id', record.record.id.value))
     addAllReturningLines(models, pathElement.modelId, newRelationship.returning)
     obj.relationships.push(newRelationship)
     return newRelationship.object
@@ -77,11 +84,13 @@ function applyValueChange(
   models: Model[],
   relationship: ObjectRelationship,
   event: DataRecordValueChanged,
+  allRecords: DataRecordAndPath[],
 ): ObjectRelationship {
   const addressedObject = getOrCreateAddressedObject(
     models,
     relationship.object,
     event.path.parentElements,
+    allRecords,
   )
   gqlObjectFns.addValue(addressedObject, value(event.path.lastElement.name.value, event.newValue))
   return relationship
@@ -96,15 +105,21 @@ function toGqlObject(models: Model[], record: DataRecord): GqlObject {
     }
     return []
   })
-  return gqlObject(values)
+  return gqlObject([value('id', record.id.value), ...values])
 }
 
 function applyHasManyAdded(
   models: Model[],
   relationship: ObjectRelationship,
   event: HasManyItemAdded,
+  allRecords: DataRecordAndPath[],
 ): ObjectRelationship {
-  const parentObject = getOrCreateAddressedObject(models, relationship.object, event.parentPath)
+  const parentObject = getOrCreateAddressedObject(
+    models,
+    relationship.object,
+    event.parentPath,
+    allRecords,
+  )
   const maybeArrayRelationship = parentObject.relationships.find(
     (r) => r.name === strings.snakeCase(event.relationship.name.value),
   ) as ArrayRelationship
@@ -124,12 +139,13 @@ function applyEvent(
   models: Model[],
   relationship: ObjectRelationship,
   event: DataRecordEditEvent,
+  allRecords: DataRecordAndPath[],
 ): ObjectRelationship {
   if (event._type === 'data.record.value.changed') {
-    return applyValueChange(models, relationship, event)
+    return applyValueChange(models, relationship, event, allRecords)
   }
   if (event._type === 'data.record.has.many.item.added') {
-    return applyHasManyAdded(models, relationship, event)
+    return applyHasManyAdded(models, relationship, event, allRecords)
   }
   throw new Error(`Unknown event type: ${event._type}`)
 }
@@ -138,20 +154,33 @@ function applyEvents(
   models: Model[],
   relationship: ObjectRelationship,
   remainingEvents: DataRecordEditEvent[],
+  allRecords: DataRecordAndPath[],
 ): ObjectRelationship {
   return remainingEvents.reduce(
-    (relationship, event) => applyEvent(models, relationship, event),
+    (relationship, event) => applyEvent(models, relationship, event, allRecords),
     relationship,
   )
+}
+
+function objectRelationshipFromCreatedEvent(model: Model, createdEvent: DataRecordCreatedEvent) {
+  const relationship = objectRelationship(model.name.value)
+  gqlObjectFns.addValue(relationship.object, value('id', createdEvent.recordId.value))
+  return relationship
 }
 
 function hasuraInsertMutation(
   models: Model[],
   createdEvent: DataRecordCreatedEvent,
   remainingEvents: DataRecordEditEvent[],
+  allRecords: DataRecordAndPath[],
 ): GqlMutation {
   const model = modelFns.findById(models, createdEvent.modelId)
-  const rootObject = applyEvents(models, objectRelationship(model.name.value), remainingEvents)
+  const rootObject = applyEvents(
+    models,
+    objectRelationshipFromCreatedEvent(model, createdEvent),
+    remainingEvents,
+    allRecords,
+  )
   addAllReturningLines(models, model.id, rootObject.returning)
 
   return gqlMutation(
@@ -230,6 +259,7 @@ function hasuraUpdateMutation(
 
 export function hasuraMutationFromEvents(
   models: Model[],
+  allRecords: DataRecordAndPath[],
   record: DataRecord,
   events: DataRecordEditEvent[],
 ): GqlMutation {
@@ -238,7 +268,7 @@ export function hasuraMutationFromEvents(
   }
   const [firstEvent, ...remainingEvents] = events
   if (firstEvent._type === 'data.record.created') {
-    return hasuraInsertMutation(models, firstEvent, remainingEvents)
+    return hasuraInsertMutation(models, firstEvent, remainingEvents, allRecords)
   }
   return hasuraUpdateMutation(models, record, events)
 }

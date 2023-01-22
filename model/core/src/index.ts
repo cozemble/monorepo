@@ -37,6 +37,9 @@ export {
   dottedPathFns,
   ByIndexRecordReference,
   RecordReference,
+  DataRecordAndPath,
+  dataRecordAndPathFns,
+  hasManyRelationshipPathElement,
 } from './core'
 
 export { propertyDescriptors } from './propertyDescriptor'

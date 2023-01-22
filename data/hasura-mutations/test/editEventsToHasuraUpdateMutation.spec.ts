@@ -43,7 +43,7 @@ test('can create a simple object mutation', () => {
   const addressRecord = dataRecordFns.newInstance(addressModel, 'test-user')
   const events = [valueChanged(addressRecord, 'aaaa', 'Line 1')]
 
-  const mutation = hasuraMutationFromEvents(invoiceModels, addressRecord, events)
+  const mutation = hasuraMutationFromEvents(invoiceModels, [], addressRecord, events)
   expect(mutation).toEqual(
     gqlMutation(
       `mutation MyMutation {
@@ -75,7 +75,12 @@ test('can create multiple update mutations to update a nested-nested object', ()
     valueChanged(invoiceRecord, 'Smith', 'Customer', 'Last name'),
     valueChanged(invoiceRecord, '11 Side Street', 'Customer', 'Address', 'Line 1'),
   ]
-  const mutation = hasuraMutationFromEvents(invoiceModels, invoiceRecord, events)
+  const mutation = hasuraMutationFromEvents(
+    invoiceModels,
+    dataRecordFns.childRecords(invoiceModels, invoiceRecord),
+    invoiceRecord,
+    events,
+  )
   expect(mutation).toEqual(
     gqlMutation(
       `mutation MyMutation {
@@ -120,7 +125,9 @@ test('can update multiple items in an array relationship', () => {
     valueChanged(invoiceRecord, '0.97', 'Line Items.1', 'Price'),
   ]
 
-  const mutation = hasuraMutationFromEvents(invoiceModels, invoiceRecord, events)
+  const children = dataRecordFns.childRecords(invoiceModels, invoiceRecord)
+
+  const mutation = hasuraMutationFromEvents(invoiceModels, children, invoiceRecord, events)
   expect(mutation).toEqual(
     gqlMutation(
       `mutation MyMutation {

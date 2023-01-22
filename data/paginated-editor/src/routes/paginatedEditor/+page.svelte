@@ -71,11 +71,8 @@ const localHasuraEditorHost: PaginatedEditorHost = {
   },
 
   async saveNewRecord(
-    newRecord: EventSourcedDataRecord,
-  ): Promise<RecordSaveOutcome> {
-    const mutation = hasuraMutationFromEvents(
-      models,
-      newRecord.record,
+    newRecord: EventSourcedDataRecord,): Promise<RecordSaveOutcome> {
+            const mutation = hasuraMutationFromEvents(models, dataRecordFns.childRecords(models, newRecord.record), newRecord.record,
       newRecord.events,
     )
     try {

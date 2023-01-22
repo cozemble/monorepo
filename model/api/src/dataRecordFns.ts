@@ -1,6 +1,34 @@
-import { clock, uuids } from '@cozemble/lang-util'
-import { type DataRecord, type Model, propertyDescriptors } from '@cozemble/model-core'
+import { clock, mandatory, uuids } from '@cozemble/lang-util'
+import type { DataRecordPathElement } from '@cozemble/model-core'
+import {
+  type DataRecord,
+  type DataRecordAndPath,
+  dataRecordAndPathFns,
+  dottedPathFns,
+  hasManyRelationshipPathElement,
+  type Model,
+  propertyDescriptors,
+} from '@cozemble/model-core'
 import { modelFns } from './modelsFns'
+import { dataRecordPathElementFns } from './dataRecordPathElementFns'
+
+function getChildRecord(
+  models: Model[],
+  childRecord: DataRecord | null,
+  acc: DataRecordAndPath[],
+  rel: DataRecordPathElement,
+) {
+  if (childRecord) {
+    acc = [
+      ...acc,
+      { record: childRecord, parentElements: [rel] },
+      ...dataRecordFns
+        .childRecords(models, childRecord)
+        .map((r) => dataRecordAndPathFns.prefix(rel, r)),
+    ]
+  }
+  return acc
+}
 
 export const dataRecordFns = {
   newInstance: (model: Model, creatorId: string): DataRecord => {
@@ -86,5 +114,35 @@ export const dataRecordFns = {
       return record
     }, record)
     return record
+  },
+  childRecordByName(models: Model[], record: DataRecord, ...names: string[]): DataRecord {
+    const dottedNamePath = dottedPathFns.dottedNamePath(names.join('.'))
+    const pathElements = dataRecordPathElementFns.fromDottedNamePath(
+      models,
+      modelFns.findById(models, record.modelId),
+      dottedNamePath,
+    )
+    return mandatory(
+      dataRecordPathElementFns.getChildRecord(models, record, pathElements),
+      `Child record not found for path ${dottedNamePath.value}`,
+    )
+  },
+  childRecords: (models: Model[], record: DataRecord): DataRecordAndPath[] => {
+    const model = modelFns.findById(models, record.modelId)
+    return model.relationships.reduce((acc, rel) => {
+      if (rel.subType === 'has.one.relationship') {
+        const childRecord = record.values[rel.id.value] ?? null
+        acc = getChildRecord(models, childRecord, acc, rel)
+      } else {
+        const childRecords = record.values[rel.id.value] ?? []
+        acc = [
+          ...acc,
+          ...childRecords.flatMap((cr: DataRecord, index: number) =>
+            getChildRecord(models, cr, acc, hasManyRelationshipPathElement(rel, index)),
+          ),
+        ]
+      }
+      return acc
+    }, [] as DataRecordAndPath[])
   },
 }

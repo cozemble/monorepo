@@ -190,6 +190,20 @@ export interface HasManyRelationshipPathElement {
   recordReference: RecordReference
 }
 
+export function hasManyRelationshipPathElement(
+  relationship: HasManyRelationship,
+  index: number,
+): HasManyRelationshipPathElement {
+  return {
+    _type: 'has.many.relationship.path.element',
+    relationship,
+    recordReference: {
+      _type: 'by.index.record.reference',
+      index,
+    },
+  }
+}
+
 export type DataRecordPathElement = HasManyRelationshipPathElement | HasOneRelationship
 
 export interface DataRecordPath {
@@ -242,5 +256,24 @@ export const dottedPathFns = {
   },
   equals: (a: DottedPath, b: DottedPath): boolean => {
     return a.value === b.value && a.partType === b.partType
+  },
+}
+
+export type DataRecordAndPath = { parentElements: DataRecordPathElement[]; record: DataRecord }
+
+function dataRecordAndPath(
+  record: DataRecord,
+  parentElements: DataRecordPathElement[],
+): DataRecordAndPath {
+  return {
+    parentElements,
+    record,
+  }
+}
+
+export const dataRecordAndPathFns = {
+  newInstance: dataRecordAndPath,
+  prefix(element: DataRecordPathElement, recordAndPath: DataRecordAndPath): DataRecordAndPath {
+    return dataRecordAndPath(recordAndPath.record, [element, ...recordAndPath.parentElements])
   },
 }

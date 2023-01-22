@@ -2,6 +2,10 @@
 import type { RecordEditContext } from '$lib/RecordEditContext'
 import RecordEditContextInspector from './RecordEditContextInspector.svelte'
 import { hasuraMutationFromEvents } from '@cozemble/data-hasura-mutations'
+    import type {RecordEditContext} from "$lib/RecordEditContext";
+    import RecordEditContextInspector from './RecordEditContextInspector.svelte';
+    import {hasuraMutationFromEvents} from "@cozemble/data-hasura-mutations";
+    import {dataRecordFns} from "@cozemble/model-api";
 
 export let editContexts: RecordEditContext[]
 $: firstContext = editContexts[0]
@@ -18,7 +22,7 @@ $: firstContext = editContexts[0]
       <h4>GraphQL</h4>
       <pre>{hasuraMutationFromEvents(
           firstContext.models,
-          firstContext.eventSourcedRecord.record,
+          dataRecordFns.childRecords(firstContext.models, firstContext.eventSourcedRecord.record),firstContext.eventSourcedRecord.record,
           firstContext.eventSourcedRecord.events,
         ).mutation}</pre>
     {/if}
