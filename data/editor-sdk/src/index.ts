@@ -10,6 +10,7 @@ export {
   dataRecordControlEvents,
   DataRecordCreatedEvent,
   DataRecordControlEvent,
+  DataRecordDeletedEvent,
 } from './dataRecordEditEvents'
 
 export { EventSourcedDataRecord, eventSourcedDataRecordFns } from './EventSourcedDataRecord'

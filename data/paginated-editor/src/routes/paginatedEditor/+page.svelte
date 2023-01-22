@@ -1,5 +1,6 @@
 <script lang="ts">
-    export const ssr = false;
+    import type {DataRecordEditEvent, EventSourcedDataRecord,} from '@cozemble/data-editor-sdk'
+    import {dataRecordEditEvents, eventSourcedDataRecordFns} from "@cozemble/data-editor-sdk";
     import type {DataRecord, Model} from '@cozemble/model-core'
     import PaginatedEditor from '$lib/PaginatedEditor.svelte'
     import {onMount, setContext} from 'svelte'
@@ -14,14 +15,15 @@
     import {setEditRecordListener} from '$lib/EditRecordListener'
     import type {RecordEditContext, RecordSaveOutcome,} from '$lib/RecordEditContext'
     import {recordSaveFailed, recordSaveSucceeded} from '$lib/RecordEditContext'
-    import type {DataRecordEditEvent, EventSourcedDataRecord,} from '@cozemble/data-editor-sdk'
     import EditEventInspector from './EditEventInspector.svelte'
-    import type {PaginatedEditorHost} from '$lib/PaginatedEditorHost'
+    import type {PaginatedEditorHost, RecordDeleteOutcome} from '$lib/PaginatedEditorHost'
     import {AxiosGraphQlClient} from '@cozemble/graphql-client'
     import {hasuraMutationFromEvents} from '@cozemble/data-hasura-mutations'
     import {modelLevelHasuraErrors} from './recordPathErrorsFromHasuraError'
     import {dataRecordFns} from "@cozemble/model-api";
-    import {headAndTailFns} from "@cozemble/lang-util";
+    import {headAndTailFns, justErrorMessage} from "@cozemble/lang-util";
+
+    export const ssr = false;
 
     let models: Model[]
     let model: Model | null = null
@@ -105,6 +107,18 @@
                 return recordSaveFailed([e.message], new Map())
             }
         },
+
+        async deleteRecord(record: DataRecord): Promise<RecordDeleteOutcome> {
+            let eventSourced = eventSourcedDataRecordFns.fromRecord(models, record)
+            eventSourced = eventSourcedDataRecordFns.addEvent(dataRecordEditEvents.recordDeleted(record.modelId, record.id, 'test-user'), eventSourced)
+            const outcome = await this.recordEdited(eventSourced)
+            if (outcome._type === 'record.save.succeeded') {
+                records = records.filter(r => r.id !== record.id)
+                return outcome
+            } else {
+                return justErrorMessage(outcome.errors[0] ?? `Failed to delete record`)
+            }
+        }
     }
 
     const noOpEditorHost: PaginatedEditorHost = {
@@ -123,6 +137,11 @@
             records = [...records, newRecord.record]
             return recordSaveSucceeded(newRecord.record)
         },
+
+        async deleteRecord(record: DataRecord): Promise<RecordDeleteOutcome> {
+            records = records.filter(r => r.id.value !== record.id.value)
+            return recordSaveSucceeded(record)
+        }
     }
 
     let selectedHost = noOpEditorHost
@@ -138,6 +157,10 @@
             newRecord: EventSourcedDataRecord,
         ): Promise<RecordSaveOutcome> {
             return selectedHost.saveNewRecord(newRecord)
+        },
+
+        async deleteRecord(record: DataRecord): Promise<RecordDeleteOutcome> {
+            return selectedHost.deleteRecord(record)
         },
     }
 

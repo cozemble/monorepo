@@ -31,6 +31,26 @@ function dataRecordCreatedEvent(
   }
 }
 
+export interface DataRecordDeletedEvent {
+  _type: 'data.record.deleted'
+  modelId: ModelId
+  recordId: DataRecordId
+  deleterId: string
+}
+
+export function dataRecordDeletedEvent(
+  modelId: ModelId,
+  recordId: DataRecordId,
+  deleterId: string,
+): DataRecordDeletedEvent {
+  return {
+    _type: 'data.record.deleted',
+    modelId,
+    recordId,
+    deleterId,
+  }
+}
+
 export interface DataRecordEditAborted {
   _type: 'data.record.edit.aborted'
   record: DataRecord
@@ -54,7 +74,12 @@ export interface HasManyItemAdded {
   newRecord: DataRecord
 }
 
-export type DataRecordEditEvent = DataRecordValueChanged | HasManyItemAdded | DataRecordCreatedEvent
+export type DataRecordEditEvent =
+  | DataRecordValueChanged
+  | HasManyItemAdded
+  | DataRecordCreatedEvent
+  | DataRecordDeletedEvent
+
 export type DataRecordControlEvent = DataRecordEditAborted
 
 export const dataRecordControlEvents = {
@@ -68,6 +93,7 @@ export const dataRecordControlEvents = {
 }
 export const dataRecordEditEvents = {
   recordCreated: dataRecordCreatedEvent,
+  recordDeleted: dataRecordDeletedEvent,
   valueChanged<T>(
     record: DataRecord,
     path: DataRecordPath,
