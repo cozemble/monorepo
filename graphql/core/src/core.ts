@@ -21,7 +21,12 @@ export function gqlObject(
 export const gqlObjectFns = {
   newInstance: gqlObject,
   addValue(object: GqlObject, value: ValueAssignment): void {
-    object.values.push(value)
+    const maybeExistingValue = object.values.find((v) => v.name === value.name)
+    if (maybeExistingValue) {
+      maybeExistingValue.value = value.value
+    } else {
+      object.values.push(value)
+    }
   },
   addRelationship(object: GqlObject, relationship: GqlRelationship): void {
     object.relationships.push(relationship)

@@ -1,79 +1,15 @@
 import { expect, test } from 'vitest'
 import { dataRecordEditEvents } from '@cozemble/data-editor-sdk'
 import { dataRecordFns, testExports } from '@cozemble/model-api'
-import { uuids } from '@cozemble/lang-util'
+import { headAndTailFns, uuids } from '@cozemble/lang-util'
 import { hasuraMutationFromEvents } from '../src'
 import { registerStringProperty } from '@cozemble/model-string-core'
 import { gqlMutation } from '@cozemble/graphql-core'
 import { valueChanged } from './helpers'
 import type { DataRecordAndPath } from '@cozemble/model-core'
 import { dataRecordAndPathFns } from '@cozemble/model-core'
-import { headAndTailFns } from '@cozemble/lang-util/dist/esm'
 
 registerStringProperty()
-
-/**
- * mutation MyMutation {
- *   insert_address(objects: {line_1: "Flat 6", postcode: "CM23 XXX"}) {
- *     returning {
- *       id
- *       line_1
- *       line_2
- *       postcode
- *     }
- *   }
- * }
- **/
-
-/**
- * mutation MyMutation {
- *   insert_invoice(objects: {invoice_id: "22", customer: {data: {first_name: "John", last_name: "Smith", email: "john@email.com", phone: "555-5555-555", address: {data: {line_1: "1 Main Street", line_2: "Toy town", postcode: "CM23 1AA"}}}}}) {
- *     affected_rows
- *     returning {
- *       invoice_id
- *       customer {
- *         first_name
- *         last_name
- *         email
- *         phone
- *         address {
- *           line_1
- *           line_2
- *           postcode
- *         }
- *       }
- *     }
- *   }
- * }
- **/
-
-/**
- * mutation MyMutation {
- *   insert_invoice(objects: {customer: {data: {email: "mike@email.com", first_name: "Mike", last_name: "Smith", phone: "555-5555-555", address: {data: {line_1: "Flat 6", postcode: "CM23 3WW"}}}}, line_items: {data: [{item: "Apple", price: "1.20", quantity: "2"}, {item: "Pear", price: "1.89", quantity: "3"}]}}) {
- *     returning {
- *       id
- *       customer {
- *         id
- *         first_name
- *         last_name
- *         email
- *         phone
- *         address {
- *           id
- *           line_1
- *           line_2
- *           postcode
- *         }
- *       }
- *       line_items {
- *         id
- *         item
- *         price
- *         quantity
- *       }
- *     }
- *   }
- * } **/
 
 const addressModel = testExports.addressModel
 const invoiceModel = testExports.invoiceModel
@@ -212,6 +148,36 @@ test('can create a object mutation with a nested array', () => {
   }
 }
 `,
+    ),
+  )
+})
+
+test("multiple value change events for the same field don't cause multiple updates", () => {
+  const addressRecord = dataRecordFns.newInstance(addressModel, 'test-user')
+  const events = [
+    dataRecordEditEvents.recordCreated(addressModel.id, addressRecord.id, 'user1'),
+    valueChanged(addressRecord, addressRecord, '1 Main Street', 'Line 1'),
+    valueChanged(addressRecord, addressRecord, '2 Main Street', 'Line 1'),
+  ]
+
+  const mutation = hasuraMutationFromEvents(
+    invoiceModels,
+    [dataRecordAndPathFns.newInstance(addressRecord, [])],
+    addressRecord,
+    headAndTailFns.fromArray(events),
+  )
+  expect(mutation).toEqual(
+    gqlMutation(
+      `mutation MyMutation {
+  insert_address(objects: {id:"${addressRecord.id.value}", line_1: "2 Main Street"}) {
+    returning {
+      id
+      line_1
+      line_2
+      post_code
+    }
+  }
+}`,
     ),
   )
 })
