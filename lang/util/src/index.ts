@@ -10,7 +10,6 @@ import {
   findMandatory,
   first,
   groupBy,
-  headAndTail,
   isSubset,
   last,
   moveItem,
@@ -89,7 +88,6 @@ export const arrays = {
   take,
   drop,
   replaceElement,
-  headAndTail,
   dropLast,
   last,
   first,
@@ -101,8 +99,6 @@ export const arrays = {
   dropFields,
   splitLast,
 }
-
-export { HeadAndTail } from './arrays'
 
 export const maps = {
   mapOf,
@@ -301,3 +297,5 @@ export { uuids } from './uuids'
 export { Option, options } from './options'
 
 export { Clock, SystemClock, FixedClock, clock } from './clock'
+
+export { HeadAndTail, headAndTailFns } from './HeadAndTail'

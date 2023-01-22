@@ -30,7 +30,7 @@ import type {
   HasManyItemAdded,
 } from '@cozemble/data-editor-sdk'
 import { dataRecordPathElementFns, modelFns } from '@cozemble/model-api'
-import { mandatory, strings } from '@cozemble/lang-util'
+import { type HeadAndTail, mandatory, strings } from '@cozemble/lang-util'
 
 function ensureReturningId(returning: GqlReturningClause): GqlReturningClause {
   if (returning.value.find((l) => l === 'id')) {
@@ -261,14 +261,10 @@ export function hasuraMutationFromEvents(
   models: Model[],
   allRecords: DataRecordAndPath[],
   record: DataRecord,
-  events: DataRecordEditEvent[],
+  events: HeadAndTail<DataRecordEditEvent>,
 ): GqlMutation {
-  if (events.length === 0) {
-    throw new Error('No events')
+  if (events.head._type === 'data.record.created') {
+    return hasuraInsertMutation(models, events.head, events.tail, allRecords)
   }
-  const [firstEvent, ...remainingEvents] = events
-  if (firstEvent._type === 'data.record.created') {
-    return hasuraInsertMutation(models, firstEvent, remainingEvents, allRecords)
-  }
-  return hasuraUpdateMutation(models, record, events)
+  return hasuraUpdateMutation(models, record, [events.head, ...events.tail])
 }

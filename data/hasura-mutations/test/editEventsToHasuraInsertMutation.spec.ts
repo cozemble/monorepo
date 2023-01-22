@@ -8,6 +8,7 @@ import { gqlMutation } from '@cozemble/graphql-core'
 import { valueChanged } from './helpers'
 import type { DataRecordAndPath } from '@cozemble/model-core'
 import { dataRecordAndPathFns } from '@cozemble/model-core'
+import { headAndTailFns } from '@cozemble/lang-util/dist/esm'
 
 registerStringProperty()
 
@@ -94,7 +95,7 @@ test('can create a simple object mutation', () => {
     invoiceModels,
     [dataRecordAndPathFns.newInstance(addressRecord, [])],
     addressRecord,
-    events,
+    headAndTailFns.fromArray(events),
   )
   expect(mutation).toEqual(
     gqlMutation(
@@ -130,7 +131,12 @@ test('can create a simple object mutation with a nested-nested object', () => {
     valueChanged(invoiceRecord, '1 Main Street', 'Customer', 'Address', 'Line 1'),
     valueChanged(invoiceRecord, 'CM22 6JH', 'Customer', 'Address', 'Post code'),
   ]
-  const mutation = hasuraMutationFromEvents(invoiceModels, children, invoiceRecord, events)
+  const mutation = hasuraMutationFromEvents(
+    invoiceModels,
+    children,
+    invoiceRecord,
+    headAndTailFns.fromArray(events),
+  )
   expect(mutation).toEqual(
     gqlMutation(
       `mutation MyMutation {
@@ -183,7 +189,12 @@ test('can create a object mutation with a nested array', () => {
   ]
   const children: DataRecordAndPath[] = dataRecordFns.childRecords(invoiceModels, invoiceRecord)
 
-  const mutation = hasuraMutationFromEvents(invoiceModels, children, invoiceRecord, events)
+  const mutation = hasuraMutationFromEvents(
+    invoiceModels,
+    children,
+    invoiceRecord,
+    headAndTailFns.fromArray(events),
+  )
   expect(mutation).toEqual(
     gqlMutation(
       `mutation MyMutation {

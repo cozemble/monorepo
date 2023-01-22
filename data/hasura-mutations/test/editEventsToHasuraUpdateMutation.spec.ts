@@ -4,6 +4,7 @@ import { hasuraMutationFromEvents } from '../src'
 import { registerStringProperty } from '@cozemble/model-string-core'
 import { gqlMutation } from '@cozemble/graphql-core'
 import { valueChanged } from './helpers'
+import { headAndTailFns } from '@cozemble/lang-util'
 
 registerStringProperty()
 
@@ -43,7 +44,12 @@ test('can create a simple object mutation', () => {
   const addressRecord = dataRecordFns.newInstance(addressModel, 'test-user')
   const events = [valueChanged(addressRecord, 'aaaa', 'Line 1')]
 
-  const mutation = hasuraMutationFromEvents(invoiceModels, [], addressRecord, events)
+  const mutation = hasuraMutationFromEvents(
+    invoiceModels,
+    [],
+    addressRecord,
+    headAndTailFns.fromArray(events),
+  )
   expect(mutation).toEqual(
     gqlMutation(
       `mutation MyMutation {
@@ -79,7 +85,7 @@ test('can create multiple update mutations to update a nested-nested object', ()
     invoiceModels,
     dataRecordFns.childRecords(invoiceModels, invoiceRecord),
     invoiceRecord,
-    events,
+    headAndTailFns.fromArray(events),
   )
   expect(mutation).toEqual(
     gqlMutation(
@@ -127,7 +133,12 @@ test('can update multiple items in an array relationship', () => {
 
   const children = dataRecordFns.childRecords(invoiceModels, invoiceRecord)
 
-  const mutation = hasuraMutationFromEvents(invoiceModels, children, invoiceRecord, events)
+  const mutation = hasuraMutationFromEvents(
+    invoiceModels,
+    children,
+    invoiceRecord,
+    headAndTailFns.fromArray(events),
+  )
   expect(mutation).toEqual(
     gqlMutation(
       `mutation MyMutation {

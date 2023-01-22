@@ -20,6 +20,7 @@
     import {hasuraMutationFromEvents} from '@cozemble/data-hasura-mutations'
     import {modelLevelHasuraErrors} from './recordPathErrorsFromHasuraError'
     import {dataRecordFns} from "@cozemble/model-api";
+    import {headAndTailFns} from "@cozemble/lang-util";
 
     let models: Model[]
     let model: Model | null = null
@@ -60,15 +61,18 @@
     )
     const localHasuraEditorHost: PaginatedEditorHost = {
         async recordEdited(
-            editedRecord: EventSourcedDataRecord,
+            _editedRecord: EventSourcedDataRecord,
         ): Promise<RecordSaveOutcome> {
             throw new Error('Not implemented')
         },
 
         async saveNewRecord(
             newRecord: EventSourcedDataRecord,): Promise<RecordSaveOutcome> {
+            if (newRecord.events.length === 0) {
+                return recordSaveSucceeded(newRecord.record)
+            }
             const mutation = hasuraMutationFromEvents(models, dataRecordFns.childRecords(models, newRecord.record), newRecord.record,
-                newRecord.events,
+                headAndTailFns.fromArray(newRecord.events),
             )
             try {
                 const outcome = await localHasuraClient.execute(mutation)

@@ -42,13 +42,13 @@ function useModel(m: Model) {
 
 const paginatedEditorHost: PaginatedEditorHost = {
   async recordEdited(
-    editedRecord: EventSourcedDataRecord,
+    _editedRecord: EventSourcedDataRecord,
   ): Promise<RecordSaveOutcome> {
     throw new Error('Not implemented')
   },
 
   async saveNewRecord(
-    newRecord: EventSourcedDataRecord,
+    _newRecord: EventSourcedDataRecord,
   ): Promise<RecordSaveOutcome> {
     throw new Error('Not implemented')
   },

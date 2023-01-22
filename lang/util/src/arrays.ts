@@ -140,27 +140,6 @@ export function replaceElement<T>(array: T[], t: T, predicate: (t: T) => boolean
   return true
 }
 
-export interface HeadAndTail<T> {
-  head: T | null
-  tail: T[]
-
-  advance(): HeadAndTail<T>
-}
-
-class DefaultHeadAndTail<T> implements HeadAndTail<T> {
-  constructor(public readonly head: T | null, public readonly tail: T[]) {}
-
-  advance(): HeadAndTail<T> {
-    const theHead = first(this.tail)
-    const theTail = tail(this.tail)
-    return new DefaultHeadAndTail(theHead, theTail)
-  }
-}
-
-export function headAndTail<T>(array: T[]): HeadAndTail<T> {
-  return new DefaultHeadAndTail(first(array), tail(array))
-}
-
 export function dropLast<T>(array: T[]): T[] {
   if (array.length > 1) {
     return array.slice(0, array.length - 1)
