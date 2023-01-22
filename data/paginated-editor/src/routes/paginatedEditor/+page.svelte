@@ -1,4 +1,5 @@
 <script lang="ts">
+    export const ssr = false;
     import type {DataRecord, Model} from '@cozemble/model-core'
     import PaginatedEditor from '$lib/PaginatedEditor.svelte'
     import {onMount, setContext} from 'svelte'
@@ -61,9 +62,26 @@
     )
     const localHasuraEditorHost: PaginatedEditorHost = {
         async recordEdited(
-            _editedRecord: EventSourcedDataRecord,
+            editedRecord: EventSourcedDataRecord,
         ): Promise<RecordSaveOutcome> {
-            throw new Error('Not implemented')
+            if (editedRecord.events.length === 0) {
+                return recordSaveSucceeded(editedRecord.record)
+            }
+            const mutation = hasuraMutationFromEvents(models, dataRecordFns.childRecords(models, editedRecord.record), editedRecord.record,
+                headAndTailFns.fromArray(editedRecord.events),
+            )
+            try {
+                const outcome = await localHasuraClient.execute(mutation)
+                console.log('Outcome', outcome)
+                if (outcome._type === 'gql.data') {
+                    records = records.map(r => r.id === editedRecord.record.id ? editedRecord.record : r)
+                    return recordSaveSucceeded(editedRecord.record)
+                }
+                return recordSaveFailed(modelLevelHasuraErrors(outcome.errors), new Map())
+            } catch (e: any) {
+                console.error(e)
+                return recordSaveFailed([e.message], new Map())
+            }
         },
 
         async saveNewRecord(

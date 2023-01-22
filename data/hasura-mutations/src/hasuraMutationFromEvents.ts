@@ -192,16 +192,18 @@ function hasuraInsertMutation(
 
 function flattenUpdateEvent(
   models: Model[],
+  rootRecord: DataRecord,
   event: DataRecordEditEvent,
   acc: RecordIdAndObjectRelationship[],
 ) {
   if (event._type === 'data.record.value.changed') {
     const addressedRecord = dataRecordPathElementFns.getChildRecord(
       models,
-      event.record,
+      rootRecord,
       event.path.parentElements,
     )
     if (addressedRecord === null) {
+      console.error({ models, event })
       throw new Error('Change event path addressed a null record')
     }
     let recordIdAndObjectRelationship = acc.find(
@@ -227,9 +229,13 @@ function flattenUpdateEvent(
   return acc
 }
 
-function flattenUpdateEvents(models: Model[], events: DataRecordEditEvent[]) {
+function flattenUpdateEvents(
+  models: Model[],
+  rootRecord: DataRecord,
+  events: DataRecordEditEvent[],
+) {
   return events.reduce(
-    (acc, event) => flattenUpdateEvent(models, event, acc),
+    (acc, event) => flattenUpdateEvent(models, rootRecord, event, acc),
     [] as RecordIdAndObjectRelationship[],
   )
 }
@@ -241,7 +247,7 @@ function hasuraUpdateMutation(
   record: DataRecord,
   events: DataRecordEditEvent[],
 ): GqlMutation {
-  const flattened: RecordIdAndObjectRelationship[] = flattenUpdateEvents(models, events)
+  const flattened: RecordIdAndObjectRelationship[] = flattenUpdateEvents(models, record, events)
 
   const lines = flattened.map((r, index) => {
     return `update${index}: update_${r.relationship.name}(where: {id: {_eq: "${

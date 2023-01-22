@@ -42,7 +42,7 @@ const invoiceLineItemsRelationship = testExports.invoiceLineItemsRelationship
 
 test('can create a simple object mutation', () => {
   const addressRecord = dataRecordFns.newInstance(addressModel, 'test-user')
-  const events = [valueChanged(addressRecord, 'aaaa', 'Line 1')]
+  const events = [valueChanged(addressRecord, addressRecord, 'aaaa', 'Line 1')]
 
   const mutation = hasuraMutationFromEvents(
     invoiceModels,
@@ -76,10 +76,10 @@ test('can create multiple update mutations to update a nested-nested object', ()
   })
 
   const events = [
-    valueChanged(invoiceRecord, '245', 'Invoice ID'),
-    valueChanged(invoiceRecord, 'Frank', 'Customer', 'First name'),
-    valueChanged(invoiceRecord, 'Smith', 'Customer', 'Last name'),
-    valueChanged(invoiceRecord, '11 Side Street', 'Customer', 'Address', 'Line 1'),
+    valueChanged(invoiceRecord, invoiceRecord, '245', 'Invoice ID'),
+    valueChanged(invoiceRecord, customerRecord, 'Frank', 'Customer', 'First name'),
+    valueChanged(invoiceRecord, customerRecord, 'Smith', 'Customer', 'Last name'),
+    valueChanged(invoiceRecord, addressRecord, '11 Side Street', 'Customer', 'Address', 'Line 1'),
   ]
   const mutation = hasuraMutationFromEvents(
     invoiceModels,
@@ -125,10 +125,10 @@ test('can update multiple items in an array relationship', () => {
   invoiceRecord.values[invoiceLineItemsRelationship.id.value] = [lineItem1, lineItem2]
 
   const events = [
-    valueChanged(invoiceRecord, 'apple', 'Line Items.0', 'Name'),
-    valueChanged(invoiceRecord, '0.95', 'Line Items.0', 'Price'),
-    valueChanged(invoiceRecord, 'pear', 'Line Items.1', 'Name'),
-    valueChanged(invoiceRecord, '0.97', 'Line Items.1', 'Price'),
+    valueChanged(invoiceRecord, lineItem1, 'apple', 'Line Items.0', 'Name'),
+    valueChanged(invoiceRecord, lineItem1, '0.95', 'Line Items.0', 'Price'),
+    valueChanged(invoiceRecord, lineItem2, 'pear', 'Line Items.1', 'Name'),
+    valueChanged(invoiceRecord, lineItem2, '0.97', 'Line Items.1', 'Price'),
   ]
 
   const children = dataRecordFns.childRecords(invoiceModels, invoiceRecord)

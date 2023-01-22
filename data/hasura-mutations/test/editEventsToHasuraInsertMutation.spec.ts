@@ -87,8 +87,8 @@ test('can create a simple object mutation', () => {
   const addressPostcode = uuids.v4()
   const events = [
     dataRecordEditEvents.recordCreated(addressModel.id, addressRecord.id, 'user1'),
-    valueChanged(addressRecord, addressLine1, 'Line 1'),
-    valueChanged(addressRecord, addressPostcode, 'Post code'),
+    valueChanged(addressRecord, addressRecord, addressLine1, 'Line 1'),
+    valueChanged(addressRecord, addressRecord, addressPostcode, 'Post code'),
   ]
 
   const mutation = hasuraMutationFromEvents(
@@ -124,12 +124,12 @@ test('can create a simple object mutation with a nested-nested object', () => {
 
   const events = [
     dataRecordEditEvents.recordCreated(invoiceModel.id, invoiceRecord.id, 'user1'),
-    valueChanged(invoiceRecord, '123', 'Invoice ID'),
-    valueChanged(invoiceRecord, 'John', 'Customer', 'First name'),
-    valueChanged(invoiceRecord, '555-5555-555', 'Customer', 'Phone'),
-    valueChanged(invoiceRecord, 'john@email.com', 'Customer', 'Email'),
-    valueChanged(invoiceRecord, '1 Main Street', 'Customer', 'Address', 'Line 1'),
-    valueChanged(invoiceRecord, 'CM22 6JH', 'Customer', 'Address', 'Post code'),
+    valueChanged(invoiceRecord, invoiceRecord, '123', 'Invoice ID'),
+    valueChanged(invoiceRecord, customerRecord, 'John', 'Customer', 'First name'),
+    valueChanged(invoiceRecord, customerRecord, '555-5555-555', 'Customer', 'Phone'),
+    valueChanged(invoiceRecord, customerRecord, 'john@email.com', 'Customer', 'Email'),
+    valueChanged(invoiceRecord, addressRecord, '1 Main Street', 'Customer', 'Address', 'Line 1'),
+    valueChanged(invoiceRecord, addressRecord, 'CM22 6JH', 'Customer', 'Address', 'Post code'),
   ]
   const mutation = hasuraMutationFromEvents(
     invoiceModels,
@@ -178,7 +178,7 @@ test('can create a object mutation with a nested array', () => {
   })
   const events = [
     dataRecordEditEvents.recordCreated(invoiceModel.id, invoiceRecord.id, 'user1'),
-    valueChanged(invoiceRecord, '22', 'Invoice ID'),
+    valueChanged(invoiceRecord, invoiceRecord, '22', 'Invoice ID'),
     dataRecordEditEvents.hasManyItemAdded(
       invoiceRecord,
       [],

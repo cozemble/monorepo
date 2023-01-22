@@ -4,11 +4,16 @@ import type { DataRecord } from '@cozemble/model-core'
 
 const invoiceModels = testExports.invoiceModels
 
-export function valueChanged(record: DataRecord, value: string, ...pathNames: string[]) {
-  const model = modelFns.findById(invoiceModels, record.modelId)
+export function valueChanged(
+  rootRecord: DataRecord,
+  changedRecord: DataRecord,
+  value: string,
+  ...pathNames: string[]
+) {
+  const rootRecordModel = modelFns.findById(invoiceModels, rootRecord.modelId)
   return dataRecordEditEvents.valueChanged(
-    record,
-    dataRecordPathFns.fromNames(invoiceModels, model, ...pathNames),
+    changedRecord,
+    dataRecordPathFns.fromNames(invoiceModels, rootRecordModel, ...pathNames),
     null,
     value,
     null,
