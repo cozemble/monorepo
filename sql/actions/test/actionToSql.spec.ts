@@ -5,7 +5,7 @@ import {
   schema,
   sequenceName,
   sqlMigration,
-} from '../src/sqlActions'
+} from '../src'
 import { expect, test } from 'vitest'
 
 const theSchema = schema('teamx')
@@ -16,7 +16,7 @@ test('can create an empty table', () => {
   const mutation = actionToSql(theSchema, action)
   expect(mutation).toMatchObject(
     sqlMigration(
-      ['CREATE TABLE teamx.customer(id SERIAL PRIMARY KEY);'],
+      ['CREATE TABLE teamx.customer(id TEXT PRIMARY KEY);'],
       ['DROP TABLE teamx.customer;'],
     ),
   )
@@ -27,7 +27,7 @@ test('table names have snake case', () => {
   const mutation = actionToSql(theSchema, action)
   expect(mutation).toMatchObject(
     sqlMigration(
-      ['CREATE TABLE teamx.delivery_address(id SERIAL PRIMARY KEY);'],
+      ['CREATE TABLE teamx.delivery_address(id TEXT PRIMARY KEY);'],
       ['DROP TABLE teamx.delivery_address;'],
     ),
   )
@@ -44,12 +44,23 @@ test('can rename a table', () => {
   )
 })
 
-test('can add a column to a table', () => {
+test('can add a column to a table, which is text by default', () => {
   const action = sqlActions.addColumn('Customer', 'column_a')
   const mutation = actionToSql(theSchema, action)
   expect(mutation).toMatchObject(
     sqlMigration(
       ['ALTER TABLE teamx.customer ADD column_a text;'],
+      ['ALTER TABLE teamx.customer DROP COLUMN column_a;'],
+    ),
+  )
+})
+
+test('can add a boolean column to a table', () => {
+  const action = sqlActions.addColumn('Customer', 'column_a', 'boolean')
+  const mutation = actionToSql(theSchema, action)
+  expect(mutation).toMatchObject(
+    sqlMigration(
+      ['ALTER TABLE teamx.customer ADD column_a boolean;'],
       ['ALTER TABLE teamx.customer DROP COLUMN column_a;'],
     ),
   )

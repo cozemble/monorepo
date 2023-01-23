@@ -63,6 +63,7 @@ export interface AddColumnAction {
   meta: SqlActionMeta
   tableName: TableName
   columnName: ColumnName
+  columnType: ColumnType
 }
 
 export interface RenameColumnAction {
@@ -221,12 +222,13 @@ export class SqlActions {
     }
   }
 
-  addColumn(tn: string, theColumnName: string): AddColumnAction {
+  addColumn(tn: string, theColumnName: string, columnType: ColumnType = 'text'): AddColumnAction {
     const name = columnName(theColumnName)
     return {
       _type: 'add.column',
       tableName: tableName(tn),
       columnName: name,
+      columnType,
       meta: this._makeMeta(`add.column.${name.value()}.to.table.${tn}`),
     }
   }
@@ -406,7 +408,7 @@ export function sqlMigration(up: string[], down: string[]): SqlMigration {
 export function actionToSql(theSchema: Schema, action: SqlAction): SqlMigration {
   if (action._type === 'new.table') {
     // @formatter:off
-    const up = [`CREATE TABLE ${action.tableName.fqn(theSchema)}(id SERIAL PRIMARY KEY);`]
+    const up = [`CREATE TABLE ${action.tableName.fqn(theSchema)}(id TEXT PRIMARY KEY);`]
     const down = [`DROP TABLE ${action.tableName.fqn(theSchema)};`]
     // @formatter:on
     return sqlMigration(up, down)
@@ -420,7 +422,9 @@ export function actionToSql(theSchema: Schema, action: SqlAction): SqlMigration 
   }
   if (action._type === 'add.column') {
     // @formatter:off
-    const up = `ALTER TABLE ${action.tableName.fqn(theSchema)} ADD ${action.columnName} text;`
+    const up = `ALTER TABLE ${action.tableName.fqn(theSchema)} ADD ${action.columnName} ${
+      action.columnType
+    };`
     const down = `ALTER TABLE ${action.tableName.fqn(theSchema)} DROP COLUMN ${action.columnName};`
     // @formatter:on
     return sqlMigration([up], [down])

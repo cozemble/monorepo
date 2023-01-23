@@ -5,7 +5,7 @@ import { newStringPropertyModelEvent, registerStringProperty } from '@cozemble/m
 import { makeSqlActions } from '@cozemble/sql-actions'
 import { modelEventToSqlActions } from '@cozemble/model-sql-actions'
 import { registerStringPropertyEventToSqlActions } from '@cozemble/model-string-sql-actions'
-import { sqlActionsPlayer } from '../src/sqlActionsPlayer'
+import { sqlActionsPlayer } from '../src'
 
 const stubSqlActions = makeSqlActions(
   () => new Date(0),
@@ -47,6 +47,10 @@ test('Can create a model, add a property, rename the property, make it required 
   const sqlActions = sqlActionsPlayer.play([model])
   expect(sqlActions).toEqual([
     stubSqlActions.newTable('my model'),
+    stubSqlActions.addColumn('my model', 'is_deleted', 'boolean'),
+    stubSqlActions.addColumn('my model', 'created_by'),
+    stubSqlActions.addColumn('my model', 'created_at', 'timestamp'),
+    stubSqlActions.addColumn('my model', 'updated_at', 'timestamp'),
     stubSqlActions.addColumn('my model', 'my property'),
     stubSqlActions.renameColumn('my model', 'my property', 'First name'),
     stubSqlActions.makeColumnNonNullable('my model', 'First name'),

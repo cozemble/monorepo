@@ -1,1 +1,5 @@
-export { modelEventToSqlActions } from './modelEventToSqlActions'
+export {
+  modelEventToSqlActions,
+  sqlActionExtensions,
+  OnNewTableExtension,
+} from './modelEventToSqlActions'

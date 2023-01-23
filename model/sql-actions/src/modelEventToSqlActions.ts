@@ -1,4 +1,4 @@
-import type { Model, ModelEvent, ModelId } from '@cozemble/model-core'
+import type { Model, ModelEvent } from '@cozemble/model-core'
 import { constraints, makeSqlActions, type SqlAction, SqlActions } from '@cozemble/sql-actions'
 import type {
   BooleanPropertyChanged,
@@ -7,7 +7,7 @@ import type {
   PropertyRenamed,
   RelationshipAdded,
 } from '@cozemble/model-event-sourced'
-import { strings, mandatory } from '@cozemble/lang-util'
+import { mandatory, strings } from '@cozemble/lang-util'
 import { modelFns } from '@cozemble/model-api'
 
 export interface ModelEventToSqlAction<E extends ModelEvent> {
@@ -38,9 +38,31 @@ export const modelEventToSqlActions = {
   },
 }
 
+export type OnNewTableExtension = (sqlActions: SqlActions, modelName: string) => SqlAction[]
+
+const onNewTableExtensions: OnNewTableExtension[] = []
+
+export const sqlActionExtensions = {
+  onNewTable: (extension: OnNewTableExtension) => {
+    onNewTableExtensions.push(extension)
+  },
+}
+
+sqlActionExtensions.onNewTable((sqlActions, modelName) => {
+  return [
+    sqlActions.addColumn(modelName, 'is_deleted', 'boolean'),
+    sqlActions.addColumn(modelName, 'created_by'),
+    sqlActions.addColumn(modelName, 'created_at', 'timestamp'),
+    sqlActions.addColumn(modelName, 'updated_at', 'timestamp'),
+  ]
+})
+
 modelEventToSqlActions.register<ModelCreated>('model.created.event', {
   eventToSqlAction: (sqlActions, allModels, event, _oldModel) => {
-    return [sqlActions.newTable(event.modelName.value)]
+    return [
+      sqlActions.newTable(event.modelName.value),
+      ...onNewTableExtensions.flatMap((extension) => extension(sqlActions, event.modelName.value)),
+    ]
   },
 })
 

@@ -7,7 +7,7 @@ import {
   propertyNameFns,
   relationshipNameFns,
 } from '@cozemble/model-core'
-import { modelEventToSqlActions } from '../src/modelEventToSqlActions'
+import { modelEventToSqlActions } from '../src'
 import { modelFns, modelOptions, propertyFns } from '@cozemble/model-api'
 
 const stubSqlActions = makeSqlActions(
@@ -19,7 +19,13 @@ modelEventToSqlActions.setSqlActions(stubSqlActions)
 test('model created event maps to a new table sql action', () => {
   const event = coreModelEvents.modelCreated(modelNameFns.newInstance('Customers'))
   const actions = modelEventToSqlActions.apply([], event, null)
-  expect(actions).toMatchObject([stubSqlActions.newTable('Customers')])
+  expect(actions).toMatchObject([
+    stubSqlActions.newTable('Customers'),
+    stubSqlActions.addColumn('Customers', 'is_deleted', 'boolean'),
+    stubSqlActions.addColumn('Customers', 'created_by'),
+    stubSqlActions.addColumn('Customers', 'created_at', 'timestamp'),
+    stubSqlActions.addColumn('Customers', 'updated_at', 'timestamp'),
+  ])
 })
 
 test('model renamed event maps to a rename table sql action', () => {
