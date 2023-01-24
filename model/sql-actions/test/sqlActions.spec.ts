@@ -70,7 +70,6 @@ test('can add a has one relationship', () => {
   const actions = modelEventToSqlActions.apply([customerModel, addressModel], event, customerModel)
   expect(actions).toMatchObject([
     stubSqlActions.addColumn('Customer', 'Address ID'),
-    stubSqlActions.changeColumnType('Customer', 'Address ID', 'text', 'integer'),
     stubSqlActions.addColumnConstraint(
       'Customer',
       'Address ID',
@@ -93,7 +92,6 @@ test('can add a has many relationship', () => {
   const actions = modelEventToSqlActions.apply([customerModel, addressModel], event, customerModel)
   expect(actions).toMatchObject([
     stubSqlActions.addColumn('Address', 'Customer ID'),
-    stubSqlActions.changeColumnType('Address', 'Customer ID', 'text', 'integer'),
     stubSqlActions.addColumnConstraint(
       'Address',
       'Customer ID',

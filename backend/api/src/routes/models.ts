@@ -53,7 +53,7 @@ router.post('/apply/', async (req: Request, res: Response) => {
   const sorted = arrays.sortBy(events, (e: ModelEventAndModelId) => e.event.timestamp.value)
 
   const actions = sqlActionsPlayer.play(models)
-  const theSchema = schema('app_public')
+  const theSchema = schema('public')
   const migrations = actions.map((a) => actionToSql(theSchema, a))
   const knex = await appPublicKnex(pgUrl)
   const source = new SqlMigrationsKnexSource(migrations)

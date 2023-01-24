@@ -97,7 +97,6 @@ modelEventToSqlActions.register<RelationshipAdded>('relationship.added.event', {
       )
       return [
         sqlActions.addColumn(event.parentModel.name.value, fkColumnName),
-        sqlActions.changeColumnType(event.parentModel.name.value, fkColumnName, 'text', 'integer'),
         sqlActions.addColumnConstraint(
           event.parentModel.name.value,
           fkColumnName,
@@ -111,7 +110,6 @@ modelEventToSqlActions.register<RelationshipAdded>('relationship.added.event', {
       )
       return [
         sqlActions.addColumn(event.childModel.name.value, fkColumnName),
-        sqlActions.changeColumnType(event.childModel.name.value, fkColumnName, 'text', 'integer'),
         sqlActions.addColumnConstraint(
           event.childModel.name.value,
           fkColumnName,
