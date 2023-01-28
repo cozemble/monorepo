@@ -1,5 +1,6 @@
 <script lang="ts">
 import uniqid from 'uniqid'
+
 export let name: string
 export let value: string
 const id = uniqid('input-')
