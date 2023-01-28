@@ -183,6 +183,7 @@ importers:
       '@sveltejs/kit': ^1.0.0
       autoprefixer: ^10.4.13
       daisyui: ^2.47.0
+      jsonschema: ^1.4.1
       postcss: ^8.4.21
       svelte: ^3.54.0
       svelte-check: ^3.0.1
@@ -195,6 +196,7 @@ importers:
       '@sveltejs/kit': 1.0.7_svelte@3.55.0+vite@4.0.4
       autoprefixer: 10.4.13_postcss@8.4.21
       daisyui: 2.47.0_gbtt6ss3tbiz4yjtvdr6fbrj44
+      jsonschema: 1.4.1
       postcss: 8.4.21
       svelte: 3.55.0
       svelte-check: 3.0.3_77wbasr76lhjripnylrva3hecy
@@ -3675,6 +3677,10 @@ packages:
       universalify: 2.0.0
     optionalDependencies:
       graceful-fs: 4.2.10
+    dev: true
+
+  /jsonschema/1.4.1:
+    resolution: {integrity: sha512-S6cATIPVv1z0IlxdN+zUk5EPjkGCdnhN4wVSBlvoUO1tOLJootbo9CquNJmbIh4yikWHiUedhRYrNPn1arpEmQ==}
     dev: true
 
   /jsonwebtoken/8.5.1:
