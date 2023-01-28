@@ -3,4 +3,6 @@
 import '$lib/styles/global.css'
 </script>
 
-<slot />
+<main class="p-10">
+  <slot />
+</main>
