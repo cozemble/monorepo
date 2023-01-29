@@ -18,7 +18,7 @@
     onMount(async () => {
         const {data, error} = await supabase.auth.getUser()
         if (error) {
-            anError = error
+            console.log({error})
         } else {
             user = data.user
         }
