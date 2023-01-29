@@ -1,7 +1,6 @@
 <script lang="ts">
 import { selectedModel } from '$lib/stores/models'
 
-import StackingEditor from '$lib/components/StackingEditor.svelte'
 import ObjectEditor from '$lib/components/ObjectEditor.svelte'
 
 console.log('selectedModel', $selectedModel)
