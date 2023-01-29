@@ -1,1 +1,1 @@
-<h1>Welcome to Cozemble</h1>
+<h1>Welcome to Cozemble App</h1>
