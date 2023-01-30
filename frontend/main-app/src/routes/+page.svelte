@@ -1,14 +1,21 @@
 <script lang="ts">
     import {type AuthUser, createClient} from '@supabase/supabase-js'
-    import {onMount} from 'svelte'
+    import {onMount, setContext} from 'svelte'
     import {PUBLIC_SUPABASE_KEY} from '$env/static/public';
+    import EnsureUserDetails from "./EnsureUserDetails.svelte";
 
     const supabaseUrl = 'https://hxtxpwuuosksrtzditay.supabase.co'
     const supabase = createClient(supabaseUrl, PUBLIC_SUPABASE_KEY)
 
+    setContext('supabase', supabase)
+
     async function signInUsingGithub() {
+        console.log("with redirection")
         const {data, error} = await supabase.auth.signInWithOAuth({
-            provider: 'github'
+            provider: 'github',
+            options: {
+                redirectTo: 'http://localhost:5173'
+            }
         })
     }
 
@@ -21,6 +28,11 @@
             console.log({error})
         } else {
             user = data.user
+            const {data: users, error: error2} = await supabase
+                .from('users')
+                .select()
+                .eq('supabase_id', user.id)
+            console.log({users, error2})
         }
         mounted = true
     })
@@ -31,7 +43,9 @@
 {/if}
 {#if mounted}
     {#if user}
-        <h2>Hello {user.email}</h2>
+        <EnsureUserDetails {user}>
+            <h2>Hello {user.email}</h2>
+        </EnsureUserDetails>
     {:else}
         <h2>Hello Guest</h2>
         <button type="button" on:click={signInUsingGithub}>Sign in using Github</button>
