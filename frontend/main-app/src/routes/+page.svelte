@@ -3,8 +3,9 @@
     import {onMount, setContext} from 'svelte'
     import {env} from '$env/dynamic/public';
     import EnsureUserDetails from "./EnsureUserDetails.svelte";
+    import {mandatory} from "@cozemble/lang-util";
 
-    const PUBLIC_SUPABASE_KEY = env.PUBLIC_SUPABASE_KEY
+    const PUBLIC_SUPABASE_KEY = mandatory(env.PUBLIC_SUPABASE_KEY, `No PUBLIC_SUPABASE_KEY in env`)
     const supabaseUrl = 'https://hxtxpwuuosksrtzditay.supabase.co'
     const supabase = createClient(supabaseUrl, PUBLIC_SUPABASE_KEY)
 
