@@ -60,7 +60,7 @@ export interface Database {
         Insert: {
           created_at?: string | null
           first_name: string
-          id: number
+          id?: number
           supabase_id: string
           updated_at?: string | null
         }

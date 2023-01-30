@@ -4,12 +4,14 @@
     import {env} from '$env/dynamic/public';
     import EnsureUserDetails from "./EnsureUserDetails.svelte";
     import {mandatory} from "@cozemble/lang-util";
+    import type {Database} from "../lib/supabase/db_types";
+    import {supabaseContext} from "../lib/supabase/context";
 
     const PUBLIC_SUPABASE_KEY = mandatory(env.PUBLIC_SUPABASE_KEY, `No PUBLIC_SUPABASE_KEY in env`)
     const supabaseUrl = 'https://hxtxpwuuosksrtzditay.supabase.co'
-    const supabase = createClient(supabaseUrl, PUBLIC_SUPABASE_KEY)
+    const supabase = createClient<Database>(supabaseUrl, PUBLIC_SUPABASE_KEY)
 
-    setContext('supabase', supabase)
+    supabaseContext.set(setContext, supabase)
 
     async function signInUsingGithub() {
         console.log("with redirection")
@@ -21,7 +23,7 @@
         })
     }
 
-    let user: AuthUser | null = null
+    let authUser: AuthUser | null = null
     let mounted = false
     let anError: any = null
     onMount(async () => {
@@ -29,11 +31,11 @@
         if (error) {
             console.log({error})
         } else {
-            user = data.user
+            authUser = data.user
             const {data: users, error: error2} = await supabase
                 .from('users')
                 .select()
-                .eq('supabase_id', user.id)
+                .eq('supabase_id', authUser.id)
             console.log({users, error2})
         }
         mounted = true
@@ -44,9 +46,9 @@
     <h2>There was an error: {anError.message}</h2>
 {/if}
 {#if mounted}
-    {#if user}
-        <EnsureUserDetails {user}>
-            <h2>Hello {user.email}</h2>
+    {#if authUser}
+        <EnsureUserDetails {authUser} let:user={user}>
+            <h2>Hello {user.first_name} ({authUser.email})</h2>
         </EnsureUserDetails>
     {:else}
         <h2>Hello Guest</h2>
