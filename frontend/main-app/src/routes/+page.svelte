@@ -1,9 +1,10 @@
 <script lang="ts">
     import {type AuthUser, createClient} from '@supabase/supabase-js'
     import {onMount, setContext} from 'svelte'
-    import {PUBLIC_SUPABASE_KEY} from '$env/static/public';
+    import {env} from '$env/dynamic/public';
     import EnsureUserDetails from "./EnsureUserDetails.svelte";
 
+    const PUBLIC_SUPABASE_KEY = env.PUBLIC_SUPABASE_KEY
     const supabaseUrl = 'https://hxtxpwuuosksrtzditay.supabase.co'
     const supabase = createClient(supabaseUrl, PUBLIC_SUPABASE_KEY)
 
