@@ -6,7 +6,7 @@ import { type Writable, writable } from 'svelte/store'
 import type { ModelEditorHost } from '@cozemble/model-editor'
 
 export const allModels: Writable<EventSourcedModel[]> = writable([])
-const storageKey = 'app.cozemble.com.model.editor.route.page'
+const storageKey = 'app.cozemble.com.model.editor.models'
 
 export const host: ModelEditorHost = {
   modelChanged(id: ModelId, event: ModelEvent) {
