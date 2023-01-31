@@ -1,1 +1,2 @@
-export const x = 1
+export type { ModelEditorHost } from './ModelEditorHost'
+export { default as ModelEditor } from './ModelEditor.svelte'

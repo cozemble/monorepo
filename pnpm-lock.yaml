@@ -212,6 +212,12 @@ importers:
   frontend/main-app:
     specifiers:
       '@cozemble/lang-util': workspace:*
+      '@cozemble/model-api': workspace:*
+      '@cozemble/model-assembled': workspace:*
+      '@cozemble/model-core': workspace:*
+      '@cozemble/model-editor': workspace:*
+      '@cozemble/model-event-sourced': workspace:*
+      '@cozemble/model-string-sql-actions': workspace:*
       '@originjs/vite-plugin-commonjs': ^1.0.3
       '@supabase/supabase-js': ^2.5.0
       '@sveltejs/adapter-auto': ^1.0.0
@@ -224,6 +230,12 @@ importers:
       vite: ^4.0.0
     dependencies:
       '@cozemble/lang-util': link:../../lang/util
+      '@cozemble/model-api': link:../../model/api
+      '@cozemble/model-assembled': link:../../model/assembled
+      '@cozemble/model-core': link:../../model/core
+      '@cozemble/model-editor': link:../../model/editor
+      '@cozemble/model-event-sourced': link:../../model/event-sourced
+      '@cozemble/model-string-sql-actions': link:../../model/string/sql-actions
       '@supabase/supabase-js': 2.5.0
     devDependencies:
       '@originjs/vite-plugin-commonjs': 1.0.3

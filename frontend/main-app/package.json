@@ -25,6 +25,12 @@
   "type": "module",
   "dependencies": {
     "@cozemble/lang-util": "workspace:*",
+    "@cozemble/model-api": "workspace:*",
+    "@cozemble/model-assembled": "workspace:*",
+    "@cozemble/model-core": "workspace:*",
+    "@cozemble/model-editor": "workspace:*",
+    "@cozemble/model-event-sourced": "workspace:*",
+    "@cozemble/model-string-sql-actions": "workspace:*",
     "@supabase/supabase-js": "^2.5.0"
   }
 }

@@ -2,7 +2,7 @@
     import type {AuthUser} from '@supabase/supabase-js'
     import {getContext, onMount} from 'svelte'
     import {supabaseContext} from "../lib/supabase/context";
-    import type {User} from "../lib/supabase/flattened_types";
+    import type {CombinedUser, User} from "../lib/supabase/flattened_types";
 
     export let authUser: AuthUser
     const supabase = supabaseContext.get(getContext)
@@ -17,8 +17,8 @@
             .from('users')
             .select()
             .eq('supabase_id', authUser.id)
-        if(users) {
-            if(users.length === 0) {
+        if (users) {
+            if (users.length === 0) {
                 fetchUserDetails = true
             } else {
                 user = users[0]
@@ -54,9 +54,9 @@
         }
     }
 
-    function mandatoryUser(user: User | null): User {
-        if(user) {
-            return user
+    function mandatoryUser(user: User | null): CombinedUser {
+        if (user) {
+            return {user, authUser}
         } else {
             throw new Error("User is null")
         }
