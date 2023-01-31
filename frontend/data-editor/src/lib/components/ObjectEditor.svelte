@@ -1,6 +1,6 @@
 <script lang="ts">
 import ArrayEditor from './ArrayEditor.svelte'
-import StringInput from './inputs/StringInput.svelte'
+import TableInputCells from './tableInputCells'
 
 export let title: string
 export let properties: Record<string, any>
@@ -25,27 +25,47 @@ $: simpleProperties = Object.entries(properties).filter(
   If the property is an object, it is rendered as a nested object editor.
 -->
 
-<div class="flex flex-col gap-4">
-  <h2>{title}</h2>
-  <!-- Simple properties -->
-  <div class="flex flex-row gap-2">
-    {#each simpleProperties as [key, value] (key)}
-      <StringInput name={key} value={properties[key].value} />
+<div class="flex flex-col gap-4 bg-red-200 p-4 rounded-lg">
+  <h2 class="font-bold text-xl text-primary capitalize">{title}</h2>
+  <table class="table w-full">
+    <!-- Table header for simple properties -->
+    <thead>
+      <tr>
+        {#each simpleProperties as [key, value] (key)}
+          <th class="text-left">{key}</th>
+        {/each}
+      </tr>
+    </thead>
+
+    <!-- Simple properties -->
+    <tbody>
+      <tr>
+        {#each simpleProperties as [key, value] (key)}
+          <TableInputCells.StringInput value={'test'} />
+        {/each}
+      </tr>
+    </tbody>
+
+    <!-- Object properties -->
+    {#each objectProperties as [key, value] (key)}
+      <tbody>
+        <tr>
+          <td colspan="99999999">
+            <svelte:self properties={properties[key].properties} title={key} />
+          </td>
+        </tr>
+      </tbody>
     {/each}
-  </div>
 
-  <!-- Object properties -->
-  {#each objectProperties as [key, value] (key)}
-    <div
-      class="rounded-lg bg-slate-500 bg-opacity-20 flex flex-col p-4 m-4 gap-4 "
-    >
-      <h3 class="text-500 text-lg text-red-800 capitalize">{key}</h3>
-      <svelte:self properties={properties[key].properties} />
-    </div>
-  {/each}
-
-  <!-- Array properties -->
-  {#each arrayProperties as [key, value] (key)}
-    <ArrayEditor label={key} items={properties[key].items} />
-  {/each}
+    <!-- Array properties -->
+    <tbody>
+      {#each arrayProperties as [key, value] (key)}
+        <tr>
+          <td colspan="99999999">
+            <ArrayEditor label={key} items={properties[key].items} />
+          </td>
+        </tr>
+      {/each}
+    </tbody>
+  </table>
 </div>

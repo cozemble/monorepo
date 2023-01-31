@@ -9,7 +9,7 @@ console.log('selectedModel', $selectedModel)
 {#if $selectedModel?.properties}
   <ObjectEditor
     properties={$selectedModel.properties}
-    label={selectedModel.title}
+    title={$selectedModel.title || 'Model'}
   />
 {:else}
   <div class="flex flex-col items-center justify-center h-full">
