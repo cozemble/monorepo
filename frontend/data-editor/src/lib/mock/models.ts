@@ -2,6 +2,7 @@ import type { Schema } from 'jsonschema'
 
 export const invoiceModel: Schema = {
   type: 'object',
+  title: 'Invoice',
   properties: {
     invoiceNumber: {
       type: 'string',

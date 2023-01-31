@@ -1,33 +1,39 @@
 <script lang="ts">
 import StringInput from './inputs/StringInput.svelte'
+import ObjectEditor from './ObjectEditor.svelte'
 
-export let items: Record<string, any> | undefined
+export let label: string
+export let items: Record<string, any>
+
+let values: (typeof items)[] = []
+
+function addValue() {
+  values = [...values, items]
+}
+
+$: console.log(values)
 </script>
 
 <!--
   @component 
-  Creates a form for editing an array. Each property is rendered with a corresponding input field.
-  The input field is determined by the type of the property. 
-  If the property is an object, it is rendered as a nested object editor. 
+  Creates a form for editing an array of values.
+  Each value is rendered with a corresponding input field.
  -->
 
-<button class="btn btn-primary">Add</button>
+<div class="flex flex-col p-4 gap-4 bg-zinc-300 rounded-lg">
+  <h3 class="text-lg capitalize font-semibold text-secondary">{label}</h3>
 
-{#if items}
-  <div class="flex flex-row">
-    {#each Object.keys(items) as key}
-      {#if items[key].type === 'object'}
-        <div
-          class="rounded-lg bg-slate-500 bg-opacity-20 flex flex-col p-4 m-4 gap-4 "
-        >
-          <h3 class="text-500 text-lg text-red-800 capitalize">{key}</h3>
-          <svelte:self properties={items[key].properties} />
-        </div>
-      {:else if items[key].type === 'array'}
-        <svelte:self items={items[key].items} />
-      {:else}
-        <StringInput name={key} value={items[key].value} />
+  {#each values as val, i (i)}
+    <div class="flex flex-row gap-2">
+      {#if items.type === 'object'}
+        <ObjectEditor properties={val.properties} title={`${i}`} />
+      {:else if items.type === 'array'}
+        <svelte:self label={`${i}`} items={val.items} />
+      {:else if items.type === 'string'}
+        <StringInput name={`${i}`} value={val.value} />
       {/if}
-    {/each}
-  </div>
-{/if}
+    </div>
+  {/each}
+
+  <button class="btn btn-primary btn-sm" on:click={addValue}>Add</button>
+</div>
