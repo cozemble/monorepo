@@ -25,7 +25,7 @@ $: simpleProperties = Object.entries(properties).filter(
   If the property is an object, it is rendered as a nested object editor.
 -->
 
-<div class="flex flex-col gap-4 bg-red-200 p-4 rounded-lg">
+<div class="flex flex-col gap-4 rounded-lg">
   <h2 class="font-bold text-xl text-primary capitalize">{title}</h2>
   <table class="table w-full">
     <!-- Table header for simple properties -->
@@ -50,7 +50,7 @@ $: simpleProperties = Object.entries(properties).filter(
     {#each objectProperties as [key, value] (key)}
       <tbody>
         <tr>
-          <td colspan="99999999">
+          <td colspan="99999999" class="p-0">
             <svelte:self properties={properties[key].properties} title={key} />
           </td>
         </tr>
@@ -61,7 +61,7 @@ $: simpleProperties = Object.entries(properties).filter(
     <tbody>
       {#each arrayProperties as [key, value] (key)}
         <tr>
-          <td colspan="99999999">
+          <td colspan="99999999" class="p-0">
             <ArrayEditor label={key} items={properties[key].items} />
           </td>
         </tr>

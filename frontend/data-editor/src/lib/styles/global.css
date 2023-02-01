@@ -3,3 +3,33 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html {
+  @apply h-full;
+}
+
+body {
+  @apply bg-base-200 min-h-full;
+}
+
+@layer components {
+  .table thead th {
+    @apply bg-base-300 capitalize text-lg text-primary;
+  }
+
+  .btn {
+    @apply font-medium rounded-md capitalize;
+  }
+
+  .btn-primary {
+    @apply text-white bg-secondary border-none;
+  }
+
+  .btn-secondary {
+    @apply text-secondary bg-white border border-secondary;
+  }
+
+  .container {
+    @apply p-4 bg-base-100 rounded-xl;
+  }
+}

@@ -20,8 +20,8 @@ $: console.log(values)
   Each value is rendered with a corresponding input field.
  -->
 
-<div class="flex flex-col p-4 gap-4 bg-base-300 rounded-lg w-full">
-  <h3 class="text-lg capitalize font-semibold text-secondary">{label}</h3>
+<div class="flex flex-col p-4 gap-4 bg-base-200 rounded-lg w-full border-2">
+  <h3 class="font-bold text-xl text-primary capitalize">{label}</h3>
 
   <table class="table table-zebra">
     {#each values as val, i (i)}
@@ -30,14 +30,14 @@ $: console.log(values)
       <tbody>
         <tr>
           {#if items.type === 'object'}
-            <td colspan="99999999">
+            <td colspan="99999999" class="p-4">
               <ObjectEditor
                 properties={val.properties}
                 title={`${label} ${i + 1}`}
               />
             </td>
           {:else if items.type === 'array'}
-            <td colspan="99999999">
+            <td colspan="99999999" class="p-2">
               <svelte:self label={`${label} ${i + 1}`} items={val.items} />
             </td>
           {:else if items.type === 'string'}
