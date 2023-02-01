@@ -1,17 +1,15 @@
 <script lang="ts">
+import { initValues } from '$lib/utils'
 import TableInputCells from './tableInputCells'
 import ObjectEditor from './ObjectEditor.svelte'
 
 export let label: string
 export let items: Record<string, any>
-
-let values: (typeof items)[] = []
+export let value: any[]
 
 function addValue() {
-  values = [...values, items]
+  value = [...value, initValues(items.properties)]
 }
-
-$: console.log(values)
 </script>
 
 <!--
@@ -24,7 +22,7 @@ $: console.log(values)
   <h3 class="font-bold text-xl text-primary capitalize">{label}</h3>
 
   <table class="table table-zebra">
-    {#each values as val, i (i)}
+    {#each value as val, i (i)}
       <!-- Determine a structure with the type of the array -->
 
       <tbody>
@@ -32,21 +30,28 @@ $: console.log(values)
           {#if items.type === 'object'}
             <td colspan="99999999" class="p-4">
               <ObjectEditor
-                properties={val.properties}
+                properties={items.properties}
                 title={`${label} ${i + 1}`}
+                bind:value={val}
               />
             </td>
           {:else if items.type === 'array'}
             <td colspan="99999999" class="p-2">
-              <svelte:self label={`${label} ${i + 1}`} items={val.items} />
+              <svelte:self
+                label={`${label} ${i + 1}`}
+                {items}
+                bind:value={val}
+              />
             </td>
           {:else if items.type === 'string'}
-            <TableInputCells.StringInput value={'test'} />
+            <TableInputCells.StringInput bind:value={val} />
           {/if}
         </tr>
       </tbody>
     {/each}
   </table>
 
-  <button class="btn btn-primary btn-sm" on:click={addValue}>Add</button>
+  <button class="btn btn-primary btn-sm self-end" on:click={addValue}
+    >+ Add Nested Model</button
+  >
 </div>

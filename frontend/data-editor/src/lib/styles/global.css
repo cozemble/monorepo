@@ -30,6 +30,6 @@ body {
   }
 
   .container {
-    @apply p-4 bg-base-100 rounded-xl;
+    @apply p-4 bg-base-100 rounded-xl flex flex-col gap-4;
   }
 }

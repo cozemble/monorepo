@@ -4,6 +4,7 @@ import TableInputCells from './tableInputCells'
 
 export let title: string
 export let properties: Record<string, any>
+export let value: Record<string, any>
 
 $: objectProperties = Object.entries(properties).filter(
   ([key, value]) => value.type === 'object',
@@ -31,7 +32,7 @@ $: simpleProperties = Object.entries(properties).filter(
     <!-- Table header for simple properties -->
     <thead>
       <tr>
-        {#each simpleProperties as [key, value] (key)}
+        {#each simpleProperties as [key] (key)}
           <th class="text-left">{key}</th>
         {/each}
       </tr>
@@ -40,18 +41,22 @@ $: simpleProperties = Object.entries(properties).filter(
     <!-- Simple properties -->
     <tbody>
       <tr>
-        {#each simpleProperties as [key, value] (key)}
-          <TableInputCells.StringInput value={'test'} />
+        {#each simpleProperties as [key] (key)}
+          <TableInputCells.StringInput bind:value={value[key]} />
         {/each}
       </tr>
     </tbody>
 
     <!-- Object properties -->
-    {#each objectProperties as [key, value] (key)}
+    {#each objectProperties as [key] (key)}
       <tbody>
         <tr>
           <td colspan="99999999" class="p-0">
-            <svelte:self properties={properties[key].properties} title={key} />
+            <svelte:self
+              properties={properties[key].properties}
+              title={key}
+              bind:value={value[key]}
+            />
           </td>
         </tr>
       </tbody>
@@ -59,10 +64,14 @@ $: simpleProperties = Object.entries(properties).filter(
 
     <!-- Array properties -->
     <tbody>
-      {#each arrayProperties as [key, value] (key)}
+      {#each arrayProperties as [key] (key)}
         <tr>
           <td colspan="99999999" class="p-0">
-            <ArrayEditor label={key} items={properties[key].items} />
+            <ArrayEditor
+              label={key}
+              items={properties[key].items}
+              bind:value={value[key]}
+            />
           </td>
         </tr>
       {/each}
