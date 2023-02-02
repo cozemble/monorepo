@@ -1,4 +1,4 @@
-import type { Schema } from 'jsonschema'
+import type { Schema } from 'ajv'
 
 export const invoiceModel: Schema = {
   type: 'object',

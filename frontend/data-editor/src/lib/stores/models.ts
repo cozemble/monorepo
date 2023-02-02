@@ -1,5 +1,5 @@
 import type { Writable } from 'svelte/store'
-import type { Schema } from 'jsonschema'
+import type { Schema } from 'ajv'
 
 import { writable } from 'svelte/store'
 
