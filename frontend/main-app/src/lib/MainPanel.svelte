@@ -11,9 +11,10 @@
     import {bootstrapHost} from "./models/host";
     import ModelsPanel from './models/ModelsPanel.svelte'
     import DataPanel from './data/DataPanel.svelte'
+    import DatabasePanel from "$lib/database/DatabasePanel.svelte";
 
     export let user: CombinedUser
-    let panelToShow: "models" | "data" = "models"
+    let panelToShow: "models" | "data" |"database" = "models"
 
     onMount(() => {
         registerAllProperties()
@@ -30,6 +31,8 @@
 <a href="#tab1" class="tab-item-name" class:current={panelToShow === 'models'} on:click={() => panelToShow='models'}>Models</a>
 <a href="#tab2" class="tab-item-name" class:current={panelToShow === 'data'}
    on:click={() => panelToShow='data'}>Data</a>
+<a href="#database-tab" class="tab-item-name" class:current={panelToShow === 'database'}
+   on:click={() => panelToShow='database'}>Database</a>
 
 <div class=tabs>
     <div id=tab1>
@@ -40,6 +43,11 @@
     <div id=tab2>
         <div class="panel-container" class:visible={panelToShow === 'data'}>
             <DataPanel/>
+        </div>
+    </div>
+    <div id=database-tab>
+        <div class="panel-container" class:visible={panelToShow === 'database'}>
+            <DatabasePanel />
         </div>
     </div>
 </div>

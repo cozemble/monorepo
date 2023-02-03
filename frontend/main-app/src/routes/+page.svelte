@@ -2,7 +2,7 @@
     import {type AuthUser, createClient} from '@supabase/supabase-js'
     import {onMount, setContext} from 'svelte'
     import {env} from '$env/dynamic/public';
-    import EnsureUserDetails from "./EnsureUserDetails.svelte";
+    import EnsureUserDetails from "../lib/EnsureUserDetails.svelte";
     import {mandatory} from "@cozemble/lang-util";
     import type {Database} from "../lib/supabase/db_types";
     import {supabaseContext} from "../lib/supabase/context";
@@ -49,7 +49,7 @@
 {#if mounted}
     {#if authUser}
         <EnsureUserDetails {authUser} let:user={user}>
-            <MainPanel {user} />
+            <MainPanel {user}/>
         </EnsureUserDetails>
     {:else}
         <h2>Hello Guest</h2>

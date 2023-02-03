@@ -33,6 +33,8 @@
     "@cozemble/model-string-sql-actions": "workspace:*",
     "@cozemble/data-paginated-editor": "workspace:*",
     "@cozemble/data-editor-sdk": "workspace:*",
+    "@cozemble/sql-actions": "workspace:*",
+    "@cozemble/model-sql-actions-player": "workspace:*",
     "@supabase/supabase-js": "^2.5.0"
   }
 }

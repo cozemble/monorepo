@@ -1,8 +1,8 @@
 <script lang="ts">
     import type {AuthUser} from '@supabase/supabase-js'
     import {getContext, onMount} from 'svelte'
-    import {supabaseContext} from "../lib/supabase/context";
-    import type {CombinedUser, User} from "../lib/supabase/flattened_types";
+    import {supabaseContext} from "./supabase/context";
+    import type {CombinedUser, User} from "./supabase/flattened_types";
 
     export let authUser: AuthUser
     const supabase = supabaseContext.get(getContext)
