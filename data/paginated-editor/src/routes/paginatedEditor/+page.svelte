@@ -8,7 +8,7 @@ import {
   eventSourcedDataRecordFns,
 } from '@cozemble/data-editor-sdk'
 import type { DataRecord, Model } from '@cozemble/model-core'
-import PaginatedEditor from '$lib/PaginatedEditor.svelte'
+import PaginatedEditor from '../../lib/PaginatedEditor.svelte'
 import { onMount, setContext } from 'svelte'
 import {
   registerAllProperties,
@@ -17,18 +17,18 @@ import {
 } from '@cozemble/model-assembled'
 import { pageEditorLocalStorageKey } from './context'
 import { allModels, invoiceModel } from '../testModels'
-import type { EditRecordListener } from '$lib/EditRecordListener'
-import { setEditRecordListener } from '$lib/EditRecordListener'
+import type { EditRecordListener } from '../../lib/EditRecordListener'
+import { setEditRecordListener } from '../../lib/EditRecordListener'
 import type {
   RecordEditContext,
   RecordSaveOutcome,
-} from '$lib/RecordEditContext'
-import { recordSaveFailed, recordSaveSucceeded } from '$lib/RecordEditContext'
+} from '../../lib/RecordEditContext'
+import { recordSaveFailed, recordSaveSucceeded } from '../../lib'
 import EditEventInspector from './EditEventInspector.svelte'
 import type {
   PaginatedEditorHost,
   RecordDeleteOutcome,
-} from '$lib/PaginatedEditorHost'
+} from '../../lib'
 import { AxiosGraphQlClient } from '@cozemble/graphql-client'
 import { hasuraMutationFromEvents } from '@cozemble/data-hasura-mutations'
 import { modelLevelHasuraErrors } from './recordPathErrorsFromHasuraError'

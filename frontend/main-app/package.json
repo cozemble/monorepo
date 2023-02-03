@@ -31,6 +31,8 @@
     "@cozemble/model-editor": "workspace:*",
     "@cozemble/model-event-sourced": "workspace:*",
     "@cozemble/model-string-sql-actions": "workspace:*",
+    "@cozemble/data-paginated-editor": "workspace:*",
+    "@cozemble/data-editor-sdk": "workspace:*",
     "@supabase/supabase-js": "^2.5.0"
   }
 }

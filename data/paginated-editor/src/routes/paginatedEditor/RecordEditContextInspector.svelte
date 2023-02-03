@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { RecordEditContext } from '$lib/RecordEditContext'
+import type { RecordEditContext } from '../../lib/RecordEditContext'
 import DataRecordEditEventInspector from './DataRecordEditEventInspector.svelte'
 import type { DataRecordEditEvent } from '@cozemble/data-editor-sdk'
 import { dataRecordEditEventSummariser } from './dataRecordEditEventSummariser'

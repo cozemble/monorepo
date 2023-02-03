@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { DataRecordPathFocus } from '$lib/DataRecordPathFocus'
+import type { DataRecordPathFocus } from './DataRecordPathFocus'
 import type {
   DataRecord,
   DataRecordPath,
@@ -10,7 +10,7 @@ import type {
 import type { Writable } from 'svelte/store'
 import { dataRecordTableClicked } from './dataRecordTableClicked'
 import { modelFns } from '@cozemble/model-api'
-import DataRecordTableTd from '$lib/DataRecordTableTd.svelte'
+import DataRecordTableTd from './DataRecordTableTd.svelte'
 import { RecordEditContext, recordSaveSucceeded } from './RecordEditContext'
 import {
   dataRecordEditEvents,

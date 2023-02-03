@@ -1,4 +1,4 @@
-import type { RecordSaveOutcome, RecordSaveSucceeded } from '$lib/RecordEditContext'
+import type { RecordSaveOutcome, RecordSaveSucceeded } from './RecordEditContext'
 import type { EventSourcedDataRecord } from '@cozemble/data-editor-sdk'
 import type { DataRecord } from '@cozemble/model-core'
 import type { JustErrorMessage } from '@cozemble/lang-util'

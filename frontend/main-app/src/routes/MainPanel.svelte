@@ -1,7 +1,12 @@
 <script lang="ts">
     import type {CombinedUser} from "../lib/supabase/flattened_types";
     import {onMount} from "svelte";
-    import {registerAllProperties, registerAllPropertyConfigurers,} from '@cozemble/model-assembled'
+    import {
+        registerAllProperties,
+        registerAllPropertyConfigurers,
+        registerAllPropertyEditors,
+        registerAllPropertyViewers
+    } from '@cozemble/model-assembled'
     import {registerStringPropertyEventToSqlActions} from '@cozemble/model-string-sql-actions'
     import {bootstrapHost} from "./host";
     import ModelsPanel from './ModelsPanel.svelte'
@@ -16,6 +21,9 @@
         registerAllProperties()
         registerAllPropertyConfigurers()
         registerStringPropertyEventToSqlActions()
+        registerAllPropertyViewers()
+        registerAllPropertyEditors()
+
         bootstrapHost(localStorage)
     })
 </script>

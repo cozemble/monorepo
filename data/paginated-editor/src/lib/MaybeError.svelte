@@ -4,7 +4,7 @@ import type {
   DataRecordPathElement,
   Property,
 } from '@cozemble/model-core'
-import { getMyErrors } from '$lib/getMyErrors'
+import { getMyErrors } from './getMyErrors'
 
 export let property: Property
 export let parentPath: DataRecordPathElement[]

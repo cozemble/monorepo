@@ -1,6 +1,6 @@
 <script lang="ts">
 import type { DataRecord, Model } from '@cozemble/model-core'
-import PaginatedEditor from '$lib/PaginatedEditor.svelte'
+import PaginatedEditor from '../../lib/PaginatedEditor.svelte'
 import { onMount } from 'svelte'
 import {
   registerAllProperties,
@@ -10,8 +10,7 @@ import {
 import type {
   PaginatedEditorHost,
   RecordDeleteOutcome,
-} from '$lib/PaginatedEditorHost'
-import type { RecordSaveOutcome } from '$lib/RecordEditContext'
+ RecordSaveOutcome } from '../../lib'
 import type { EventSourcedDataRecord } from '@cozemble/data-editor-sdk'
 
 let models: Model[] = []

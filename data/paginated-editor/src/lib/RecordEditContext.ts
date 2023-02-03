@@ -1,5 +1,5 @@
 import type { DataRecord, DataRecordPath, Model } from '@cozemble/model-core'
-import { DataRecordPathFocus } from '$lib/DataRecordPathFocus'
+import { DataRecordPathFocus } from './DataRecordPathFocus'
 import { writable, type Writable } from 'svelte/store'
 import { modelFns } from '@cozemble/model-api'
 import {

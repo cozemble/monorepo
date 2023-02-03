@@ -1,4 +1,4 @@
-import type { RecordEditContext } from '$lib/RecordEditContext'
+import type { RecordEditContext } from './RecordEditContext'
 import type { DataRecordEditEvent } from '@cozemble/data-editor-sdk'
 
 export interface EditRecordListener {

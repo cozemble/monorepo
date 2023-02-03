@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { RecordEditContext } from '$lib/RecordEditContext'
+import type { RecordEditContext } from '../../lib/RecordEditContext'
 import RecordEditContextInspector from './RecordEditContextInspector.svelte'
 import { hasuraMutationFromEvents } from '@cozemble/data-hasura-mutations'
 import { dataRecordFns } from '@cozemble/model-api'

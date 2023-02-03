@@ -1,6 +1,6 @@
 <script lang="ts">
-import PropertyView from '$lib/PropertyView.svelte'
-import { type CellFocus, isFocussedCell } from '$lib/CellFocus'
+import PropertyView from './PropertyView.svelte'
+import { type CellFocus, isFocussedCell } from './CellFocus'
 import type { DataRecord, Property } from '@cozemble/model-core'
 import type { Writable } from 'svelte/store'
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { DataRecordPathFocus } from '$lib/DataRecordPathFocus'
+import type { DataRecordPathFocus } from './DataRecordPathFocus'
 import type {
   DataRecord,
   DataRecordPath,
@@ -7,9 +7,9 @@ import type {
   Property,
 } from '@cozemble/model-core'
 import type { Writable } from 'svelte/store'
-import PropertyEdit from '$lib/PropertyEdit.svelte'
-import PropertyView from '$lib/PropertyView.svelte'
-import MaybeError from '$lib/MaybeError.svelte'
+import PropertyEdit from './PropertyEdit.svelte'
+import PropertyView from './PropertyView.svelte'
+import MaybeError from './MaybeError.svelte'
 import { dataRecordPathFns } from '@cozemble/model-api'
 
 export let property: Property

@@ -33,10 +33,6 @@ export const host: ModelEditorHost = {
   },
 }
 
-export function clearLocalStorage(localStorage: Storage) {
-  localStorage.removeItem(storageKey)
-}
-
 let localStorageSubscribed = false
 
 export function bootstrapHost(localStorage: Storage) {

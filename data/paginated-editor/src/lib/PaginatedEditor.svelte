@@ -1,13 +1,13 @@
 <script lang="ts">
 import type { DataRecord, Model } from '@cozemble/model-core'
-import type { CellFocus } from '$lib/CellFocus'
+import type { CellFocus } from './CellFocus'
 import { writable, type Writable } from 'svelte/store'
-import DataTd from '$lib/DataTd.svelte'
+import DataTd from './DataTd.svelte'
 import StackingRecordEditor from './StackingRecordEditor.svelte'
 import { RecordEditContext, type RecordSaveOutcome } from './RecordEditContext'
 import type { EventSourcedDataRecord } from '@cozemble/data-editor-sdk'
 import { eventSourcedDataRecordFns } from '@cozemble/data-editor-sdk'
-import type { PaginatedEditorHost } from '$lib/PaginatedEditorHost'
+import type { PaginatedEditorHost } from './PaginatedEditorHost'
 
 export let models: Model[]
 export let model: Model

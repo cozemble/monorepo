@@ -1,13 +1,13 @@
 <script lang="ts">
-import DataRecordEditor from '$lib/DataRecordEditor.svelte'
+import DataRecordEditor from './DataRecordEditor.svelte'
 import type {
   DataRecordControlEvent,
   DataRecordEditEvent,
   DataRecordEditorClient,
 } from '@cozemble/data-editor-sdk'
 import { dataRecordEditorHost } from '@cozemble/data-editor-sdk'
-import type { RecordEditContext } from '$lib/RecordEditContext'
-import { getEditRecordListener } from '$lib/EditRecordListener'
+import type { RecordEditContext } from './RecordEditContext'
+import { getEditRecordListener } from './EditRecordListener'
 import { getContext, onMount, onDestroy } from 'svelte'
 
 export let recordEditContext: RecordEditContext

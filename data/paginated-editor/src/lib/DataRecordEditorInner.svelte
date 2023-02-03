@@ -6,11 +6,11 @@ import type {
   Model,
 } from '@cozemble/model-core'
 import { modelFns } from '@cozemble/model-api'
-import type { DataRecordPathFocus } from '$lib/DataRecordPathFocus'
+import type { DataRecordPathFocus } from './DataRecordPathFocus'
 import type { Writable } from 'svelte/store'
-import DataRecordTable from '$lib/DataRecordTable.svelte'
+import DataRecordTable from './DataRecordTable.svelte'
 import HasManyRelationship from './HasManyRelationship.svelte'
-import type { RecordEditContext } from '$lib/RecordEditContext'
+import type { RecordEditContext } from './RecordEditContext'
 
 export let models: Model[]
 export let model: Model

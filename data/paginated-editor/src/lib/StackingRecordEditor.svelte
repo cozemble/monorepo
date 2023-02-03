@@ -1,6 +1,6 @@
 <script lang="ts">
 import type { RecordEditContext } from './RecordEditContext'
-import EditRecord from '$lib/EditRecord.svelte'
+import EditRecord from './EditRecord.svelte'
 
 export let recordEditContext: RecordEditContext
 let stack: RecordEditContext[] = [recordEditContext]

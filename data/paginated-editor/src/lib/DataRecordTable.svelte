@@ -8,7 +8,7 @@ import type {
 } from '@cozemble/model-core'
 import type { Writable } from 'svelte/store'
 import { dataRecordTableClicked } from './dataRecordTableClicked'
-import DataRecordTableTd from '$lib/DataRecordTableTd.svelte'
+import DataRecordTableTd from './DataRecordTableTd.svelte'
 
 export let model: Model
 export let record: DataRecord
