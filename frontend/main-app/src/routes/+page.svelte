@@ -6,8 +6,7 @@
     import {mandatory} from "@cozemble/lang-util";
     import type {Database} from "../lib/supabase/db_types";
     import {supabaseContext} from "../lib/supabase/context";
-    import MainPanel from "./MainPanel.svelte";
-    import {host} from "./host";
+    import MainPanel from "../lib/MainPanel.svelte";
 
     const PUBLIC_SUPABASE_KEY = mandatory(env.PUBLIC_SUPABASE_KEY, `No PUBLIC_SUPABASE_KEY in env`)
     const supabaseUrl = 'https://hxtxpwuuosksrtzditay.supabase.co'
@@ -50,7 +49,7 @@
 {#if mounted}
     {#if authUser}
         <EnsureUserDetails {authUser} let:user={user}>
-            <MainPanel {user} {host}/>
+            <MainPanel {user} />
         </EnsureUserDetails>
     {:else}
         <h2>Hello Guest</h2>

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type {CombinedUser} from "../lib/supabase/flattened_types";
+    import type {CombinedUser} from "./supabase/flattened_types";
     import {onMount} from "svelte";
     import {
         registerAllProperties,
@@ -8,13 +8,11 @@
         registerAllPropertyViewers
     } from '@cozemble/model-assembled'
     import {registerStringPropertyEventToSqlActions} from '@cozemble/model-string-sql-actions'
-    import {bootstrapHost} from "./host";
-    import ModelsPanel from './ModelsPanel.svelte'
-    import DataPanel from './DataPanel.svelte'
-    import type {ModelEditorHost} from "@cozemble/model-editor";
+    import {bootstrapHost} from "./models/host";
+    import ModelsPanel from './models/ModelsPanel.svelte'
+    import DataPanel from './data/DataPanel.svelte'
 
     export let user: CombinedUser
-    export let host: ModelEditorHost
     let panelToShow: "models" | "data" = "models"
 
     onMount(() => {
@@ -36,7 +34,7 @@
 <div class=tabs>
     <div id=tab1>
         <div class="panel-container" class:visible={panelToShow === 'models'}>
-            <ModelsPanel {host}/>
+            <ModelsPanel />
         </div>
     </div>
     <div id=tab2>

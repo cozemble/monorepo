@@ -1,7 +1,7 @@
 <script lang="ts">
-    import {allModels} from "./host";
     import DataPanelInner from './DataPanelInner.svelte'
     import {bootstrapRecords, paginatedEditorHost, records} from "./recordsHost";
+    import {allModels} from "../models/host";
 
     $: actualModels = $allModels.map(m => m.model)
 
