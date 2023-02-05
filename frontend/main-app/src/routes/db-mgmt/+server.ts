@@ -1,8 +1,3 @@
 export function GET() {
-  return {
-    status: 200,
-    body: {
-      message: 'Hello world!',
-    },
-  }
+  return new Response('Hello world!', { status: 200 })
 }
