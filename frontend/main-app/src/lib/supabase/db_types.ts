@@ -49,27 +49,50 @@ export interface Database {
           updated_at?: string
         }
       }
+      projects: {
+        Row: {
+          created_at: string
+          id: number
+          name: string
+          organisation_id: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          name: string
+          organisation_id: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          name?: string
+          organisation_id?: number
+          updated_at?: string
+        }
+      }
       users: {
         Row: {
-          created_at: string | null
+          created_at: string
           first_name: string
           id: number
           supabase_id: string
-          updated_at: string | null
+          updated_at: string
         }
         Insert: {
-          created_at?: string | null
+          created_at?: string
           first_name: string
           id?: number
           supabase_id: string
-          updated_at?: string | null
+          updated_at?: string
         }
         Update: {
-          created_at?: string | null
+          created_at?: string
           first_name?: string
           id?: number
           supabase_id?: string
-          updated_at?: string | null
+          updated_at?: string
         }
       }
     }

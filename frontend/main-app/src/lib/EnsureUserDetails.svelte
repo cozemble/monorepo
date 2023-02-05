@@ -3,6 +3,7 @@
     import {getContext, onMount} from 'svelte'
     import {supabaseContext} from "./supabase/context";
     import type {CombinedUser, User} from "./supabase/flattened_types";
+    import {createServersideUser} from "./createServersideUser";
 
     export let authUser: AuthUser
     const supabase = supabaseContext.get(getContext)
@@ -36,20 +37,11 @@
         if (firstName.length < 2) {
             firstNameError = "Please enter your first name"
         } else {
-            await supabase
-                .from('users')
-                .insert([{supabase_id: authUser.id, first_name: firstName}])
-                .then(({data, error}) => {
-                    if (error) {
-                        console.log('error', error)
-                    }
-                })
-            const {data: users, error} = await supabase
-                .from('users')
-                .select()
-                .eq('supabase_id', authUser.id)
-            if (users && users.length > 0) {
-                user = users[0]
+            const outcome = await createServersideUser(supabase, authUser, firstName)
+            if(outcome._type === "just.error.message") {
+                console.log("Error creating user")
+            } else {
+                user = outcome.value
             }
         }
     }

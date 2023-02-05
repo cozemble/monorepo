@@ -35,6 +35,7 @@
     "@cozemble/data-editor-sdk": "workspace:*",
     "@cozemble/sql-actions": "workspace:*",
     "@cozemble/model-sql-actions-player": "workspace:*",
-    "@supabase/supabase-js": "^2.5.0"
+    "@supabase/supabase-js": "^2.5.0",
+    "@supabase/postgrest-js": "^1.3.0"
   }
 }

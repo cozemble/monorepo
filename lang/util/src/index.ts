@@ -266,11 +266,6 @@ export { partial1, partial2 } from './partial'
 
 export { JustErrorMessage, justErrorMessage, ErrorMessage, MaybeErrorMessage } from './errors'
 
-export interface WrappedValue<T> {
-  _type: 'wrapped.value'
-  value: T
-}
-
 export function identity<T = any>(t: T): T {
   return t
 }
@@ -299,3 +294,5 @@ export { Option, options } from './options'
 export { Clock, SystemClock, FixedClock, clock } from './clock'
 
 export { HeadAndTail, headAndTailFns } from './HeadAndTail'
+
+export { Value, value } from './value'
