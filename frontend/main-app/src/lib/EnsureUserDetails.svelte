@@ -18,7 +18,6 @@
             .from('users')
             .select()
             .eq('supabase_id', authUser.id)
-        console.log({users, error})
         if (users) {
             if (users.length === 0) {
                 fetchUserDetails = true
@@ -27,7 +26,6 @@
             }
         }
         mounted = true
-        console.log({mounted, user, fetchUserDetails})
     })
 
     function init(el: HTMLInputElement) {
