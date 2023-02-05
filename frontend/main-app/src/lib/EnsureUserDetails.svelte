@@ -41,7 +41,7 @@
         } else {
             const outcome = await createServersideUser(supabase, authUser, firstName)
             if (outcome._type === "just.error.message") {
-                console.log(`Error creating user: ${outcome.message}`)
+                alert(`Error creating user: ${outcome.message}`)
             } else {
                 user = outcome.value
                 fetchUserDetails = false
