@@ -18,6 +18,7 @@
             .from('users')
             .select()
             .eq('supabase_id', authUser.id)
+        console.log({users, error})
         if (users) {
             if (users.length === 0) {
                 fetchUserDetails = true
@@ -26,6 +27,7 @@
             }
         }
         mounted = true
+        console.log({mounted, user, fetchUserDetails})
     })
 
     function init(el: HTMLInputElement) {
@@ -38,10 +40,11 @@
             firstNameError = "Please enter your first name"
         } else {
             const outcome = await createServersideUser(supabase, authUser, firstName)
-            if(outcome._type === "just.error.message") {
-                console.log("Error creating user")
+            if (outcome._type === "just.error.message") {
+                console.log(`Error creating user: ${outcome.message}`)
             } else {
                 user = outcome.value
+                fetchUserDetails = false
             }
         }
     }
@@ -63,10 +66,11 @@
                 <span style="color: red">{firstNameError}</span><br/>
             {/if}
         </form>
-    {/if}
-    {#if user}
-        <slot user={mandatoryUser(user)}></slot>
     {:else}
-        <p>Failed to load user</p>
+        {#if user}
+            <slot user={mandatoryUser(user)}></slot>
+        {:else}
+            <p>Failed to load user</p>
+        {/if}
     {/if}
 {/if}

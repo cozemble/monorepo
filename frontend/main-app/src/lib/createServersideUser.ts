@@ -1,19 +1,19 @@
 import type { PublicSchema, User } from './supabase/flattened_types'
 import type { ErrorMessage, Value } from '@cozemble/lang-util'
-import { justErrorMessage, value } from '@cozemble/lang-util'
+import { justErrorMessage, uuids, value } from '@cozemble/lang-util'
 import type { Database } from './supabase/db_types'
-import type { SupabaseClient } from '@supabase/supabase-js'
-import type { AuthUser } from '@supabase/supabase-js'
+import type { AuthUser, SupabaseClient } from '@supabase/supabase-js'
 import type { PostgrestFilterBuilder } from '@supabase/postgrest-js'
 
 async function insertResponse<T extends Record<string, unknown> = Record<string, unknown>>(
   statement: PostgrestFilterBuilder<PublicSchema, T, T>,
-): Promise<Value<any> | ErrorMessage> {
+): Promise<Value<boolean> | ErrorMessage> {
   const { data, error } = await statement
+  console.log({ data, error })
   if (error) {
     return justErrorMessage(error.message)
   }
-  return value(data[0])
+  return value(true)
 }
 
 export async function createServersideUser(
@@ -27,20 +27,44 @@ export async function createServersideUser(
   if (userInsertOutcome._type === 'just.error.message') {
     return userInsertOutcome
   }
+
+  const { data: users, error: usersError } = await supabase
+    .from('users')
+    .select()
+    .eq('supabase_id', authUser.id)
+  if (usersError) {
+    return justErrorMessage(usersError.message)
+  }
+  if (users === null || users.length !== 1) {
+    return justErrorMessage('Could not find user')
+  }
+  const user = users[0]
+
+  const orgId = uuids.v4()
   const organisationInsertOutcome = await insertResponse(
-    supabase.from('organizations').insert([{ name: 'My Organization', owner_id: authUser.id }]),
+    supabase
+      .from('organisations')
+      .insert([{ name: 'My Organisation', owning_user_id: user.id, client_id: orgId }]) as any,
   )
   if (organisationInsertOutcome._type === 'just.error.message') {
     return organisationInsertOutcome
   }
+  const { data: organisations, error } = await supabase
+    .from('organisations')
+    .select()
+    .eq('client_id', orgId)
+  if (error) {
+    return justErrorMessage(error.message)
+  }
+  const organisation = organisations[0]
   const memberInsertOutcome = await insertResponse(
-    supabase.from('organization_members').insert([
+    supabase.from('organisation_users').insert([
       {
-        user_id: authUser.id,
-        organization_id: organisationInsertOutcome.value.id,
+        user_id: user.id,
+        organisation_id: organisation.id,
         roles: ['owner'],
       },
-    ]),
+    ]) as any,
   )
   if (memberInsertOutcome._type === 'just.error.message') {
     return memberInsertOutcome
@@ -48,17 +72,12 @@ export async function createServersideUser(
   const projectInsertOutcome = await insertResponse(
     supabase
       .from('projects')
-      .insert([{ name: 'My Project', organisation_id: organisationInsertOutcome.value.id }]) as any, // just too tired
+      .insert([
+        { name: 'My Project', organisation_id: organisation.id, client_id: uuids.v4() },
+      ]) as any, // just too tired
   )
   if (projectInsertOutcome._type === 'just.error.message') {
     return projectInsertOutcome
   }
-  const { data: users, error } = await supabase
-    .from('users')
-    .select()
-    .eq('supabase_id', authUser.id)
-  if (error) {
-    return justErrorMessage(error.message)
-  }
-  return value(users[0])
+  return value(user)
 }

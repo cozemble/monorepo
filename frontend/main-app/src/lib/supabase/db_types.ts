@@ -28,6 +28,7 @@ export interface Database {
       }
       organisations: {
         Row: {
+          client_id: string
           created_at: string
           id: number
           name: string
@@ -35,6 +36,7 @@ export interface Database {
           updated_at: string
         }
         Insert: {
+          client_id: string
           created_at?: string
           id?: number
           name: string
@@ -42,6 +44,7 @@ export interface Database {
           updated_at?: string
         }
         Update: {
+          client_id?: string
           created_at?: string
           id?: number
           name?: string
@@ -51,6 +54,7 @@ export interface Database {
       }
       projects: {
         Row: {
+          client_id: string
           created_at: string
           id: number
           name: string
@@ -58,6 +62,7 @@ export interface Database {
           updated_at: string
         }
         Insert: {
+          client_id: string
           created_at?: string
           id?: number
           name: string
@@ -65,6 +70,7 @@ export interface Database {
           updated_at?: string
         }
         Update: {
+          client_id?: string
           created_at?: string
           id?: number
           name?: string

@@ -33,11 +33,6 @@
             console.log({error})
         } else {
             authUser = data.user
-            const {data: users, error: error2} = await supabase
-                .from('users')
-                .select()
-                .eq('supabase_id', authUser.id)
-            console.log({users, error2})
         }
         mounted = true
     })
