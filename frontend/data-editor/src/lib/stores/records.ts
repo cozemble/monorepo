@@ -1,5 +1,5 @@
 import type { Writable } from 'svelte/store'
-import type { Schema } from 'ajv'
+import type { JSONSchema } from '$lib/types'
 
 import { writable, get } from 'svelte/store'
 import Ajv from 'ajv'
@@ -11,8 +11,6 @@ import { addErrors } from './errors'
 export const records: Writable<Record<string, any>[]> = writable([])
 
 export function addRecord(record: Record<string, any>) {
-  console.log(record)
-
   // create ajv instance
   const ajv = new Ajv({
     allErrors: true,
@@ -24,6 +22,7 @@ export function addRecord(record: Record<string, any>) {
   console.log('valid: ', valid)
 
   addErrors(validate.errors)
+
   if (!valid) return
 
   records.update((records) => [record])

@@ -1,6 +1,6 @@
-import type { Schema } from 'ajv'
+import type { JSONSchema } from '$lib/types'
 
-export const invoiceModel: Schema = {
+export const invoiceModel: JSONSchema = {
   type: 'object',
   title: 'Invoice',
   properties: {
