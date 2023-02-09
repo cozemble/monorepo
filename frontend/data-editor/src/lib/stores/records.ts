@@ -10,8 +10,6 @@ import { selectedModel } from './models'
 export const records: Writable<Record<string, any>[]> = writable([])
 
 export function addRecord(record: Record<string, any>) {
-  record = removeEmptyValues(record)
-
   console.log(record)
 
   // create ajv instance
@@ -20,7 +18,7 @@ export function addRecord(record: Record<string, any>) {
   })
 
   const validate = ajv.compile(get(selectedModel))
-  const valid = validate(record)
+  const valid = validate(removeEmptyValues(record))
 
   console.log('valid: ', valid)
 

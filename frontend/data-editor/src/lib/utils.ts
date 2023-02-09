@@ -12,15 +12,16 @@ export const initValues = (schema: Schema) =>
     return prev
   }, {} as any)
 
-export const removeEmptyValues = (obj: Record<string, any>) => {
-  Object.entries(obj).forEach(([key, value]) => {
+export const removeEmptyValues = (obj: Record<string, any>) =>
+  Object.entries(obj).reduce((prev, [key, value]) => {
     if (value && typeof value === 'object' && !Array.isArray(value)) {
-      removeEmptyValues(value)
+      prev[key] = removeEmptyValues(value)
     } else if (value === '' || value === null || value.length === 0) {
-      delete obj[key]
+      // do nothing
     } else if (Array.isArray(value) && value.length > 0) {
-      value.forEach((v) => removeEmptyValues(v))
+      prev[key] = value.map((v) => removeEmptyValues(v))
+    } else {
+      prev[key] = value
     }
-  })
-  return obj
-}
+    return prev
+  }, {} as any)
