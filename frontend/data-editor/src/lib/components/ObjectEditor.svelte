@@ -5,6 +5,7 @@ import TableInputCells from './tableInputCells'
 export let title: string
 export let properties: Record<string, any>
 export let value: Record<string, any>
+export let errors: Record<string, any> | undefined
 
 $: objectProperties = Object.entries(properties).filter(
   ([key, value]) => value.type === 'object',
@@ -42,7 +43,10 @@ $: simpleProperties = Object.entries(properties).filter(
     <tbody>
       <tr>
         {#each simpleProperties as [key] (key)}
-          <TableInputCells.StringInput bind:value={value[key]} />
+          <TableInputCells.StringInput
+            bind:value={value[key]}
+            error={errors ? errors[key] : undefined}
+          />
         {/each}
       </tr>
     </tbody>
@@ -56,6 +60,7 @@ $: simpleProperties = Object.entries(properties).filter(
               properties={properties[key].properties}
               title={key}
               bind:value={value[key]}
+              errors={errors ? errors[key] : {}}
             />
           </td>
         </tr>
@@ -71,6 +76,7 @@ $: simpleProperties = Object.entries(properties).filter(
               label={key}
               items={properties[key].items}
               bind:value={value[key]}
+              errors={errors ? errors[key] : []}
             />
           </td>
         </tr>

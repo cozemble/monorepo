@@ -1,6 +1,7 @@
 <script lang="ts">
 import { selectedModel } from '$lib/stores/models'
 import { records, addRecord } from '$lib/stores/records'
+import { errors } from '$lib/stores/errors'
 import { initValues } from '$lib/utils'
 
 import ObjectEditor from '$lib/components/ObjectEditor.svelte'
@@ -11,7 +12,8 @@ selectedModel.subscribe((model) => {
   record = initValues(model?.properties || {})
 })
 
-console.log('selectedModel', $selectedModel)
+$: console.info('selectedModel: ', $selectedModel)
+$: console.info('record: ', record)
 </script>
 
 {#if $selectedModel?.properties}
@@ -20,6 +22,7 @@ console.log('selectedModel', $selectedModel)
       properties={$selectedModel.properties}
       title={$selectedModel.title || 'Model'}
       bind:value={record}
+      errors={$errors}
     />
     <button
       class="btn btn-secondary self-end"

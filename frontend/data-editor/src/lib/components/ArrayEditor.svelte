@@ -6,6 +6,9 @@ import ObjectEditor from './ObjectEditor.svelte'
 export let label: string
 export let items: Record<string, any>
 export let value: any[]
+export let errors: (Record<string, any> | string)[] | undefined
+
+$: console.log(`${label} errors: `, errors)
 
 function addValue() {
   value = [...value, initValues(items.properties)]
@@ -22,7 +25,7 @@ function addValue() {
   <h3 class="font-bold text-xl text-primary capitalize">{label}</h3>
 
   <table class="table table-zebra">
-    {#if value}
+    {#if !!value}
       {#each value as val, i (i)}
         <!-- Determine a structure with the type of the array -->
 
@@ -34,6 +37,7 @@ function addValue() {
                   properties={items.properties}
                   title={`${label} ${i + 1}`}
                   bind:value={val}
+                  errors={errors ? errors[i] : undefined}
                 />
               </td>
             {:else if items.type === 'array'}
@@ -42,10 +46,14 @@ function addValue() {
                   label={`${label} ${i + 1}`}
                   {items}
                   bind:value={val}
+                  errors={errors ? errors[i] : []}
                 />
               </td>
             {:else if items.type === 'string'}
-              <TableInputCells.StringInput bind:value={val} />
+              <TableInputCells.StringInput
+                bind:value={val}
+                error={errors ? errors[i] : undefined}
+              />
             {/if}
           </tr>
         </tbody>

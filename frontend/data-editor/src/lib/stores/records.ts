@@ -6,6 +6,7 @@ import Ajv from 'ajv'
 
 import { removeEmptyValues } from '$lib/utils'
 import { selectedModel } from './models'
+import { addErrors } from './errors'
 
 export const records: Writable<Record<string, any>[]> = writable([])
 
@@ -22,12 +23,10 @@ export function addRecord(record: Record<string, any>) {
 
   console.log('valid: ', valid)
 
-  if (!valid) {
-    console.error(validate.errors)
-    return
-  }
+  addErrors(validate.errors)
+  if (!valid) return
 
-  records.update((records) => [...records, record])
+  records.update((records) => [record])
 }
 
 export function removeRecord(record: Record<string, any>) {
