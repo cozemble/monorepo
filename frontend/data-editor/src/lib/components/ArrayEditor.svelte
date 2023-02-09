@@ -22,33 +22,35 @@ function addValue() {
   <h3 class="font-bold text-xl text-primary capitalize">{label}</h3>
 
   <table class="table table-zebra">
-    {#each value as val, i (i)}
-      <!-- Determine a structure with the type of the array -->
+    {#if value}
+      {#each value as val, i (i)}
+        <!-- Determine a structure with the type of the array -->
 
-      <tbody>
-        <tr>
-          {#if items.type === 'object'}
-            <td colspan="99999999" class="p-4">
-              <ObjectEditor
-                properties={items.properties}
-                title={`${label} ${i + 1}`}
-                bind:value={val}
-              />
-            </td>
-          {:else if items.type === 'array'}
-            <td colspan="99999999" class="p-2">
-              <svelte:self
-                label={`${label} ${i + 1}`}
-                {items}
-                bind:value={val}
-              />
-            </td>
-          {:else if items.type === 'string'}
-            <TableInputCells.StringInput bind:value={val} />
-          {/if}
-        </tr>
-      </tbody>
-    {/each}
+        <tbody>
+          <tr>
+            {#if items.type === 'object'}
+              <td colspan="99999999" class="p-4">
+                <ObjectEditor
+                  properties={items.properties}
+                  title={`${label} ${i + 1}`}
+                  bind:value={val}
+                />
+              </td>
+            {:else if items.type === 'array'}
+              <td colspan="99999999" class="p-2">
+                <svelte:self
+                  label={`${label} ${i + 1}`}
+                  {items}
+                  bind:value={val}
+                />
+              </td>
+            {:else if items.type === 'string'}
+              <TableInputCells.StringInput bind:value={val} />
+            {/if}
+          </tr>
+        </tbody>
+      {/each}
+    {/if}
   </table>
 
   <button class="btn btn-primary btn-sm self-end" on:click={addValue}
