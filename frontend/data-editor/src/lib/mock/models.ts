@@ -48,3 +48,24 @@ export const invoiceModel: JSONSchema = {
   },
   required: ['invoiceNumber'],
 }
+
+export const formulaModel: JSONSchema = {
+  type: 'object',
+  title: 'Formula',
+  properties: {
+    dateOfBirth: {
+      type: 'string',
+      description: 'Date of birth',
+    },
+    age: {
+      type: 'number',
+      description: 'Age',
+      // json-schema doesn't support formula, so we use a custom property
+      formula: (record: any) =>
+        record.dateOfBirth
+          ? new Date().getFullYear() - new Date(record.dateOfBirth).getFullYear()
+          : null,
+    },
+  },
+  required: ['dateOfBirth'],
+}
