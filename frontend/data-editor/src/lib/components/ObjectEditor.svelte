@@ -34,7 +34,11 @@ $: simpleProperties = Object.entries(properties).filter(
     <thead>
       <tr>
         {#each simpleProperties as [key] (key)}
-          <th class="text-left">{key}</th>
+          {#if typeof properties[key].formula !== 'undefined'}
+            <th class="text-left">{key} (formula)</th>
+          {:else}
+            <th class="text-left">{key}</th>
+          {/if}
         {/each}
       </tr>
     </thead>
@@ -46,6 +50,7 @@ $: simpleProperties = Object.entries(properties).filter(
           <TableInputCells.StringInput
             bind:value={value[key]}
             error={errors ? errors[key] : undefined}
+            formula={properties[key]?.formula}
           />
         {/each}
       </tr>

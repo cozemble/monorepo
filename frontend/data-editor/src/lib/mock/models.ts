@@ -64,7 +64,7 @@ export const formulaModel: JSONSchema = {
       formula: (record: any) =>
         record.dateOfBirth
           ? new Date().getFullYear() - new Date(record.dateOfBirth).getFullYear()
-          : null,
+          : '',
     },
   },
   required: ['dateOfBirth'],
