@@ -5,7 +5,8 @@ import Ajv from 'ajv'
 
 import { removeEmptyValues, initValues } from '$lib/utils'
 import { selectedModel } from './models'
-import { addErrors } from './errors'
+import { addErrors, errors } from './errors'
+import mockHost from '$lib/common/hosts/mock'
 
 export const records: Writable<Record<string, any>[]> = writable([])
 export const currentRecord: Writable<Record<string, any>> = writable({})
@@ -14,7 +15,7 @@ selectedModel.subscribe((model) => {
   currentRecord.set(initValues(model?.properties || {}))
 })
 
-export function addRecord(record: Record<string, any>) {
+async function validateRecord(record: Record<string, any>) {
   // create ajv instance
   const ajv = new Ajv({
     allErrors: true,
@@ -27,9 +28,27 @@ export function addRecord(record: Record<string, any>) {
 
   addErrors(validate.errors)
 
+  return valid
+}
+
+export async function addRecord(record: Record<string, any>): Promise<void> {
+  const valid = await validateRecord(record)
+
   if (!valid) return
 
-  records.update((records) => [record])
+  // send record to the backend
+  await mockHost
+    .addRecord(get(selectedModel), record)
+    .then((newRecord) => {
+      // add new record to the store if backend call was successful
+      records.update((records) => [...records, newRecord])
+    })
+    .catch((error) => {
+      // store errors in the store to display them in the UI
+      errors.set(error)
+    })
+
+  return
 }
 
 export function removeRecord(record: Record<string, any>) {
