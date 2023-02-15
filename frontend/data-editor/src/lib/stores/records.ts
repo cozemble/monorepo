@@ -42,6 +42,7 @@ export async function addRecord(record: Record<string, any>): Promise<void> {
     .then((newRecord) => {
       // add new record to the store if backend call was successful
       records.update((records) => [...records, newRecord])
+      alert('Record added successfully')
     })
     .catch((error) => {
       // store errors in the store to display them in the UI

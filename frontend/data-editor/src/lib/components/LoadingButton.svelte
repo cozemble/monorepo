@@ -1,5 +1,5 @@
 <script lang="ts">
-export let action: Promise<void>
+export let action: () => Promise<void>
 export let properties: Record<string, any> | undefined = undefined
 
 let loading = false
@@ -7,7 +7,7 @@ let loading = false
 const onClick = async () => {
   loading = true
 
-  await action
+  await action()
 
   loading = false
 }

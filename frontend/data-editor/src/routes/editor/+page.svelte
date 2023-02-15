@@ -16,7 +16,7 @@ import LoadingButton from '$lib/components/LoadingButton.svelte'
       errors={$errors}
     />
 
-    <LoadingButton action={addRecord($currentRecord)}>Save</LoadingButton>
+    <LoadingButton action={() => addRecord($currentRecord)}>Save</LoadingButton>
   </div>
 {:else}
   <div class="flex flex-col items-center justify-center h-full">
