@@ -78,6 +78,8 @@ export const formulaModel: JSONSchema = {
           type: 'number',
           description: 'USD',
           formula: async (record: any) => {
+            // wait for 3 seconds to simulate network latency
+            await new Promise((resolve) => setTimeout(resolve, 3000))
             const response = await fetch('https://api.exchangerate.host/latest?base=TRY')
             const data = await response.json()
             return record.async.TRY * data.rates.USD
