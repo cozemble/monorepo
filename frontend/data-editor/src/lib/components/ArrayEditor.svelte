@@ -6,7 +6,7 @@ import ObjectEditor from './ObjectEditor.svelte'
 export let label: string
 export let items: Record<string, any>
 export let value: any[]
-export let errors: (Record<string, any> | string)[] | undefined
+export let errors: ArrayError
 
 $: console.log(`${label} errors: `, errors)
 
@@ -22,7 +22,28 @@ function addValue() {
  -->
 
 <div class="flex flex-col p-4 gap-4 bg-base-200 rounded-lg w-full border-2">
-  <h3 class="font-bold text-xl text-primary capitalize">{label}</h3>
+  <div class="flex gap-8">
+    <h3 class="font-bold text-xl text-primary capitalize">{label}</h3>
+    {#if !!errors?.self}
+      <div class="alert alert-error shadow-lg">
+        <div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="stroke-current flex-shrink-0 h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            ><path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+            /></svg
+          >
+          <span>{errors.self}</span>
+        </div>
+      </div>
+    {/if}
+  </div>
 
   <table class="table table-zebra">
     {#if !!value}
@@ -37,7 +58,7 @@ function addValue() {
                   properties={items.properties}
                   title={`${label} ${i + 1}`}
                   bind:value={val}
-                  errors={errors ? errors[i] : undefined}
+                  errors={errors?.items ? errors.items[i] : undefined}
                 />
               </td>
             {:else if items.type === 'array'}
@@ -46,13 +67,13 @@ function addValue() {
                   label={`${label} ${i + 1}`}
                   {items}
                   bind:value={val}
-                  errors={errors ? errors[i] : []}
+                  errors={errors?.items ? errors.items[i] : []}
                 />
               </td>
             {:else if items.type === 'string'}
               <TableInputCells.StringInput
                 bind:value={val}
-                error={errors ? errors[i] : undefined}
+                error={errors?.items ? errors.items[i] : undefined}
               />
             {/if}
           </tr>

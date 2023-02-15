@@ -1,17 +1,24 @@
-import type { ErrorObject } from 'ajv'
+import type { ErrorObject as AjvErrorObject } from 'ajv'
 
 import { merge } from 'lodash'
-import { writable } from 'svelte/store'
+import { writable, type Writable } from 'svelte/store'
 
-export const errors = writable({})
+export const errors: Writable<ErrorObject> = writable({})
 
 /** Create error message from Ajv error */
-const createErrorMessage = (error: ErrorObject): Record<string, string> | string => {
+const createErrorMessage = (error: AjvErrorObject): Record<string, string> | string => {
   const { keyword, params } = error
 
   switch (keyword) {
     case 'required':
       return { [params.missingProperty]: 'Required' }
+
+    case 'minItems':
+      return { self: `Minimum ${params.limit} items` }
+
+    case 'maxItems':
+      return { self: `Maximum ${params.limit} items` }
+
     default:
       return 'Invalid'
   }
@@ -32,28 +39,30 @@ const createErrorMessage = (error: ErrorObject): Record<string, string> | string
  *   ]
  * }
  */
-const convertToErrorObject = (error: ErrorObject): Record<string, any> =>
+const convertToErrorObject = (error: AjvErrorObject): Record<string, any> =>
   error.instancePath.split('/').reduceRight((prev, curr) => {
     if (curr === '') return prev
 
     // check if curr can be converted to a number
     if (Number.isInteger(Number(curr))) {
       const index = Number(curr)
-      return Array(index + 1)
-        .fill(undefined)
-        .map((_, i) => {
-          if (i === index) {
-            return prev
-          }
-          return {}
-        })
+      return {
+        items: Array(index + 1)
+          .fill(undefined)
+          .map((_, i) => {
+            if (i === index) {
+              return prev
+            }
+            return {}
+          }),
+      }
     }
 
     return { [curr]: prev }
   }, createErrorMessage(error) as Record<string, any>)
 
 /** Add errors to the store */
-export function addErrors(errorObjects: ErrorObject[] | null) {
+export function addErrors(errorObjects: AjvErrorObject[] | null) {
   errors.update((prev) => {
     console.log('prev: ', prev)
 
@@ -63,3 +72,5 @@ export function addErrors(errorObjects: ErrorObject[] | null) {
     return merge({}, ...errorObjects.map(convertToErrorObject))
   })
 }
+
+errors.subscribe((value) => console.error('errors: ', value))
