@@ -56,6 +56,18 @@ function addValue() {
               />
             {/if}
           </tr>
+          <tr>
+            <td colspan="99999999" class="p-2">
+              <button
+                class="btn btn-error btn-sm self-end"
+                on:click={() => {
+                  value = value.filter((_, index) => index !== i)
+                }}
+              >
+                - Remove
+              </button>
+            </td>
+          </tr>
         </tbody>
       {/each}
     {/if}
