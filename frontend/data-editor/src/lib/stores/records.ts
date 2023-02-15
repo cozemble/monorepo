@@ -1,14 +1,18 @@
 import type { Writable } from 'svelte/store'
-import type { JSONSchema } from '$lib/types'
 
 import { writable, get } from 'svelte/store'
 import Ajv from 'ajv'
 
-import { removeEmptyValues } from '$lib/utils'
+import { removeEmptyValues, initValues } from '$lib/utils'
 import { selectedModel } from './models'
 import { addErrors } from './errors'
 
 export const records: Writable<Record<string, any>[]> = writable([])
+export const currentRecord: Writable<Record<string, any>> = writable({})
+
+selectedModel.subscribe((model) => {
+  currentRecord.set(initValues(model?.properties || {}))
+})
 
 export function addRecord(record: Record<string, any>) {
   // create ajv instance

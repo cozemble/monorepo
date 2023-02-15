@@ -1,19 +1,12 @@
 <script lang="ts">
 import { selectedModel } from '$lib/stores/models'
-import { records, addRecord } from '$lib/stores/records'
+import { currentRecord, addRecord } from '$lib/stores/records'
 import { errors } from '$lib/stores/errors'
-import { initValues } from '$lib/utils'
 
 import ObjectEditor from '$lib/components/ObjectEditor.svelte'
 
-let record = initValues($selectedModel?.properties || {})
-
-selectedModel.subscribe((model) => {
-  record = initValues(model?.properties || {})
-})
-
 $: console.info('selectedModel: ', $selectedModel)
-$: console.info('record: ', record)
+$: console.info('current record: ', currentRecord)
 </script>
 
 {#if $selectedModel?.properties}
@@ -21,12 +14,12 @@ $: console.info('record: ', record)
     <ObjectEditor
       properties={$selectedModel.properties}
       title={$selectedModel.title || 'Model'}
-      bind:value={record}
+      bind:value={$currentRecord}
       errors={$errors}
     />
     <button
       class="btn btn-secondary self-end"
-      on:click={() => addRecord(record)}>Save Record</button
+      on:click={() => addRecord($currentRecord)}>Save Record</button
     >
   </div>
 {:else}
