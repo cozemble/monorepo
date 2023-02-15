@@ -66,6 +66,25 @@ export const formulaModel: JSONSchema = {
           ? new Date().getFullYear() - new Date(record.dateOfBirth).getFullYear()
           : '',
     },
+    async: {
+      type: 'object',
+      description: 'Async',
+      properties: {
+        TRY: {
+          type: 'number',
+          description: 'TRY',
+        },
+        USD: {
+          type: 'number',
+          description: 'USD',
+          formula: async (record: any) => {
+            const response = await fetch('https://api.exchangerate.host/latest?base=TRY')
+            const data = await response.json()
+            return record.async.TRY * data.rates.USD
+          },
+        },
+      },
+    },
   },
   required: ['dateOfBirth'],
 }
