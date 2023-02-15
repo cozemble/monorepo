@@ -13,11 +13,11 @@ $: if (!!modelInput) {
   <h1>Select a model (optional)</h1>
   <select
     class="select select-bordered w-full max-w-xs"
-    bind:value={modelInput}
+    bind:value={$selectedModel}
   >
     <option value="">Select a model</option>
     {#each Object.entries(models) as [key, value]}
-      <option value={JSON.stringify(value)}>{key}</option>
+      <option {value}>{key}</option>
     {/each}
   </select>
 
