@@ -21,11 +21,14 @@ function addValue() {
   Each value is rendered with a corresponding input field.
  -->
 
-<div class="flex flex-col p-4 gap-4 bg-base-200 rounded-lg w-full border-2">
-  <div class="flex gap-8">
+<div
+  class="flex flex-col p-4 gap-4 bg-base-200 rounded-lg w-full border-2 {errors?.self &&
+    'border-red-400'}"
+>
+  <div class="flex gap-8 justify-between">
     <h3 class="font-bold text-xl text-primary capitalize">{label}</h3>
     {#if !!errors?.self}
-      <div class="alert alert-error shadow-lg">
+      <div class="alert alert-error shadow-lg items-start basis-0">
         <div>
           <svg
             xmlns="http://www.w3.org/2000/svg"
