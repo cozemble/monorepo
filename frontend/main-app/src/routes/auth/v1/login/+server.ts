@@ -11,5 +11,8 @@ export function GET(event: RequestEvent) {
   if (provider !== 'github') {
     return new Response(`Unsupported provider: ${provider}`, { status: 400 })
   }
-  throw redirect(302, githubAuth.code.getUri({ state: toUrlFriendly(signInState('root')) }))
+  throw redirect(
+    302,
+    githubAuth.code.getUri({ state: toUrlFriendly(signInState('root', 'github')) }),
+  )
 }

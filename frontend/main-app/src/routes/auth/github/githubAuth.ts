@@ -17,12 +17,14 @@ export interface GithubUser {
 export interface SignInState {
   _type: 'cozauth.signin.state'
   userPool: string
+  provider: 'github'
 }
 
-export function signInState(userPool: string): SignInState {
+export function signInState(userPool: string, provider: 'github'): SignInState {
   return {
     _type: 'cozauth.signin.state',
     userPool,
+    provider,
   }
 }
 
@@ -39,6 +41,6 @@ export const githubAuth = new ClientOAuth2({
   clientSecret: mandatory(process.env.GITHUB_CLIENT_SECRET, `No GITHUB_CLIENT_SECRET env var set`),
   accessTokenUri: 'https://github.com/login/oauth/access_token',
   authorizationUri: 'https://github.com/login/oauth/authorize',
-  redirectUri: `${authRoot}/auth/github/callback`,
+  redirectUri: `${authRoot}/auth/v1/callback`,
   scopes: ['user:email'],
 })

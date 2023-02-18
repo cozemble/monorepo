@@ -66,7 +66,7 @@ async function fetchUserDetails(userPool: string, accessToken: string) {
 }
 
 export async function GET(event: RequestEvent) {
-  const state = event.params['state']
+  const state = event.url.searchParams.get('state')
   if (!state) {
     return new Response(`No state provided in callback url`, { status: 400 })
   }
@@ -74,6 +74,9 @@ export async function GET(event: RequestEvent) {
   const signinState = fromUrlFriendly<SignInState>(state)
   if (signinState._type !== 'cozauth.signin.state') {
     return new Response(`State is not of type cozauth.signin.state`, { status: 400 })
+  }
+  if (signinState.provider !== 'github') {
+    return new Response(`State is not for github`, { status: 400 })
   }
   return fetchUserDetails(signinState.userPool, token.accessToken)
 }
