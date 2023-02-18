@@ -1,7 +1,8 @@
 import * as dotenv from 'dotenv'
-dotenv.config()
 import ClientOAuth2 from 'client-oauth2'
 import { mandatory } from '@cozemble/lang-util'
+
+dotenv.config()
 
 const authRoot = mandatory(process.env.OAUTH_CALLBACK_ROOT, `No OAUTH_CALLBACK_ROOT env var set`)
 
@@ -11,6 +12,26 @@ export interface GithubUser {
   id: number
   name: string
   email: string
+}
+
+export interface SignInState {
+  _type: 'cozauth.signin.state'
+  userPool: string
+}
+
+export function signInState(userPool: string): SignInState {
+  return {
+    _type: 'cozauth.signin.state',
+    userPool,
+  }
+}
+
+export function toUrlFriendly(obj: any) {
+  return btoa(JSON.stringify(obj))
+}
+
+export function fromUrlFriendly<T>(str: string): T {
+  return JSON.parse(atob(str))
 }
 
 export const githubAuth = new ClientOAuth2({

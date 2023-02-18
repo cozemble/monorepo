@@ -3,7 +3,7 @@
     import {cozauth} from "../lib/auth/cozauth";
 
     function loginWithGithub() {
-        window.location.href = "/auth/github/login"
+        window.location.href = "/auth/v1/login?provider=github&userPool=root"
     }
 </script>
 

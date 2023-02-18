@@ -296,3 +296,5 @@ export { Clock, SystemClock, FixedClock, clock } from './clock'
 export { HeadAndTail, headAndTailFns } from './HeadAndTail'
 
 export { Value, value } from './value'
+
+export { nanoids } from './nanoids'

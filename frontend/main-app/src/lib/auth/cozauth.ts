@@ -34,12 +34,12 @@ function parseJwt(token: string) {
   return JSON.parse(jsonPayload)
 }
 
-export function accessTokenKey(tenant: string) {
-  return `cozauth.accessToken.${tenant}`
+export function accessTokenKey(userPool: string) {
+  return `cozauth.accessToken.${userPool}`
 }
 
-export function refreshTokenKey(tenant: string) {
-  return `cozauth.refreshToken.${tenant}`
+export function refreshTokenKey(userPool: string) {
+  return `cozauth.refreshToken.${userPool}`
 }
 
 export const cozauth = {

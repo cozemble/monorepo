@@ -4,7 +4,7 @@ import { establishSession } from './establishSession'
 import { withAdminPgClient } from './postgresClient'
 import { accessTokenKey, refreshTokenKey } from '../../../../lib/auth/cozauth'
 
-async function fetchEmail(tenant: string, accessToken: string, profile: any) {
+async function fetchEmail(userPool: string, accessToken: string, profile: any) {
   const response = await fetch('https://api.github.com/user/emails', {
     method: 'GET',
     headers: {
@@ -19,14 +19,17 @@ async function fetchEmail(tenant: string, accessToken: string, profile: any) {
     const githubUser: GithubUser = { ...profile, email: primary.email }
     return await withAdminPgClient(async (client) => {
       try {
-        return establishSession(client, githubUser).then((session) => {
+        return establishSession(client, userPool, githubUser).then((session) => {
           const [accessToken, refreshToken] = session
           const response = new Response('', { status: 302 })
           response.headers.set('Location', '/session/establish')
-          response.headers.append('Set-Cookie', `${accessTokenKey(tenant)}=${accessToken}; Path=/`)
           response.headers.append(
             'Set-Cookie',
-            `${refreshTokenKey(tenant)}=${refreshToken}; Path=/`,
+            `${accessTokenKey(userPool)}=${accessToken}; Path=/`,
+          )
+          response.headers.append(
+            'Set-Cookie',
+            `${refreshTokenKey(userPool)}=${refreshToken}; Path=/`,
           )
           return response
         })
