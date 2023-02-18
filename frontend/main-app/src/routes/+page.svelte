@@ -7,7 +7,7 @@
     }
 </script>
 
-{#await cozauth.getSession()}
+{#await cozauth.getSession('root')}
     <p>loading...</p>
 {:then session}
     {#if session}

@@ -7,7 +7,6 @@ import { mandatoryEnv } from '../../../../lib/util/env'
 const jwtSigningSecret = mandatoryEnv('JWT_SIGNING_SECRET')
 
 async function newSessionTokens(pg: Client, userId: string, user: GithubUser, tenant: string) {
-  console.log('newSessionTokens')
   const options = {}
   const payload = {
     iss: 'https://cozemble.com',
@@ -20,18 +19,15 @@ async function newSessionTokens(pg: Client, userId: string, user: GithubUser, te
   }
   const accessToken = jwt.sign(payload, jwtSigningSecret, options)
   const refreshToken = uuids.v4()
-  console.log(`refreshToken: ${refreshToken}`)
   await pg.query(
     `insert into refresh_tokens (id, user_id, tenant, token)
          values ($1, $2, $3, $4)`,
     [uuids.v4(), userId, tenant, refreshToken],
   )
-  console.log('return tokens')
   return [accessToken, refreshToken]
 }
 
 export async function establishSession(pg: Client, user: GithubUser) {
-  console.log(`establishSession: ${user.email}`)
   const tenant = 'root'
   let userSelectResult = await pg.query(
     `select *
@@ -40,7 +36,6 @@ export async function establishSession(pg: Client, user: GithubUser) {
            and tenant = $2`,
     [user.email, tenant],
   )
-  console.log({ userSelectResult })
   if (userSelectResult.rows.length === 0) {
     await pg.query(
       `insert into users (id, tenant, email)
