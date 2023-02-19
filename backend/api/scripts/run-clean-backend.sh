@@ -1,3 +1,2 @@
-./scripts/stop-postgres.sh
-./scripts/rmDataFile.sh
+./scripts/run-clean-postgres.sh
 ./scripts/run-backend.sh

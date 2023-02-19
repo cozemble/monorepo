@@ -4,9 +4,9 @@ import { mandatory } from '@cozemble/lang-util'
 import { modelIdFns } from '@cozemble/model-api'
 import { type Writable, writable } from 'svelte/store'
 import type { ModelEditorHost } from '@cozemble/model-editor'
+import type { HttpHandler } from '@http4t/core/contract'
 
 export const allModels: Writable<EventSourcedModel[]> = writable([])
-const storageKey = 'app.cozemble.com.model.editor.models'
 
 export const host: ModelEditorHost = {
   modelChanged(id: ModelId, event: ModelEvent) {
@@ -33,15 +33,10 @@ export const host: ModelEditorHost = {
   },
 }
 
-let localStorageSubscribed = false
-
-export function bootstrapHost(localStorage: Storage) {
-  const stored = localStorage.getItem(storageKey)
-  if (stored) {
-    allModels.set(JSON.parse(stored))
-  }
-  if (!localStorageSubscribed) {
-    allModels.subscribe((models) => localStorage.setItem(storageKey, JSON.stringify(models)))
-    localStorageSubscribed = true
-  }
+export function bootstrapHost() {
+  allModels.set([])
+  // const stored = localStorage.getItem(storageKey)
+  // if (stored) {
+  //   allModels.set(JSON.parse(stored))
+  // }
 }

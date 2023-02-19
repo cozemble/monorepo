@@ -1,0 +1,1 @@
+echo npx kanel -d postgresql://$PGUSER:$PGPASSWORD@$PGHOST:$PGPORT/postgres -o ./src/lib/db_types.ts

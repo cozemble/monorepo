@@ -1,16 +1,15 @@
-import * as dotenv from 'dotenv'
 import pg from 'pg'
-import { mandatoryEnv } from '../../../../lib/util/env'
+import { loadEnv, mandatoryEnv } from '../../../../lib/env/env'
 
-dotenv.config()
+loadEnv()
 
 let adminUserClient: pg.Client | null = null
 
-const host = mandatoryEnv('POSTGRES_HOST')
-const port = parseInt(mandatoryEnv('POSTGRES_PORT'))
-const database = mandatoryEnv('POSTGRES_DATABASE')
-const adminUser = mandatoryEnv('POSTGRES_ADMIN_USER')
-const adminPassword = mandatoryEnv('POSTGRES_ADMIN_PASSWORD')
+const host = mandatoryEnv('PGHOST')
+const port = parseInt(mandatoryEnv('PGPORT'))
+const database = mandatoryEnv('PGDATABASE')
+const adminUser = mandatoryEnv('PG_ADMIN_USER')
+const adminPassword = mandatoryEnv('PG_ADMIN_PASSWORD')
 
 async function adminPostgresClient(): Promise<pg.Client> {
   if (adminUserClient) {

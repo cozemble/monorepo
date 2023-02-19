@@ -3,7 +3,6 @@
     import {modelFns} from "@cozemble/model-api";
     import {ModelEditor} from "@cozemble/model-editor";
 
-
     function addModel() {
         host.modelAdded(modelFns.newInstance("Untitled model"))
     }

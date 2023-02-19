@@ -1,8 +1,8 @@
-import * as dotenv from 'dotenv'
 import ClientOAuth2 from 'client-oauth2'
 import { mandatory } from '@cozemble/lang-util'
+import { loadEnv } from '../../../lib/env/env'
 
-dotenv.config()
+loadEnv()
 
 const authRoot = mandatory(process.env.OAUTH_CALLBACK_ROOT, `No OAUTH_CALLBACK_ROOT env var set`)
 
