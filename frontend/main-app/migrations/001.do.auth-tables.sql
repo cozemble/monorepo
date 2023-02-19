@@ -1,4 +1,4 @@
-create extension ltree;
+create extension if not exists ltree;
 
 create table if not exists tenant
 (

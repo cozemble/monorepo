@@ -4,16 +4,18 @@ export interface Session {
     id: string
     email: string
     firstName: string
+    tenants: string[]
   }
 }
 
-function session(userId: string, email: string, firstName: string): Session {
+function session(userId: string, email: string, firstName: string, tenants: string[]): Session {
   return {
     _type: 'cozauth.session',
     user: {
       id: userId,
       email,
       firstName,
+      tenants,
     },
   }
 }
@@ -51,8 +53,7 @@ export const cozauth = {
     const accessToken = localStorage.getItem(accessTokenKey(tenant))
     if (accessToken) {
       const jwtPayload = parseJwt(accessToken)
-      console.log({ jwtPayload })
-      return session(jwtPayload.sub, jwtPayload.email, jwtPayload.email)
+      return session(jwtPayload.sub, jwtPayload.email, jwtPayload.email, jwtPayload.tenants)
     }
 
     return null

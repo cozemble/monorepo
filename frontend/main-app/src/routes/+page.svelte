@@ -1,23 +1,34 @@
 <script lang="ts">
 
     import {cozauth} from "../lib/auth/cozauth";
-    import MainPanel from "../lib/MainPanel.svelte";
+    import {onMount} from "svelte";
 
     function loginWithGithub() {
         window.location.href = "/auth/v1/login?provider=github&userPool=root"
     }
+
+    let mounted = true
+    let hasSession = false
+    onMount(async () => {
+        const session = await cozauth.getSession('root')
+        console.log("session", session)
+        if (session) {
+            hasSession = true
+            if (session.user.tenants.length === 1) {
+                window.location.href = "/tenants/" + session.user.tenants[0]
+            } else if (session.user.tenants.length > 1) {
+                window.location.href = "/tenants"
+            } else {
+                alert("You don't have any tenant. Please contact your administrator.")
+            }
+        }
+    })
 </script>
 
-{#await cozauth.getSession('root')}
+{#if mounted}
+    <h1>Welcome friend</h1>
+    <button on:click={loginWithGithub}>Login with Github</button>
+    <br/>
+{:else}
     <p>loading...</p>
-{:then session}
-    {#if session}
-        <MainPanel {session}/>
-    {:else }
-        <h1>Welcome friend</h1>
-        <button on:click={loginWithGithub}>Login with Github</button>
-        <br/>
-    {/if}
-{:catch error}
-    <p style="color: red">{error.message}</p>
-{/await}
+{/if}

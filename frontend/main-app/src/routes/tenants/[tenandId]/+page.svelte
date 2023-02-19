@@ -1,0 +1,16 @@
+<script lang="ts">
+    import {cozauth} from "../../../lib/auth/cozauth";
+    import MainPanel from "../../../lib/MainPanel.svelte";
+</script>
+
+{#await cozauth.getSession('root')}
+    <p>loading...</p>
+{:then session}
+    {#if session}
+        <MainPanel {session}/>
+    {:else }
+        <h1>You need to login</h1>
+    {/if}
+{:catch error}
+    <p style="color: red">{error.message}</p>
+{/await}

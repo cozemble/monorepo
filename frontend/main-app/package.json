@@ -10,7 +10,7 @@
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "supabase:gen": "supabase gen types typescript --project-id hxtxpwuuosksrtzditay --schema public > src/lib/supabase/db_types.ts",
     "test": "svelte-check --tsconfig ./tsconfig.json --threshold error",
-    "db:migrate": "dotenv npx postgrator",
+    "db:migrate": "dotenv -- bash -c 'npx postgrator --username $PG_ADMIN_USER --password $PG_ADMIN_PASSWORD'",
     "db:migrate-local": "npx postgrator --host 127.0.0.1 --database postgres --username user --password password",
     "db:types": "dotenv ./scripts/db_types.sh"
   },

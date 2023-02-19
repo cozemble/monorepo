@@ -7,12 +7,12 @@
         registerAllPropertyViewers
     } from '@cozemble/model-assembled'
     import {registerStringPropertyEventToSqlActions} from '@cozemble/model-string-sql-actions'
-    import {bootstrapHost} from "./models/host";
     import ModelsPanel from './models/ModelsPanel.svelte'
     import DataPanel from './data/DataPanel.svelte'
     import type {Session} from "./auth/cozauth";
 
     export let session: Session
+    console.log("session", session)
     let panelToShow: "models" | "data"  = "models"
 
     onMount(() => {
