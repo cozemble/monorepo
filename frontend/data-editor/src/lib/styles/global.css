@@ -17,6 +17,10 @@ body {
     @apply bg-base-300 capitalize text-lg text-primary;
   }
 
+  .table tbody:not(:last-child) td {
+    @apply after:h-4 after:block;
+  }
+
   .btn {
     @apply font-medium rounded-md capitalize;
   }
