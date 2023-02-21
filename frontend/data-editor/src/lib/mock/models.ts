@@ -1,5 +1,3 @@
-import type { JSONSchema } from '$lib/types'
-
 export const invoiceModel: JSONSchema = {
   type: 'object',
   title: 'Invoice',
@@ -63,11 +61,6 @@ export const formulaModel: JSONSchema = {
     age: {
       type: 'number',
       description: 'Age',
-      // json-schema doesn't support formula, so we use a custom property
-      formula: (record: any) =>
-        record.dateOfBirth
-          ? new Date().getFullYear() - new Date(record.dateOfBirth).getFullYear()
-          : '',
     },
     async: {
       type: 'object',
@@ -80,16 +73,35 @@ export const formulaModel: JSONSchema = {
         USD: {
           type: 'number',
           description: 'USD',
-          formula: async (record: any) => {
-            // wait for 3 seconds to simulate network latency
-            await new Promise((resolve) => setTimeout(resolve, 3000))
-            const response = await fetch('https://api.exchangerate.host/latest?base=TRY')
-            const data = await response.json()
-            return record.async.TRY * data.rates.USD
-          },
         },
       },
     },
   },
   required: ['dateOfBirth'],
+
+  // Cozemble specific configurations
+  coz: {
+    properties: {
+      age: {
+        // json-schema doesn't support formula, so we use a custom property
+        formula: async (record: any) =>
+          record.dateOfBirth
+            ? new Date().getFullYear() - new Date(record.dateOfBirth).getFullYear()
+            : '',
+      },
+      async: {
+        properties: {
+          USD: {
+            formula: async (record: any) => {
+              // wait for 3 seconds to simulate network latency
+              await new Promise((resolve) => setTimeout(resolve, 3000))
+              const response = await fetch('https://api.exchangerate.host/latest?base=TRY')
+              const data = await response.json()
+              return record.async.TRY * data.rates.USD
+            },
+          },
+        },
+      },
+    },
+  },
 }

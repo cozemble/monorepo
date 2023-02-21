@@ -1,5 +1,5 @@
 <script lang="ts">
-import { selectedModel } from '$lib/stores/models'
+import { model } from '$lib/stores/models'
 import { currentRecord, addRecord } from '$lib/stores/records'
 import { errors } from '$lib/stores/errors'
 
@@ -7,11 +7,11 @@ import ObjectEditor from '$lib/components/ObjectEditor.svelte'
 import LoadingButton from '$lib/components/LoadingButton.svelte'
 </script>
 
-{#if $selectedModel?.properties}
+{#if $model?.properties}
   <div class="container">
     <ObjectEditor
-      properties={$selectedModel.properties}
-      title={$selectedModel.title || 'Model'}
+      properties={$model.properties}
+      title={$model.title || 'Model'}
       bind:value={$currentRecord}
       errors={$errors}
     />

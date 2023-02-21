@@ -5,27 +5,21 @@ import { currentRecord } from '$lib/stores/records'
 
 export let value: string
 export let error: string | undefined = undefined
-export let formula: ((props: any) => string) | Promise<string> | undefined
+export let formula: Formula | undefined = undefined
 
 let loading = false
 
 // if a formula is defined, the input is readonly and the value is calculated
 $: readonly = typeof formula !== 'undefined'
-$: if (typeof formula === 'function') {
-  // check if formula is an async function
-  if (formula.constructor.name === 'AsyncFunction') {
-    console.log('formula is async')
-    // if so, wait for the result
-    loading = true
+$: console.log('formula 1', formula)
+$: if (!!formula) {
+  console.log('formula', formula)
+  loading = true
 
-    formula($currentRecord).then((result) => {
-      value = result
-      loading = false
-    })
-  } else {
-    // otherwise, just use the result
-    value = formula($currentRecord)
-  }
+  formula($currentRecord).then((result) => {
+    value = result
+    loading = false
+  })
 }
 </script>
 
