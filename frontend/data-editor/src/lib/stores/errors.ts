@@ -6,7 +6,7 @@ import { writable, type Writable } from 'svelte/store'
 export const errors: Writable<ErrorObject> = writable({})
 
 /** Create error message from Ajv error */
-const createErrorMessage = (error: AjvErrorObject): Record<string, string> | string => {
+const createErrorMessage = (error: AjvErrorObject): Record<string, string | string[]> | string => {
   const { keyword, params } = error
 
   switch (keyword) {
@@ -18,6 +18,9 @@ const createErrorMessage = (error: AjvErrorObject): Record<string, string> | str
 
     case 'maxItems':
       return { self: `Maximum ${params.limit} items` }
+
+    case 'uniqueItems':
+      return { self: 'Must be unique', items: Array(params.j).fill({ self: 'Must be unique' }) }
 
     default:
       return 'Invalid'
