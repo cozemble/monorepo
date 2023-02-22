@@ -21,6 +21,8 @@ async function validateRecord(record: Record<string, any>) {
     allErrors: true,
   })
 
+  ajv.addVocabulary(['coz', 'formula', 'customComponent']) // cozemble specific keywords
+
   const validate = ajv.compile(get(selectedModel))
   const valid = validate(removeEmptyValues(record))
 
