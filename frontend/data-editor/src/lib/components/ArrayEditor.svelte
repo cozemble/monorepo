@@ -2,6 +2,9 @@
 import { initValues } from '$lib/utils'
 import TableInputCells from './tableInputCells'
 import ObjectEditor from './ObjectEditor.svelte'
+import StringInput from './inputs/simple/StringInput.svelte'
+import SimpleInputWrapper from './inputWrappers/SimpleInputWrapper.svelte'
+import CellInputWrapper from './tableInputCells/CellInputWrapper.svelte'
 
 export let label: string
 export let items: Record<string, any>
@@ -74,9 +77,11 @@ function addValue() {
                 />
               </td>
             {:else if items.type === 'string'}
-              <TableInputCells.StringInput
+              <SimpleInputWrapper
                 bind:value={val}
                 error={errors?.items ? errors.items[i] : undefined}
+                formula={items[i].formula}
+                component={items[i]?.component || StringInput}
               />
             {/if}
           </tr>

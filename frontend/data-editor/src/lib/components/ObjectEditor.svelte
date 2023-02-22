@@ -1,6 +1,7 @@
 <script lang="ts">
 import ArrayEditor from './ArrayEditor.svelte'
-import TableInputCells from './tableInputCells'
+import StringInput from './inputs/simple/StringInput.svelte'
+import SimpleInputWrapper from './inputWrappers/SimpleInputWrapper.svelte'
 
 export let title: string
 export let properties: Record<string, any>
@@ -47,10 +48,11 @@ $: simpleProperties = Object.entries(properties).filter(
     <tbody>
       <tr>
         {#each simpleProperties as [key] (key)}
-          <TableInputCells.StringInput
+          <SimpleInputWrapper
             bind:value={value[key]}
             error={errors ? errors[key] : undefined}
-            formula={properties[key]?.formula}
+            formula={properties[key].formula}
+            component={properties[key]?.component || StringInput}
           />
         {/each}
       </tr>
