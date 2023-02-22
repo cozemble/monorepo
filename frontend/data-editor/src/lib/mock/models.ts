@@ -1,3 +1,5 @@
+import DateInput from '$lib/components/inputs/simple/DateInput.svelte'
+
 export const invoiceModel: JSONSchema = {
   type: 'object',
   title: 'Invoice',
@@ -101,6 +103,26 @@ export const formulaModel: JSONSchema = {
             },
           },
         },
+      },
+    },
+  },
+}
+
+export const customComponentModel: JSONSchema = {
+  type: 'object',
+  title: 'Custom Component',
+  properties: {
+    dateOfBirth: {
+      type: 'string',
+      description: 'Date of birth',
+    },
+  },
+  required: ['dateOfBirth'],
+
+  coz: {
+    properties: {
+      dateOfBirth: {
+        customComponent: DateInput,
       },
     },
   },
