@@ -4,7 +4,7 @@ declare type Formula = (data: JSONObject) => Promise<any>
 /** To render a custom component for a field */
 declare type SimpleInputComponent = import('svelte').ComponentType<
   import('svelte').SvelteComponentTyped<{
-    value: string
+    value: string | number | boolean
     error?: string
     readonly?: boolean
   }>

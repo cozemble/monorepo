@@ -1,6 +1,7 @@
 <script lang="ts">
 import { currentRecord } from '$lib/stores/records'
 import StringInput from '$lib/components/inputs/simple/StringInput.svelte'
+import NumberInput from '$lib/components/inputs/simple/NumberInput.svelte'
 
 export let value: string
 export let error: string | undefined = undefined
@@ -8,9 +9,15 @@ export let propertySchema: CozJSONSchema
 export let formula: Formula | undefined = undefined
 
 let customComponent = propertySchema.customComponent
+let type = propertySchema.type
 
-// if a custom component is defined, use it
-$: component = customComponent ? customComponent : StringInput
+// TODO fix TypeScript error
+let component: SimpleInputComponent =
+  type === 'string'
+    ? StringInput
+    : type === 'number' || type === 'integer'
+    ? NumberInput
+    : StringInput
 
 let loading = false
 // if a formula is defined, the input is readonly and the value is calculated
@@ -47,7 +54,12 @@ $: if (!!formula) {
       'tooltip tooltip-error tooltip-bottom tooltip-open'}"
     data-tip={error || ''}
   >
-    <svelte:component this={component} bind:value {error} {readonly} />
+    <svelte:component
+      this={customComponent || component}
+      bind:value
+      {error}
+      {readonly}
+    />
     {#if loading}
       <div
         class="absolute inset-0 bg-base-100 flex items-center justify-center pointer-events-none"
