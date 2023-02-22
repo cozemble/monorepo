@@ -1,12 +1,11 @@
 <script lang="ts">
 import ArrayEditor from './ArrayEditor.svelte'
-import StringInput from './inputs/simple/StringInput.svelte'
 import SimpleInputWrapper from './inputWrappers/SimpleInputWrapper.svelte'
 
 export let title: string
 export let properties: Record<string, any>
 export let value: Record<string, any>
-export let errors: Record<string, any> | undefined
+export let errors: ObjectError | undefined
 
 $: objectProperties = Object.entries(properties).filter(
   ([key, value]) => value.type === 'object',

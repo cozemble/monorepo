@@ -77,9 +77,10 @@ export const formulaModel: JSONSchema = {
           description: 'USD',
         },
       },
+      required: ['TRY'],
     },
   },
-  required: ['dateOfBirth'],
+  required: ['dateOfBirth', 'async'],
 
   // Cozemble specific configurations
   coz: {

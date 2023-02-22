@@ -8,7 +8,7 @@ export let items: Record<string, any>
 export let value: any[]
 export let errors: ArrayError
 
-$: console.log(`${label} errors: `, errors)
+$: console.info(`${label} array errors: `, errors)
 
 function addValue() {
   value = [...value, initValues(items.properties)]
