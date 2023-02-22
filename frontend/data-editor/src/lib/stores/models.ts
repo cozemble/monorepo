@@ -9,9 +9,9 @@ import { invoiceModel } from '$lib/mock/models'
 export const selectedModel: Writable<JSONSchema> = writable(invoiceModel)
 
 /** An adapted version of the selected model to be used by the data editor */
-export const model: Readable<JSONSchema> = derived(
+export const model: Readable<CozJSONSchema> = derived(
   selectedModel,
-  ($selectedModel) => _.merge($selectedModel, $selectedModel.coz), // Merge cozemble configs into the model
+  ($selectedModel): CozJSONSchema => _.merge($selectedModel, $selectedModel.coz), // Merge cozemble configs into the model
 )
 
 model.subscribe((value) => console.info('model', value))

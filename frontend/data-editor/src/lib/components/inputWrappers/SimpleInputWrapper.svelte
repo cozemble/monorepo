@@ -1,23 +1,20 @@
 <script lang="ts">
-import type { ComponentType, SvelteComponentTyped } from 'svelte'
 import { currentRecord } from '$lib/stores/records'
+import StringInput from '$lib/components/inputs/simple/StringInput.svelte'
 
 export let value: string
 export let error: string | undefined = undefined
+export let propertySchema: CozJSONSchema
 export let formula: Formula | undefined = undefined
-export let component: ComponentType<
-  SvelteComponentTyped<{
-    value: string
-    error?: string
-    readonly?: boolean
-  }>
->
+
+let customComponent = propertySchema.customComponent
+
+// if a custom component is defined, use it
+$: component = customComponent ? customComponent : StringInput
 
 let loading = false
-
 // if a formula is defined, the input is readonly and the value is calculated
 $: readonly = typeof formula !== 'undefined'
-
 $: if (!!formula) {
   loading = true
 

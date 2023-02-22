@@ -51,8 +51,7 @@ $: simpleProperties = Object.entries(properties).filter(
           <SimpleInputWrapper
             bind:value={value[key]}
             error={errors ? errors[key] : undefined}
-            formula={properties[key].formula}
-            component={properties[key]?.component || StringInput}
+            propertySchema={properties[key]}
           />
         {/each}
       </tr>
