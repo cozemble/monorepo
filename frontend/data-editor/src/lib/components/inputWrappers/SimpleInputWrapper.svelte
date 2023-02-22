@@ -6,7 +6,6 @@ import NumberInput from '$lib/components/inputs/simple/NumberInput.svelte'
 export let value: string
 export let error: string | undefined = undefined
 export let propertySchema: CozJSONSchema
-export let formula: Formula | undefined = undefined
 
 let customComponent = propertySchema.customComponent
 let type = propertySchema.type
@@ -19,9 +18,10 @@ let component: SimpleInputComponent =
     ? NumberInput
     : StringInput
 
-let loading = false
 // if a formula is defined, the input is readonly and the value is calculated
-$: readonly = typeof formula !== 'undefined'
+let formula = propertySchema.formula
+let loading = false
+
 $: if (!!formula) {
   loading = true
 
@@ -58,7 +58,7 @@ $: if (!!formula) {
       this={customComponent || component}
       bind:value
       {error}
-      {readonly}
+      readonly={!!formula}
     />
     {#if loading}
       <div
