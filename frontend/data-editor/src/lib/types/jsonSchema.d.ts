@@ -7,7 +7,7 @@ declare interface JSONSchema {
   description?: string
 
   properties?: Record<string, JSONSchema>
-  items?: JSONSchema | JSONSchema[]
+  items?: JSONSchema
   additionalItems?: JSONSchema | boolean
   type?: 'string' | 'number' | 'integer' | 'object' | 'array' | 'boolean' | 'null'
   required?: string[]
