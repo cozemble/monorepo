@@ -56,12 +56,11 @@ $: simpleProperties = Object.entries(properties || []).filter(
 
     <!-- Object properties -->
     {#each objectProperties as [key, prop] (key)}
-      <tbody
-        >ObjectValue
+      <tbody>
         <tr>
           <td colspan="99999999" class="p-0">
             <svelte:self
-              properties={prop.properties}
+              schema={prop}
               title={key}
               bind:value={value[key]}
               errors={errors ? errors[key] : {}}
