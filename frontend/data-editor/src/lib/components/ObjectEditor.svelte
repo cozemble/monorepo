@@ -3,20 +3,22 @@ import ArrayEditor from './ArrayEditor.svelte'
 import SimpleInputWrapper from './inputWrappers/SimpleInputWrapper.svelte'
 
 export let title: string
-export let properties: Record<string, any>
+export let schema: CozJSONSchema
 export let value: Record<string, any>
 export let errors: ObjectError | undefined
 
-$: objectProperties = Object.entries(properties).filter(
-  ([key, value]) => value.type === 'object',
+$: properties = schema.properties
+
+$: objectProperties = Object.entries(properties || []).filter(
+  ([key, prop]) => prop.type === 'object',
 )
 
-$: arrayProperties = Object.entries(properties).filter(
-  ([key, value]) => value.type === 'array',
+$: arrayProperties = Object.entries(properties || []).filter(
+  ([key, prop]) => prop.type === 'array',
 )
 
-$: simpleProperties = Object.entries(properties).filter(
-  ([key, value]) => value.type !== 'object' && value.type !== 'array',
+$: simpleProperties = Object.entries(properties || []).filter(
+  ([key, prop]) => prop.type !== 'object' && prop.type !== 'array',
 )
 </script>
 
@@ -33,12 +35,8 @@ $: simpleProperties = Object.entries(properties).filter(
     <!-- Table header for simple properties -->
     <thead>
       <tr>
-        {#each simpleProperties as [key] (key)}
-          {#if typeof properties[key].formula !== 'undefined'}
-            <th class="text-left">{key} (formula)</th>
-          {:else}
-            <th class="text-left">{key}</th>
-          {/if}
+        {#each simpleProperties as [key, prop] (key)}
+          <th class="text-left">{key}{prop?.formula ? ' (formula)' : ''}</th>
         {/each}
       </tr>
     </thead>
@@ -46,23 +44,24 @@ $: simpleProperties = Object.entries(properties).filter(
     <!-- Simple properties -->
     <tbody>
       <tr>
-        {#each simpleProperties as [key] (key)}
+        {#each simpleProperties as [key, prop] (key)}
           <SimpleInputWrapper
             bind:value={value[key]}
             error={errors ? errors[key] : undefined}
-            propertySchema={properties[key]}
+            propertySchema={prop}
           />
         {/each}
       </tr>
     </tbody>
 
     <!-- Object properties -->
-    {#each objectProperties as [key] (key)}
-      <tbody>
+    {#each objectProperties as [key, prop] (key)}
+      <tbody
+        >ObjectValue
         <tr>
           <td colspan="99999999" class="p-0">
             <svelte:self
-              properties={properties[key].properties}
+              properties={prop.properties}
               title={key}
               bind:value={value[key]}
               errors={errors ? errors[key] : {}}
@@ -74,12 +73,12 @@ $: simpleProperties = Object.entries(properties).filter(
 
     <!-- Array properties -->
     <tbody>
-      {#each arrayProperties as [key] (key)}
+      {#each arrayProperties as [key, prop] (key)}
         <tr>
           <td colspan="99999999" class="p-0">
             <ArrayEditor
               label={key}
-              items={properties[key].items}
+              schema={prop.items}
               bind:value={value[key]}
               errors={errors ? errors[key] : []}
             />

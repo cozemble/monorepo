@@ -10,7 +10,7 @@ import LoadingButton from '$lib/components/LoadingButton.svelte'
 {#if $model?.properties}
   <div class="container">
     <ObjectEditor
-      properties={$model.properties}
+      schema={$model}
       title={$model.title || 'Model'}
       bind:value={$currentRecord}
       errors={$errors}

@@ -4,14 +4,15 @@ import ObjectEditor from './ObjectEditor.svelte'
 import SimpleInputWrapper from './inputWrappers/SimpleInputWrapper.svelte'
 
 export let label: string
-export let items: Record<string, any>
+export let schema: NonNullable<JSONSchema['items']>
 export let value: any[]
 export let errors: ArrayError
 
-$: console.info(`${label} array errors: `, errors)
+$: console.info(`${label} array schema: `, schema)
 
+// TODO: Add support for other types than object
 function addValue() {
-  value = [...value, initValues(items.properties)]
+  value = [...value, initValues(schema.properties)]
 }
 </script>
 
@@ -55,29 +56,29 @@ function addValue() {
 
         <tbody>
           <tr>
-            {#if items.type === 'object'}
+            {#if schema.type === 'object'}
               <td colspan="99999999" class="p-4">
                 <ObjectEditor
-                  properties={items.properties}
+                  {schema}
                   title={`${label} ${i + 1}`}
                   bind:value={val}
                   errors={errors?.items ? errors.items[i] : undefined}
                 />
               </td>
-            {:else if items.type === 'array'}
+            {:else if schema.type === 'array'}
               <td colspan="99999999" class="p-2">
                 <svelte:self
                   label={`${label} ${i + 1}`}
-                  {items}
+                  {schema}
                   bind:value={val}
                   errors={errors?.items ? errors.items[i] : []}
                 />
               </td>
-            {:else if items.type === 'string'}
+            {:else if schema.type === 'string'}
               <SimpleInputWrapper
                 bind:value={val}
                 error={errors?.items ? errors.items[i] : undefined}
-                propertySchema={items}
+                propertySchema={schema}
               />
             {/if}
           </tr>
