@@ -1,6 +1,10 @@
 <script lang="ts">
     import {cozauth} from "../../../lib/auth/cozauth";
     import MainPanel from "../../../lib/MainPanel.svelte";
+    import type {PageData} from './$types'
+
+    export let data: PageData
+    console.log({data})
 </script>
 
 {#await cozauth.getSession('root')}

@@ -12,7 +12,6 @@
     import type {Session} from "./auth/cozauth";
 
     export let session: Session
-    console.log("session", session)
     let panelToShow: "models" | "data"  = "models"
 
     onMount(() => {
@@ -21,7 +20,6 @@
         registerStringPropertyEventToSqlActions()
         registerAllPropertyViewers()
         registerAllPropertyEditors()
-
     })
 </script>
 <h2>Hello {session.user.email}</h2>
