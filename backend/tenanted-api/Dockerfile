@@ -27,5 +27,5 @@ RUN adduser --system --uid 1001 cozemble
 USER cozemble
 
 COPY --from=installer --chown=cozemble:nodejs /app/ ./
-
+EXPOSE 3000
 CMD node dist/cjs/index.js
