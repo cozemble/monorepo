@@ -1,16 +1,5 @@
 import pg from 'pg'
-import * as dotenv from 'dotenv'
-
-dotenv.config()
-
-export function mandatoryEnv(name: string) {
-  const value = process.env[name]
-  if (value === undefined) {
-    console.error(`Environment variable ${name} is not defined`)
-    throw new Error(`Environment variable ${name} is not defined`)
-  }
-  return value
-}
+import { loadEnv, mandatoryEnv } from './loadEnv'
 
 let pool: pg.Pool | null = null
 
@@ -23,6 +12,7 @@ export function pgPool() {
   const database = mandatoryEnv('PGDATABASE')
   const adminUser = mandatoryEnv('PG_ADMIN_USER')
   const adminPassword = mandatoryEnv('PG_ADMIN_PASSWORD')
+  console.log(`Connecting to postgres at ${host}:${port}/${database} as user '${adminUser}'...`)
   pool = new pg.Pool({
     host,
     port,
