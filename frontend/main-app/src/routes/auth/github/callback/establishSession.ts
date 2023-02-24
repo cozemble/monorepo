@@ -5,8 +5,6 @@ import jwt from 'jsonwebtoken'
 import { mandatoryEnv } from '../../../../lib/env/env'
 import { db, type User } from '../../../../lib/backend/db'
 
-const jwtSigningSecret = mandatoryEnv('JWT_SIGNING_SECRET')
-
 async function newSessionTokens(pg: Client, user: User, userPool: string) {
   const payload = {
     iss: 'https://cozemble.com',
@@ -17,6 +15,8 @@ async function newSessionTokens(pg: Client, user: User, userPool: string) {
     iat: Math.floor(Date.now() / 1000),
     exp: Math.floor(Date.now() / 1000) + 60 * 60,
   }
+  const jwtSigningSecret = mandatoryEnv('JWT_SIGNING_SECRET')
+
   const accessToken = jwt.sign(payload, jwtSigningSecret, {})
   const refreshToken = uuids.v4()
   await db.refreshTokens.insertRefreshToken(pg, userPool, user, refreshToken)
