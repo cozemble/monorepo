@@ -36,3 +36,4 @@ jspm_packages/
 package
 dist
 sql/actions/data
+staging/

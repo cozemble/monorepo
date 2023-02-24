@@ -9,6 +9,7 @@
       <excludePattern pattern=".turbo" />
       <excludePattern pattern="package" />
       <excludePattern pattern=".svelte-kit" />
+      <excludePattern pattern="staging" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

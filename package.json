@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "packageManager": "pnpm@7.27.1",
   "scripts": {
     "build": "turbo run build",
     "test": "turbo run test",
@@ -34,6 +35,5 @@
     "turbo": "latest"
   },
   "dependencies": {
-  },
-  "packageManager": "pnpm@7.9.3"
+  }
 }
