@@ -1,6 +1,9 @@
 import express, { Express, Router } from 'express'
 import cors from 'cors'
 import rootRoute from './rootRoute'
+import tenants from './tenants'
+import * as dotenv from 'dotenv'
+dotenv.config()
 
 const app: Express = express()
 
@@ -11,6 +14,7 @@ app.use(express.json())
 
 const routes: Router = Router()
 routes.use('/model', rootRoute)
+routes.use('/tenant', tenants)
 
 app.use('/api/v1/', [], routes)
 
