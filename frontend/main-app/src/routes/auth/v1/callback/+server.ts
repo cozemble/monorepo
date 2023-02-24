@@ -70,7 +70,7 @@ export async function GET(event: RequestEvent) {
   if (!state) {
     return new Response(`No state provided in callback url`, { status: 400 })
   }
-  const token = await githubAuth.code.getToken(event.url)
+  const token = await githubAuth().code.getToken(event.url)
   const signinState = fromUrlFriendly<SignInState>(state)
   if (signinState._type !== 'cozauth.signin.state') {
     return new Response(`State is not of type cozauth.signin.state`, { status: 400 })

@@ -64,6 +64,6 @@ async function fetchUserDetails(tenant: string, accessToken: string) {
 }
 
 export async function GET(event: RequestEvent) {
-  const token = await githubAuth.code.getToken(event.url)
+  const token = await githubAuth().code.getToken(event.url)
   return fetchUserDetails('root', token.accessToken)
 }

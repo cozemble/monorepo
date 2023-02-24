@@ -13,6 +13,6 @@ export function GET(event: RequestEvent) {
   }
   throw redirect(
     302,
-    githubAuth.code.getUri({ state: toUrlFriendly(signInState('root', 'github')) }),
+    githubAuth().code.getUri({ state: toUrlFriendly(signInState('root', 'github')) }),
   )
 }
