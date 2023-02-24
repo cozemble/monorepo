@@ -5,13 +5,13 @@ loadEnv()
 
 let adminUserClient: pg.Client | null = null
 
-const host = mandatoryEnv('PGHOST')
-const port = parseInt(mandatoryEnv('PGPORT'))
-const database = mandatoryEnv('PGDATABASE')
-const adminUser = mandatoryEnv('PG_ADMIN_USER')
-const adminPassword = mandatoryEnv('PG_ADMIN_PASSWORD')
-
 async function adminPostgresClient(): Promise<pg.Client> {
+  const host = mandatoryEnv('PGHOST')
+  const port = parseInt(mandatoryEnv('PGPORT'))
+  const database = mandatoryEnv('PGDATABASE')
+  const adminUser = mandatoryEnv('PG_ADMIN_USER')
+  const adminPassword = mandatoryEnv('PG_ADMIN_PASSWORD')
+
   if (adminUserClient) {
     return adminUserClient
   }
