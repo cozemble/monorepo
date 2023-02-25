@@ -3,13 +3,13 @@ import { model } from '$lib/stores/models'
 import { currentRecord, addRecord } from '$lib/stores/records'
 import { errors } from '$lib/stores/errors'
 
-import ObjectEditor from '$lib/components/ObjectEditor.svelte'
+import ObjectEditorWrapper from '$lib/components/inputWrappers/ObjectEditorWrapper.svelte'
 import LoadingButton from '$lib/components/LoadingButton.svelte'
 </script>
 
 {#if $model?.properties}
   <div class="container">
-    <ObjectEditor
+    <ObjectEditorWrapper
       schema={$model}
       title={$model.title || 'Model'}
       bind:value={$currentRecord}

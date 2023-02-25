@@ -1,11 +1,11 @@
 <script lang="ts">
 import { initValues } from '$lib/utils'
-import ObjectEditor from './ObjectEditor.svelte'
+import ObjectEditorWrapper from './inputWrappers/ObjectEditorWrapper.svelte'
 import SimpleInputWrapper from './inputWrappers/SimpleInputWrapper.svelte'
 
 export let label: string
-export let schema: NonNullable<JSONSchema['items']>
-export let value: any[]
+export let schema: NonNullable<CozJSONSchema['items']>
+export let value: ArrayValue
 export let errors: ArrayError
 
 $: console.info(`${label} array schema: `, schema)
@@ -58,7 +58,7 @@ function addValue() {
           <tr>
             {#if schema.type === 'object'}
               <td colspan="99999999" class="p-4">
-                <ObjectEditor
+                <ObjectEditorWrapper
                   {schema}
                   title={`${label} ${i + 1}`}
                   bind:value={val}
