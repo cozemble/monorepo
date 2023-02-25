@@ -12,6 +12,7 @@ export const invoiceModel: JSONSchema = {
       type: 'array',
       items: {
         type: 'object',
+        title: 'Customer',
         properties: {
           firstName: {
             type: 'string',
@@ -27,6 +28,7 @@ export const invoiceModel: JSONSchema = {
             type: 'array',
             items: {
               type: 'object',
+              title: 'Address',
               properties: {
                 line1: {
                   type: 'string',

@@ -90,7 +90,7 @@ function addValue() {
                   value = value.filter((_, index) => index !== i)
                 }}
               >
-                - Remove
+                - Remove {schema.title || 'Item'}
               </button>
             </td>
           </tr>
@@ -100,6 +100,6 @@ function addValue() {
   </table>
 
   <button class="btn btn-primary btn-sm self-end" on:click={addValue}
-    >+ Add Nested Model</button
+    >+ Add {schema.title || 'Item'}</button
   >
 </div>
