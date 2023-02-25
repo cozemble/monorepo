@@ -49,6 +49,13 @@ export const cozauth = {
     localStorage.setItem(accessTokenKey(tenant), accessToken)
     localStorage.setItem(refreshTokenKey(tenant), refreshToken)
   },
+  getTenantRoot: (tenantLtree: string) => {
+    const parts = tenantLtree.split('.')
+    if (parts.length !== 3) {
+      throw new Error(`To do: deal with nested tenants. Tenant ltree is: ${tenantLtree}`)
+    }
+    return 'root'
+  },
   getSession: async (tenant: string): Promise<Session | null> => {
     const accessToken = localStorage.getItem(accessTokenKey(tenant))
     if (accessToken) {
@@ -57,5 +64,8 @@ export const cozauth = {
     }
 
     return null
+  },
+  getAccessToken: (tenant: string): string | null => {
+    return localStorage.getItem(accessTokenKey(tenant))
   },
 }

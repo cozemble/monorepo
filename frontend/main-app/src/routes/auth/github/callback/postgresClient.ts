@@ -15,6 +15,8 @@ async function adminPostgresClient(): Promise<pg.Client> {
   if (adminUserClient) {
     return adminUserClient
   }
+  console.log(`Connecting to postgres as ${adminUser} on ${host}:${port}/${database}`)
+
   adminUserClient = new pg.Client({
     host,
     port,
