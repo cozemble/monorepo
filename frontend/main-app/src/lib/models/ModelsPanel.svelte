@@ -11,9 +11,8 @@
         modelBeingEdited.set(null)
     }
 </script>
-<div class="model-editor-container">
 {#if $modelBeingEdited}
-        <ModelEditor {allModels} {host} modelId={$modelBeingEdited.modelId}/>
+    <ModelEditor {allModels} {host} modelId={$modelBeingEdited.modelId}/>
     <br/>
     <button type="button" on:click={saveModelBeingEdited}>Save model</button>
     <button type="button" on:click={() => modelBeingEdited.set(null)}>Cancel</button>
@@ -27,19 +26,10 @@
         <button type="button" on:click={addNewModel}>Add another model</button>
     {/if}
 {/if}
-</div>
 
 <style>
     button {
         margin-top: 0.5em;
     }
 
-    .model-editor-container {
-        margin-top: 1em;
-        padding-left: 1em;
-        padding-bottom: 1em;
-        border-radius: 0.5em;
-        border: 1px solid #ccc;
-        background-color: lightcyan;
-    }
 </style>

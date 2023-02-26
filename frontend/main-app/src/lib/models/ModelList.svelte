@@ -8,6 +8,7 @@
     }
 
 </script>
+
 <table>
     <thead>
     <tr>
@@ -28,15 +29,3 @@
     {/each}
     </tbody>
 </table>
-
-<style>
-    table {
-        border-collapse: collapse;
-        margin-top: 1em;
-    }
-
-    table, th, td {
-        border: 1px solid black;
-        padding: 1em;
-    }
-</style>

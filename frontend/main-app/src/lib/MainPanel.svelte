@@ -12,7 +12,7 @@
     import type {Session} from "./auth/cozauth";
 
     export let session: Session
-    let panelToShow: "models" | "data"  = "models"
+    let panelToShow: "models" | "data" = "models"
 
     onMount(() => {
         registerAllProperties()
@@ -28,19 +28,23 @@
 <a href="#tab2" class="tab-item-name" class:current={panelToShow === 'data'}
    on:click={() => panelToShow='data'}>Data</a>
 
+
 <div class=tabs>
     <div id=tab1>
         <div class="panel-container" class:visible={panelToShow === 'models'}>
-            <ModelsPanel />
+            <div class="inner-panel-container">
+                <ModelsPanel/>
+            </div>
         </div>
     </div>
-    <div id=tab2>
-        <div class="panel-container" class:visible={panelToShow === 'data'}>
+</div>
+<div id=tab2>
+    <div class="panel-container" class:visible={panelToShow === 'data'}>
+        <div class="inner-panel-container">
             <DataPanel/>
         </div>
     </div>
 </div>
-
 <style>
     .tab-item-name {
         border: solid 1px;
@@ -60,4 +64,14 @@
     .visible {
         display: block;
     }
+
+    .inner-panel-container {
+        margin-top: 1em;
+        padding-left: 1em;
+        padding-bottom: 1em;
+        border-radius: 0.5em;
+        border: 1px solid #ccc;
+        background-color: lightcyan;
+    }
+
 </style>
