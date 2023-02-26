@@ -35,7 +35,7 @@ describe('with a migrated database', () => {
       console.error(e)
       throw e
     }
-  })
+  }, 1000 * 90)
 
   test('can post a tenant', async () => {
     const response = await postTenant('tenant1')
