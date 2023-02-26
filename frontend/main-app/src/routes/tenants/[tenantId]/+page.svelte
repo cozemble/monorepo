@@ -2,8 +2,15 @@
     import {cozauth} from "../../../lib/auth/cozauth";
     import MainPanel from "../../../lib/MainPanel.svelte";
     import type {PageData} from './$types'
+    import {backendTenant} from "../../../lib/tenants/tenantStore";
+    import {afterUpdate} from "svelte";
+    import {modelBeingEdited} from "../../../lib/models/modelsStore";
 
     export let data: PageData
+
+    afterUpdate(() => {
+        console.log({tenant: $backendTenant, modelBeingEdited: $modelBeingEdited})
+    })
 </script>
 
 {#await cozauth.getSession('root')}

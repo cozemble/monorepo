@@ -5,6 +5,9 @@ import { writable } from 'svelte/store'
 import type { ModelEditorHost } from '@cozemble/model-editor'
 import type { Model, ModelEvent, ModelId } from '@cozemble/model-core'
 import { mandatory } from '@cozemble/lang-util'
+import type { BackendModel, BackendTenant } from '@cozemble/backend-tenanted-api-types'
+import { config } from '../config'
+import { backendTenant } from '../tenants/tenantStore'
 
 export const allModels: Writable<EventSourcedModel[]> = writable([])
 
@@ -23,7 +26,6 @@ export function addNewModel() {
 
 export const host: ModelEditorHost = {
   modelChanged(id: ModelId, event: ModelEvent) {
-    console.log('modelChanged', id, event)
     allModels.update((models) => {
       return models.map((model) => {
         if (modelIdFns.equals(model.model.id, id)) {
@@ -36,7 +38,6 @@ export const host: ModelEditorHost = {
   },
 
   modelAdded(model: Model) {
-    console.log('modelAdded', model)
     allModels.update((models) => [...models, eventSourcedModelFns.newInstance(model)])
   },
 
@@ -46,4 +47,37 @@ export const host: ModelEditorHost = {
       `No model with id ${id}`,
     )
   },
+}
+
+function toBackendModel(m: EventSourcedModel): BackendModel {
+  return {
+    id: m.model.id.value,
+    name: m.model.name.value,
+    definition: m.model,
+    events: m.events.map((e) => ({ id: e.id.value, definition: e })),
+  }
+}
+
+export async function putAllModels(tenant: BackendTenant, all: EventSourcedModel[]) {
+  const models = all.map((m) => toBackendModel(m))
+  const newBackendTenant: BackendTenant = {
+    id: tenant.id,
+    name: tenant.name,
+    models,
+  }
+  const result = await fetch(`${config.backendUrl()}/api/v1/tenant/${tenant.id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(newBackendTenant),
+  })
+  if (!result.ok) {
+    throw new Error(`Failed to save models: ${result.statusText}`)
+  }
+  backendTenant.set(newBackendTenant)
+}
+
+export function loadModels(models: BackendModel[]) {
+  allModels.set(models.map((m) => eventSourcedModelFns.newInstance(m.definition)))
 }
