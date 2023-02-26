@@ -9,6 +9,7 @@
 
     let mounted = true
     let hasSession = false
+
     onMount(async () => {
         const session = await cozauth.getSession('root')
         console.log("session", session)
