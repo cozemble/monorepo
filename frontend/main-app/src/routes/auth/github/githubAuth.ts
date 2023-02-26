@@ -37,12 +37,20 @@ export function fromUrlFriendly<T>(str: string): T {
 export const githubAuth = (): ClientOAuth2 => {
   const authRoot = mandatory(process.env.OAUTH_CALLBACK_ROOT, `No OAUTH_CALLBACK_ROOT env var set`)
 
+  const clientId = mandatory(process.env.GITHUB_CLIENT_ID, `No GITHUB_CLIENT_ID env var set`)
+  const clientSecret = mandatory(
+    process.env.GITHUB_CLIENT_SECRET,
+    `No GITHUB_CLIENT_SECRET env var set`,
+  )
+  console.log(
+    `Creating github auth client with client id ${clientId} and secret starting with ${clientSecret.substring(
+      0,
+      4,
+    )}`,
+  )
   return new ClientOAuth2({
-    clientId: mandatory(process.env.GITHUB_CLIENT_ID, `No GITHUB_CLIENT_ID env var set`),
-    clientSecret: mandatory(
-      process.env.GITHUB_CLIENT_SECRET,
-      `No GITHUB_CLIENT_SECRET env var set`,
-    ),
+    clientId,
+    clientSecret,
     accessTokenUri: 'https://github.com/login/oauth/access_token',
     authorizationUri: 'https://github.com/login/oauth/authorize',
     redirectUri: `${authRoot}/auth/v1/callback`,
