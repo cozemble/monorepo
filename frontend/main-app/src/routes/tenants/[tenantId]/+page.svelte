@@ -2,14 +2,20 @@
     import {cozauth} from "../../../lib/auth/cozauth";
     import MainPanel from "../../../lib/MainPanel.svelte";
     import type {PageData} from './$types'
-    import {backendTenant} from "../../../lib/tenants/tenantStore";
-    import {afterUpdate} from "svelte";
-    import {modelBeingEdited} from "../../../lib/models/modelsStore";
+    import {onMount} from "svelte";
+    import {
+        registerAllProperties,
+        registerAllPropertyEditors,
+        registerAllPropertyViewers
+    } from "@cozemble/model-assembled";
 
     export let data: PageData
 
-    afterUpdate(() => {
-        console.log({tenant: $backendTenant, modelBeingEdited: $modelBeingEdited})
+    onMount(() => {
+        registerAllProperties()
+        registerAllPropertyViewers()
+        registerAllPropertyEditors()
+
     })
 </script>
 

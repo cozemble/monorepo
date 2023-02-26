@@ -21,5 +21,5 @@ $: editor = propertyEditorRegistry.get(property.propertyType)
     {record}
   />
 {:else}
-  <div>Unknown property type: {property._type}</div>
+  <div>Unknown property type: {property.propertyType.type}</div>
 {/if}

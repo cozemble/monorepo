@@ -2,11 +2,13 @@
     import DataPanelInner from './DataPanelInner.svelte'
     import {bootstrapRecords, paginatedEditorHost, records} from "./recordsHost";
     import {allModels} from "../models/modelsStore";
+    import {afterUpdate} from "svelte";
 
     $: actualModels = $allModels.map(m => m.model)
 
     bootstrapRecords(window.localStorage)
 
+    afterUpdate(() => console.log({actualModels}))
 </script>
 {#if actualModels.length === 0}
     <p>When you have created your first model, you will be able to edit data here</p>
