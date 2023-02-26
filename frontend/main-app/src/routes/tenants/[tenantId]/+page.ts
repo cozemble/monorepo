@@ -1,6 +1,7 @@
 import type { PageLoad } from './$types'
 import { browser } from '$app/environment'
 import { cozauth } from '../../../lib/auth/cozauth'
+import { backendTenant } from './tenantStore'
 
 export const load: PageLoad = async (event) => {
   if (browser) {
@@ -19,7 +20,9 @@ export const load: PageLoad = async (event) => {
       },
     )
     if (response.ok) {
-      return response.json()
+      const tenant = await response.json()
+      backendTenant.set(tenant)
+      return tenant
     }
     throw new Error(`Failed to fetch tenant: ${response.status} ${response.statusText ?? ''}`)
   }
