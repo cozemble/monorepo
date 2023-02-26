@@ -22,7 +22,7 @@
         registerAllPropertyEditors()
     })
 </script>
-<h2>Hello {session.user.email}</h2>
+<h2>Cozemble ({session.user.email})</h2>
 
 <a href="#tab1" class="tab-item-name" class:current={panelToShow === 'models'} on:click={() => panelToShow='models'}>Models</a>
 <a href="#tab2" class="tab-item-name" class:current={panelToShow === 'data'}

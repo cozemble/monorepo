@@ -13,14 +13,25 @@
     })
 </script>
 
-{#await cozauth.getSession('root')}
-    <p>loading...</p>
-{:then session}
-    {#if session}
-        <MainPanel {session}/>
-    {:else }
-        <h1>You need to login</h1>
-    {/if}
-{:catch error}
-    <p style="color: red">{error.message}</p>
-{/await}
+<div class="main-container">
+    {#await cozauth.getSession('root')}
+        <p>loading...</p>
+    {:then session}
+        {#if session}
+            <MainPanel {session}/>
+        {:else }
+            <h1>You need to login</h1>
+        {/if}
+    {:catch error}
+        <p style="color: red">{error.message}</p>
+    {/await}
+
+</div>
+
+<style>
+    .main-container {
+        height: 100%;
+        width: 80%;
+        margin: 0 auto;
+    }
+</style>
