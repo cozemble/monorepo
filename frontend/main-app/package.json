@@ -42,6 +42,7 @@
     "@cozemble/model-sql-actions-player": "workspace:*",
     "@cozemble/model-string-sql-actions": "workspace:*",
     "@cozemble/sql-actions": "workspace:*",
+    "@cozemble/backend-tenanted-api-types": "workspace:*",
     "@http4t/browser": "^0.3.63",
     "@http4t/core": "^0.3.63",
     "@supabase/postgrest-js": "^1.3.0",

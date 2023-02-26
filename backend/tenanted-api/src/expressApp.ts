@@ -3,7 +3,7 @@ import cors from 'cors'
 import { modelRoute } from './models'
 import tenants from './tenants'
 
-export function app() {
+export function expressApp(): Express {
   const app: Express = express()
 
   const corsOptions = {}
@@ -17,12 +17,5 @@ export function app() {
 
   app.use('/api/v1/', [], routes)
 
-  const port = 3000
-
-  async function start() {
-    app.listen(port, () => {
-      console.log(`Server started on port ${port}`)
-    })
-  }
-  return start
+  return app
 }

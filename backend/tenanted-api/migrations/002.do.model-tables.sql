@@ -2,7 +2,6 @@ create table if not exists model
 (
     id         text      not null,
     tenant     ltree     not null,
-    height     int       not null,
     name       text      not null,
     definition jsonb     not null,
     created_at timestamp not null default now(),
@@ -19,13 +18,12 @@ alter table model
 
 create table if not exists model_event
 (
-    id         text      not null,
-    model_id   text      not null,
-    tenant     ltree     not null,
-    height     int       not null,
-    definition jsonb     not null,
-    created_at timestamp not null default now(),
-    updated_at timestamp not null default now(),
+    id              text      not null,
+    model_id        text      not null,
+    tenant          ltree     not null,
+    definition      jsonb     not null,
+    created_at      timestamp not null default now(),
+    updated_at      timestamp not null default now(),
     primary key (id, model_id, tenant)
 );
 
@@ -55,32 +53,33 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION get_tenant_info(tenant_id ltree)
     RETURNS json
-AS $$
+AS
+$$
 BEGIN
-    RETURN (
-        SELECT json_build_object(
-                       'id', t.id,
-                       'name', t.name,
-                       'models', COALESCE(
-                               json_agg(
-                                       json_build_object(
-                                               'id', m.id,
-                                               'name', m.name,
-                                               'definition', m.definition,
-                                               'events', COALESCE(
-                                                       (SELECT json_agg(json_build_object('definition', me.definition))
-                                                        FROM model_event me
-                                                        WHERE me.model_id = m.id), '[]'::json)
-                                           )
-                                   ),
-                               '[]'::json
-                           )
-                   )
-        FROM tenant t
-                 LEFT JOIN model m ON t.id = m.tenant
-        WHERE t.id = tenant_id
-        GROUP BY t.id
-    );
+    RETURN (SELECT json_build_object(
+                           'id', t.id,
+                           'name', t.name,
+                           'models', COALESCE(
+                                   json_agg(
+                                           json_build_object(
+                                                   'id', m.id,
+                                                   'name', m.name,
+                                                   'definition', m.definition,
+                                                   'events', COALESCE(
+                                                           (SELECT json_agg(json_build_object(
+                                                                   'id', me.id,
+                                                                   'definition', me.definition))
+                                                            FROM model_event me
+                                                            WHERE me.model_id = m.id), '[]'::json)
+                                               )
+                                       ),
+                                   '[]'::json
+                               )
+                       )
+            FROM tenant t
+                     LEFT JOIN model m ON t.id = m.tenant
+            WHERE t.id = tenant_id
+            GROUP BY t.id);
 END;
 $$ LANGUAGE plpgsql;
 ;
@@ -95,6 +94,7 @@ DECLARE
     model_event_id_var text;
     model_info         json;
     event_info         json;
+    event_definition   json;
     i                  int;
 BEGIN
     -- Get the tenant ID from the JSON
@@ -113,22 +113,21 @@ BEGIN
             delete from model where id = model_id_var;
 
             -- Insert the model
-            INSERT INTO model (id, name, definition, tenant, height)
-            VALUES (model_id_var, model_info ->> 'name', (model_info ->> 'definition')::jsonb, tenant_id_var::ltree,
-                    (model_info ->> 'height')::integer);
+            INSERT INTO model (id, name, definition, tenant)
+            VALUES (model_id_var, model_info ->> 'name', (model_info ->> 'definition')::jsonb, tenant_id_var::ltree);
 
             -- Loop over the model events and insert them
             FOR j IN 0 .. json_array_length(model_info -> 'events') - 1
                 LOOP
                     -- Get the model event object from the JSON array
                     event_info := (model_info -> 'events') -> j;
+                    event_definition := (event_info ->> 'definition')::jsonb;
                     model_event_id_var := event_info ->> 'id';
 
                     -- Insert the model event
-                    INSERT INTO model_event (id, definition, model_id, tenant, height)
-                    VALUES (model_event_id_var, (event_info ->> 'definition')::jsonb, model_id_var,
-                            tenant_id_var::ltree,
-                            (event_info ->> 'height')::integer);
+                    INSERT INTO model_event (id, definition, model_id, tenant)
+                    VALUES (model_event_id_var, event_definition, model_id_var,
+                            tenant_id_var::ltree);
                 END LOOP;
         END LOOP;
 END;

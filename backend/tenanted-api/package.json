@@ -22,17 +22,18 @@
     "dev:db": "nodemon -x \"npm run build-run-db\""
   },
   "devDependencies": {
+    "@types/child-process-promise": "^2.2.2",
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.15",
+    "@types/node": "^16.11.6",
     "@types/pg": "^8.6.6",
     "nodemon": "^2.0.20",
     "postgrator-cli": "^6.0.1",
+    "testcontainers": "^9.1.2",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.3",
     "vite": "^4.0.0",
-    "vitest": "^0.26.2",
-    "testcontainers": "^9.1.2"
-
+    "vitest": "^0.26.2"
   },
   "dependencies": {
     "@cozemble/lang-util": "workspace:*",
@@ -40,6 +41,9 @@
     "@cozemble/model-event-sourced": "workspace:*",
     "@cozemble/model-sql-actions-player": "workspace:*",
     "@cozemble/model-string-core": "workspace:*",
+    "@cozemble/backend-tenanted-api-types": "workspace:*",
+    "@cozemble/model-api": "workspace:*",
+    "child-process-promise": "^2.2.1",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",

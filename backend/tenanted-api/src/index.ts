@@ -1,8 +1,10 @@
 import { loadEnv } from './loadEnv'
-import { app } from './app'
+import { expressApp } from './expressApp'
 
 loadEnv()
 
-const start = app()
+const app = expressApp()
 
-start().catch(console.error)
+app.listen(3000, () => {
+  console.log('Listening on port 3000')
+})

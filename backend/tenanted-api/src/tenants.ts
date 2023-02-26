@@ -1,15 +1,14 @@
+import { errors } from '@cozemble/lang-util'
 import { Request, Response, Router } from 'express'
 import { withAdminPgClient } from './postgresPool'
 
 const router: Router = Router()
 
 router.get('/:tenantId', (req: Request, res: Response) => {
-  console.log('get tenant', req.params.tenantId)
   return withAdminPgClient(async (client) => {
     const result = await client.query('select * from get_tenant_info(text2Ltree($1)) as tenant;', [
       req.params.tenantId,
     ])
-    console.log('result', result.rows)
     if (result.rows.length === 0 || result.rows[0].tenant === null) {
       return res.status(404).send()
     }
@@ -28,11 +27,15 @@ router.get('/:tenantId', (req: Request, res: Response) => {
 
 router.put('/:tenantId', (req: Request, res: Response) => {
   return withAdminPgClient(async (client) => {
-    const result = await client.query('select * from put_tenant_info($1) as tenant;', [req.body])
-    if (result.rows.length === 0 || result.rows[0].tenant === null) {
-      return res.status(404).send()
+    try {
+      const result = await client.query('select * from put_tenant_info($1) as tenant;', [req.body])
+      if (result.rows.length === 0 || result.rows[0].tenant === null) {
+        return res.status(404).send()
+      }
+      return res.status(200).json({ ...result.rows[0].tenant })
+    } catch (e: any) {
+      throw errors.prependToMessage(e, 'While putting tenant info: ' + JSON.stringify(req.body))
     }
-    return res.status(200).json({ ...result.rows[0].tenant })
   }).catch((e) => {
     console.error(e)
     return res.status(500).send()
