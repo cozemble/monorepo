@@ -9,6 +9,10 @@ create table if not exists model
     primary key (id, tenant)
 );
 
+-- create index on tenant column as gist index
+create index if not exists model_tenant_gist_idx
+    on model using gist (tenant);
+
 -- model should refer to tenant via foreign key
 alter table model
     add constraint model_tenant_fkey
@@ -18,14 +22,18 @@ alter table model
 
 create table if not exists model_event
 (
-    id              text      not null,
-    model_id        text      not null,
-    tenant          ltree     not null,
-    definition      jsonb     not null,
-    created_at      timestamp not null default now(),
-    updated_at      timestamp not null default now(),
+    id         text      not null,
+    model_id   text      not null,
+    tenant     ltree     not null,
+    definition jsonb     not null,
+    created_at timestamp not null default now(),
+    updated_at timestamp not null default now(),
     primary key (id, model_id, tenant)
 );
+
+-- create index on tenant column as gist index
+create index if not exists model_event_tenant_gist_idx
+    on model_event using gist (tenant);
 
 -- model event should refer to model via foreign key
 alter table model_event

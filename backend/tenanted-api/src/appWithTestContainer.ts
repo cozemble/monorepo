@@ -17,14 +17,16 @@ export async function appWithTestContainer(port = 3000): Promise<http.Server> {
 
   console.log(`psql connect string = ${pgConnectString(container)}`)
 
+  console.log('Running migrations...')
   const outcome = await exec(
     `npx postgrator --host 127.0.0.1 --database ${container.getDatabase()} --username ${container.getUsername()} --password ${container.getPassword()}`,
   )
   console.log(outcome.stdout)
-  console.error(outcome.stderr)
+  console.error('STDERR:' + outcome.stderr)
   if (outcome.stderr) {
     throw new Error(outcome.stderr)
   }
+  console.log('Migrations complete.')
   const app = expressApp()
   return app.listen(port, () => {
     console.log(`Listening on port ${port}`)

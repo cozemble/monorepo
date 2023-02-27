@@ -25,7 +25,7 @@ router.get('/:tenantId', (req: Request, res: Response) => {
   })
 })
 
-router.put('/:tenantId', (req: Request, res: Response) => {
+router.put('/:tenantId/model', (req: Request, res: Response) => {
   return withAdminPgClient(async (client) => {
     try {
       const result = await client.query('select * from put_tenant_info($1) as tenant;', [req.body])
@@ -52,6 +52,45 @@ router.post('/', (req: Request, res: Response) => {
       return res.status(404).send()
     }
     return res.status(200).json({ ...result.rows[0].tenant })
+  }).catch((e) => {
+    console.error(e)
+    return res.status(500).send()
+  })
+})
+
+router.put('/:tenantId/model/:modelId/record', (req: Request, res: Response) => {
+  return withAdminPgClient(async (client) => {
+    try {
+      const result = await client.query(
+        'select * from upsert_record(text2Ltree($1), $2) as records;',
+        [req.params.tenantId, JSON.stringify(req.body)],
+      )
+      if (result.rows.length === 0 || result.rows[0].records === null) {
+        return res.status(400).send()
+      }
+
+      return res.status(200).json([])
+    } catch (e: any) {
+      throw errors.prependToMessage(e, 'While putting record: ' + JSON.stringify(req.body))
+    }
+  }).catch((e) => {
+    console.error(e)
+    return res.status(500).send()
+  })
+})
+
+router.get('/:tenantId/model/:modelId/record', (req: Request, res: Response) => {
+  return withAdminPgClient(async (client) => {
+    try {
+      const result = await client.query(
+        'select * from get_records(text2Ltree($1), $2) as records;',
+        [req.params.tenantId, req.params.modelId],
+      )
+
+      return res.status(200).json(result.rows[0])
+    } catch (e: any) {
+      throw errors.prependToMessage(e, 'While putting record: ' + JSON.stringify(req.body))
+    }
   }).catch((e) => {
     console.error(e)
     return res.status(500).send()
