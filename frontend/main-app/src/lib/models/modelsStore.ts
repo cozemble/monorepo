@@ -65,7 +65,7 @@ export async function putAllModels(tenant: BackendTenant, all: EventSourcedModel
     name: tenant.name,
     models,
   }
-  const result = await fetch(`${config.backendUrl()}/api/v1/tenant/${tenant.id}`, {
+  const result = await fetch(`${config.backendUrl()}/api/v1/tenant/${tenant.id}/model`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',

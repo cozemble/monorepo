@@ -2,7 +2,7 @@ import type { PageLoad } from './$types'
 import { browser } from '$app/environment'
 import { cozauth } from '../../../lib/auth/cozauth'
 import { loadTenant } from '../../../lib/tenants/tenantStore'
-import { config } from '../../../lib/config'
+import { fetchTenant } from './fetchTenant'
 
 export const load: PageLoad = async (event) => {
   if (browser) {
@@ -10,13 +10,7 @@ export const load: PageLoad = async (event) => {
     if (!accessToken) {
       throw new Error('Failed to get accessToken')
     }
-    const response = await fetch(`${config.backendUrl()}/api/v1/tenant/${event.params.tenantId}`, {
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-    })
+    const response = await fetchTenant(event.params.tenantId, accessToken)
     if (response.ok) {
       const tenant = await response.json()
       loadTenant(tenant)

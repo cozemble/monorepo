@@ -1,15 +1,12 @@
 <script lang="ts">
     import {cozauth} from "../../../lib/auth/cozauth";
     import MainPanel from "../../../lib/MainPanel.svelte";
-    import type {PageData} from './$types'
     import {onMount} from "svelte";
     import {
         registerAllProperties,
         registerAllPropertyEditors,
         registerAllPropertyViewers
     } from "@cozemble/model-assembled";
-
-    export let data: PageData
 
     onMount(() => {
         registerAllProperties()

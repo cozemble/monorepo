@@ -2,7 +2,7 @@
     import {ModelEditor} from "@cozemble/model-editor";
     import {addNewModel, allModels, host, modelBeingEdited, putAllModels} from "./modelsStore";
     import {backendTenant} from "../tenants/tenantStore";
-    import ModelList from "$lib/models/ModelList.svelte";
+    import ModelList from "./ModelList.svelte";
 
     async function saveModelBeingEdited() {
         await putAllModels($backendTenant, $allModels).then(() => {
