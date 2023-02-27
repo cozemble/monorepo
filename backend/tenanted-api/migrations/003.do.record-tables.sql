@@ -20,19 +20,42 @@ alter table record
             references model (id, tenant)
             on delete cascade;
 
-CREATE OR REPLACE FUNCTION get_records(given_tenant_id LTREE, given_model_id TEXT, given_limit INTEGER DEFAULT 10,
-                                       given_offset INTEGER DEFAULT 0)
-    RETURNS JSONB[]
-AS
+CREATE OR REPLACE FUNCTION get_records(
+    given_tenant_id LTREE,
+    given_model_id TEXT,
+    given_limit INTEGER DEFAULT 10,
+    given_offset INTEGER DEFAULT 0
+)
+    RETURNS JSONB AS
 $$
+DECLARE
+    records     JSONB[];
+    count       INTEGER;
+    total_pages INTEGER;
 BEGIN
-    RETURN ARRAY(
-            SELECT definition
-            FROM record
-            WHERE model_id = given_model_id
-              AND tenant = given_tenant_id
-            ORDER BY created_at DESC
-            LIMIT given_limit OFFSET given_offset
+    SELECT ARRAY(
+                   SELECT definition
+                   FROM record
+                   WHERE model_id = given_model_id
+                     AND tenant = given_tenant_id
+                   ORDER BY created_at DESC
+                   LIMIT given_limit OFFSET given_offset
+               )
+    INTO records;
+
+    SELECT COUNT(*)
+    INTO count
+    FROM record
+    WHERE model_id = given_model_id
+      AND tenant = given_tenant_id;
+
+    total_pages := CEIL(count::FLOAT / given_limit);
+    total_pages := GREATEST(total_pages, 1);
+
+    RETURN jsonb_build_object(
+            'count', count,
+            'totalPages', total_pages,
+            'records', records
         );
 END;
 $$ LANGUAGE plpgsql;

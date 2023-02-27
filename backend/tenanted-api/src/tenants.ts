@@ -86,8 +86,7 @@ router.get('/:tenantId/model/:modelId/record', (req: Request, res: Response) => 
         'select * from get_records(text2Ltree($1), $2) as records;',
         [req.params.tenantId, req.params.modelId],
       )
-
-      return res.status(200).json(result.rows[0])
+      return res.status(200).json(result.rows[0].records)
     } catch (e: any) {
       throw errors.prependToMessage(e, 'While putting record: ' + JSON.stringify(req.body))
     }

@@ -9,12 +9,10 @@ import { dataRecordFns } from '@cozemble/model-api'
 import { DataRecord } from '@cozemble/model-core'
 
 describe('with a migrated database', () => {
-  console.log('describe')
   let server: http.Server
 
   beforeAll(async () => {
     try {
-      console.log('Starting server...')
       server = await appWithTestContainer(3002)
     } catch (e) {
       console.error(e)
@@ -112,7 +110,7 @@ describe('with a migrated database', () => {
     )
     expect(getResponse.status).toBe(200)
     const records = await getResponse.json()
-    expect(records).toEqual({ records: [] })
+    expect(records).toEqual({ records: [], count: 0, totalPages: 1 })
   })
 
   test('can put and retrieve a record', async () => {
@@ -128,7 +126,7 @@ describe('with a migrated database', () => {
     )
     expect(getResponse.status).toBe(200)
     const records = await getResponse.json()
-    expect(records).toEqual({ records: [record] })
+    expect(records).toEqual({ records: [record], count: 1, totalPages: 1 })
   })
 })
 
