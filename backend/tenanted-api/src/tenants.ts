@@ -59,6 +59,11 @@ router.post('/', (req: Request, res: Response) => {
 })
 
 router.put('/:tenantId/model/:modelId/record', (req: Request, res: Response) => {
+  if (!Array.isArray(req.body)) {
+    console.log('Bad request: ' + JSON.stringify(req.body))
+    return res.status(400).send()
+  }
+
   return withAdminPgClient(async (client) => {
     try {
       const result = await client.query(

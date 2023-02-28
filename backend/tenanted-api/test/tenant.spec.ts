@@ -3,10 +3,14 @@ import * as http from 'http'
 import { beforeAll, describe, expect, test } from 'vitest'
 import { appWithTestContainer } from '../src/appWithTestContainer'
 import { BackendModel, BackendTenant } from '@cozemble/backend-tenanted-api-types'
-import { modelFns } from '@cozemble/model-api'
-import { Model, ModelEvent, modelEventIdFns, timestampEpochMillis } from '@cozemble/model-core'
-import { dataRecordFns } from '@cozemble/model-api'
-import { DataRecord } from '@cozemble/model-core'
+import { dataRecordFns, modelFns } from '@cozemble/model-api'
+import {
+  DataRecord,
+  Model,
+  ModelEvent,
+  modelEventIdFns,
+  timestampEpochMillis,
+} from '@cozemble/model-core'
 
 describe('with a migrated database', () => {
   let server: http.Server
@@ -119,7 +123,17 @@ describe('with a migrated database', () => {
     const [customerModel] = await putModels(tenantId, [modelFns.newInstance('Customer')])
     const record = dataRecordFns.random([customerModel], customerModel)
 
-    await putRecord(tenantId, customerModel, record)
+    const putResponse = await fetch(
+      `http://localhost:3002/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify([record]),
+      },
+    )
+    await expect(putResponse.status).toBe(200)
 
     const getResponse = await fetch(
       `http://localhost:3002/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record`,
@@ -127,6 +141,25 @@ describe('with a migrated database', () => {
     expect(getResponse.status).toBe(200)
     const records = await getResponse.json()
     expect(records).toEqual({ records: [record], count: 1, totalPages: 1 })
+  })
+
+  test('400 if records being put is not an array', async () => {
+    const tenantId = uuids.v4().replace(/-/g, '')
+    await makeTenant(tenantId)
+    const [customerModel] = await putModels(tenantId, [modelFns.newInstance('Customer')])
+    const record = dataRecordFns.random([customerModel], customerModel)
+
+    const putResponse = await fetch(
+      `http://localhost:3002/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(record),
+      },
+    )
+    await expect(putResponse.status).toBe(400)
   })
 })
 
@@ -169,18 +202,4 @@ async function putModels(tenantId: string, models: Model[]): Promise<Model[]> {
   })
   expect(putResponse.status).toBe(200)
   return models
-}
-
-async function putRecord(tenantId: string, model: Model, record: DataRecord) {
-  const putResponse = await fetch(
-    `http://localhost:3002/api/v1/tenant/${tenantId}/model/${model.id.value}/record`,
-    {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify([record]),
-    },
-  )
-  expect(putResponse.status).toBe(200)
 }

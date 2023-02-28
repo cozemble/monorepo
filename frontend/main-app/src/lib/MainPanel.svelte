@@ -8,7 +8,6 @@
     } from '@cozemble/model-assembled'
     import {registerStringPropertyEventToSqlActions} from '@cozemble/model-string-sql-actions'
     import ModelsPanel from './models/ModelsPanel.svelte'
-    import DataPanel from './data/DataPanel.svelte'
     import type {Session} from "./auth/cozauth";
 
     export let session: Session
