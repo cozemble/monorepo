@@ -1,5 +1,5 @@
-import type { Writable, Readable } from 'svelte/store'
-import { writable, derived, get } from 'svelte/store'
+import type { Writable } from 'svelte/store'
+import { writable, get } from 'svelte/store'
 import _ from 'lodash'
 
 import { getDifference } from '$lib/utils'
@@ -14,34 +14,27 @@ const createHistoryLog = (record: Record<string, any>) => {
   }
 }
 
-// * Stores
-
 export const recordLog: Writable<Record<string, any>[]> = writable([])
 
-/** Easy access to the timestamp of the last saved record */
-const lastSaved: Readable<number> = derived(recordLog, ($recordLog) => {
-  const lastLog = $recordLog[$recordLog.length - 1]
-  if (!lastLog) return new Date(0).getTime()
-
-  return new Date(lastLog.timestamp).getTime()
-})
-
-//
+/** To debounce the logging of the record and be able to cancel the timeout */
+let debounceAction: NodeJS.Timeout
 
 currentRecord.subscribe((recordStore) => {
   const record = { ...recordStore } // clone to avoid mutation
 
-  // TODO change this to a debounce
-  if (get(lastSaved) + LOG_TIMEOUT > new Date().getTime()) return
+  // Clear the timeout action if it exists
+  if (debounceAction) clearTimeout(debounceAction)
 
-  const oldRecord = get(recordLog)[0]?.record
+  debounceAction = setTimeout(() => {
+    const oldRecord = get(recordLog)[0]?.record
 
-  console.log(
-    'difference',
-    oldRecord && { from: getDifference(record, oldRecord), to: getDifference(oldRecord, record) },
-  )
+    console.log(
+      'difference',
+      oldRecord && { from: getDifference(record, oldRecord), to: getDifference(oldRecord, record) },
+    )
 
-  recordLog.update((log) => {
-    return [...log, createHistoryLog(record)]
-  })
+    recordLog.update((log) => {
+      return [...log, createHistoryLog(record)]
+    })
+  }, LOG_TIMEOUT)
 })
