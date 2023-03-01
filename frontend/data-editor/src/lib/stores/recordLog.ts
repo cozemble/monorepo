@@ -2,6 +2,7 @@ import type { Writable, Readable } from 'svelte/store'
 import { writable, derived, get } from 'svelte/store'
 import _ from 'lodash'
 
+import { getDifference } from '$lib/utils'
 import { currentRecord } from './records'
 
 const LOG_TIMEOUT = 1000
@@ -30,7 +31,12 @@ const lastSaved: Readable<number> = derived(recordLog, ($recordLog) => {
 currentRecord.subscribe((recordStore) => {
   const record = { ...recordStore } // clone to avoid mutation
 
+  // TODO change this to a debounce
   if (get(lastSaved) + LOG_TIMEOUT > new Date().getTime()) return
+
+  const oldRecord = get(recordLog)[0]?.record
+
+  console.log('difference', oldRecord && getDifference(oldRecord, record))
 
   recordLog.update((log) => {
     return [...log, createHistoryLog(record)]
