@@ -1,5 +1,7 @@
 import type { Schema } from 'ajv'
+import _ from 'lodash'
 
+/** Initialize an object with empty values based on the schema */
 export const initValues = (schema: Schema) =>
   Object.entries(schema).reduce((prev, [key, value]) => {
     if (value.type === 'object') {
@@ -10,8 +12,9 @@ export const initValues = (schema: Schema) =>
       prev[key] = ''
     }
     return prev
-  }, {} as any)
+  }, {} as Record<string, any>)
 
+/** Remove empty values from an object */
 export const removeEmptyValues = (obj: Record<string, any>) =>
   Object.entries(obj).reduce((prev, [key, value]) => {
     if (value && typeof value === 'object' && !Array.isArray(value)) {
@@ -24,7 +27,7 @@ export const removeEmptyValues = (obj: Record<string, any>) =>
       prev[key] = value
     }
     return prev
-  }, {} as any)
+  }, {} as Record<string, any>)
 
 /** Get the new values that are different from the old values */
 export const getDifference = (oldRecord: Record<string, any>, newRecord: Record<string, any>) =>
