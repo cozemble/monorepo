@@ -65,7 +65,7 @@ const convertToErrorObject = (error: AjvErrorObject): Record<string, any> =>
   }, createErrorMessage(error) as Record<string, any>)
 
 /** Add errors to the store */
-export function addErrors(errorObjects: AjvErrorObject[] | null) {
+export function addErrors(errorObjects?: AjvErrorObject[] | null) {
   errors.update((prev) => {
     console.log('prev: ', prev)
 
