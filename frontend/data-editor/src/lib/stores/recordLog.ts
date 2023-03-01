@@ -42,3 +42,17 @@ export const getDifferenceFromLastSavedRecord = (record: Record<string, any>) =>
     to: getDifference(oldRecord, record),
   }
 }
+
+/** Go back to the previous record and remove the last record from the log */
+export const takeBack = () => {
+  recordLog.update((log) => {
+    const lastRecord = _.last(log)
+
+    if (!lastRecord) return log
+
+    currentRecord.set(_.nth(log, -2)?.record || {})
+
+    clearTimeout(debounceAction) // cancel logging the record to prevent duplicates
+    return log.slice(0, -1) // remove the last record
+  })
+}
