@@ -35,7 +35,6 @@
             body: JSON.stringify([newRecord.record])
         })
         if (saveResponse.ok) {
-            records.update(r => r.map(r => r.id.value === newRecord.record.id.value ? newRecord.record : r))
             return recordSaveSucceeded(newRecord.record)
         } else {
             return recordSaveFailed([saveResponse.statusText], new Map())
@@ -44,11 +43,19 @@
 
     const paginatedEditorHost: PaginatedEditorHost = {
         async recordEdited(editedRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
-            return saveRecord(editedRecord)
+            const result =  await saveRecord(editedRecord)
+            if(result._type === "record.save.succeeded") {
+                records.update(r => r.map(r => r.id.value === editedRecord.record.id.value ? editedRecord.record : r))
+            }
+            return result
         },
 
         async saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
-            return saveRecord(newRecord)
+            const result = await saveRecord(newRecord)
+            if(result._type === "record.save.succeeded") {
+                records.update(r => [...r, newRecord.record])
+            }
+            return result
         },
 
         async deleteRecord(record: DataRecord): Promise<RecordDeleteOutcome> {

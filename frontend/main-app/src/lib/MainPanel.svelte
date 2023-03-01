@@ -9,6 +9,7 @@
     import {registerStringPropertyEventToSqlActions} from '@cozemble/model-string-sql-actions'
     import ModelsPanel from './models/ModelsPanel.svelte'
     import type {Session} from "./auth/cozauth";
+    import DataPanel from "../lib/data/DataPanel.svelte";
 
     export let session: Session
     let panelToShow: "models" | "data" = "models"
@@ -24,6 +25,7 @@
 <h2>Cozemble ({session.user.email})</h2>
 
 <a href="#tab1" class="tab-item-name" class:current={panelToShow === 'models'} on:click={() => panelToShow='models'}>Models</a>
+<a href="#tab2" class="tab-item-name" class:current={panelToShow === 'data'} on:click={() => panelToShow='data'}>Data</a>
 
 
 <div class=tabs>
@@ -31,6 +33,13 @@
         <div class="panel-container" class:visible={panelToShow === 'models'}>
             <div class="inner-panel-container">
                 <ModelsPanel/>
+            </div>
+        </div>
+    </div>
+    <div id=tab2>
+        <div class="panel-container" class:visible={panelToShow === 'data'}>
+            <div class="inner-panel-container">
+                <DataPanel />
             </div>
         </div>
     </div>
