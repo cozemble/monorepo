@@ -12,6 +12,18 @@ export default {
 
     return record
   },
+
+  updateRecord: async (
+    model: Record<string, any>,
+    changes: { from: Record<string, any>; to: Record<string, any> },
+  ) => {
+    console.log('updateRecord', changes)
+
+    // delay to simulate network latency
+    await new Promise((resolve) => setTimeout(resolve, 3000))
+
+    return changes.to
+  },
 }
 
 const createMockError = (record: Record<string, any>) => {

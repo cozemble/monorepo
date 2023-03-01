@@ -16,6 +16,8 @@ const createHistoryLog = (record: Record<string, any>) => {
 
 export const recordLog: Writable<Record<string, any>[]> = writable([])
 
+export const lastSavedRecord: Writable<Record<string, any>> = writable({})
+
 /** To debounce the logging of the record and be able to cancel the timeout */
 let debounceAction: NodeJS.Timeout
 
@@ -26,15 +28,17 @@ currentRecord.subscribe((recordStore) => {
   if (debounceAction) clearTimeout(debounceAction)
 
   debounceAction = setTimeout(() => {
-    const oldRecord = get(recordLog)[0]?.record
-
-    console.log(
-      'difference',
-      oldRecord && { from: getDifference(record, oldRecord), to: getDifference(oldRecord, record) },
-    )
-
     recordLog.update((log) => {
       return [...log, createHistoryLog(record)]
     })
   }, LOG_TIMEOUT)
 })
+
+export const getDifferenceFromLastSavedRecord = (record: Record<string, any>) => {
+  const oldRecord = get(lastSavedRecord)
+
+  return {
+    from: getDifference(record, oldRecord),
+    to: getDifference(oldRecord, record),
+  }
+}
