@@ -1,4 +1,4 @@
-import { config } from '../../../../../lib/config'
+import { config } from '../config'
 
 export async function fetchInitialRecords(tenantId: string, modelId: string, accessToken: string) {
   return await fetch(`${config.backendUrl()}/api/v1/tenant/${tenantId}/model/${modelId}/record`, {

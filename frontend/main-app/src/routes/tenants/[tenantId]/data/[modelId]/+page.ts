@@ -2,8 +2,8 @@ import type { PageLoad } from './$types'
 import { browser } from '$app/environment'
 import { cozauth } from '../../../../../lib/auth/cozauth'
 import { fetchTenant } from '../../fetchTenant'
-import { fetchInitialRecords } from './fetchInitialRecords'
 import { loadTenant } from '../../../../../lib/tenants/tenantStore'
+import { fetchInitialRecords } from '../../../../../lib/data/fetchInitialRecords'
 
 export const load: PageLoad = async (event) => {
   if (browser) {

@@ -7,6 +7,8 @@
         registerAllPropertyEditors,
         registerAllPropertyViewers
     } from "@cozemble/model-assembled";
+    import {page} from '$app/stores';
+
 
     onMount(() => {
         registerAllProperties()
@@ -21,7 +23,7 @@
         <p>loading...</p>
     {:then session}
         {#if session}
-            <MainPanel {session}/>
+            <MainPanel {session} tenantId={$page.params.tenantId}/>
         {:else }
             <h1>You need to login</h1>
         {/if}
