@@ -29,15 +29,15 @@ export const removeEmptyValues = (obj: Record<string, any>) =>
     return prev
   }, {} as Record<string, any>)
 
-/** Get the new values that are different from the old values */
-export const getDifference = (oldRecord: Record<string, any>, newRecord: Record<string, any>) =>
-  Object.entries(newRecord).reduce((prev, [key, value]) => {
+/** Get the new values that are different from the base object */
+export const getDifference = (base: Record<string, any>, object: Record<string, any>) =>
+  Object.entries(object).reduce((prev, [key, value]) => {
     if (value && typeof value === 'object' && !Array.isArray(value)) {
-      const diff = getDifference(oldRecord[key], value)
+      const diff = getDifference(base[key], value)
       if (Object.keys(diff).length > 0) {
         prev[key] = diff
       }
-    } else if (!_.isEqual(value, oldRecord[key])) {
+    } else if (!_.isEqual(value, base[key])) {
       prev[key] = value
     }
     return prev

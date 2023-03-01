@@ -36,7 +36,10 @@ currentRecord.subscribe((recordStore) => {
 
   const oldRecord = get(recordLog)[0]?.record
 
-  console.log('difference', oldRecord && getDifference(oldRecord, record))
+  console.log(
+    'difference',
+    oldRecord && { from: getDifference(record, oldRecord), to: getDifference(oldRecord, record) },
+  )
 
   recordLog.update((log) => {
     return [...log, createHistoryLog(record)]
