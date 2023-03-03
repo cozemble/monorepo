@@ -26,7 +26,7 @@ onMount(() => {
   })
 
   Object.assign(window, {
-    getLogs: () => $currentRecord,
+    getLogs: () => $recordLogs,
   })
 })
 </script>

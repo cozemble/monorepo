@@ -15,19 +15,26 @@ export const currentRecord: Writable<ObjectValue> = writable({})
 // * Version logging
 
 const LOG_TIMEOUT = 1000
+
 export const recordLogs: Writable<ObjectValue[]> = writable([])
 
 /** To debounce the logging of the record and be able to cancel the timeout */
 let currentTimeout: NodeJS.Timeout
 
+/** Create a log of the record and add it to the recordLogs store
+ * - Clones the record by itself to prevent mutation of the log
+ */
 function createLog(record: ObjectValue) {
   recordLogs.update((logs) => {
-    const lastLog = _.last([...logs])
+    const lastLog = _.last(_.cloneDeep(logs))
 
     // no need to log if the record is the same as the last log
     if (lastLog && _.isEqual(record, lastLog)) return logs
 
-    return [...logs, { ...record }]
+    console.warn('record logged')
+
+    // ! it is crucial to clone to prevent mutation of the log
+    return [...logs, _.cloneDeep(record)]
   })
 }
 
