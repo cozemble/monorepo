@@ -130,3 +130,95 @@ export const customComponentModel: JSONSchema = {
     },
   },
 }
+
+export const fruitererModel: JSONSchema = {
+  type: 'object',
+  properties: {
+    invoiceId: {
+      type: 'string',
+      description: 'user name',
+    },
+    prices: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          item: {
+            type: 'string',
+          },
+          price: {
+            type: 'number',
+          },
+        },
+        required: ['item', 'price'],
+      },
+    },
+    items: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          item: {
+            type: 'string',
+          },
+          quantity: {
+            type: 'number',
+          },
+          total: {
+            type: 'number',
+          },
+        },
+        required: ['item', 'quantity'],
+      },
+    },
+    subtotal: {
+      type: 'number',
+    },
+    tenPercentSalesTax: {
+      type: 'number',
+    },
+    total: {
+      type: 'number',
+    },
+  },
+  required: ['invoiceId'],
+
+  coz: {
+    properties: {
+      // items: {
+      //   properties: {
+      //     total: {
+      //       formula: async (record: any) => {
+      //         const item = record.items.find((item: any) => item.item === record.item)
+      //         return item ? item.quantity * item.price : 0
+      //       }
+
+      // },
+      subtotal: {
+        formula: async (record: any) => {
+          return record.items
+            ? record.items.reduce(
+                (acc: number, item: any) =>
+                  acc +
+                  parseFloat(item.quantity) *
+                    parseFloat(record.prices.find((p) => p.item === item.item).price),
+                0,
+              )
+            : 0
+        },
+      },
+
+      tenPercentSalesTax: {
+        formula: async (record: any) => {
+          return record.subtotal * 0.1
+        },
+      },
+
+      total: {
+        formula: async (record: any) => {
+          return record.subtotal + record.tenPercentSalesTax
+        },
+      },
+    },
+  },
+}
