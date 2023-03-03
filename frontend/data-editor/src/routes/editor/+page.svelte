@@ -1,16 +1,12 @@
 <script lang="ts">
 import { model } from '$lib/stores/models'
-import { currentRecord } from '$lib/stores/records'
+import { currentRecord, recordLogs, takeBack } from '$lib/stores/records'
 import { addRecord, updateRecord } from '$lib/common/actions'
 import { errors } from '$lib/stores/errors'
-import { recordLog, takeBack } from '$lib/stores/recordLog'
 
 import ObjectEditorWrapper from '$lib/components/inputWrappers/ObjectEditorWrapper.svelte'
 import LoadingButton from '$lib/components/LoadingButton.svelte'
 import { onMount } from 'svelte'
-
-$: console.log('log', $recordLog)
-$: console.log('current', $currentRecord)
 
 onMount(() => {
   // take back on ctrl + z
@@ -18,13 +14,19 @@ onMount(() => {
     // for windows
     if (e.ctrlKey && e.key === 'z') {
       e.preventDefault()
+      console.log('ctrl z')
       takeBack()
     }
     // for mac
     if (e.metaKey && e.key === 'z') {
       e.preventDefault()
+      console.log('ctrl z')
       takeBack()
     }
+  })
+
+  Object.assign(window, {
+    getLogs: () => $currentRecord,
   })
 })
 </script>
