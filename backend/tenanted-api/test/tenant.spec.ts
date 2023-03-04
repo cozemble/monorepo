@@ -6,6 +6,7 @@ import { BackendModel, BackendTenant } from '@cozemble/backend-tenanted-api-type
 import { dataRecordFns, modelFns } from '@cozemble/model-api'
 import { Model, ModelEvent, modelEventIdFns, timestampEpochMillis } from '@cozemble/model-core'
 import jwt from 'jsonwebtoken'
+import { DataRecord } from '@cozemble/model-core/dist/esm'
 
 const jwtSigningSecret = 'secret'
 
@@ -298,6 +299,45 @@ describe('with a migrated database', () => {
     expect(records).toEqual({ records: [record], count: 1, totalPages: 1 })
   })
 
+  test('can put and delete a record', async () => {
+    const ownerId = uuids.v4()
+    const tenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
+    await makeTenant(tenantId, 'Tenant 2', ownerId)
+    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId)
+    const [customerModel] = await putModels(tenantId, [modelFns.newInstance('Customer')], bearer)
+    const record = dataRecordFns.random([customerModel], customerModel)
+    await putRecord(tenantId, customerModel, bearer, record)
+
+    const deleteResponse = await fetch(
+      `http://localhost:3002/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record/${record.id.value}`,
+      {
+        method: 'DELETE',
+        headers: {
+          Authorization: 'Bearer ' + bearer,
+        },
+      },
+    )
+    expect(deleteResponse.status).toBe(204)
+  })
+
+  test('401 if deleting a record without authentication', async () => {
+    const ownerId = uuids.v4()
+    const tenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
+    await makeTenant(tenantId, 'Tenant 2', ownerId)
+    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId)
+    const [customerModel] = await putModels(tenantId, [modelFns.newInstance('Customer')], bearer)
+    const record = dataRecordFns.random([customerModel], customerModel)
+    await putRecord(tenantId, customerModel, bearer, record)
+
+    const deleteResponse = await fetch(
+      `http://localhost:3002/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record/${record.id.value}`,
+      {
+        method: 'DELETE',
+      },
+    )
+    expect(deleteResponse.status).toBe(401)
+  })
+
   test('400 if records being put is not an array', async () => {
     const ownerId = uuids.v4()
     const tenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
@@ -367,4 +407,19 @@ async function putModels(tenantId: string, models: Model[], accessToken: string)
   })
   expect(putResponse.status).toBe(200)
   return models
+}
+
+async function putRecord(tenantId: string, customerModel, bearer, record: DataRecord) {
+  const putResponse = await fetch(
+    `http://localhost:3002/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record`,
+    {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + bearer,
+      },
+      body: JSON.stringify([record]),
+    },
+  )
+  await expect(putResponse.status).toBe(200)
 }

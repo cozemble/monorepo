@@ -85,4 +85,14 @@ router.get('/:tenantId/model/:modelId/record', (req: Request, res: Response) => 
   })
 })
 
+router.delete('/:tenantId/model/:modelId/record/:recordId', (req: Request, res: Response) => {
+  return authenticatedDatabaseRequest(req, res, async (client) => {
+    await client.query(
+      'delete from record where tenant = text2Ltree($1) and model_id = $2 and id = $3;',
+      [req.params.tenantId, req.params.modelId, req.params.recordId],
+    )
+    return res.status(204).send()
+  })
+})
+
 export default router
