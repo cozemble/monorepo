@@ -49,15 +49,28 @@ alter table model_event
             references tenant (id)
             on delete cascade;
 
-CREATE OR REPLACE FUNCTION post_tenant(tenant_id_value ltree, tenant_name_value text)
+CREATE OR REPLACE FUNCTION post_tenant(tenant_id_value ltree, tenant_name_value text, user_pool_value ltree,
+                                       owner_id_value text, email_address_value text, first_name_value text)
     RETURNS void
 AS
 $$
 DECLARE
+    user_id_value text;
 BEGIN
+    -- Insert new user
+    insert into users(id, user_pool, email, first_name)
+    values (owner_id_value, user_pool_value, email_address_value, first_name_value)
+    returning id into user_id_value;
+
+    -- Insert new tenant if it doesn't exist
     insert into tenant(id, name) values (tenant_id_value, tenant_name_value);
+
+    -- Insert join between user and tenant
+    insert into user_tenancy(user_id, tenant) values (user_id_value, tenant_id_value);
+
 END;
 $$ LANGUAGE plpgsql;
+
 
 CREATE OR REPLACE FUNCTION get_tenant_info(tenant_id ltree)
     RETURNS json

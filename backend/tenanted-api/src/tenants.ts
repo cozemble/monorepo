@@ -1,24 +1,31 @@
 import { errors } from '@cozemble/lang-util'
 import { Request, Response, Router } from 'express'
 import { withAdminPgClient } from './postgresPool'
+import { withAccessToken } from './jwt'
+import { withClaimInPgSession } from './withClaimInPgSession'
 
 const router: Router = Router()
 
 router.get('/:tenantId', (req: Request, res: Response) => {
-  return withAdminPgClient(async (client) => {
-    const result = await client.query('select * from get_tenant_info(text2Ltree($1)) as tenant;', [
-      req.params.tenantId,
-    ])
-    if (result.rows.length === 0 || result.rows[0].tenant === null) {
-      return res.status(404).send()
-    }
-    // I am not smart enough to know how to make the postgres function above return an empty array if there are no models
-    // so I am doing it here
-    const tenant = result.rows[0].tenant
-    if (tenant.models && tenant.models.length > 0 && tenant.models[0].id === null) {
-      tenant.models = []
-    }
-    return res.status(200).json({ ...tenant })
+  return withAccessToken(req, res, async (claim) => {
+    return withAdminPgClient(async (client) => {
+      return withClaimInPgSession(client, claim, async () => {
+        const result = await client.query(
+          'select * from get_tenant_info(text2Ltree($1)) as tenant;',
+          [req.params.tenantId],
+        )
+        if (result.rows.length === 0 || result.rows[0].tenant === null) {
+          return res.status(404).send()
+        }
+        // I am not smart enough to know how to make the postgres function above return an empty array if there are no models
+        // so I am doing it here
+        const tenant = result.rows[0].tenant
+        if (tenant.models && tenant.models.length > 0 && tenant.models[0].id === null) {
+          tenant.models = []
+        }
+        return res.status(200).json({ ...tenant })
+      })
+    })
   }).catch((e) => {
     console.error(e)
     return res.status(500).send()
@@ -44,10 +51,18 @@ router.put('/:tenantId/model', (req: Request, res: Response) => {
 
 router.post('/', (req: Request, res: Response) => {
   return withAdminPgClient(async (client) => {
-    const result = await client.query('select * from post_tenant(text2Ltree($1), $2) as tenant;', [
-      req.body.id,
-      req.body.name,
-    ])
+    const body = req.body
+    const result = await client.query(
+      'select * from post_tenant(text2Ltree($1),$2, text2Ltree($3), $4, $5, $6) as tenant;',
+      [
+        body.id,
+        body.name,
+        body.owner.userPool,
+        body.owner.id,
+        body.owner.email,
+        body.owner.firstName,
+      ],
+    )
     if (result.rows.length === 0 || result.rows[0].tenant === null) {
       return res.status(404).send()
     }
@@ -60,7 +75,7 @@ router.post('/', (req: Request, res: Response) => {
 
 router.put('/:tenantId/model/:modelId/record', (req: Request, res: Response) => {
   if (!Array.isArray(req.body)) {
-    console.log('Bad request: ' + JSON.stringify(req.body))
+    console.log('Bad request, expected body to be an array: ' + JSON.stringify(req.body))
     return res.status(400).send()
   }
 

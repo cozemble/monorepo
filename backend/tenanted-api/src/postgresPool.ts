@@ -1,5 +1,5 @@
 import pg from 'pg'
-import { loadEnv, mandatoryEnv } from './loadEnv'
+import { mandatoryEnv } from './loadEnv'
 
 let pool: pg.Pool | null = null
 
@@ -24,6 +24,13 @@ export function pgPool() {
     connectionTimeoutMillis: 2000,
   })
   return pool
+}
+
+export async function closePgPool() {
+  if (pool) {
+    await pool.end()
+    pool = null
+  }
 }
 
 export async function withAdminPgClient<T>(f: (client: pg.PoolClient) => Promise<T>): Promise<T> {

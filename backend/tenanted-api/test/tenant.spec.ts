@@ -1,47 +1,113 @@
 import { uuids } from '@cozemble/lang-util'
 import * as http from 'http'
 import { beforeAll, describe, expect, test } from 'vitest'
-import { appWithTestContainer } from '../src/appWithTestContainer'
+import { appWithTestContainer, PgDetails } from '../src/appWithTestContainer'
 import { BackendModel, BackendTenant } from '@cozemble/backend-tenanted-api-types'
 import { dataRecordFns, modelFns } from '@cozemble/model-api'
-import {
-  DataRecord,
-  Model,
-  ModelEvent,
-  modelEventIdFns,
-  timestampEpochMillis,
-} from '@cozemble/model-core'
+import { Model, ModelEvent, modelEventIdFns, timestampEpochMillis } from '@cozemble/model-core'
+import jwt from 'jsonwebtoken'
 
+const jwtSigningSecret = 'secret'
+
+async function makeTenantMemberAccessToken(tenantId: string, ownerId: string) {
+  const payload = {
+    iss: 'https://cozemble.com',
+    tenants: [tenantId],
+    sub: ownerId,
+    iat: Math.floor(Date.now() / 1000),
+    exp: Math.floor(Date.now() / 1000) + 60 * 60,
+  }
+  return jwt.sign(payload, jwtSigningSecret, {})
+}
+
+const localPg: PgDetails = {
+  host: '127.0.0.1',
+  port: '5432',
+  database: 'postgres',
+  username: 'user',
+  password: 'password',
+}
 describe('with a migrated database', () => {
   let server: http.Server
 
   beforeAll(async () => {
     try {
-      server = await appWithTestContainer(3002)
+      server = await appWithTestContainer(jwtSigningSecret, 3002)
     } catch (e) {
       console.error(e)
       throw e
     }
   }, 1000 * 90)
 
-  test('can post a tenant', async () => {
-    const response = await postTenant('tenant1')
+  test('anyone can create a tenant', async () => {
+    const response = await fetch('http://localhost:3002/api/v1/tenant', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: 'tenant1',
+        name: 'Test Tenant',
+        owner: {
+          userPool: 'root',
+          id: 'owner1',
+          email: 'john@smith.com',
+          firstName: 'John',
+        },
+      }),
+    })
     expect(response.status).toBe(200)
   })
 
-  test('can get a tenant', async () => {
-    await makeTenant('tenant2', 'Tenant 2')
-    const getTenantResponse = await fetch('http://localhost:3002/api/v1/tenant/tenant2')
+  test("can't get a tenant without credentials", async () => {
+    const tenantId = uuids.v4().replace(/-/g, '')
+    await makeTenant(tenantId, 'Tenant 2')
+    const getTenantResponse = await fetch('http://localhost:3002/api/v1/tenant/' + tenantId)
+    expect(getTenantResponse.status).toBe(401)
+  })
+
+  test('when getting a tenant with credentials, 404 if you are not a tenant member', async () => {
+    const ownerId = uuids.v4()
+    const tenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
+    await makeTenant(tenantId, 'Tenant 2', ownerId)
+    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId)
+    const otherTenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
+
+    const getTenantResponse = await fetch('http://localhost:3002/api/v1/tenant/' + otherTenantId, {
+      headers: {
+        Authorization: 'Bearer ' + bearer,
+      },
+    })
+    expect(getTenantResponse.status).toBe(404)
+  })
+
+  test('can get a tenant if authenticated as a tenant member', async () => {
+    const ownerId = uuids.v4()
+    const tenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
+    await makeTenant(tenantId, 'Tenant 2', ownerId)
+    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId)
+    const getTenantResponse = await fetch('http://localhost:3002/api/v1/tenant/' + tenantId, {
+      headers: {
+        Authorization: 'Bearer ' + bearer,
+      },
+    })
     expect(getTenantResponse.status).toBe(200)
     const tenant = await getTenantResponse.json()
-    expect(tenant.id).toBe('tenant2')
+    expect(tenant.id).toBe(tenantId)
     expect(tenant.name).toBe('Tenant 2')
     expect(tenant.models).toEqual([])
   })
 
   test("can't get a tenant that doesn't exist", async () => {
-    const tenantId = uuids.v4().replace(/-/g, '')
-    const getTenantResponse = await fetch('http://localhost:3002/api/v1/tenant/' + tenantId)
+    const ownerId = uuids.v4()
+    const tenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
+    await makeTenant(tenantId, 'Tenant 2', ownerId)
+    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId)
+    const getTenantResponse = await fetch('http://localhost:3002/api/v1/tenant/xx', {
+      headers: {
+        Authorization: 'Bearer ' + bearer,
+      },
+    })
     expect(getTenantResponse.status).toBe(404)
   })
 
@@ -62,8 +128,10 @@ describe('with a migrated database', () => {
   })
 
   test('can put a tenant containing a model array', async () => {
-    const tenantId = uuids.v4().replace(/-/g, '')
-    await makeTenant(tenantId)
+    const ownerId = uuids.v4()
+    const tenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
+    await makeTenant(tenantId, 'Tenant 2', ownerId)
+    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId)
 
     const model = modelFns.newInstance('Test model')
     const modelEvent: ModelEvent = {
@@ -86,19 +154,24 @@ describe('with a migrated database', () => {
     }
     const tenant: BackendTenant = {
       id: tenantId,
-      name: 'Test Tenant',
+      name: 'Tenant 2',
       models: [backendModel],
     }
     const putResponse = await fetch(`http://localhost:3002/api/v1/tenant/${tenantId}/model`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + bearer,
       },
       body: JSON.stringify(tenant),
     })
     expect(putResponse.status).toBe(200)
 
-    const getTenantResponse = await fetch('http://localhost:3002/api/v1/tenant/' + tenantId)
+    const getTenantResponse = await fetch('http://localhost:3002/api/v1/tenant/' + tenantId, {
+      headers: {
+        Authorization: 'Bearer ' + bearer,
+      },
+    })
     expect(getTenantResponse.status).toBe(200)
     const tenantJson = await getTenantResponse.json()
     expect(tenantJson).toEqual(tenant)
@@ -163,7 +236,7 @@ describe('with a migrated database', () => {
   })
 })
 
-async function postTenant(id: string, name = 'Test Tenant') {
+async function postTenant(id: string, name = 'Test Tenant', ownerId = uuids.v4()) {
   return fetch('http://localhost:3002/api/v1/tenant', {
     method: 'POST',
     headers: {
@@ -172,12 +245,18 @@ async function postTenant(id: string, name = 'Test Tenant') {
     body: JSON.stringify({
       id,
       name,
+      owner: {
+        userPool: 'root',
+        id: ownerId,
+        email: 'john@smith.com',
+        firstName: 'John',
+      },
     }),
   })
 }
 
-async function makeTenant(id: string, name = 'Test Tenant') {
-  const postResponse = await postTenant(id, name)
+async function makeTenant(id: string, name = 'Test Tenant', ownerId = uuids.v4()) {
+  const postResponse = await postTenant(id, name, ownerId)
   expect(postResponse.status).toBe(200)
 }
 
