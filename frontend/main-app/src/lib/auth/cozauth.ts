@@ -37,10 +37,16 @@ function parseJwt(token: string) {
 }
 
 export function accessTokenKey(userPool: string) {
+  if (userPool !== 'root') {
+    throw new Error('To do: deal with nested tenants')
+  }
   return `cozauth.accessToken.${userPool}`
 }
 
 export function refreshTokenKey(userPool: string) {
+  if (userPool !== 'root') {
+    throw new Error('To do: deal with nested tenants')
+  }
   return `cozauth.refreshToken.${userPool}`
 }
 
@@ -56,8 +62,8 @@ export const cozauth = {
     }
     return 'root'
   },
-  getSession: async (tenant: string): Promise<Session | null> => {
-    const accessToken = localStorage.getItem(accessTokenKey(tenant))
+  getSession: async (userPool: string): Promise<Session | null> => {
+    const accessToken = localStorage.getItem(accessTokenKey(userPool))
     if (accessToken) {
       const jwtPayload = parseJwt(accessToken)
       return session(jwtPayload.sub, jwtPayload.email, jwtPayload.email, jwtPayload.tenants)
@@ -65,7 +71,11 @@ export const cozauth = {
 
     return null
   },
-  getAccessToken: (tenant: string): string | null => {
-    return localStorage.getItem(accessTokenKey(tenant))
+  getAccessToken: (userPool: string): string | null => {
+    const result = localStorage.getItem(accessTokenKey(userPool))
+    if (!result) {
+      console.warn(`No access token found for user pool ${userPool}`)
+    }
+    return result
   },
 }

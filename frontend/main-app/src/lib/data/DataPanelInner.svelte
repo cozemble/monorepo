@@ -1,10 +1,10 @@
 <script lang="ts">
     import type {DataRecord, Model} from "@cozemble/model-core";
     import type {PaginatedEditorHost, RecordDeleteOutcome, RecordSaveOutcome} from "@cozemble/data-paginated-editor";
-    import {PaginatedEditor, recordSaveSucceeded} from "@cozemble/data-paginated-editor";
+    import {PaginatedEditor} from "@cozemble/data-paginated-editor";
     import type {Writable} from "svelte/store";
     import type {EventSourcedDataRecord} from "@cozemble/data-editor-sdk";
-    import {saveRecord} from "./saveRecord";
+    import {deleteRecord, saveRecord} from "./recordBackendHelper";
 
     export let models: Model[]
     export let model: Model
@@ -29,8 +29,11 @@
         },
 
         async deleteRecord(record: DataRecord): Promise<RecordDeleteOutcome> {
-            console.log("deleteRecord", record)
-            return recordSaveSucceeded(record)
+            const result = await deleteRecord(tenantId, model.id.value, record)
+            if (result._type === "record.save.succeeded") {
+                records.update(r => r.filter(r => r.id.value !== record.id.value))
+            }
+            return result
         },
     }
 </script>

@@ -8,6 +8,7 @@ import { mandatory } from '@cozemble/lang-util'
 import type { BackendModel, BackendTenant } from '@cozemble/backend-tenanted-api-types'
 import { config } from '../config'
 import { backendTenant } from '../tenants/tenantStore'
+import { cozauth } from '../auth/cozauth'
 
 export const allModels: Writable<EventSourcedModel[]> = writable([])
 
@@ -59,6 +60,7 @@ function toBackendModel(m: EventSourcedModel): BackendModel {
 }
 
 export async function putAllModels(tenant: BackendTenant, all: EventSourcedModel[]) {
+  const accessToken = await cozauth.getAccessToken(cozauth.getTenantRoot(tenant.id))
   const models = all.map((m) => toBackendModel(m))
   const newBackendTenant: BackendTenant = {
     id: tenant.id,
@@ -69,6 +71,7 @@ export async function putAllModels(tenant: BackendTenant, all: EventSourcedModel
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify(newBackendTenant),
   })
