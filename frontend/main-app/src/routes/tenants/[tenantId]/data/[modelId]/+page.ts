@@ -3,7 +3,7 @@ import { browser } from '$app/environment'
 import { cozauth } from '../../../../../lib/auth/cozauth'
 import { fetchTenant } from '../../fetchTenant'
 import { loadTenant } from '../../../../../lib/tenants/tenantStore'
-import { fetchInitialRecords } from '../../../../../lib/data/fetchInitialRecords'
+import { fetchRecords } from '../../../../../lib/data/fetchRecords'
 
 export const load: PageLoad = async (event) => {
   if (browser) {
@@ -13,7 +13,7 @@ export const load: PageLoad = async (event) => {
     }
     const [tenantReponse, recordsResponse] = await Promise.all([
       fetchTenant(event.params.tenantId, accessToken),
-      fetchInitialRecords(event.params.tenantId, event.params.modelId, accessToken),
+      fetchRecords(event.params.tenantId, event.params.modelId, accessToken),
     ])
     if (!tenantReponse.ok || !recordsResponse.ok) {
       throw new Error(`Failed to fetch tenant or records`)

@@ -1,6 +1,6 @@
 <script lang="ts">
     import type {Model} from "@cozemble/model-core";
-    import {loadInitialRecords} from "./loadInitialRecords";
+    import {loadRecords} from "./loadRecords";
     import {records} from "./recordsStore";
     import {onMount} from "svelte";
     import DataPanelInner from "./DataPanelInner.svelte";
@@ -11,13 +11,23 @@
 
     onMount(async () => {
         try {
-            const {records: initialRecords} = await loadInitialRecords(tenantId, model.id.value)
+            const initialRecords = await loadRecords(tenantId, model.id.value)
             records.set(initialRecords.records)
         } catch (e) {
             console.error(e)
         }
     })
 
+    async function searchTextChanged(event: CustomEvent) {
+        const searchText = event.detail
+        try {
+            const loaded = await loadRecords(tenantId, model.id.value, searchText)
+            records.set(loaded.records)
+        } catch (e) {
+            console.error(e)
+        }
+    }
+
 </script>
 
-<DataPanelInner {models} {model} {tenantId} {records}/>
+<DataPanelInner {models} {model} {tenantId} {records} on:searchTextChanged={searchTextChanged}/>

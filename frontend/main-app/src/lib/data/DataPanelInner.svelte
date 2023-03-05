@@ -5,6 +5,7 @@
     import type {Writable} from "svelte/store";
     import type {EventSourcedDataRecord} from "@cozemble/data-editor-sdk";
     import {deleteRecord, saveRecord} from "./recordBackendHelper";
+    import {createEventDispatcher} from "svelte";
 
     export let models: Model[]
     export let model: Model
@@ -36,6 +37,26 @@
             return result
         },
     }
+
+    const dispatch = createEventDispatcher()
+    let searchText = ""
+    let debounceTimeout: any
+
+    function searchTextChanged() {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(() => {
+            dispatch("searchTextChanged", searchText)
+        }, 500);
+    }
 </script>
 
+<div class="search-panel">
+    <input type="text" placeholder="Search" on:keyup={searchTextChanged} bind:value={searchText}/>
+</div>
 <PaginatedEditor {models} {model} records={$records} {paginatedEditorHost}/>
+
+<style>
+    .search-panel {
+        margin-top: 0.5rem;
+    }
+</style>
