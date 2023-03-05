@@ -1,7 +1,7 @@
 <script lang="ts">
     import type {Model} from "@cozemble/model-core";
     import {loadInitialRecords} from "./loadInitialRecords";
-    import {records} from "./recordsHost";
+    import {records} from "./recordsStore";
     import {onMount} from "svelte";
     import DataPanelInner from "./DataPanelInner.svelte";
 

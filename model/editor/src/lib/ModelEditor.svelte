@@ -12,6 +12,8 @@
     export let host: ModelEditorHost
     export let allModels: Writable<EventSourcedModel[]>
 
+    console.log('modelId', modelId)
+    console.log('allModels', $allModels)
     $: eventSourced = host.modelWithId($allModels, modelId)
 
     function onNameChange(name: string) {

@@ -43,9 +43,12 @@ export const host: ModelEditorHost = {
   },
 
   modelWithId(allModels: EventSourcedModel[], id: ModelId): EventSourcedModel {
+    console.log(`Looking for model with id ${id.value} in model of length ${allModels.length}`)
     return mandatory(
       allModels.find((m) => modelIdFns.equals(m.model.id, id)),
-      `No model with id ${id}`,
+      `No model with id ${id.value}, options are ${allModels
+        .map((m) => m.model.id.value)
+        .join(', ')}`,
     )
   },
 }
