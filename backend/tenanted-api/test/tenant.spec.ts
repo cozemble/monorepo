@@ -1,40 +1,21 @@
 import { uuids } from '@cozemble/lang-util'
 import * as http from 'http'
 import { beforeAll, describe, expect, test } from 'vitest'
-import { appWithTestContainer, PgDetails } from '../src/appWithTestContainer'
+import { appWithTestContainer } from '../src/appWithTestContainer'
 import { BackendModel, BackendTenant } from '@cozemble/backend-tenanted-api-types'
 import { dataRecordFns, modelFns } from '@cozemble/model-api'
-import { Model, ModelEvent, modelEventIdFns, timestampEpochMillis } from '@cozemble/model-core'
-import jwt from 'jsonwebtoken'
-import { DataRecord } from '@cozemble/model-core/dist/esm'
+import { ModelEvent, modelEventIdFns, timestampEpochMillis } from '@cozemble/model-core'
+import { makeTenant, makeTenantMemberAccessToken, putModels, putRecord } from './testHelpers'
 
 const jwtSigningSecret = 'secret'
-
-async function makeTenantMemberAccessToken(tenantId: string, ownerId: string) {
-  const payload = {
-    iss: 'https://cozemble.com',
-    tenants: [tenantId],
-    sub: ownerId,
-    iat: Math.floor(Date.now() / 1000),
-    exp: Math.floor(Date.now() / 1000) + 60 * 60,
-  }
-  return jwt.sign(payload, jwtSigningSecret, {})
-}
-
-const localPg: PgDetails = {
-  host: '127.0.0.1',
-  port: '5432',
-  database: 'postgres',
-  username: 'app_user',
-  password: 'mypassword',
-}
+const port = 3002
 
 describe('with a migrated database', () => {
   let server: http.Server
 
   beforeAll(async () => {
     try {
-      server = await appWithTestContainer(jwtSigningSecret, 3002)
+      server = await appWithTestContainer(jwtSigningSecret, port)
     } catch (e) {
       console.error(e)
       throw e
@@ -63,7 +44,7 @@ describe('with a migrated database', () => {
 
   test("can't get a tenant without credentials", async () => {
     const tenantId = uuids.v4().replace(/-/g, '')
-    await makeTenant(tenantId, 'Tenant 2')
+    await makeTenant(port, tenantId, 'Tenant 2')
     const getTenantResponse = await fetch('http://localhost:3002/api/v1/tenant/' + tenantId)
     expect(getTenantResponse.status).toBe(401)
   })
@@ -71,8 +52,8 @@ describe('with a migrated database', () => {
   test('when getting a tenant with credentials, 404 if you are not a tenant member', async () => {
     const ownerId = uuids.v4()
     const tenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
-    await makeTenant(tenantId, 'Tenant 2', ownerId)
-    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId)
+    await makeTenant(port, tenantId, 'Tenant 2', ownerId)
+    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId, jwtSigningSecret)
     const otherTenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
 
     const getTenantResponse = await fetch('http://localhost:3002/api/v1/tenant/' + otherTenantId, {
@@ -86,8 +67,8 @@ describe('with a migrated database', () => {
   test('can get a tenant if authenticated as a tenant member', async () => {
     const ownerId = uuids.v4()
     const tenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
-    await makeTenant(tenantId, 'Tenant 2', ownerId)
-    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId)
+    await makeTenant(port, tenantId, 'Tenant 2', ownerId)
+    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId, jwtSigningSecret)
     const getTenantResponse = await fetch('http://localhost:3002/api/v1/tenant/' + tenantId, {
       headers: {
         Authorization: 'Bearer ' + bearer,
@@ -103,8 +84,8 @@ describe('with a migrated database', () => {
   test("can't get a tenant that doesn't exist", async () => {
     const ownerId = uuids.v4()
     const tenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
-    await makeTenant(tenantId, 'Tenant 2', ownerId)
-    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId)
+    await makeTenant(port, tenantId, 'Tenant 2', ownerId)
+    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId, jwtSigningSecret)
     const getTenantResponse = await fetch('http://localhost:3002/api/v1/tenant/xx', {
       headers: {
         Authorization: 'Bearer ' + bearer,
@@ -116,8 +97,8 @@ describe('with a migrated database', () => {
   test('can put a tenant containing an empty model array', async () => {
     const ownerId = uuids.v4()
     const tenantId = uuids.v4().replace(/-/g, '')
-    await makeTenant(tenantId, ownerId)
-    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId)
+    await makeTenant(port, tenantId, ownerId)
+    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId, jwtSigningSecret)
 
     const putResponse = await fetch(`http://localhost:3002/api/v1/tenant/${tenantId}/model`, {
       method: 'PUT',
@@ -135,11 +116,11 @@ describe('with a migrated database', () => {
   test('putting models into a tenant you are not a member of is forbidden', async () => {
     const ownerId = uuids.v4()
     const tenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
-    await makeTenant(tenantId, 'Tenant 2', ownerId)
+    await makeTenant(port, tenantId, 'Tenant 2', ownerId)
     const otherTenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
     const otherOwnerId = uuids.v4()
-    await makeTenant(otherTenantId, 'Tenant 2', otherOwnerId)
-    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId)
+    await makeTenant(port, otherTenantId, 'Tenant 2', otherOwnerId)
+    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId, jwtSigningSecret)
 
     const model = modelFns.newInstance('Test model')
     const backendModel: BackendModel = {
@@ -167,8 +148,8 @@ describe('with a migrated database', () => {
   test('can put models into a tenant', async () => {
     const ownerId = uuids.v4()
     const tenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
-    await makeTenant(tenantId, 'Tenant 2', ownerId)
-    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId)
+    await makeTenant(port, tenantId, 'Tenant 2', ownerId)
+    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId, jwtSigningSecret)
 
     const model = modelFns.newInstance('Test model')
     const modelEvent: ModelEvent = {
@@ -216,7 +197,7 @@ describe('with a migrated database', () => {
 
   test('fetching records without authentication is a 401', async () => {
     const tenantId = uuids.v4().replace(/-/g, '')
-    await makeTenant(tenantId)
+    await makeTenant(port, tenantId)
 
     const getResponse = await fetch(
       `http://localhost:3002/api/v1/tenant/${tenantId}/model/x/record`,
@@ -227,9 +208,14 @@ describe('with a migrated database', () => {
   test('can retrieve empty records array', async () => {
     const ownerId = uuids.v4()
     const tenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
-    await makeTenant(tenantId, 'Tenant 2', ownerId)
-    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId)
-    const [customerModel] = await putModels(tenantId, [modelFns.newInstance('Customer')], bearer)
+    await makeTenant(port, tenantId, 'Tenant 2', ownerId)
+    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId, jwtSigningSecret)
+    const [customerModel] = await putModels(
+      port,
+      tenantId,
+      [modelFns.newInstance('Customer')],
+      bearer,
+    )
 
     const getResponse = await fetch(
       `http://localhost:3002/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record`,
@@ -241,15 +227,26 @@ describe('with a migrated database', () => {
     )
     expect(getResponse.status).toBe(200)
     const records = await getResponse.json()
-    expect(records).toEqual({ records: [], count: 0, totalPages: 1 })
+    expect(records).toEqual({
+      queryCount: 0,
+      queryPages: 1,
+      records: [],
+      totalCount: 0,
+      totalPages: 1,
+    })
   })
 
   test('401 is record put is not authenticated ', async () => {
     const ownerId = uuids.v4()
     const tenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
-    await makeTenant(tenantId, 'Tenant 2', ownerId)
-    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId)
-    const [customerModel] = await putModels(tenantId, [modelFns.newInstance('Customer')], bearer)
+    await makeTenant(port, tenantId, 'Tenant 2', ownerId)
+    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId, jwtSigningSecret)
+    const [customerModel] = await putModels(
+      port,
+      tenantId,
+      [modelFns.newInstance('Customer')],
+      bearer,
+    )
     const record = dataRecordFns.random([customerModel], customerModel)
 
     const putResponse = await fetch(
@@ -268,9 +265,14 @@ describe('with a migrated database', () => {
   test('can put and retrieve a record', async () => {
     const ownerId = uuids.v4()
     const tenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
-    await makeTenant(tenantId, 'Tenant 2', ownerId)
-    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId)
-    const [customerModel] = await putModels(tenantId, [modelFns.newInstance('Customer')], bearer)
+    await makeTenant(port, tenantId, 'Tenant 2', ownerId)
+    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId, jwtSigningSecret)
+    const [customerModel] = await putModels(
+      port,
+      tenantId,
+      [modelFns.newInstance('Customer')],
+      bearer,
+    )
     const record = dataRecordFns.random([customerModel], customerModel)
 
     const putResponse = await fetch(
@@ -296,17 +298,28 @@ describe('with a migrated database', () => {
     )
     expect(getResponse.status).toBe(200)
     const records = await getResponse.json()
-    expect(records).toEqual({ records: [record], count: 1, totalPages: 1 })
+    expect(records).toEqual({
+      records: [record],
+      totalCount: 1,
+      totalPages: 1,
+      queryCount: 1,
+      queryPages: 1,
+    })
   })
 
   test('can put and delete a record', async () => {
     const ownerId = uuids.v4()
     const tenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
-    await makeTenant(tenantId, 'Tenant 2', ownerId)
-    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId)
-    const [customerModel] = await putModels(tenantId, [modelFns.newInstance('Customer')], bearer)
+    await makeTenant(port, tenantId, 'Tenant 2', ownerId)
+    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId, jwtSigningSecret)
+    const [customerModel] = await putModels(
+      port,
+      tenantId,
+      [modelFns.newInstance('Customer')],
+      bearer,
+    )
     const record = dataRecordFns.random([customerModel], customerModel)
-    await putRecord(tenantId, customerModel, bearer, record)
+    await putRecord(port, tenantId, customerModel, bearer, record)
 
     const deleteResponse = await fetch(
       `http://localhost:3002/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record/${record.id.value}`,
@@ -323,11 +336,16 @@ describe('with a migrated database', () => {
   test('401 if deleting a record without authentication', async () => {
     const ownerId = uuids.v4()
     const tenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
-    await makeTenant(tenantId, 'Tenant 2', ownerId)
-    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId)
-    const [customerModel] = await putModels(tenantId, [modelFns.newInstance('Customer')], bearer)
+    await makeTenant(port, tenantId, 'Tenant 2', ownerId)
+    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId, jwtSigningSecret)
+    const [customerModel] = await putModels(
+      port,
+      tenantId,
+      [modelFns.newInstance('Customer')],
+      bearer,
+    )
     const record = dataRecordFns.random([customerModel], customerModel)
-    await putRecord(tenantId, customerModel, bearer, record)
+    await putRecord(port, tenantId, customerModel, bearer, record)
 
     const deleteResponse = await fetch(
       `http://localhost:3002/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record/${record.id.value}`,
@@ -341,9 +359,14 @@ describe('with a migrated database', () => {
   test('400 if records being put is not an array', async () => {
     const ownerId = uuids.v4()
     const tenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
-    await makeTenant(tenantId, 'Tenant 2', ownerId)
-    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId)
-    const [customerModel] = await putModels(tenantId, [modelFns.newInstance('Customer')], bearer)
+    await makeTenant(port, tenantId, 'Tenant 2', ownerId)
+    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId, jwtSigningSecret)
+    const [customerModel] = await putModels(
+      port,
+      tenantId,
+      [modelFns.newInstance('Customer')],
+      bearer,
+    )
     const record = dataRecordFns.random([customerModel], customerModel)
 
     const putResponse = await fetch(
@@ -360,66 +383,3 @@ describe('with a migrated database', () => {
     await expect(putResponse.status).toBe(400)
   })
 })
-
-async function postTenant(id: string, name = 'Test Tenant', ownerId = uuids.v4()) {
-  return fetch('http://localhost:3002/api/v1/tenant', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      id,
-      name,
-      owner: {
-        userPool: 'root',
-        id: ownerId,
-        email: 'john@smith.com',
-        firstName: 'John',
-      },
-    }),
-  })
-}
-
-async function makeTenant(id: string, name = 'Test Tenant', ownerId = uuids.v4()) {
-  const postResponse = await postTenant(id, name, ownerId)
-  expect(postResponse.status).toBe(200)
-}
-
-async function putModels(tenantId: string, models: Model[], accessToken: string): Promise<Model[]> {
-  const backendModels: BackendModel[] = models.map((m) => ({
-    id: m.id.value,
-    name: m.name.value,
-    definition: m,
-    events: [],
-  }))
-  const tenant: BackendTenant = {
-    id: tenantId,
-    name: 'Test Tenant',
-    models: backendModels,
-  }
-  const putResponse = await fetch(`http://localhost:3002/api/v1/tenant/${tenantId}/model`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + accessToken,
-    },
-    body: JSON.stringify(tenant),
-  })
-  expect(putResponse.status).toBe(200)
-  return models
-}
-
-async function putRecord(tenantId: string, customerModel, bearer, record: DataRecord) {
-  const putResponse = await fetch(
-    `http://localhost:3002/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record`,
-    {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + bearer,
-      },
-      body: JSON.stringify([record]),
-    },
-  )
-  await expect(putResponse.status).toBe(200)
-}

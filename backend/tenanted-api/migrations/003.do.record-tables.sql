@@ -23,6 +23,7 @@ alter table record
 CREATE OR REPLACE FUNCTION get_records(
     given_tenant_id LTREE,
     given_model_id TEXT,
+    given_q TEXT DEFAULT NULL,
     given_limit INTEGER DEFAULT 10,
     given_offset INTEGER DEFAULT 0
 )
@@ -30,35 +31,69 @@ CREATE OR REPLACE FUNCTION get_records(
 $$
 DECLARE
     records     JSONB[];
-    count       INTEGER;
+    query_count INTEGER;
+    total_count INTEGER;
+    query_pages INTEGER;
     total_pages INTEGER;
 BEGIN
-    SELECT ARRAY(
-                   SELECT definition
-                   FROM record
-                   WHERE model_id = given_model_id
-                     AND tenant = given_tenant_id
-                   ORDER BY created_at DESC
-                   LIMIT given_limit OFFSET given_offset
-               )
-    INTO records;
+    IF given_q IS NOT NULL THEN
+        SELECT ARRAY(
+                       SELECT definition
+                       FROM record
+                       WHERE model_id = given_model_id
+                         AND tenant = given_tenant_id
+                         AND to_tsvector('english', definition) @@ to_tsquery('english', given_q)
+                       ORDER BY created_at DESC
+                       LIMIT given_limit OFFSET given_offset
+                   )
+        INTO records;
 
-    SELECT COUNT(*)
-    INTO count
+        SELECT COUNT(*) AS query_count
+        INTO query_count
+        FROM record
+        WHERE model_id = given_model_id
+          AND tenant = given_tenant_id
+          AND to_tsvector('english', definition) @@ to_tsquery('english', given_q);
+    ELSE
+        SELECT ARRAY(
+                       SELECT definition
+                       FROM record
+                       WHERE model_id = given_model_id
+                         AND tenant = given_tenant_id
+                       ORDER BY created_at DESC
+                       LIMIT given_limit OFFSET given_offset
+                   )
+        INTO records;
+
+        SELECT COUNT(*) AS query_count
+        INTO query_count
+        FROM record
+        WHERE model_id = given_model_id
+          AND tenant = given_tenant_id;
+    END IF;
+
+    SELECT COUNT(*) AS tc
+    INTO total_count
     FROM record
     WHERE model_id = given_model_id
       AND tenant = given_tenant_id;
 
-    total_pages := CEIL(count::FLOAT / given_limit);
+
+    query_pages := CEIL(query_count::FLOAT / given_limit);
+    query_pages := GREATEST(query_pages, 1);
+    total_pages := CEIL(total_count::FLOAT / given_limit);
     total_pages := GREATEST(total_pages, 1);
 
     RETURN jsonb_build_object(
-            'count', count,
+            'queryCount', query_count,
+            'queryPages', query_pages,
+            'totalCount', total_count,
             'totalPages', total_pages,
             'records', records
         );
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql
+;
 
 CREATE OR REPLACE FUNCTION upsert_record(p_tenant LTREE, p_definition JSONB)
     RETURNS VOID AS

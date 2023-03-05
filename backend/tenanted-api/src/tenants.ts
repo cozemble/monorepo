@@ -77,10 +77,10 @@ router.put('/:tenantId/model/:modelId/record', (req: Request, res: Response) => 
 
 router.get('/:tenantId/model/:modelId/record', (req: Request, res: Response) => {
   return authenticatedDatabaseRequest(req, res, async (client) => {
-    const result = await client.query('select * from get_records(text2Ltree($1), $2) as records;', [
-      req.params.tenantId,
-      req.params.modelId,
-    ])
+    const result = await client.query(
+      'select * from get_records(text2Ltree($1), $2, $3) as records;',
+      [req.params.tenantId, req.params.modelId, req.query.q],
+    )
     return res.status(200).json(result.rows[0].records)
   })
 })
