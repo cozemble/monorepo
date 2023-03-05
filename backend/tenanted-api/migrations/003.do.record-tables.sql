@@ -20,6 +20,10 @@ alter table record
             references model (id, tenant)
             on delete cascade;
 
+-- add a column called text to the record table
+ALTER TABLE record ADD COLUMN text text;
+
+
 CREATE OR REPLACE FUNCTION get_records(
     given_tenant_id LTREE,
     given_model_id TEXT,
@@ -42,7 +46,7 @@ BEGIN
                        FROM record
                        WHERE model_id = given_model_id
                          AND tenant = given_tenant_id
-                         AND to_tsvector('english', definition) @@ to_tsquery('english', given_q)
+                         AND to_tsvector('english', text) @@ to_tsquery('english', given_q)
                        ORDER BY created_at DESC
                        LIMIT given_limit OFFSET given_offset
                    )
@@ -53,7 +57,7 @@ BEGIN
         FROM record
         WHERE model_id = given_model_id
           AND tenant = given_tenant_id
-          AND to_tsvector('english', definition) @@ to_tsquery('english', given_q);
+          AND to_tsvector('english', text) @@ to_tsquery('english', given_q);
     ELSE
         SELECT ARRAY(
                        SELECT definition

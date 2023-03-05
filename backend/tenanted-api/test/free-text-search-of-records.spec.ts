@@ -96,6 +96,22 @@ describe('with customer records', () => {
     expect(records.totalCount).toBe(5)
   })
 
+  test('search is case insensitive', async () => {
+    const response = await fetch(
+      `http://localhost:${port}/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record?q=jane`,
+      {
+        headers: {
+          Authorization: 'Bearer ' + bearer,
+        },
+      },
+    )
+    expect(response.status).toBe(200)
+    const records = await response.json()
+    expect(records.records.length).toBe(2)
+    expect(records.queryCount).toBe(2)
+    expect(records.totalCount).toBe(5)
+  })
+
   test('can find the one Janet', async () => {
     const response = await fetch(
       `http://localhost:${port}/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record?q=Janet`,
