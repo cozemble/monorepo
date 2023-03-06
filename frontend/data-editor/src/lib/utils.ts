@@ -30,15 +30,29 @@ export const removeEmptyValues = (obj: Record<string, any>) =>
   }, {} as Record<string, any>)
 
 /** Get the new values that are different from the base object */
-export const getDifference = (base: Record<string, any>, object: Record<string, any>) =>
-  Object.entries(object).reduce((prev, [key, value]) => {
-    if (value && typeof value === 'object' && !Array.isArray(value)) {
-      const diff = getDifference(base[key], value)
-      if (Object.keys(diff).length > 0) {
-        prev[key] = diff
-      }
-    } else if (!_.isEqual(value, base[key])) {
-      prev[key] = value
-    }
-    return prev
-  }, {} as Record<string, any>)
+export const getDifference = (object: AnyValue, base?: AnyValue): AnyValue => {
+  if (!base) return object
+
+  // array
+  if (_.isArray(base) && _.isArray(object)) {
+    // type casted because typescript doesn't get that base is an array
+    return object.map((v, i) => getDifference(v, (<ArrayValue>base)[i]))
+  }
+
+  // object
+  if (_.isObject(object)) {
+    return Object.entries(object).reduce((prev, [key, value]) => {
+      base = base as ObjectValue
+
+      const diff = getDifference(value, base[key])
+      return diff ? { ...prev, [key]: diff } : prev
+    }, {} as ObjectValue)
+  }
+
+  // simple value
+  if (_.isString(object) || _.isNumber(object) || _.isBoolean(object)) {
+    !_.isEqual(base, object) ? object : null
+  }
+
+  return object
+}

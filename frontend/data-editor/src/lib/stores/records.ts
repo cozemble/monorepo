@@ -75,8 +75,8 @@ selectedModel.subscribe((model) => {
 })
 
 export const getDifferenceFromLastSavedRecord = (record: ObjectValue) => ({
-  from: getDifference(record, get(lastSavedRecord)),
-  to: getDifference(get(lastSavedRecord), record),
+  from: getDifference(_.cloneDeep(get(lastSavedRecord)), _.cloneDeep(record)),
+  to: getDifference(_.cloneDeep(record), _.cloneDeep(get(lastSavedRecord))),
 })
 
 //
