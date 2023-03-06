@@ -1,0 +1,36 @@
+{
+  "name": "@cozemble/json-to-gql",
+  "version": "1.0.0",
+  "description": "module to convert json to gql",
+  "main": "index.ts",
+  "scripts": {
+    "test": "vitest run --passWithNoTests",
+    "test:watch": "vitest watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ajv": "^8.12.0",
+    "camelcase": "^7.0.1",
+    "graphql": "16.6.0",
+    "lodash": "^4.17.21",
+    "pluralize": "^8.0.0",
+    "ramda": "^0.28.0",
+    "uppercamelcase": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.4.0",
+    "@types/json-schema": "^7.0.11",
+    "@types/lodash": "^4.14.191",
+    "@types/node": "^16.11.6",
+    "@types/pluralize": "^0.0.29",
+    "@types/ramda": "^0.28.23",
+    "@types/uppercamelcase": "^3.0.0",
+    "jest-diff": "^29.4.3",
+    "jest-matcher-utils": "^29.4.3",
+    "ts-jest": "^29.0.5",
+    "typescript": "^4.9.3",
+    "vitest": "^0.26.2"
+  }
+}
