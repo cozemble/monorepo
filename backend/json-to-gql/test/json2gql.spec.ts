@@ -1,7 +1,10 @@
 import { JSONSchema7 } from 'json-schema'
 import { printSchema } from 'graphql'
+import { expect, it } from 'vitest'
+import { toEqualIgnoringWhitespace } from './matchers'
 import convert from '../src'
 
+expect.extend({ toEqualIgnoringWhitespace })
 export interface IJSONSchema7 extends JSONSchema7 {
   title: string
 }
@@ -12,7 +15,7 @@ const testConversion = (jsonSchema: any, schemaText: string) => {
   expect(actualSchemaText).toEqualIgnoringWhitespace(schemaText)
 }
 
-it.skip('correctly converts basic attribute types', () => {
+it('correctly converts basic attribute types', () => {
   const jsonSchema: IJSONSchema7 = {
     title: 'Invoice',
     type: 'object',
@@ -84,6 +87,41 @@ it.skip('correctly converts basic attribute types', () => {
     },
     required: ['invoiceNumber', 'customer'],
   }
-  const expectedSchemaText = ``
+  const expectedSchemaText = `
+    type Query {
+      invoices: [Invoice]
+    }
+    
+    """Invoice"""
+    type Invoice {
+      """Invoice Number"""
+      invoiceNumber: String!
+    
+      """Description of invoice"""
+      description: String
+      lineItems: [InvoiceLineItems!]
+      customer: InvoiceCustomer!
+    }
+    
+    type InvoiceLineItems {
+      quantity: Int!
+      item: String!
+      price: Float!
+    }
+    
+    type InvoiceCustomer {
+      firstName: String!
+      lastName: String
+      email: String!
+      phone: String!
+      address: InvoiceCustomerAddress!
+    }
+    
+    type InvoiceCustomerAddress {
+      line1: String!
+      line2: String
+      postcode: String!
+    }  
+  `
   testConversion(jsonSchema, expectedSchemaText)
 })
