@@ -147,6 +147,7 @@ importers:
       '@types/node': ^16.11.6
       '@types/pg': ^8.6.6
       child-process-promise: ^2.2.1
+      client-oauth2: ^4.3.3
       cors: ^2.8.5
       dotenv: ^16.0.3
       express: ^4.18.2
@@ -169,6 +170,7 @@ importers:
       '@cozemble/model-sql-actions-player': link:../../model/sql-actions-player
       '@cozemble/model-string-core': link:../../model/string/core
       child-process-promise: 2.2.1
+      client-oauth2: 4.3.3
       cors: 2.8.5
       dotenv: 16.0.3
       express: 4.18.2

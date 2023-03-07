@@ -1,7 +1,7 @@
 import { uuids } from '@cozemble/lang-util'
 import * as http from 'http'
 import { beforeAll, describe, expect, test } from 'vitest'
-import { appWithTestContainer } from '../src/appWithTestContainer'
+import { appWithTestContainer } from '../../src/appWithTestContainer'
 import { BackendModel, BackendTenant } from '@cozemble/backend-tenanted-api-types'
 import { dataRecordFns, modelFns } from '@cozemble/model-api'
 import { ModelEvent, modelEventIdFns, timestampEpochMillis } from '@cozemble/model-core'

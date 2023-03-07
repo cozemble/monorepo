@@ -1,7 +1,8 @@
 import express, { Express, Router } from 'express'
 import cors from 'cors'
-import { modelRoute } from './models'
-import tenants from './tenants'
+import tenants from './tenants/tenants'
+import auth from './auth/auth'
+import { logRequest } from './infra/logRequest'
 
 export function expressApp(): Express {
   const app: Express = express()
@@ -11,9 +12,14 @@ export function expressApp(): Express {
   app.use(cors(corsOptions))
   app.use(express.json())
 
+  app.use((req, res, next) => {
+    logRequest(req)
+    next()
+  })
+
   const routes: Router = Router()
-  routes.use('/model', modelRoute())
   routes.use('/tenant', tenants)
+  routes.use('/auth', auth)
 
   app.use('/api/v1/', [], routes)
 

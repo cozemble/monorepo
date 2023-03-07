@@ -1,9 +1,10 @@
+import { accessTokenKey } from '@cozemble/backend-tenanted-api-types'
 import type { RequestEvent } from '@sveltejs/kit'
-import { accessTokenKey, refreshTokenKey } from '../../../../lib/auth/cozauth'
 import { establishSession } from '../../github/callback/establishSession'
 import { withAdminPgClient } from '../../github/callback/postgresClient'
 import type { GithubUser, SignInState } from '../../github/githubAuth'
 import { fromUrlFriendly, githubAuth } from '../../github/githubAuth'
+import { refreshTokenKey } from '@cozemble/backend-tenanted-api-types/dist/esm'
 
 async function getTokens(userPool: string, githubUser: GithubUser) {
   return await withAdminPgClient(async (client) => {

@@ -1,4 +1,4 @@
-import { loadEnv } from './loadEnv'
+import { loadEnv } from './infra/loadEnv'
 import { expressApp } from './expressApp'
 
 loadEnv()

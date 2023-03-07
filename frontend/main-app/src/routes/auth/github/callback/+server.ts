@@ -1,8 +1,8 @@
+import { accessTokenKey, refreshTokenKey } from '@cozemble/backend-tenanted-api-types'
 import type { RequestEvent } from '@sveltejs/kit'
 import { githubAuth, type GithubUser } from '../githubAuth'
 import { establishSession } from './establishSession'
 import { withAdminPgClient } from './postgresClient'
-import { accessTokenKey, refreshTokenKey } from '../../../../lib/auth/cozauth'
 
 async function fetchEmail(userPool: string, accessToken: string, profile: any) {
   const response = await fetch('https://api.github.com/user/emails', {

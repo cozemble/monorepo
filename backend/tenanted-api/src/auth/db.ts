@@ -1,5 +1,5 @@
 import { uuids } from '@cozemble/lang-util'
-import type { Client } from 'pg'
+import type { PoolClient } from 'pg'
 
 export interface Tenant {
   tenant_id: string
@@ -14,7 +14,11 @@ export interface User {
   tenants: Tenant[]
 }
 
-async function getUserByEmail(pg: Client, userPool: string, email: string): Promise<User | null> {
+async function getUserByEmail(
+  pg: PoolClient,
+  userPool: string,
+  email: string,
+): Promise<User | null> {
   const userSelectResult = await pg.query(
     `select *
          from get_user_by_email($1, $2)`,
@@ -23,7 +27,7 @@ async function getUserByEmail(pg: Client, userPool: string, email: string): Prom
   return userSelectResult.rows[0].get_user_by_email
 }
 
-async function getUserById(pg: Client, userPool: string, userId: string): Promise<User | null> {
+async function getUserById(pg: PoolClient, userPool: string, userId: string): Promise<User | null> {
   const userSelectResult = await pg.query(
     `select *
          from get_user_by_id($1, $2)`,
@@ -33,7 +37,7 @@ async function getUserById(pg: Client, userPool: string, userId: string): Promis
 }
 
 async function registerUser(
-  pg: Client,
+  pg: PoolClient,
   userPool: string,
   email: string,
   firstName: string,
@@ -46,7 +50,12 @@ async function registerUser(
   return userSelectResult.rows[0].register_user
 }
 
-async function insertRefreshToken(pg: Client, userPool: string, user: User, refreshToken: string) {
+async function insertRefreshToken(
+  pg: PoolClient,
+  userPool: string,
+  user: User,
+  refreshToken: string,
+) {
   await pg.query(
     `insert into refresh_token (id, user_id, user_pool, refresh_token)
          values ($1, $2, $3, $4)`,
@@ -54,7 +63,7 @@ async function insertRefreshToken(pg: Client, userPool: string, user: User, refr
   )
 }
 
-async function inTxn<T>(client: Client, action: () => Promise<T>): Promise<T> {
+async function inTxn<T>(client: PoolClient, action: () => Promise<T>): Promise<T> {
   await client.query('BEGIN')
   try {
     const t = await action()
@@ -66,7 +75,7 @@ async function inTxn<T>(client: Client, action: () => Promise<T>): Promise<T> {
   }
 }
 
-async function tradeRefreshTokenForUser(client: Client, refreshToken: string) {
+async function tradeRefreshTokenForUser(client: PoolClient, refreshToken: string) {
   const userSelectResult = await client.query(
     `select *
          from trade_refresh_token_for_user($1)`,

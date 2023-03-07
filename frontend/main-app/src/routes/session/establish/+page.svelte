@@ -1,6 +1,7 @@
 <script lang="ts">
     import {onMount} from "svelte";
-    import {accessTokenKey, cozauth, refreshTokenKey} from "../../../lib/auth/cozauth";
+    import {cozauth} from "../../../lib/auth/cozauth";
+    import {accessTokenKey, refreshTokenKey} from "@cozemble/backend-tenanted-api-types";
 
     onMount(() => {
         if (window) {
