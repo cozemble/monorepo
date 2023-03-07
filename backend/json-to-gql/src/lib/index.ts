@@ -1,1 +1,1 @@
-export { parseSchema } from './parseSchema'
+export { IJSONSchema7, parseSchema } from './parseSchema'

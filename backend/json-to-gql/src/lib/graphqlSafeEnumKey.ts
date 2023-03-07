@@ -1,4 +1,4 @@
-import R from 'ramda'
+import { compose } from 'ramda'
 
 /** Turns an enum key from JSON schema into one that is safe for GraphQL. */
 export function graphqlSafeEnumKey(value: string): string {
@@ -15,5 +15,5 @@ export function graphqlSafeEnumKey(value: string): string {
     return Object.keys(comparators).includes(s) ? comparators[s] : s
   }
   const sanitize = (s: string) => s.replace(/[^_a-zA-Z0-9]/g, '_')
-  return R.compose(sanitize, convertComparators, safeNum, trim)(value)
+  return compose(sanitize, convertComparators, safeNum, trim)(value)
 }

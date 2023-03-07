@@ -1,17 +1,15 @@
-import { JSONSchema7 } from 'json-schema'
 import { printSchema } from 'graphql'
 import { expect, it } from 'vitest'
 import { toEqualIgnoringWhitespace } from './matchers'
 import convert from '../src'
+import { IJSONSchema7 } from '../src/lib'
 
 expect.extend({ toEqualIgnoringWhitespace })
-export interface IJSONSchema7 extends JSONSchema7 {
-  title: string
-}
 
 const testConversion = (jsonSchema: any, schemaText: string) => {
   const schema = convert({ jsonSchema })
   const actualSchemaText = printSchema(schema)
+  // console.log(actualSchemaText)
   expect(actualSchemaText).toEqualIgnoringWhitespace(schemaText)
 }
 
@@ -121,6 +119,37 @@ it('correctly converts basic attribute types', () => {
       line1: String!
       line2: String
       postcode: String!
+    }  
+  `
+  testConversion(jsonSchema, expectedSchemaText)
+})
+
+it('handles enum with numeric keys', () => {
+  const jsonSchema: IJSONSchema7 = {
+    title: 'Person',
+    type: 'object',
+    properties: {
+      age: {
+        type: 'string',
+        enum: ['1', '10', '100'],
+      },
+    },
+  }
+
+  const expectedSchemaText = `
+    type Query {
+      people: [Person]
+    }
+    
+    """Person"""
+    type Person {
+      age: PersonAge
+    }
+    
+    enum PersonAge {
+      VALUE_1
+      VALUE_10
+      VALUE_100
     }  
   `
   testConversion(jsonSchema, expectedSchemaText)

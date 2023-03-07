@@ -9,7 +9,7 @@ import {
   GraphQLUnionType,
 } from 'graphql'
 import { JSONSchema7 } from 'json-schema'
-import _, { isUndefined, isEmpty, mapValues, includes, keyBy } from 'lodash'
+import _ from 'lodash'
 import uppercamelcase from 'uppercamelcase'
 import { GraphQLTypeMap } from '../@types'
 import { getTypeName } from './getTypeName'
