@@ -5,7 +5,8 @@
     import {config} from "../lib/config";
 
     function loginWithGithub() {
-        window.location.href = `${config.backendUrl()}/api/v1/auth/login?provider=github&userPool=root`
+        const rootUrl = encodeURIComponent(`${window.location.protocol}//${window.location.host}`);
+        window.location.href = `${config.backendUrl()}/api/v1/auth/login?provider=github&userPool=root&cozembleRoot=${rootUrl}`
     }
 
     let mounted = true

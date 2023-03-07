@@ -16,15 +16,19 @@ export interface SignInState {
   _type: 'cozauth.signin.state'
   userPool: string
   provider: 'github'
-  referrer: string
+  cozembleRoot: string
 }
 
-export function signInState(userPool: string, provider: 'github', referrer: string): SignInState {
+export function signInState(
+  userPool: string,
+  provider: 'github',
+  cozembleRoot: string,
+): SignInState {
   return {
     _type: 'cozauth.signin.state',
     userPool,
     provider,
-    referrer,
+    cozembleRoot,
   }
 }
 

@@ -18,20 +18,20 @@ router.get('/login', (req: Request, res: Response) => {
   try {
     const provider = req.query.provider
     const userPool = req.query.userPool
-    const redirectTo = req.query.redirectTo as string
+    const cozembleRoot = req.query.cozembleRoot as string
     if (!provider || !userPool) {
       return res.status(400).send('Missing provider or userPool')
     }
-    if (!redirectTo) {
-      return res.status(400).send('Missing redirectTo')
+    if (!cozembleRoot) {
+      return res.status(400).send('Missing cozembleRoot')
     }
     if (
       !(
-        redirectTo.startsWith('http://localhost:') ||
-        redirectTo.startsWith('https://app.cozemble.com')
+        cozembleRoot.startsWith('http://localhost:') ||
+        cozembleRoot.startsWith('https://app.cozemble.com')
       )
     ) {
-      console.log('illegal redirect', redirectTo)
+      console.log('illegal cozembleRoot', cozembleRoot)
       return res.status(400).send('illegal redirect')
     }
     if (provider !== 'github') {
@@ -41,7 +41,7 @@ router.get('/login', (req: Request, res: Response) => {
       return res.status(400).send(`Unsupported user pool: ${userPool}`)
     }
     const githubAuthUrl = githubAuth().code.getUri({
-      state: toUrlFriendly(signInState(userPool, provider, redirectTo)),
+      state: toUrlFriendly(signInState(userPool, provider, cozembleRoot)),
     })
     return res.status(302).header('Location', githubAuthUrl).send()
   } catch (e) {
@@ -82,7 +82,7 @@ async function returnTokensAsCookies(
     return establishSession(client, userPool, githubUser).then((session) => {
       const [accessToken, refreshToken] = session
       res.status(302)
-      res.header('Location', `${signInState.referrer}session/establish`)
+      res.header('Location', `${signInState.cozembleRoot}/session/establish`)
       res.header('Set-Cookie', `${accessTokenKey(userPool)}=${accessToken}; Path=/`)
       res.header('Set-Cookie', `${refreshTokenKey(userPool)}=${refreshToken}; Path=/`)
       return res.send()
