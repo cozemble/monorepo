@@ -32,4 +32,5 @@
     "@cozemble/model-event-sourced": "workspace:*",
     "@cozemble/backend-tenanted-api-types": "workspace:*"
   }
+
 }
