@@ -25,7 +25,7 @@ export function parseSchema(knownTypes: GraphQLTypeMap, schema: IJSONSchema7) {
   new Ajv().validateSchema(schema)
 
   const title = schema.title
-  if (_.isUndefined(title)) throw err('Schema does not have an `$title` property.')
+  if (_.isUndefined(title)) throw err('Schema does not have an `title` property.')
   const typeName = getTypeName(title)
 
   // definitions

@@ -9,7 +9,6 @@ expect.extend({ toEqualIgnoringWhitespace })
 const testConversion = (jsonSchema: any, schemaText: string) => {
   const schema = convert({ jsonSchema })
   const actualSchemaText = printSchema(schema)
-  // console.log(actualSchemaText)
   expect(actualSchemaText).toEqualIgnoringWhitespace(schemaText)
 }
 
@@ -153,4 +152,50 @@ it('handles enum with numeric keys', () => {
     }  
   `
   testConversion(jsonSchema, expectedSchemaText)
+})
+
+it('handles a model reference', () => {
+  const profile = {
+    title: 'Profile',
+    type: 'object',
+    properties: {
+      address: { type: 'string' },
+      city: { type: 'string' },
+      state: { type: 'string' },
+    },
+  }
+  const user = {
+    title: 'User',
+    type: 'object',
+    properties: {
+      first_name: { type: 'string' },
+      last_name: { type: 'string' },
+      email: { type: 'string' },
+      profile: {
+        $ref: 'Profile',
+      },
+    },
+  }
+  const expectedSchemaText = `
+    type Query {
+      profiles: [Profile]
+      users: [User]
+    }
+
+    """Profile"""
+    type Profile {
+      address: String
+      city: String
+      state: String
+    }
+
+    """User"""
+    type User {
+      first_name: String
+      last_name: String
+      email: String
+      profile: Profile
+    }`
+
+  testConversion([profile, user], expectedSchemaText)
 })
