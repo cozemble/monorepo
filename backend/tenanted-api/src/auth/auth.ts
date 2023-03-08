@@ -83,8 +83,8 @@ async function returnTokensAsCookies(
       const [accessToken, refreshToken] = session
       res.status(302)
       res.header('Location', `${signInState.cozembleRoot}/session/establish`)
-      res.header('Set-Cookie', `${accessTokenKey(userPool)}=${accessToken}; Path=/`)
-      res.header('Set-Cookie', `${refreshTokenKey(userPool)}=${refreshToken}; Path=/`)
+      res.cookie(accessTokenKey(userPool), accessToken)
+      res.cookie(refreshTokenKey(userPool), refreshToken)
       return res.send()
     })
   })

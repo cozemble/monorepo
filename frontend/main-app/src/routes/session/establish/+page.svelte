@@ -23,9 +23,12 @@
 
             const accessToken = getCookie(accessTokenKey('root'))
             const refreshToken = getCookie(refreshTokenKey('root'))
+            console.log({accessToken, refreshToken, accessTokenKey:accessTokenKey('root'), refreshTokenKey:refreshTokenKey('root')})
             if (accessToken && refreshToken) {
                 cozauth.setTokens('root', accessToken, refreshToken)
                 window.location.href = "/"
+            } else {
+                alert("Did not get tokens from cookie")
             }
         }
     })

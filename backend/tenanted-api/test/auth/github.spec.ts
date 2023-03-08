@@ -19,7 +19,7 @@ describe('with a running backend', () => {
 
   test('can issue the redirect to github that begins the oauth code flow', async () => {
     const response = await fetch(
-      'http://localhost:3003/api/v1/auth/login?userPool=root&provider=github&cozembleRoot=http://localhost:5173',
+      `http://localhost:3004/api/v1/auth/login?userPool=root&provider=github&cozembleRoot=http://localhost:5173`,
       { redirect: 'manual' },
     )
     expect(response.status).toBe(302)
@@ -30,7 +30,7 @@ describe('with a running backend', () => {
 
   test('redirect to cozemble.com is legal', async () => {
     const response = await fetch(
-      'http://localhost:3003/api/v1/auth/login?userPool=root&provider=github&cozembleRoot=https://app.cozemble.com',
+      'http://localhost:3004/api/v1/auth/login?userPool=root&provider=github&cozembleRoot=https://app.cozemble.com',
       { redirect: 'manual' },
     )
     expect(response.status).toBe(302)
@@ -41,7 +41,7 @@ describe('with a running backend', () => {
 
   test('redirect to localhost is legal', async () => {
     const response = await fetch(
-      'http://localhost:3003/api/v1/auth/login?userPool=root&provider=github&cozembleRoot=http://localhost:8080',
+      'http://localhost:3004/api/v1/auth/login?userPool=root&provider=github&cozembleRoot=http://localhost:8080',
       { redirect: 'manual' },
     )
     expect(response.status).toBe(302)
@@ -52,7 +52,7 @@ describe('with a running backend', () => {
 
   test('redirect to anything else is 400', async () => {
     const response = await fetch(
-      'http://localhost:3003/api/v1/auth/login?userPool=root&provider=github&cozembleRoot=https://google.com',
+      'http://localhost:3004/api/v1/auth/login?userPool=root&provider=github&cozembleRoot=https://google.com',
       { redirect: 'manual' },
     )
     expect(response.status).toBe(400)
