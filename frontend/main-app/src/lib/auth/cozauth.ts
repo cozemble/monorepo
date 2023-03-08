@@ -1,3 +1,5 @@
+import { accessTokenKey, refreshTokenKey } from '@cozemble/backend-tenanted-api-types'
+
 export interface Session {
   _type: 'cozauth.session'
   user: {
@@ -34,20 +36,6 @@ function parseJwt(token: string) {
   )
 
   return JSON.parse(jsonPayload)
-}
-
-export function accessTokenKey(userPool: string) {
-  if (userPool !== 'root') {
-    throw new Error('To do: deal with nested tenants')
-  }
-  return `cozauth.accessToken.${userPool}`
-}
-
-export function refreshTokenKey(userPool: string) {
-  if (userPool !== 'root') {
-    throw new Error('To do: deal with nested tenants')
-  }
-  return `cozauth.refreshToken.${userPool}`
 }
 
 export const cozauth = {

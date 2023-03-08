@@ -2,9 +2,11 @@
 
     import {cozauth} from "../lib/auth/cozauth";
     import {onMount} from "svelte";
+    import {config} from "../lib/config";
 
     function loginWithGithub() {
-        window.location.href = "/auth/v1/login?provider=github&userPool=root"
+        const rootUrl = encodeURIComponent(`${window.location.protocol}//${window.location.host}`);
+        window.location.href = `${config.backendUrl()}/api/v1/auth/login?provider=github&userPool=root&cozembleRoot=${rootUrl}`
     }
 
     let mounted = true
@@ -12,7 +14,6 @@
 
     onMount(async () => {
         const session = await cozauth.getSession('root')
-        console.log("session", session)
         if (session) {
             hasSession = true
             if (session.user.tenants.length === 1) {

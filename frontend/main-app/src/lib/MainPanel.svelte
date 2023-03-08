@@ -6,7 +6,6 @@
         registerAllPropertyEditors,
         registerAllPropertyViewers
     } from '@cozemble/model-assembled'
-    import {registerStringPropertyEventToSqlActions} from '@cozemble/model-string-sql-actions'
     import ModelsPanel from './models/ModelsPanel.svelte'
     import type {Session} from "./auth/cozauth";
     import DataPanel from "../lib/data/DataPanel.svelte";
@@ -18,7 +17,6 @@
     onMount(() => {
         registerAllProperties()
         registerAllPropertyConfigurers()
-        registerStringPropertyEventToSqlActions()
         registerAllPropertyViewers()
         registerAllPropertyEditors()
     })

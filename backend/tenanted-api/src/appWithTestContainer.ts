@@ -2,7 +2,7 @@ import { exec } from 'child-process-promise'
 import { PostgreSqlContainer, StartedPostgreSqlContainer } from 'testcontainers'
 import { expressApp } from './expressApp'
 import * as http from 'http'
-import { closePgPool, withAdminPgClient } from './postgresPool'
+import { closePgPool, withAdminPgClient } from './infra/postgresPool'
 
 function pgConnectString(container: StartedPostgreSqlContainer) {
   return `postgres://${container.getUsername()}:${container.getPassword()}@${container.getHost()}:${container.getPort()}/${container.getDatabase()}`
@@ -42,6 +42,9 @@ export async function appWithTestContainer(
   process.env.PG_ADMIN_USER = pgDetails?.username ?? container.getUsername()
   process.env.PG_ADMIN_PASSWORD = pgDetails?.password ?? container.getPassword()
   process.env.JWT_SIGNING_SECRET = jwtSigningKey
+  process.env.OAUTH_CALLBACK_ROOT = `http://localhost:${port}/api/v1/auth/callback`
+  process.env.GITHUB_CLIENT_ID = 'pretend-github-client-id'
+  process.env.GITHUB_CLIENT_SECRET = 'pretend-github-client-secret'
 
   if (!pgDetails) {
     console.log('Running migrations...')

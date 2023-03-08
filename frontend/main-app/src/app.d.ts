@@ -9,7 +9,4 @@ declare global {
   }
 }
 
-declare module '$env/static/public' {
-  export const PUBLIC_SUPABASE_KEY: string
-}
 export {}

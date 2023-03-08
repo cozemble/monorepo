@@ -1,6 +1,6 @@
 import ClientOAuth2 from 'client-oauth2'
 import { mandatory } from '@cozemble/lang-util'
-import { loadEnv } from '../../../lib/env/env'
+import { loadEnv } from '../infra/loadEnv'
 
 loadEnv()
 
@@ -16,13 +16,19 @@ export interface SignInState {
   _type: 'cozauth.signin.state'
   userPool: string
   provider: 'github'
+  cozembleRoot: string
 }
 
-export function signInState(userPool: string, provider: 'github'): SignInState {
+export function signInState(
+  userPool: string,
+  provider: 'github',
+  cozembleRoot: string,
+): SignInState {
   return {
     _type: 'cozauth.signin.state',
     userPool,
     provider,
+    cozembleRoot,
   }
 }
 
@@ -53,7 +59,7 @@ export const githubAuth = (): ClientOAuth2 => {
     clientSecret,
     accessTokenUri: 'https://github.com/login/oauth/access_token',
     authorizationUri: 'https://github.com/login/oauth/authorize',
-    redirectUri: `${authRoot}/auth/v1/callback`,
+    redirectUri: `${authRoot}/api/v1/auth/callback`,
     scopes: ['user:email'],
   })
 }
