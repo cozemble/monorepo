@@ -1,33 +1,43 @@
-import type { Schema } from 'ajv'
 import _ from 'lodash'
 
 /** Initialize an object with empty values based on the schema */
-export const initValues = (schema: Schema) =>
-  Object.entries(schema).reduce((prev, [key, value]) => {
-    if (value.type === 'object') {
-      prev[key] = initValues(value.properties)
-    } else if (value.type === 'array') {
-      prev[key] = []
-    } else {
-      prev[key] = ''
-    }
-    return prev
-  }, {} as Record<string, any>)
+export const initValues = (schema: CozJSONSchema): AnyValue => {
+  if (schema.type === 'array') return schema.default || []
+
+  if (schema.type === 'object') {
+    return Object.entries(schema.properties || {}).reduce((prev, [key, value]) => {
+      prev[key] = initValues(value)
+
+      return prev
+    }, {} as ObjectValue)
+  }
+
+  if (schema.type === 'string') return schema.default || ''
+
+  if (schema.type === 'number' || schema.type === 'integer') return schema.default || 0
+
+  if (schema.type === 'boolean') return schema.default || false
+
+  return schema.default || null
+}
 
 /** Remove empty values from an object */
-export const removeEmptyValues = (obj: Record<string, any>) =>
-  Object.entries(obj).reduce((prev, [key, value]) => {
-    if (value && typeof value === 'object' && !Array.isArray(value)) {
+export const removeEmptyValues = (value: AnyValue): AnyValue => {
+  // array
+  if (_.isArray(value) && value.length > 0) return value.map((v) => removeEmptyValues(v))
+
+  // object
+  if (_.isObject(value))
+    return Object.entries(value).reduce((prev, [key, value]) => {
       prev[key] = removeEmptyValues(value)
-    } else if (value === '' || value === null || value.length === 0) {
-      // do nothing
-    } else if (Array.isArray(value) && value.length > 0) {
-      prev[key] = value.map((v) => removeEmptyValues(v))
-    } else {
-      prev[key] = value
-    }
-    return prev
-  }, {} as Record<string, any>)
+
+      return prev
+    }, {} as ObjectValue)
+
+  // simple value
+  const emptyValues = ['', null, undefined, NaN]
+  if (!_.includes(emptyValues, value)) return value
+}
 
 /** Get the new values that are different from the base object */
 export const getDifference = (object: AnyValue, base?: AnyValue): AnyValue => {
@@ -51,7 +61,7 @@ export const getDifference = (object: AnyValue, base?: AnyValue): AnyValue => {
 
   // simple value
   if (_.isString(object) || _.isNumber(object) || _.isBoolean(object)) {
-    !_.isEqual(base, object) ? object : null
+    return !_.isEqual(base, object) ? object : null
   }
 
   return object

@@ -39,7 +39,7 @@ function createLog(record: ObjectValue) {
 }
 
 selectedModel.subscribe((model) => {
-  currentRecord.set(initValues(model?.properties || {}))
+  currentRecord.set(<ObjectValue>initValues(model))
   createLog({ ...get(currentRecord) })
 })
 
@@ -71,7 +71,7 @@ export const takeBack = async () => {
 export const lastSavedRecord: Writable<ObjectValue> = writable({})
 
 selectedModel.subscribe((model) => {
-  lastSavedRecord.set(initValues(model?.properties || {}))
+  lastSavedRecord.set(<ObjectValue>initValues(model))
 })
 
 export const getDifferenceFromLastSavedRecord = (record: ObjectValue) => ({

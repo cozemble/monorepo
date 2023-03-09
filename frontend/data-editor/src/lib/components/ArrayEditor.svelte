@@ -12,7 +12,7 @@ $: console.info(`${label} array schema: `, schema)
 
 // TODO: Add support for other types than object
 function addValue() {
-  value = [...value, initValues(schema.properties)]
+  value = [...value, <ArrayValue>initValues(schema)]
 }
 </script>
 
