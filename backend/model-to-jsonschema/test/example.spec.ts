@@ -15,6 +15,16 @@ describe.skip('given a customer with a has-one address', () => {
       propertyFns.newInstance('First name', stringPropertyOptions.required),
     ),
     modelOptions.withProperty(propertyFns.newInstance('Last name')),
+    modelOptions.withProperty(
+      propertyFns.newInstance(
+        'Email',
+        stringPropertyOptions.required,
+        stringPropertyOptions.validation(
+          '^[a-zA-Z0-9]+(?:\\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(?:\\.[a-zA-Z0-9]+)*$',
+          'Invalid email address',
+        ),
+      ),
+    ),
     modelOptions.withRelationships(relationshipFns.newInstance('Address', addressModel.id, 'one')),
   )
   const models = [customerModel, addressModel]
@@ -31,6 +41,10 @@ describe.skip('given a customer with a has-one address', () => {
         'Last name': {
           type: 'string',
         },
+        Email: {
+          type: 'string',
+          pattern: '^[a-zA-Z0-9]+(?:\\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(?:\\.[a-zA-Z0-9]+)*$',
+        },
         Address: {
           type: 'object',
           properties: {
@@ -44,7 +58,7 @@ describe.skip('given a customer with a has-one address', () => {
           required: ['Post code'],
         },
       },
-      required: ['First name'],
+      required: ['First name', 'Email'],
     }
     expect(schema).toMatch(expected)
   })
