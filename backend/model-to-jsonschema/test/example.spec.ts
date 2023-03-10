@@ -21,34 +21,31 @@ describe.skip('given a customer with a has-one address', () => {
 
   test('I can generate a json schema', () => {
     const schema = modelToJsonSchema(customerModel, models)
-    expect(schema).toBe(`{
-    "type": "object",
-    "properties": {
-        "First name": {
-            "type": "string",
-            "description": "user name"
+    const expected = {
+      type: 'object',
+      properties: {
+        'First name': {
+          type: 'string',
+          description: 'user name',
         },
-        "Last name": {
-            "type": "string"
+        'Last name': {
+          type: 'string',
         },
-        "Address": {
-            "type": "object",
-            "properties": {
-                "Street": {
-                    "type": "string"
-                },
-                "Post code": {
-                    "type": "string"
-                }
+        Address: {
+          type: 'object',
+          properties: {
+            Street: {
+              type: 'string',
             },
-            "required": [
-                "Post code"
-            ]
-        }
-    },
-    "required": [
-        "First name"
-    ]
-}`)
+            'Post code': {
+              type: 'string',
+            },
+          },
+          required: ['Post code'],
+        },
+      },
+      required: ['First name'],
+    }
+    expect(schema).toMatch(expected)
   })
 })
