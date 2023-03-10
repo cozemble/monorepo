@@ -67,7 +67,6 @@ BEGIN
     insert into user_tenancy(user_id, tenant, roles) values (user_id, tenant, array ['owner']);
 
     return get_user_by_id(given_user_pool, user_id);
-
 END
 $$ LANGUAGE plpgsql;
 

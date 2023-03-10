@@ -15,7 +15,6 @@ export async function newSessionTokens(pg: PoolClient, user: User, userPool: str
     iat: Math.floor(Date.now() / 1000),
     exp: Math.floor(Date.now() / 1000) + 60 * 60,
   }
-  console.log({ payload, date: new Date() })
   const jwtSigningSecret = mandatoryEnv('JWT_SIGNING_SECRET')
 
   const accessToken = jwt.sign(payload, jwtSigningSecret, {})
