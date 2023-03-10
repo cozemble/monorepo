@@ -131,6 +131,23 @@ importers:
       vite: 4.1.2
       vitest: 0.26.3
 
+  backend/model-to-jsonschema:
+    specifiers:
+      '@cozemble/model-api': workspace:*
+      '@cozemble/model-core': workspace:*
+      '@cozemble/model-string-core': workspace:*
+      typescript: ^4.9.3
+      vite: ^4.0.0
+      vitest: ^0.26.2
+    dependencies:
+      '@cozemble/model-api': link:../../model/api
+      '@cozemble/model-core': link:../../model/core
+      '@cozemble/model-string-core': link:../../model/string/core
+    devDependencies:
+      typescript: 4.9.5
+      vite: 4.1.2
+      vitest: 0.26.3
+
   backend/tenanted-api:
     specifiers:
       '@cozemble/backend-tenanted-api-types': workspace:*
