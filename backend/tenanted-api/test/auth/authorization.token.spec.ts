@@ -1,4 +1,4 @@
-import { beforeAll, describe, expect, test } from 'vitest'
+import { beforeAll, describe, expect, onTestFailed, test } from 'vitest'
 import { appWithTestContainer } from '../../src/appWithTestContainer'
 import * as http from 'http'
 import { makeTenant } from '../tenant/testHelpers'
@@ -15,6 +15,13 @@ async function makeAuthorizationToken(userId: string) {
   })
 }
 
+async function logDatabaseMessages() {
+  await withAdminPgClient(async (pg) => {
+    const response = await pg.query('select * from get_messages_since()')
+    console.log(JSON.stringify(response.rows, null, 2))
+  })
+}
+
 describe('with a running backend', () => {
   let server: http.Server
 
@@ -27,12 +34,19 @@ describe('with a running backend', () => {
     }
   }, 1000 * 90)
 
-  test.skip('returns user json if auth code exists, has not been used and has not expired', async () => {
+  test('returns user json if auth code exists, has not been used and has not expired', async () => {
+    onTestFailed(async () => {
+      try {
+        await logDatabaseMessages()
+      } catch (e) {
+        console.error(e)
+      }
+    })
+
     const ownerId = uuids.v4()
     const tenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
     await makeTenant(port, tenantId, 'Tenant 2', ownerId)
     const token = await makeAuthorizationToken(ownerId)
-    console.log({ token })
 
     const response = await fetch(`http://localhost:3005/api/v1/auth/token`, {
       method: 'POST',
