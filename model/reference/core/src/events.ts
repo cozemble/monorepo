@@ -9,49 +9,54 @@ import {
   propertyIdFns,
   type PropertyName,
 } from '@cozemble/model-core'
-import { emptyProperty } from './stringProperty'
+import { emptyProperty } from './referenceProperty'
 
-export interface NewStringPropertyModelEvent extends ModelEvent {
-  _type: 'new.string.property.model.event'
+export interface NewReferencePropertyModelEvent extends ModelEvent {
+  _type: 'new.reference.property.model.event'
   propertyName: PropertyName
   propertyId: PropertyId
 }
 
-export function newStringPropertyModelEvent(
+export function newReferencePropertyModelEvent(
   modelId: ModelId,
   propertyName: PropertyName,
   propertyId?: PropertyId,
-): NewStringPropertyModelEvent {
+): NewReferencePropertyModelEvent {
   return {
-    _type: 'new.string.property.model.event',
+    _type: 'new.reference.property.model.event',
     ...modelEventFns.coreParts(modelId),
     propertyName,
     propertyId: propertyId ?? propertyIdFns.newInstance(propertyName.value),
   }
 }
 
-export const newStringPropertyModelEventDescriptor: ModelEventDescriptor = {
+export const newReferencePropertyModelEventDescriptor: ModelEventDescriptor = {
   _type: 'model.event.descriptor',
-  modelEventType: 'new.string.property.model.event',
-  applyEvent: (model: Model, event: NewStringPropertyModelEvent): Model => {
+  modelEventType: 'new.reference.property.model.event',
+  applyEvent: (model: Model, event: NewReferencePropertyModelEvent): Model => {
+    console.log(`Applying event: ${JSON.stringify(event)}`)
     let newProperty = {
       ...emptyProperty(`Property`),
       id: event.propertyId,
       name: event.propertyName,
     }
+    console.log({ newProperty })
     if (model.properties.some((p) => propertyIdFns.equals(p.id, event.propertyId))) {
       newProperty = { ...newProperty, id: event.propertyId }
-      return {
+      console.log({ newProperty, model })
+      const mutatedModel = {
         ...model,
         properties: model.properties.map((p) =>
           propertyIdFns.equals(p.id, event.propertyId) ? newProperty : p,
         ),
       }
+      console.log({ mutatedModel })
+      return mutatedModel
     }
     return { ...model, properties: [...model.properties, newProperty] }
   },
 }
 
 export function registerModelEvents() {
-  modelEventDescriptors.register(newStringPropertyModelEventDescriptor)
+  modelEventDescriptors.register(newReferencePropertyModelEventDescriptor)
 }

@@ -5,6 +5,7 @@ import {
   PropertyViewer as StringPropertyViewer,
 } from '@cozemble/model-string-ui'
 import { stringPropertyType, registerStringProperty } from '@cozemble/model-string-core'
+import { registerReferenceProperty } from '@cozemble/model-reference-core'
 
 export { propertyDescriptors } from '@cozemble/model-core'
 
@@ -41,6 +42,7 @@ export const propertyEditorRegistry = {
 
 export function registerAllProperties() {
   registerStringProperty()
+  registerReferenceProperty()
 }
 
 export function registerAllPropertyConfigurers() {

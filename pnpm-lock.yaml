@@ -493,12 +493,14 @@ importers:
     specifiers:
       '@cozemble/lang-util': workspace:*
       '@cozemble/model-core': workspace:*
+      '@cozemble/model-reference-core': workspace:*
       '@cozemble/model-string-core': workspace:*
       '@cozemble/model-string-ui': workspace:*
       typescript: ^4.9.3
     dependencies:
       '@cozemble/lang-util': link:../../lang/util
       '@cozemble/model-core': link:../core
+      '@cozemble/model-reference-core': link:../reference/core
       '@cozemble/model-string-core': link:../string/core
       '@cozemble/model-string-ui': link:../string/ui
     devDependencies:
@@ -587,6 +589,21 @@ importers:
       '@cozemble/lang-util': link:../../lang/util
       '@cozemble/model-api': link:../api
       '@cozemble/model-core': link:../core
+    devDependencies:
+      typescript: 4.9.5
+      vite: 4.1.2
+      vitest: 0.26.3
+
+  model/reference/core:
+    specifiers:
+      '@cozemble/lang-util': workspace:*
+      '@cozemble/model-core': workspace:*
+      typescript: ^4.9.3
+      vite: ^4.0.0
+      vitest: ^0.26.2
+    dependencies:
+      '@cozemble/lang-util': link:../../../lang/util
+      '@cozemble/model-core': link:../../core
     devDependencies:
       typescript: 4.9.5
       vite: 4.1.2
