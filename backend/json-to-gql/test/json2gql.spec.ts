@@ -199,3 +199,67 @@ it('handles a model reference', () => {
 
   testConversion([profile, user], expectedSchemaText)
 })
+
+it('converts `oneOf` schemas (with if/then) to union types', () => {
+  const parent: IJSONSchema7 = {
+    title: 'Parent',
+    type: 'object',
+    properties: {
+      type: { type: 'string' },
+      name: { type: 'string' },
+    },
+  }
+  const child: IJSONSchema7 = {
+    title: 'Child',
+    type: 'object',
+    properties: {
+      type: { type: 'string' },
+      name: { type: 'string' },
+      parent: { $ref: 'Parent' },
+      bestFriend: { $ref: 'Person' },
+      friends: {
+        type: 'array',
+        items: { $ref: 'Person' },
+      },
+    },
+  }
+  const person: IJSONSchema7 = {
+    title: 'Person',
+    oneOf: [
+      {
+        if: { properties: { type: { const: 'Parent' } } },
+        then: { $ref: 'Parent' },
+      },
+      {
+        if: { properties: { type: { const: 'Child' } } },
+        then: { $ref: 'Child' },
+      },
+    ],
+  }
+  const expectedSchemaText = `
+  type Query {
+    parents: [Parent]
+    children: [Child]
+    people: [Person]
+  }
+  
+  """Parent"""
+  type Parent {
+    type: String
+    name: String
+  }
+  
+  """Child"""
+  type Child {
+    type: String
+    name: String
+    parent: Parent
+    bestFriend: Person
+    friends: [Person!]
+  }
+  
+  """Person"""
+  union Person = Parent | Child`
+
+  testConversion([parent, child, person], expectedSchemaText)
+})
