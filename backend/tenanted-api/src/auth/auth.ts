@@ -9,8 +9,9 @@ import {
 } from './githubAuth'
 import { fetchGithubUserDetails } from './githubUserDetails'
 import { withAdminPgClient } from '../infra/postgresPool'
-import { establishSession } from './establishSession'
+import { establishSession, newSessionTokens } from './establishSession'
 import { accessTokenKey, refreshTokenKey } from '@cozemble/backend-tenanted-api-types'
+import { db } from './db'
 
 const router: Router = Router()
 
@@ -72,6 +73,27 @@ router.get('/callback', async (req: Request, res: Response) => {
   }
 })
 
+router.post('/token', async (req: Request, res: Response) => {
+  try {
+    const authorizationToken = req.body.token
+    if (!authorizationToken) {
+      return res.status(400).send(`No token provided`)
+    }
+    return await withAdminPgClient(async (client) => {
+      const user = await db.authTokens.tradeAuthTokenForUser(client, authorizationToken)
+      console.log({ user })
+      if (!user) {
+        return res.status(401).send()
+      }
+      const [accessToken, refreshToken] = await newSessionTokens(client, user, user.user_pool)
+      return res.status(200).json({ accessToken, refreshToken })
+    })
+  } catch (e) {
+    console.error(`When handling auth token`, e)
+    return res.status(500).send()
+  }
+})
+
 async function returnTokensAsCookies(
   res: Response,
   signInState: SignInState,
@@ -83,8 +105,15 @@ async function returnTokensAsCookies(
       const [accessToken, refreshToken] = session
       res.status(302)
       res.header('Location', `${signInState.cozembleRoot}/session/establish`)
-      res.cookie(accessTokenKey(userPool), accessToken)
-      res.cookie(refreshTokenKey(userPool), refreshToken)
+      if (signInState.cozembleRoot.startsWith('https://app.cozemble.com')) {
+        console.log('setting cookies with domain cozemble.com')
+        res.cookie(accessTokenKey(userPool), accessToken, { domain: 'app.cozemble.com' })
+        res.cookie(refreshTokenKey(userPool), refreshToken, { domain: 'app.cozemble.com' })
+      } else {
+        console.log('setting cookies without domain')
+        res.cookie(accessTokenKey(userPool), accessToken)
+        res.cookie(refreshTokenKey(userPool), refreshToken)
+      }
       return res.send()
     })
   })

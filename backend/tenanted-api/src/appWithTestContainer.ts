@@ -23,6 +23,7 @@ async function createAppUser() {
         CREATE USER app_user WITH PASSWORD 'password';
         GRANT ALL PRIVILEGES ON DATABASE postgres TO app_user;
         GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO app_user;
+        GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO app_user;
       `)
     })
   } catch (e) {

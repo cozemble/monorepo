@@ -10,7 +10,7 @@ BEGIN
     SELECT json_build_object(
                    'user_id', u.id,
                    'first_name', u.first_name,
-                   'user_pool', rt.user_pool,
+                   'user_pool', u.user_pool,
                    'tenants', json_agg(json_build_object(
                     'tenant_name', t.name,
                     'tenant_id', t.id,
@@ -19,7 +19,7 @@ BEGIN
                )
     INTO user_data
     FROM refresh_token rt
-             JOIN users u ON u.id = rt.user_id
+             JOIN users u ON u.id = rt.user_id AND u.user_pool = rt.user_pool
              JOIN user_tenancy ut ON u.id = ut.user_id
              JOIN tenant t ON t.id = ut.tenant
     WHERE rt.refresh_token = given_refresh_token
