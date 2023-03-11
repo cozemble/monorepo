@@ -83,12 +83,15 @@ router.get('/callback', async (req: Request, res: Response) => {
 
 router.post('/token', async (req: Request, res: Response) => {
   try {
-    const authorizationToken = req.body.token
-    if (!authorizationToken) {
+    const authorizationToken = req.body.authorizationToken
+    const givenRefreshToken = req.body.refreshToken
+    if (!authorizationToken && !givenRefreshToken) {
       return res.status(400).send(`No token provided`)
     }
     return await withAdminPgClient(async (client) => {
-      const user = await db.authTokens.tradeAuthTokenForUser(client, authorizationToken)
+      const user = authorizationToken
+        ? await db.authTokens.tradeAuthTokenForUser(client, authorizationToken)
+        : await db.refreshTokens.tradeRefreshTokenForUser(client, givenRefreshToken)
       if (!user) {
         return res.status(401).send()
       }
@@ -96,7 +99,7 @@ router.post('/token', async (req: Request, res: Response) => {
       return res.status(200).json({ accessToken, refreshToken })
     })
   } catch (e) {
-    console.error(`When handling auth token`, e)
+    console.error(`When handling token`, e)
     return res.status(500).send()
   }
 })

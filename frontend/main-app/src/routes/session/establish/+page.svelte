@@ -15,7 +15,7 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    token: data.authorizationCode
+                    authorizationToken: data.authorizationCode
                 })
             }).then(async (res) => {
                 if(!res.ok) throw new Error("Did not get access tokens")

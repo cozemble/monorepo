@@ -1,4 +1,5 @@
 import { accessTokenKey, refreshTokenKey } from '@cozemble/backend-tenanted-api-types'
+import { tradeRefreshTokenForAccessToken } from './tradeRefreshTokenForAccessToken'
 
 export interface Session {
   _type: 'cozauth.session'
@@ -38,10 +39,36 @@ function parseJwt(token: string) {
   return JSON.parse(jsonPayload)
 }
 
+async function refreshAccessToken(userPool: string): Promise<string | null> {
+  const localRefreshToken = localStorage.getItem(refreshTokenKey(userPool))
+  if (!localRefreshToken) {
+    console.warn(`No refresh token found for user pool ${userPool}`)
+    return null
+  }
+  const { accessToken, refreshToken } = await tradeRefreshTokenForAccessToken(
+    userPool,
+    localRefreshToken,
+  )
+  cozauth.setTokens(userPool, accessToken, refreshToken)
+  return accessToken
+}
+
+function isExpiring(accessToken: string) {
+  const jwt = parseJwt(accessToken)
+  const now = new Date()
+  const exp = new Date(jwt.exp * 1000)
+  const diff = exp.getTime() - now.getTime()
+  if (diff <= 1000 * 60 * 5) {
+    console.warn('Access token is expiring soon', { diff, exp, now })
+    return true
+  }
+  return false
+}
+
 export const cozauth = {
-  setTokens: (tenant: string, accessToken: string, refreshToken: string) => {
-    localStorage.setItem(accessTokenKey(tenant), accessToken)
-    localStorage.setItem(refreshTokenKey(tenant), refreshToken)
+  setTokens: (userPool: string, accessToken: string, refreshToken: string) => {
+    localStorage.setItem(accessTokenKey(userPool), accessToken)
+    localStorage.setItem(refreshTokenKey(userPool), refreshToken)
   },
   getTenantRoot: (tenantLtree: string) => {
     const parts = tenantLtree.split('.')
@@ -51,7 +78,7 @@ export const cozauth = {
     return 'root'
   },
   getSession: async (userPool: string): Promise<Session | null> => {
-    const accessToken = localStorage.getItem(accessTokenKey(userPool))
+    const accessToken = await cozauth.getAccessToken(userPool)
     if (accessToken) {
       const jwtPayload = parseJwt(accessToken)
       return session(jwtPayload.sub, jwtPayload.email, jwtPayload.email, jwtPayload.tenants)
@@ -59,11 +86,22 @@ export const cozauth = {
 
     return null
   },
-  getAccessToken: (userPool: string): string | null => {
-    const result = localStorage.getItem(accessTokenKey(userPool))
-    if (!result) {
+  getAccessToken: async (userPool: string): Promise<string | null> => {
+    const accessToken = localStorage.getItem(accessTokenKey(userPool))
+    if (!accessToken) {
       console.warn(`No access token found for user pool ${userPool}`)
+      return null
     }
-    return result
+    if (isExpiring(accessToken)) {
+      try {
+        return await refreshAccessToken(userPool)
+      } catch (e) {
+        console.error('Failed to refresh access token', e)
+        localStorage.removeItem(accessTokenKey(userPool))
+        localStorage.removeItem(refreshTokenKey(userPool))
+        window.location.href = '/'
+      }
+    }
+    return accessToken
   },
 }

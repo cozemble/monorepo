@@ -81,7 +81,7 @@ async function tradeRefreshTokenForUser(client: PoolClient, refreshToken: string
          from trade_refresh_token_for_user($1)`,
     [refreshToken],
   )
-  return userSelectResult.rows[0]
+  return userSelectResult.rows[0].trade_refresh_token_for_user
 }
 
 async function tradeAuthTokenForUser(client: PoolClient, authorizationToken: string) {
