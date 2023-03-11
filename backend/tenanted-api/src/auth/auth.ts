@@ -1,16 +1,8 @@
 import { Request, Response, Router } from 'express'
-import {
-  fromUrlFriendly,
-  githubAuth,
-  GithubUser,
-  SignInState,
-  signInState,
-  toUrlFriendly,
-} from './githubAuth'
+import { fromUrlFriendly, githubAuth, SignInState, signInState, toUrlFriendly } from './githubAuth'
 import { fetchGithubUserDetails } from './githubUserDetails'
 import { withAdminPgClient } from '../infra/postgresPool'
-import { establishSession, newSessionTokens } from './establishSession'
-import { accessTokenKey, refreshTokenKey } from '@cozemble/backend-tenanted-api-types'
+import { newSessionTokens } from './establishSession'
 import { db } from './db'
 
 const router: Router = Router()
@@ -66,7 +58,23 @@ router.get('/callback', async (req: Request, res: Response) => {
       return res.status(400).send(`State is not for github`)
     }
     const githubUser = await fetchGithubUserDetails(signinState.userPool, token.accessToken)
-    return returnTokensAsCookies(res, signinState, githubUser)
+    return await withAdminPgClient(async (client) => {
+      let foundUser = await db.users.getUserByEmail(client, signinState.userPool, githubUser.email)
+      if (!foundUser) {
+        foundUser = await db.users.registerUser(client, signinState.userPool, githubUser.email, '')
+      }
+      const authorizationToken = await db.authTokens.createAuthToken(
+        client,
+        foundUser,
+        signinState.userPool,
+      )
+      res.status(302)
+      res.header(
+        'Location',
+        `${signinState.cozembleRoot}/session/establish?token=${authorizationToken}`,
+      )
+      return res.send()
+    })
   } catch (e) {
     console.error(e)
     return res.status(500).send()
@@ -81,7 +89,6 @@ router.post('/token', async (req: Request, res: Response) => {
     }
     return await withAdminPgClient(async (client) => {
       const user = await db.authTokens.tradeAuthTokenForUser(client, authorizationToken)
-      console.log({ user })
       if (!user) {
         return res.status(401).send()
       }
@@ -93,30 +100,5 @@ router.post('/token', async (req: Request, res: Response) => {
     return res.status(500).send()
   }
 })
-
-async function returnTokensAsCookies(
-  res: Response,
-  signInState: SignInState,
-  githubUser: GithubUser,
-) {
-  const userPool = signInState.userPool
-  return await withAdminPgClient(async (client) => {
-    return establishSession(client, userPool, githubUser).then((session) => {
-      const [accessToken, refreshToken] = session
-      res.status(302)
-      res.header('Location', `${signInState.cozembleRoot}/session/establish`)
-      if (signInState.cozembleRoot.startsWith('https://app.cozemble.com')) {
-        console.log('setting cookies with domain cozemble.com')
-        res.cookie(accessTokenKey(userPool), accessToken, { domain: 'app.cozemble.com' })
-        res.cookie(refreshTokenKey(userPool), refreshToken, { domain: 'app.cozemble.com' })
-      } else {
-        console.log('setting cookies without domain')
-        res.cookie(accessTokenKey(userPool), accessToken)
-        res.cookie(refreshTokenKey(userPool), refreshToken)
-      }
-      return res.send()
-    })
-  })
-}
 
 export default router

@@ -32,7 +32,7 @@
     <div id=tab1>
         <div class="panel-container" class:visible={panelToShow === 'models'}>
             <div class="inner-panel-container">
-                <ModelsPanel/>
+                <ModelsPanel {tenantId}/>
             </div>
         </div>
     </div>

@@ -12,6 +12,8 @@
     export let tenantId: string
     export let records: Writable<DataRecord[]>
 
+    console.log({models, model, tenantId, records:$records})
+
     const paginatedEditorHost: PaginatedEditorHost = {
         async recordEdited(editedRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
             const result = await saveRecord(tenantId, model.id.value, editedRecord)

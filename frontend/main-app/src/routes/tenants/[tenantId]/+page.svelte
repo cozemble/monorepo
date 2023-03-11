@@ -8,7 +8,7 @@
         registerAllPropertyViewers
     } from "@cozemble/model-assembled";
     import {page} from '$app/stores';
-
+    import {tenantStore} from "$lib/tenant/tenantStore.js";
 
     onMount(() => {
         registerAllProperties()
@@ -22,7 +22,7 @@
     {#await cozauth.getSession('root')}
         <p>loading...</p>
     {:then session}
-        {#if session}
+        {#if session && $tenantStore}
             <MainPanel {session} tenantId={$page.params.tenantId}/>
         {:else }
             <h1>You need to login</h1>

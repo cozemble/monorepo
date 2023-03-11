@@ -2,7 +2,7 @@ import { uuids } from '@cozemble/lang-util'
 import * as http from 'http'
 import { beforeAll, describe, expect, test } from 'vitest'
 import { appWithTestContainer } from '../../src/appWithTestContainer'
-import { BackendModel, BackendTenant } from '@cozemble/backend-tenanted-api-types'
+import { BackendModel } from '@cozemble/backend-tenanted-api-types'
 import { dataRecordFns, modelFns } from '@cozemble/model-api'
 import { ModelEvent, modelEventIdFns, timestampEpochMillis } from '@cozemble/model-core'
 import { makeTenant, makeTenantMemberAccessToken, putModels, putRecord } from './testHelpers'
@@ -29,6 +29,7 @@ describe('with a migrated database', () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
+        _type: 'create.tenant',
         id: 'tenant1',
         name: 'Test Tenant',
         owner: {
@@ -94,25 +95,6 @@ describe('with a migrated database', () => {
     expect(getTenantResponse.status).toBe(404)
   })
 
-  test('can put a tenant containing an empty model array', async () => {
-    const ownerId = uuids.v4()
-    const tenantId = uuids.v4().replace(/-/g, '')
-    await makeTenant(port, tenantId, ownerId)
-    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId, jwtSigningSecret)
-
-    const putResponse = await fetch(`http://localhost:3002/api/v1/tenant/${tenantId}/model`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + bearer,
-      },
-      body: JSON.stringify({
-        models: [],
-      }),
-    })
-    expect(putResponse.status).toBe(200)
-  })
-
   test('putting models into a tenant you are not a member of is forbidden', async () => {
     const ownerId = uuids.v4()
     const tenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
@@ -124,15 +106,9 @@ describe('with a migrated database', () => {
 
     const model = modelFns.newInstance('Test model')
     const backendModel: BackendModel = {
-      id: uuids.v4(),
-      name: 'Test Model',
-      definition: model,
+      _type: 'backend.model',
+      model,
       events: [],
-    }
-    const tenant: BackendTenant = {
-      id: otherTenantId,
-      name: 'Tenant 2',
-      models: [backendModel],
     }
     const putResponse = await fetch(`http://localhost:3002/api/v1/tenant/${otherTenantId}/model`, {
       method: 'PUT',
@@ -140,7 +116,7 @@ describe('with a migrated database', () => {
         'Content-Type': 'application/json',
         Authorization: 'Bearer ' + bearer,
       },
-      body: JSON.stringify(tenant),
+      body: JSON.stringify(backendModel),
     })
     expect(putResponse.status).toBe(403)
   })
@@ -160,20 +136,9 @@ describe('with a migrated database', () => {
       insertionOrder: 0,
     }
     const backendModel: BackendModel = {
-      id: uuids.v4(),
-      name: 'Test Model',
-      definition: model,
-      events: [
-        {
-          id: modelEvent.id.value,
-          definition: modelEvent,
-        },
-      ],
-    }
-    const tenant: BackendTenant = {
-      id: tenantId,
-      name: 'Tenant 2',
-      models: [backendModel],
+      _type: 'backend.model',
+      model,
+      events: [modelEvent],
     }
     const putResponse = await fetch(`http://localhost:3002/api/v1/tenant/${tenantId}/model`, {
       method: 'PUT',
@@ -181,7 +146,7 @@ describe('with a migrated database', () => {
         'Content-Type': 'application/json',
         Authorization: 'Bearer ' + bearer,
       },
-      body: JSON.stringify(tenant),
+      body: JSON.stringify(backendModel),
     })
     expect(putResponse.status).toBe(200)
 
@@ -192,7 +157,8 @@ describe('with a migrated database', () => {
     })
     expect(getTenantResponse.status).toBe(200)
     const tenantJson = await getTenantResponse.json()
-    expect(tenantJson).toEqual(tenant)
+    expect(tenantJson.models).toEqual([model])
+    expect(tenantJson.events).toEqual([modelEvent])
   })
 
   test('fetching records without authentication is a 401', async () => {

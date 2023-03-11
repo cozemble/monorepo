@@ -1,7 +1,7 @@
 import { expect } from 'vitest'
 import { DataRecord, Model } from '@cozemble/model-core'
 import { uuids } from '@cozemble/lang-util'
-import { BackendModel, BackendTenant } from '@cozemble/backend-tenanted-api-types'
+import { BackendModel } from '@cozemble/backend-tenanted-api-types'
 import jwt from 'jsonwebtoken'
 
 async function postTenant(port: number, id: string, name = 'Test Tenant', ownerId = uuids.v4()) {
@@ -11,6 +11,7 @@ async function postTenant(port: number, id: string, name = 'Test Tenant', ownerI
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
+      _type: 'create.tenant',
       id,
       name,
       owner: {
@@ -40,23 +41,17 @@ export async function putModels(
   accessToken: string,
 ): Promise<Model[]> {
   const backendModels: BackendModel[] = models.map((m) => ({
-    id: m.id.value,
-    name: m.name.value,
-    definition: m,
+    _type: 'backend.model',
+    model: m,
     events: [],
   }))
-  const tenant: BackendTenant = {
-    id: tenantId,
-    name: 'Test Tenant',
-    models: backendModels,
-  }
   const putResponse = await fetch(`http://localhost:${port}/api/v1/tenant/${tenantId}/model`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + accessToken,
     },
-    body: JSON.stringify(tenant),
+    body: JSON.stringify(backendModels),
   })
   expect(putResponse.status).toBe(200)
   return models

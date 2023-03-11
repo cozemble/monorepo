@@ -5,10 +5,9 @@ import { writable } from 'svelte/store'
 import type { ModelEditorHost } from '@cozemble/model-editor'
 import type { Model, ModelEvent, ModelId } from '@cozemble/model-core'
 import { mandatory } from '@cozemble/lang-util'
-import type { BackendModel, BackendTenant } from '@cozemble/backend-tenanted-api-types'
 import { config } from '../config'
-import { backendTenant } from '../tenants/tenantStore'
 import { cozauth } from '../auth/cozauth'
+import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
 
 export const allModels: Writable<EventSourcedModel[]> = writable([])
 
@@ -55,35 +54,24 @@ export const host: ModelEditorHost = {
 
 function toBackendModel(m: EventSourcedModel): BackendModel {
   return {
-    id: m.model.id.value,
-    name: m.model.name.value,
-    definition: m.model,
-    events: m.events.map((e) => ({ id: e.id.value, definition: e })),
+    _type: 'backend.model',
+    model: m.model,
+    events: m.events,
   }
 }
 
-export async function putAllModels(tenant: BackendTenant, all: EventSourcedModel[]) {
-  const accessToken = await cozauth.getAccessToken(cozauth.getTenantRoot(tenant.id))
+export async function putAllModels(tenantId: string, all: EventSourcedModel[]) {
+  const accessToken = await cozauth.getAccessToken(cozauth.getTenantRoot(tenantId))
   const models = all.map((m) => toBackendModel(m))
-  const newBackendTenant: BackendTenant = {
-    id: tenant.id,
-    name: tenant.name,
-    models,
-  }
-  const result = await fetch(`${config.backendUrl()}/api/v1/tenant/${tenant.id}/model`, {
+  const result = await fetch(`${config.backendUrl()}/api/v1/tenant/${tenantId}/model`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${accessToken}`,
     },
-    body: JSON.stringify(newBackendTenant),
+    body: JSON.stringify(models),
   })
   if (!result.ok) {
     throw new Error(`Failed to save models: ${result.statusText}`)
   }
-  backendTenant.set(newBackendTenant)
-}
-
-export function loadModels(models: BackendModel[]) {
-  allModels.set(models.map((m) => eventSourcedModelFns.newInstance(m.definition)))
 }

@@ -1,11 +1,12 @@
 <script lang="ts">
     import {ModelEditor} from "@cozemble/model-editor";
     import {addNewModel, allModels, host, modelBeingEdited, putAllModels} from "./modelsStore";
-    import {backendTenant} from "../tenants/tenantStore";
     import ModelList from "./ModelList.svelte";
 
+    export let tenantId: string
+
     async function saveModelBeingEdited() {
-        await putAllModels($backendTenant, $allModels).then(() => {
+        await putAllModels(tenantId, $allModels).then(() => {
             modelBeingEdited.set(null)
         })
         modelBeingEdited.set(null)

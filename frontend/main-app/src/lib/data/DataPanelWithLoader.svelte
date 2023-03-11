@@ -12,6 +12,7 @@
     onMount(async () => {
         try {
             const initialRecords = await loadRecords(tenantId, model.id.value)
+            console.log({initialRecords})
             records.set(initialRecords.records)
         } catch (e) {
             console.error(e)

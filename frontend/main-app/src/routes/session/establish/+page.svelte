@@ -1,35 +1,39 @@
 <script lang="ts">
-    import {onMount} from "svelte";
+    import {onMount} from 'svelte';
+    import {config} from "../../../lib/config";
     import {cozauth} from "../../../lib/auth/cozauth";
-    import {accessTokenKey, refreshTokenKey} from "@cozemble/backend-tenanted-api-types";
 
-    onMount(() => {
-        if (window) {
-            // eslint-disable-next-line no-inner-declarations
-            function getCookie(name:string) {
-                const nameEQ = name + "=";
-                const ca = document.cookie.split(';')
-                for (let i = 0; i < ca.length; i++) {
-                    let c = ca[i];
-                    while (c.charAt(0) == ' ') {
-                        c = c.substring(1, c.length)
-                    }
-                    if (c.indexOf(nameEQ) == 0) {
-                        return c.substring(nameEQ.length, c.length)
-                    }
+    export let data: any;
+
+    console.log(data.authorizationCode)
+
+    onMount(async () => {
+        if(window) {
+            await fetch(`${config.backendUrl()}/api/v1/auth/token`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    token: data.authorizationCode
+                })
+            }).then(async (res) => {
+                if(!res.ok) throw new Error("Did not get access tokens")
+                const data = await res.json();
+                const accessToken = data.accessToken;
+                const refreshToken = data.refreshToken;
+                if (accessToken && refreshToken) {
+                    cozauth.setTokens('root', accessToken, refreshToken)
+                    window.location.href = "/"
+                } else {
+                    alert("Did not get tokens from cookie")
                 }
-                return null;
-            }
-
-            const accessToken = getCookie(accessTokenKey('root'))
-            const refreshToken = getCookie(refreshTokenKey('root'))
-            console.log({accessToken, refreshToken, accessTokenKey:accessTokenKey('root'), refreshTokenKey:refreshTokenKey('root')})
-            if (accessToken && refreshToken) {
-                cozauth.setTokens('root', accessToken, refreshToken)
-                window.location.href = "/"
-            } else {
-                alert("Did not get tokens from cookie")
-            }
+                console.log(data);
+            }).catch((err) => {
+                console.log(err);
+            })
         }
-    })
+    });
+
+
 </script>
