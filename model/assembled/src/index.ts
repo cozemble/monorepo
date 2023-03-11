@@ -6,6 +6,8 @@ import {
 } from '@cozemble/model-string-ui'
 import { stringPropertyType, registerStringProperty } from '@cozemble/model-string-core'
 import { registerReferenceProperty } from '@cozemble/model-reference-core'
+import { referencePropertyType } from '@cozemble/model-reference-core'
+import { ReferencePropertyConfigurer } from '@cozemble/model-reference-ui'
 
 export { propertyDescriptors } from '@cozemble/model-core'
 
@@ -16,8 +18,10 @@ const propertyEditorMap = new Map<string, any>()
 export const propertyConfigurerRegistry = {
   register: (propertyType: PropertyType, component: any) => {
     propertyConfigurerMap.set(propertyType.type, component)
+    console.log('propertyConfigurerMap', propertyConfigurerMap)
   },
   get: (propertyType: PropertyType) => {
+    console.log('propertyConfigurerMap', propertyConfigurerMap)
     return propertyConfigurerMap.get(propertyType.type) ?? null
   },
 }
@@ -47,6 +51,7 @@ export function registerAllProperties() {
 
 export function registerAllPropertyConfigurers() {
   propertyConfigurerRegistry.register(stringPropertyType, StringPropertyConfigurer)
+  propertyConfigurerRegistry.register(referencePropertyType, ReferencePropertyConfigurer)
 }
 
 export function registerAllPropertyViewers() {

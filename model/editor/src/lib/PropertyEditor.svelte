@@ -4,7 +4,7 @@
     import {propertyConfigurerRegistry} from '@cozemble/model-assembled'
     import {editorHost, emptyFormErrorState} from '@cozemble/model-editor-sdk'
     import {writable} from 'svelte/store'
-    import {createEventDispatcher} from 'svelte'
+    import {createEventDispatcher, afterUpdate} from 'svelte'
     import type {ModelChangeHandler} from '$lib/ModelEditorHost'
     import {coreModelEvents} from '@cozemble/model-event-sourced'
 
@@ -79,6 +79,8 @@
             ),
         )
     }
+
+    afterUpdate(() => console.log({configurer}))
 </script>
 
 <form>
@@ -126,6 +128,7 @@
     </label>
 
     {#if configurer}
+        <div>Configurer:</div>
         <br/>
         <svelte:component this={configurer} {property}/>
     {/if}

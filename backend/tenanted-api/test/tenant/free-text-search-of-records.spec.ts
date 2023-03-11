@@ -4,7 +4,7 @@ import { makeTenant, makeTenantMemberAccessToken, putModels, putRecords } from '
 import { uuids } from '@cozemble/lang-util'
 import { modelFns, modelOptions, propertyFns } from '@cozemble/model-api'
 import { Model } from '@cozemble/model-core'
-import { dataRecordFns } from '@cozemble/model-api/dist/esm'
+import { dataRecordFns } from '@cozemble/model-api'
 import { registerStringProperty } from '@cozemble/model-string-core'
 import { appWithTestContainer } from '../../src/appWithTestContainer'
 

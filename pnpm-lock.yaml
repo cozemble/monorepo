@@ -494,6 +494,7 @@ importers:
       '@cozemble/lang-util': workspace:*
       '@cozemble/model-core': workspace:*
       '@cozemble/model-reference-core': workspace:*
+      '@cozemble/model-reference-ui': workspace:*
       '@cozemble/model-string-core': workspace:*
       '@cozemble/model-string-ui': workspace:*
       typescript: ^4.9.3
@@ -501,6 +502,7 @@ importers:
       '@cozemble/lang-util': link:../../lang/util
       '@cozemble/model-core': link:../core
       '@cozemble/model-reference-core': link:../reference/core
+      '@cozemble/model-reference-ui': link:../reference/ui
       '@cozemble/model-string-core': link:../string/core
       '@cozemble/model-string-ui': link:../string/ui
     devDependencies:
@@ -611,6 +613,8 @@ importers:
 
   model/reference/ui:
     specifiers:
+      '@cozemble/model-editor-sdk': workspace:*
+      '@cozemble/model-reference-core': workspace:*
       '@sveltejs/adapter-auto': ^2.0.0
       '@sveltejs/kit': ^1.5.0
       '@sveltejs/package': ^2.0.0
@@ -620,6 +624,9 @@ importers:
       tslib: ^2.4.1
       typescript: ^4.9.3
       vite: ^4.0.0
+    dependencies:
+      '@cozemble/model-editor-sdk': link:../../editor-sdk
+      '@cozemble/model-reference-core': link:../core
     devDependencies:
       '@sveltejs/adapter-auto': 2.0.0_@sveltejs+kit@1.7.2
       '@sveltejs/kit': 1.7.2_svelte@3.55.1+vite@4.1.2

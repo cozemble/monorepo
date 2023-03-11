@@ -4,6 +4,7 @@
     import {onMount} from "svelte";
     import {
         registerAllProperties,
+        registerAllPropertyConfigurers,
         registerAllPropertyEditors,
         registerAllPropertyViewers
     } from "@cozemble/model-assembled";
@@ -12,10 +13,11 @@
 
     onMount(() => {
         registerAllProperties()
+        registerAllPropertyConfigurers()
         registerAllPropertyViewers()
         registerAllPropertyEditors()
-
     })
+
 </script>
 
 <div class="main-container">
