@@ -1,6 +1,8 @@
-import { sveltekit } from '@sveltejs/kit/vite';
-import { defineConfig } from 'vite';
+import { viteCommonjs } from '@originjs/vite-plugin-commonjs'
+import { sveltekit } from '@sveltejs/kit/vite'
 
-export default defineConfig({
-	plugins: [sveltekit()]
-});
+const config = {
+  plugins: [viteCommonjs(), sveltekit()],
+}
+
+export default config

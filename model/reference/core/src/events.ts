@@ -9,7 +9,12 @@ import {
   propertyIdFns,
   type PropertyName,
 } from '@cozemble/model-core'
-import { emptyProperty } from './referenceProperty'
+import {
+  emptyProperty,
+  ReferenceProperty,
+  referencePropertyFns,
+  referencePropertyOptions,
+} from './referenceProperty'
 
 export interface NewReferencePropertyModelEvent extends ModelEvent {
   _type: 'new.reference.property.model.event'
@@ -34,29 +39,67 @@ export const newReferencePropertyModelEventDescriptor: ModelEventDescriptor = {
   _type: 'model.event.descriptor',
   modelEventType: 'new.reference.property.model.event',
   applyEvent: (model: Model, event: NewReferencePropertyModelEvent): Model => {
-    console.log(`Applying event: ${JSON.stringify(event)}`)
     let newProperty = {
       ...emptyProperty(`Property`),
       id: event.propertyId,
       name: event.propertyName,
     }
-    console.log({ newProperty })
     if (model.properties.some((p) => propertyIdFns.equals(p.id, event.propertyId))) {
       newProperty = { ...newProperty, id: event.propertyId }
-      console.log({ newProperty, model })
-      const mutatedModel = {
+      return {
         ...model,
         properties: model.properties.map((p) =>
           propertyIdFns.equals(p.id, event.propertyId) ? newProperty : p,
         ),
       }
-      console.log({ mutatedModel })
-      return mutatedModel
     }
     return { ...model, properties: [...model.properties, newProperty] }
   },
 }
 
+export interface ReferencedModelChangedModelEvent extends ModelEvent {
+  _type: 'referenced.model.changed.model.event'
+  propertyId: PropertyId
+  referencedModelId: ModelId | null
+}
+
+export function referencedModelChangedModelEvent(
+  modelId: ModelId,
+  propertyId: PropertyId,
+  referencedModelId: ModelId | null,
+) {
+  return {
+    _type: 'referenced.model.changed.model.event',
+    ...modelEventFns.coreParts(modelId),
+
+    propertyId,
+    referencedModelId,
+  }
+}
+
+export const referencedModelChangedModelEventDescriptor: ModelEventDescriptor = {
+  _type: 'model.event.descriptor',
+  modelEventType: 'referenced.model.changed.model.event',
+  applyEvent: (model: Model, event: ReferencedModelChangedModelEvent): Model => {
+    return {
+      ...model,
+      properties: model.properties.map((p) => {
+        if (propertyIdFns.equals(p.id, event.propertyId)) {
+          if (p.propertyType.type !== 'reference.property') {
+            throw new Error(`Property ${p.id.value} is not a reference property`)
+          }
+          return referencePropertyFns.applyOptions(
+            p as ReferenceProperty,
+            referencePropertyOptions.referencing(event.referencedModelId),
+          )
+        }
+        return p
+      }),
+    }
+  },
+}
+
 export function registerModelEvents() {
   modelEventDescriptors.register(newReferencePropertyModelEventDescriptor)
+  modelEventDescriptors.register(referencedModelChangedModelEventDescriptor)
 }

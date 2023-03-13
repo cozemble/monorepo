@@ -3,19 +3,21 @@
     import {propertyDescriptors, propertyNameFns, propertyTypeFns,} from '@cozemble/model-core'
     import {propertyConfigurerRegistry} from '@cozemble/model-assembled'
     import {editorHost, emptyFormErrorState} from '@cozemble/model-editor-sdk'
-    import {writable} from 'svelte/store'
-    import {createEventDispatcher, afterUpdate} from 'svelte'
+    import {readable, writable} from 'svelte/store'
+    import {afterUpdate, createEventDispatcher} from 'svelte'
     import type {ModelChangeHandler} from '$lib/ModelEditorHost'
     import {coreModelEvents} from '@cozemble/model-event-sourced'
 
     export let modelChangeHandler: ModelChangeHandler
     export let model: Model
+    export let models: Model[]
     export let property: Property
 
     const formSectionErrorState = writable(emptyFormErrorState())
     editorHost.setErrorState(formSectionErrorState)
+    editorHost.setModels(readable(models))
 
-    let propertyDescriptor: PropertyDescriptor | null = null
+    let propertyDescriptor: PropertyDescriptor | null = propertyDescriptors.get(property.propertyType) ?? null
 
     function propertyTypeChanged(event: Event) {
         const target = event.target as HTMLSelectElement
@@ -33,8 +35,7 @@
     }
 
     function validateProperty(descriptor: PropertyDescriptor | null, property: Property): Map<string, string> {
-        console.log({descriptor, property})
-        if(!descriptor) {
+        if (!descriptor) {
             return new Map()
         }
         if (descriptor.propertyType.type === property.propertyType.type) {
@@ -80,7 +81,13 @@
         )
     }
 
-    afterUpdate(() => console.log({configurer}))
+    function onModelChangedEvent(event: CustomEvent) {
+        modelChangeHandler.modelChanged(model.id, event.detail)
+    }
+
+    afterUpdate(() => {
+        console.log({property, propertyDescriptor, errors})
+    })
 </script>
 
 <form>
@@ -102,38 +109,42 @@
         )}>{propertyDescriptor.name.name}</option>
         {/each}
     </select>
-    <br/>
 
-    <label class="label">
-        <input
-                type="checkbox"
-                name="checkbox"
-                value="text"
-                checked={property.required}
-                class="required-toggle"
-                on:change={(event) => booleanChanged(event, 'required')}/>
-        Required
-    </label>
+    {#if propertyDescriptor?.isRequireable}
+        <br/>
+        <label class="label">
+            <input
+                    type="checkbox"
+                    name="checkbox"
+                    value="text"
+                    checked={property.required}
+                    class="required-toggle"
+                    on:change={(event) => booleanChanged(event, 'required')}/>
+            Required
+        </label>
 
-    <br/>
+    {/if}
 
-    <label class="label">
-        <input
-                type="checkbox"
-                name="checkbox"
-                value="text"
-                bind:checked={property.unique}
-                class="unique-toggle"/>
-        Unique
-    </label>
+    {#if propertyDescriptor?.isUniqueable}
+        <br/>
+        <label class="label">
+            <input
+                    type="checkbox"
+                    name="checkbox"
+                    value="text"
+                    bind:checked={property.unique}
+                    class="unique-toggle"/>
+            Unique
+        </label>
+    {/if}
 
     {#if configurer}
-        <div>Configurer:</div>
         <br/>
-        <svelte:component this={configurer} {property}/>
+        <svelte:component this={configurer} {model} {property} on:modelChanged={onModelChangedEvent}/>
     {/if}
 </form>
 
+<br/>
 <button
         type="submit"
         on:click|preventDefault={saveClicked}

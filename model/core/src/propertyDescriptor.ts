@@ -15,12 +15,13 @@ export interface PropertyDescriptor<P = any, V = any> {
   _type: 'property.descriptor'
   propertyType: PropertyType
   name: DottedName
+  isRequireable: boolean
+  isUniqueable: boolean
   newProperty: (modelId: ModelId, propertyName: PropertyName, propertyId?: PropertyId) => ModelEvent
 
   validateProperty(property: P): Map<string, string>
 
   randomValue: () => V
-
   validateValue: (property: P, value: V | null) => string[]
 
   setValue(property: P, record: DataRecord, value: V | null): DataRecord

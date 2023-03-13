@@ -32,8 +32,11 @@ export function emptyProperty(name: string): ReferenceProperty {
 
 export type ReferencePropertyOption = Option<ReferenceProperty>
 
-function referencing(modelId: ModelId): ReferencePropertyOption {
+function referencing(modelId: ModelId | null): ReferencePropertyOption {
   return (property) => {
+    if (modelId === null) {
+      return { ...property, referencedModels: [] }
+    }
     if (property.cardinality === 'one') {
       return { ...property, referencedModels: [modelId] }
     }
@@ -78,5 +81,11 @@ export const referencePropertyFns = {
   newInstance: (nameAsStr: string, ...opts: ReferencePropertyOption[]): ReferenceProperty => {
     const name = propertyNameFns.newInstance(nameAsStr)
     return referencePropertyFns.applyOptions({ ...emptyProperty(nameAsStr), name }, ...opts)
+  },
+  oneReference: (p: ReferenceProperty): ModelId | null => {
+    if (p.cardinality !== 'one') {
+      throw new Error('Cannot get one reference from many reference')
+    }
+    return p.referencedModels[0] ?? null
   },
 }

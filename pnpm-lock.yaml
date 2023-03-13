@@ -613,8 +613,11 @@ importers:
 
   model/reference/ui:
     specifiers:
+      '@cozemble/model-api': workspace:*
+      '@cozemble/model-core': workspace:*
       '@cozemble/model-editor-sdk': workspace:*
       '@cozemble/model-reference-core': workspace:*
+      '@originjs/vite-plugin-commonjs': ^1.0.3
       '@sveltejs/adapter-auto': ^2.0.0
       '@sveltejs/kit': ^1.5.0
       '@sveltejs/package': ^2.0.0
@@ -625,9 +628,12 @@ importers:
       typescript: ^4.9.3
       vite: ^4.0.0
     dependencies:
+      '@cozemble/model-api': link:../../api
+      '@cozemble/model-core': link:../../core
       '@cozemble/model-editor-sdk': link:../../editor-sdk
       '@cozemble/model-reference-core': link:../core
     devDependencies:
+      '@originjs/vite-plugin-commonjs': 1.0.3
       '@sveltejs/adapter-auto': 2.0.0_@sveltejs+kit@1.7.2
       '@sveltejs/kit': 1.7.2_svelte@3.55.1+vite@4.1.2
       '@sveltejs/package': 2.0.2_4x7phaipmicbaooxtnresslofa

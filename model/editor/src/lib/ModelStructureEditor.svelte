@@ -1,9 +1,9 @@
 <script lang="ts">
     import type {Property, PropertyId} from '@cozemble/model-core'
     import {modelIdAndNameFns, propertyDescriptors, propertyNameFns, relationshipNameFns,} from '@cozemble/model-core'
-    import PropertyEditor from '$lib/PropertyEditor.svelte'
-    import AddNestedModelDialog from '$lib/AddNestedModelDialog.svelte'
-    import type {ModelEditorHost} from '$lib/ModelEditorHost'
+    import PropertyEditor from './PropertyEditor.svelte'
+    import AddNestedModelDialog from './AddNestedModelDialog.svelte'
+    import type {ModelEditorHost} from './ModelEditorHost'
     import {modelFns, modelOptions} from '@cozemble/model-api'
     import type {EventSourcedModel} from '@cozemble/model-event-sourced'
     import {coreModelEvents} from '@cozemble/model-event-sourced'
@@ -11,6 +11,7 @@
     export let host: ModelEditorHost
     export let allModels: EventSourcedModel[]
     export let eventSourced: EventSourcedModel
+    $: allCoreModels = allModels.map((m) => m.model)
     $: model = eventSourced.model
     let propertyIdBeingEdited: PropertyId | null = null
     $: propertyBeingEdited = propertyIdBeingEdited
@@ -76,6 +77,7 @@
     <PropertyEditor
             property={propertyBeingEdited}
             modelChangeHandler={host}
+            models={allCoreModels}
             {model}
             on:save={propertyEdited}/>
 {:else}
@@ -107,6 +109,7 @@
             </tbody>
         </table>
         <div class="actions">
+            <br/>
             <button on:click={addNestedModel} class="add-nested-model">Add nested model</button>
         </div>
     </div>

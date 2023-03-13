@@ -21,6 +21,8 @@ export const referencePropertyDescriptor: PropertyDescriptor<ReferenceProperty, 
     _type: 'property.descriptor',
     propertyType: referencePropertyType,
     name: { _type: 'dotted.name', name: 'Reference.Another Record' },
+    isRequireable: true,
+    isUniqueable: false,
     validateProperty,
     randomValue: (): ReferencedRecords => {
       return { _type: 'referenced.records', recordIds: [] }
