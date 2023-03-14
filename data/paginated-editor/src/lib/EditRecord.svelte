@@ -5,8 +5,11 @@
     import type {RecordEditContext} from './RecordEditContext'
     import {getEditRecordListener} from './EditRecordListener'
     import {getContext, onDestroy, onMount} from 'svelte'
+    import type {DataRecord, ModelId} from "@cozemble/model-core";
+    import type {RecordSearcher} from "./RecordSearcher";
 
     export let recordEditContext: RecordEditContext
+    export let recordSearcher: RecordSearcher
     export let pushContext: (context: RecordEditContext) => void
     export let popContext: () => void
 
@@ -28,7 +31,11 @@
         dispatchControlEvent(event: DataRecordControlEvent): void {
             console.log({event})
         },
+        searchRecords(modelId: ModelId, search: string): Promise<DataRecord[]> {
+            return recordSearcher.searchRecords(modelId, search)
+        },
     }
+
     dataRecordEditorHost.setClient(dataRecordEditorClient)
 
     onMount(() => {
@@ -47,7 +54,7 @@
 </div>
 
 <style>
-  .buttons {
-    margin-top: 1rem;
-  }
+    .buttons {
+        margin-top: 1rem;
+    }
 </style>

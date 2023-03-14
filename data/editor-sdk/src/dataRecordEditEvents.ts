@@ -130,6 +130,8 @@ export interface DataRecordEditorClient {
   dispatchControlEvent(event: DataRecordControlEvent): void
 
   dispatchEditEvent(event: DataRecordEditEvent): void
+
+  searchRecords(modelId: ModelId, search: string): Promise<DataRecord[]>
 }
 
 export const dataRecordEditor = {

@@ -64,11 +64,6 @@ export class RecordEditContext {
   }
 
   async attemptSave() {
-    console.log('attemptSave', {
-      model: this.model,
-      record: this.eventSourcedRecord,
-      errors: this._errors,
-    })
     if (this._errors.size === 0) {
       await this.onSave(this.eventSourcedRecord)
     } else {

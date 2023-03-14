@@ -1,18 +1,17 @@
 <script lang="ts">
-    import type {DataRecord, Model} from "@cozemble/model-core";
+    import type {DataRecord, Model, ModelId} from "@cozemble/model-core";
     import type {PaginatedEditorHost, RecordDeleteOutcome, RecordSaveOutcome} from "@cozemble/data-paginated-editor";
     import {PaginatedEditor} from "@cozemble/data-paginated-editor";
     import type {Writable} from "svelte/store";
     import type {EventSourcedDataRecord} from "@cozemble/data-editor-sdk";
     import {deleteRecord, saveRecord} from "./recordBackendHelper";
     import {createEventDispatcher} from "svelte";
+    import {loadRecords} from "./loadRecords";
 
     export let models: Model[]
     export let model: Model
     export let tenantId: string
     export let records: Writable<DataRecord[]>
-
-    console.log({models, model, tenantId, records:$records})
 
     const paginatedEditorHost: PaginatedEditorHost = {
         async recordEdited(editedRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
@@ -38,6 +37,11 @@
             }
             return result
         },
+
+        async searchRecords(modelId: ModelId, searchText: string): Promise<DataRecord[]> {
+            const result = await loadRecords(tenantId, modelId.value,searchText.trim().length === 0 ? null : searchText)
+            return result.records
+        }
     }
 
     const dispatch = createEventDispatcher()

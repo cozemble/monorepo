@@ -68,9 +68,11 @@
 {/each}
 {#if doAddNewRecord}
     <StackingRecordEditor
+            recordSearcher={paginatedEditorHost}
             recordEditContext={new RecordEditContext( models, eventSourcedDataRecordFns.newInstance(models, model.id, 'test-user'), saveNewRecord, () => (doAddNewRecord = false), `Add new ${model.name.value}`, )}/>
 {:else if recordBeingEdited !== null}
     <StackingRecordEditor
+            recordSearcher={paginatedEditorHost}
             recordEditContext={new RecordEditContext( models, eventSourcedDataRecordFns.fromRecord(models, recordBeingEdited), recordEdited, () => (recordBeingEdited = null), `Edit ${model.name.value}`, )}/>
 {:else}
     <table class="table">

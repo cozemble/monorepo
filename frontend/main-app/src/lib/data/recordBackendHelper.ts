@@ -1,4 +1,5 @@
 import type { EventSourcedDataRecord } from '@cozemble/data-editor-sdk'
+import type { RecordDeleteOutcome } from '@cozemble/data-paginated-editor'
 import {
   recordSaveFailed,
   type RecordSaveOutcome,
@@ -7,7 +8,6 @@ import {
 import { config } from '../config'
 import type { DataRecord } from '@cozemble/model-core'
 import { cozauth } from '../auth/cozauth'
-import type { RecordDeleteOutcome } from '@cozemble/data-paginated-editor'
 import { justErrorMessage } from '@cozemble/lang-util'
 
 export async function saveRecord(

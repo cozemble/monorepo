@@ -11,5 +11,5 @@
 {#if value}
     {value}
 {:else}
-    &nbsp;
+    ----
 {/if}

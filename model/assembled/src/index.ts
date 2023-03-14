@@ -7,7 +7,11 @@ import {
 import { stringPropertyType, registerStringProperty } from '@cozemble/model-string-core'
 import { registerReferenceProperty } from '@cozemble/model-reference-core'
 import { referencePropertyType } from '@cozemble/model-reference-core'
-import { ReferencePropertyConfigurer } from '@cozemble/model-reference-ui'
+import {
+  ReferencePropertyConfigurer,
+  ReferencePropertyViewer,
+  ReferencePropertyEditor,
+} from '@cozemble/model-reference-ui'
 
 export { propertyDescriptors } from '@cozemble/model-core'
 
@@ -56,8 +60,10 @@ export function registerAllPropertyConfigurers() {
 
 export function registerAllPropertyViewers() {
   propertyViewerRegistry.register(stringPropertyType, StringPropertyViewer)
+  propertyViewerRegistry.register(referencePropertyType, ReferencePropertyViewer)
 }
 
 export function registerAllPropertyEditors() {
   propertyEditorRegistry.register(stringPropertyType, StringPropertyEditor)
+  propertyEditorRegistry.register(referencePropertyType, ReferencePropertyEditor)
 }

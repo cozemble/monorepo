@@ -45,6 +45,7 @@
     "@cozemble/model-core": "workspace:*",
     "@cozemble/model-api": "workspace:*",
     "@cozemble/model-editor-sdk": "workspace:*",
-    "@cozemble/model-reference-core": "workspace:*"
+    "@cozemble/model-reference-core": "workspace:*",
+    "@cozemble/data-editor-sdk": "workspace:*"
   }
 }
