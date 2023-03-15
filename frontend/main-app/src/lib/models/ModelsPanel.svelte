@@ -1,22 +1,13 @@
 <script lang="ts">
-    import {ModelEditor} from "@cozemble/model-editor";
-    import {addNewModel, allModels, host, modelBeingEdited, putAllModels} from "./modelsStore";
+    import {addNewModel, allModels, modelBeingEdited} from "./modelsStore";
     import ModelList from "./ModelList.svelte";
+    import EditModel from "./EditModel.svelte";
 
     export let tenantId: string
 
-    async function saveModelBeingEdited() {
-        await putAllModels(tenantId, $allModels).then(() => {
-            modelBeingEdited.set(null)
-        })
-        modelBeingEdited.set(null)
-    }
 </script>
 {#if $modelBeingEdited}
-    <ModelEditor {allModels} {host} modelId={$modelBeingEdited.modelId}/>
-    <br/>
-    <button class="btn" type="button" on:click={saveModelBeingEdited}>Save model</button>
-    <button class="btn" type="button" on:click={() => modelBeingEdited.set(null)}>Cancel</button>
+    <EditModel modelId={$modelBeingEdited.modelId} {tenantId} on:finished={() => modelBeingEdited.set(null)}/>
 {:else}
     {#if $allModels.length === 0}
         <p>Everything in cozemble is based on models. Click the button below to create your first one.</p>
