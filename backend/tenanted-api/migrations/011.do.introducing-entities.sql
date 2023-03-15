@@ -99,3 +99,27 @@ CREATE POLICY tenant_entity_delete_policy
 
 ALTER TABLE tenant_entity
     ENABLE ROW LEVEL SECURITY;
+
+CREATE OR REPLACE FUNCTION get_tenant_info(tenant_id ltree)
+    RETURNS json
+AS
+$$
+BEGIN
+    RETURN (SELECT json_build_object(
+                           'id', t.id,
+                           'name', t.name,
+                           'models', (COALESCE((SELECT json_agg(m.definition)
+                                                FROM model m
+                                                WHERE m.tenant = t.id), '[]')),
+                           'entities', (COALESCE((SELECT json_agg(te.definition)
+                                                  FROM tenant_entity te
+                                                  WHERE te.tenant = t.id), '[]')),
+                           'events', (COALESCE((SELECT json_agg(me.definition)
+                                                FROM model_event me
+                                                WHERE me.tenant = t.id), '[]'))
+                       )
+            FROM tenant t
+            WHERE t.id = tenant_id
+            GROUP BY t.id);
+END;
+$$ LANGUAGE plpgsql;

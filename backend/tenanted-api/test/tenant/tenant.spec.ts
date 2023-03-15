@@ -77,6 +77,8 @@ describe('with a migrated database', () => {
     expect(tenant.id).toBe(tenantId)
     expect(tenant.name).toBe('Tenant 2')
     expect(tenant.models).toEqual([])
+    expect(tenant.events).toEqual([])
+    expect(tenant.entities).toEqual([])
   })
 
   test("can't get a tenant that doesn't exist", async () => {
