@@ -1,7 +1,7 @@
 import { Request, Response, Router } from 'express'
 import { withAdminPgClient } from '../infra/postgresPool'
 import { authenticatedDatabaseRequest } from '../infra/authenticatedDatabaseRequest'
-import { BackendModel, CreateTenant } from '@cozemble/backend-tenanted-api-types'
+import { CreateTenant } from '@cozemble/backend-tenanted-api-types'
 
 const router: Router = Router()
 
@@ -95,6 +95,34 @@ router.delete('/:tenantId/model/:modelId/record/:recordId', (req: Request, res: 
       [req.params.tenantId, req.params.modelId, req.params.recordId],
     )
     return res.status(204).send()
+  })
+})
+
+router.put('/:tenantId/entity', (req: Request, res: Response) => {
+  const entities = Array.isArray(req.body) ? req.body : [req.body]
+  return authenticatedDatabaseRequest(req, res, async (client) => {
+    const result = await client.query(
+      'select * from upsert_tenant_entity_from_jsonb_array($1::ltree, $2::jsonb[]);',
+      [req.params.tenantId, entities],
+    )
+    if (result.rows.length === 0 || result.rows[0].tenant === null) {
+      return res.status(404).send()
+    }
+    return res.status(200).send()
+  })
+})
+
+router.get('/:tenantId/entity', (req: Request, res: Response) => {
+  return authenticatedDatabaseRequest(req, res, async (client) => {
+    const result = await client.query('select * from get_tenant_entities_definitions($1::ltree);', [
+      req.params.tenantId,
+    ])
+
+    if (result.rows.length === 0 || result.rows[0].get_tenant_entities_definitions === null) {
+      return res.status(404).send()
+    }
+
+    return res.status(200).json(result.rows[0].get_tenant_entities_definitions)
   })
 })
 

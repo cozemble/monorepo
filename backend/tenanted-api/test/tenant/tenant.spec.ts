@@ -1,21 +1,24 @@
 import { uuids } from '@cozemble/lang-util'
-import * as http from 'http'
 import { beforeAll, describe, expect, test } from 'vitest'
 import { appWithTestContainer } from '../../src/appWithTestContainer'
 import { BackendModel } from '@cozemble/backend-tenanted-api-types'
 import { dataRecordFns, modelFns } from '@cozemble/model-api'
 import { ModelEvent, modelEventIdFns, timestampEpochMillis } from '@cozemble/model-core'
-import { makeTenant, makeTenantMemberAccessToken, putModels, putRecord } from './testHelpers'
+import {
+  makeTenant,
+  makeTenantMemberAccessToken,
+  putModels,
+  putRecord,
+  simulateNewUser,
+} from './testHelpers'
 
 const jwtSigningSecret = 'secret'
 const port = 3002
 
 describe('with a migrated database', () => {
-  let server: http.Server
-
   beforeAll(async () => {
     try {
-      server = await appWithTestContainer(jwtSigningSecret, port)
+      await appWithTestContainer(jwtSigningSecret, port)
     } catch (e) {
       console.error(e)
       throw e
@@ -51,10 +54,7 @@ describe('with a migrated database', () => {
   })
 
   test('when getting a tenant with credentials, 404 if you are not a tenant member', async () => {
-    const ownerId = uuids.v4()
-    const tenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
-    await makeTenant(port, tenantId, 'Tenant 2', ownerId)
-    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId, jwtSigningSecret)
+    const { bearer } = await simulateNewUser(port, jwtSigningSecret)
     const otherTenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
 
     const getTenantResponse = await fetch('http://localhost:3002/api/v1/tenant/' + otherTenantId, {
@@ -66,10 +66,7 @@ describe('with a migrated database', () => {
   })
 
   test('can get a tenant if authenticated as a tenant member', async () => {
-    const ownerId = uuids.v4()
-    const tenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
-    await makeTenant(port, tenantId, 'Tenant 2', ownerId)
-    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId, jwtSigningSecret)
+    const { tenantId, bearer } = await simulateNewUser(port, jwtSigningSecret)
     const getTenantResponse = await fetch('http://localhost:3002/api/v1/tenant/' + tenantId, {
       headers: {
         Authorization: 'Bearer ' + bearer,
@@ -83,10 +80,7 @@ describe('with a migrated database', () => {
   })
 
   test("can't get a tenant that doesn't exist", async () => {
-    const ownerId = uuids.v4()
-    const tenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
-    await makeTenant(port, tenantId, 'Tenant 2', ownerId)
-    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId, jwtSigningSecret)
+    const { bearer } = await simulateNewUser(port, jwtSigningSecret)
     const getTenantResponse = await fetch('http://localhost:3002/api/v1/tenant/xx', {
       headers: {
         Authorization: 'Bearer ' + bearer,
@@ -122,10 +116,7 @@ describe('with a migrated database', () => {
   })
 
   test('can put models into a tenant', async () => {
-    const ownerId = uuids.v4()
-    const tenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
-    await makeTenant(port, tenantId, 'Tenant 2', ownerId)
-    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId, jwtSigningSecret)
+    const { tenantId, bearer } = await simulateNewUser(port, jwtSigningSecret)
 
     const model = modelFns.newInstance('Test model')
     const modelEvent: ModelEvent = {
@@ -172,10 +163,7 @@ describe('with a migrated database', () => {
   })
 
   test('can retrieve empty records array', async () => {
-    const ownerId = uuids.v4()
-    const tenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
-    await makeTenant(port, tenantId, 'Tenant 2', ownerId)
-    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId, jwtSigningSecret)
+    const { tenantId, bearer } = await simulateNewUser(port, jwtSigningSecret)
     const [customerModel] = await putModels(
       port,
       tenantId,
@@ -203,10 +191,7 @@ describe('with a migrated database', () => {
   })
 
   test('401 is record put is not authenticated ', async () => {
-    const ownerId = uuids.v4()
-    const tenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
-    await makeTenant(port, tenantId, 'Tenant 2', ownerId)
-    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId, jwtSigningSecret)
+    const { tenantId, bearer } = await simulateNewUser(port, jwtSigningSecret)
     const [customerModel] = await putModels(
       port,
       tenantId,
@@ -229,10 +214,7 @@ describe('with a migrated database', () => {
   })
 
   test('can put and retrieve a record', async () => {
-    const ownerId = uuids.v4()
-    const tenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
-    await makeTenant(port, tenantId, 'Tenant 2', ownerId)
-    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId, jwtSigningSecret)
+    const { tenantId, bearer } = await simulateNewUser(port, jwtSigningSecret)
     const [customerModel] = await putModels(
       port,
       tenantId,
@@ -274,10 +256,7 @@ describe('with a migrated database', () => {
   })
 
   test('can put and delete a record', async () => {
-    const ownerId = uuids.v4()
-    const tenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
-    await makeTenant(port, tenantId, 'Tenant 2', ownerId)
-    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId, jwtSigningSecret)
+    const { tenantId, bearer } = await simulateNewUser(port, jwtSigningSecret)
     const [customerModel] = await putModels(
       port,
       tenantId,
@@ -300,10 +279,7 @@ describe('with a migrated database', () => {
   })
 
   test('401 if deleting a record without authentication', async () => {
-    const ownerId = uuids.v4()
-    const tenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
-    await makeTenant(port, tenantId, 'Tenant 2', ownerId)
-    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId, jwtSigningSecret)
+    const { tenantId, bearer } = await simulateNewUser(port, jwtSigningSecret)
     const [customerModel] = await putModels(
       port,
       tenantId,
@@ -323,10 +299,7 @@ describe('with a migrated database', () => {
   })
 
   test('400 if records being put is not an array', async () => {
-    const ownerId = uuids.v4()
-    const tenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
-    await makeTenant(port, tenantId, 'Tenant 2', ownerId)
-    const bearer = await makeTenantMemberAccessToken(tenantId, ownerId, jwtSigningSecret)
+    const { tenantId, bearer } = await simulateNewUser(port, jwtSigningSecret)
     const [customerModel] = await putModels(
       port,
       tenantId,

@@ -102,3 +102,11 @@ export async function makeTenantMemberAccessToken(
   }
   return jwt.sign(payload, jwtSigningSecret, {})
 }
+
+export async function simulateNewUser(port: number, jwtSigningSecret: string) {
+  const ownerId = uuids.v4()
+  const tenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
+  await makeTenant(port, tenantId, 'Tenant 2', ownerId)
+  const bearer = await makeTenantMemberAccessToken(tenantId, ownerId, jwtSigningSecret)
+  return { tenantId, ownerId, bearer }
+}
