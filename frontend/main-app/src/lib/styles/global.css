@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.active-nav-item {
+    @apply border-b-2 border-black;
+}

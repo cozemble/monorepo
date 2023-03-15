@@ -14,14 +14,18 @@
     "@originjs/vite-plugin-commonjs": "^1.0.3",
     "@sveltejs/adapter-auto": "^1.0.0",
     "@sveltejs/kit": "^1.0.0",
+    "autoprefixer": "^10.4.13",
+    "postcss": "^8.4.21",
     "svelte": "^3.54.0",
     "svelte-check": "^3.0.1",
+    "tailwindcss": "^3.2.4",
     "tslib": "^2.4.1",
     "typescript": "^4.9.3",
     "vite": "^4.0.0"
   },
   "type": "module",
   "dependencies": {
+    "@cozemble/backend-tenanted-api-types": "workspace:*",
     "@cozemble/data-editor-sdk": "workspace:*",
     "@cozemble/data-paginated-editor": "workspace:*",
     "@cozemble/lang-util": "workspace:*",
@@ -30,7 +34,6 @@
     "@cozemble/model-core": "workspace:*",
     "@cozemble/model-editor": "workspace:*",
     "@cozemble/model-event-sourced": "workspace:*",
-    "@cozemble/backend-tenanted-api-types": "workspace:*"
+    "daisyui": "^2.47.0"
   }
-
 }

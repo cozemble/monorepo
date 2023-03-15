@@ -15,16 +15,16 @@
 {#if $modelBeingEdited}
     <ModelEditor {allModels} {host} modelId={$modelBeingEdited.modelId}/>
     <br/>
-    <button type="button" on:click={saveModelBeingEdited}>Save model</button>
-    <button type="button" on:click={() => modelBeingEdited.set(null)}>Cancel</button>
+    <button class="btn" type="button" on:click={saveModelBeingEdited}>Save model</button>
+    <button class="btn" type="button" on:click={() => modelBeingEdited.set(null)}>Cancel</button>
 {:else}
     {#if $allModels.length === 0}
         <p>Everything in cozemble is based on models. Click the button below to create your first one.</p>
-        <button type="button" on:click={addNewModel}>Add first model</button>
+        <button class="btn" type="button" on:click={addNewModel}>Add first model</button>
     {:else}
         <ModelList/>
         <br/>
-        <button type="button" on:click={addNewModel}>Add another model</button>
+        <button class="btn" type="button" on:click={addNewModel}>Add another model</button>
     {/if}
 {/if}
 

@@ -1,15 +1,11 @@
 <script lang="ts">
     import {allModels} from "../models/modelsStore";
-    import {afterUpdate} from "svelte";
     import DataPanelWithLoader from "./DataPanelWithLoader.svelte";
 
     export let tenantId: string
     $: actualModels = $allModels.map(m => m.model)
     $: rootModels = actualModels.filter(m => m.parentModelId === undefined)
 
-    afterUpdate(() => {
-        console.log({actualModels, rootModels, modelIdToShow})
-    })
     let modelIdToShow = ''
     $: modelToShow = rootModels.find(m => m.id.value === modelIdToShow) ?? null
 </script>
@@ -19,11 +15,14 @@
 {:else if rootModels.length === 1}
     <DataPanelWithLoader models={actualModels} model={rootModels[0]} {tenantId}/>
 {:else}
-    <div class="nav-container">
-        {#each rootModels as model}
-            <a href="#!" class="tab-item-name" class:current={modelIdToShow === model.id.value}
-               on:click={() => modelIdToShow= model.id.value}>{model.name.value}</a>
-        {/each}
+    <div class="navbar bg-base-300 rounded-xl">
+        <div>
+            <ul class="menu menu-horizontal px-1">
+                {#each rootModels as model}
+                    <li  class:active-nav-item={modelIdToShow === model.id.value} on:click={() => modelIdToShow= model.id.value}><a>{model.name.value}</a></li>
+                {/each}
+            </ul>
+        </div>
     </div>
 {/if}
 
@@ -32,21 +31,3 @@
         <DataPanelWithLoader models={actualModels} model={modelToShow} {tenantId}/>
     {/key}
 {/if}
-
-<style>
-    .tab-item-name {
-        border: solid 1px;
-        padding: 0.3em;
-        margin: 0.3em;
-    }
-
-    .current {
-        background-color: chartreuse;
-    }
-
-    .nav-container {
-        display: flex;
-        flex-direction: row;
-    }
-
-</style>

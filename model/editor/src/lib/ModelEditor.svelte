@@ -12,8 +12,6 @@
     export let host: ModelEditorHost
     export let allModels: Writable<EventSourcedModel[]>
 
-    console.log('modelId', modelId)
-    console.log('allModels', $allModels)
     $: eventSourced = host.modelWithId($allModels, modelId)
 
     function onNameChange(name: string) {
@@ -31,8 +29,7 @@
     <EditableName
             nameable={{ name: eventSourced.model.name.value }}
             {onNameChange}
-            extraClass="model-name"
-    />
+            extraClass="model-name"/>
 
     <ModelStructureEditor {eventSourced} {host} allModels={$allModels}/>
 {/if}

@@ -21,11 +21,18 @@
         registerAllPropertyEditors()
     })
 </script>
-<h2>Cozemble ({session.user.email})</h2>
 
-<a href="#tab1" class="tab-item-name" class:current={panelToShow === 'models'} on:click={() => panelToShow='models'}>Models</a>
-<a href="#tab2" class="tab-item-name" class:current={panelToShow === 'data'}
-   on:click={() => panelToShow='data'}>Data</a>
+<div class="navbar bg-base-300 rounded-xl">
+    <div>
+        <a class="btn btn-ghost normal-case text-xl">Cozemble</a>
+    </div>
+    <div>
+        <ul class="menu menu-horizontal px-1">
+            <li on:click={() => panelToShow='models'} class:active-nav-item={panelToShow === 'models'}><a>Models</a></li>
+            <li on:click={() => panelToShow='data'} class:active-nav-item={panelToShow === 'data'}><a>Data</a></li>
+        </ul>
+    </div>
+</div>
 
 
 <div class=tabs>
@@ -46,19 +53,10 @@
 </div>
 
 <style>
-    .tab-item-name {
-        border: solid 1px;
-        padding: 0.3em;
-    }
-
-    .current {
-        background-color: chartreuse;
-    }
 
     .panel-container {
         margin-top: 0.5em;
         display: none;
-        border-top: solid 1px;
     }
 
     .visible {
@@ -67,11 +65,9 @@
 
     .inner-panel-container {
         margin-top: 1em;
-        padding-left: 1em;
-        padding-bottom: 1em;
+        padding: 1em;
         border-radius: 0.5em;
         border: 1px solid #ccc;
-        background-color: lightcyan;
     }
 
 </style>

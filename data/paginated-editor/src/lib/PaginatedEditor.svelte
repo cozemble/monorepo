@@ -91,15 +91,15 @@
                     <DataTd {focus} {rowIndex} {colIndex} {record} {property}/>
                 {/each}
                 <td>
-                    <button class="edit btn btn-warning" on:click={() => editRecord(record)}>Edit</button>
-                    <button class="delete btn btn-error" on:click={() => deleteRecord(record)}>Delete</button>
+                    <button class="edit btn btn-active btn-ghost btn-sm" on:click={() => editRecord(record)}>Edit</button>
+                    <button class="delete btn btn-active btn-ghost btn-sm" on:click={() => deleteRecord(record)}>Delete</button>
                 </td>
             </tr>
         {/each}
         </tbody>
     </table>
     <div class="actions">
-        <button type="button" class="add-record btn" on:click={beginAddNewRecord}>Add {model.name.value}</button>
+        <button type="button" class="btn add-record btn" on:click={beginAddNewRecord}>Add {model.name.value}</button>
     </div>
 {/if}
 

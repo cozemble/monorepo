@@ -39,7 +39,7 @@
         },
 
         async searchRecords(modelId: ModelId, searchText: string): Promise<DataRecord[]> {
-            const result = await loadRecords(tenantId, modelId.value,searchText.trim().length === 0 ? null : searchText)
+            const result = await loadRecords(tenantId, modelId.value, searchText.trim().length === 0 ? null : searchText)
             return result.records
         }
     }
@@ -57,10 +57,12 @@
 </script>
 
 <div class="search-panel">
-    <input type="text" placeholder="Search" on:keyup={searchTextChanged} bind:value={searchText}/>
+    <input type="text" class="input input-bordered" placeholder={`Search ${model.name.value}`} on:keyup={searchTextChanged}
+           bind:value={searchText}/>
 </div>
-<PaginatedEditor {models} {model} records={$records} {paginatedEditorHost}/>
-
+<div class="mt-2">
+    <PaginatedEditor {models} {model} records={$records} {paginatedEditorHost}/>
+</div>
 <style>
     .search-panel {
         margin-top: 0.5rem;

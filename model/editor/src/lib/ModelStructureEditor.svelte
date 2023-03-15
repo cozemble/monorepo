@@ -94,23 +94,21 @@
             <tr>
                 {#each model.properties as property}
                     <td>
-                        <button
-                                on:click={() => editProperty(property)}
-                                class="edit-property"
-                                data-property-name={property.name.value}
-                        >Edit
+                        <button on:click={() => editProperty(property)}
+                                class="btn btn-active btn-ghost edit-property"
+                                data-property-name={property.name.value}>Edit
                         </button>
                     </td>
                 {/each}
                 <td>
-                    <button on:click={addProperty} class="add-property">Add property</button>
+                    <button on:click={addProperty} class="btn btn-active btn-ghost add-property">Add property</button>
                 </td>
             </tr>
             </tbody>
         </table>
         <div class="actions">
             <br/>
-            <button on:click={addNestedModel} class="add-nested-model">Add nested model</button>
+            <button on:click={addNestedModel} class="btn btn-active btn-ghost add-nested-model">Add nested model</button>
         </div>
     </div>
 {/if}
