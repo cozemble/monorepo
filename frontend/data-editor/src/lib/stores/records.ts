@@ -7,6 +7,7 @@ import _ from 'lodash'
 import { removeEmptyValues, initValues, getDifference } from '$lib/utils'
 import { selectedModel } from './models'
 import { addErrors } from '$lib/stores/errors'
+import { removeFormulaFields } from '$lib/helpers/records'
 
 export const currentRecord: Writable<ObjectValue> = writable({})
 
@@ -27,20 +28,24 @@ let currentTimeout: NodeJS.Timeout
 function createLog(record: ObjectValue) {
   recordLogs.update((logs) => {
     const lastLog = _.last(_.cloneDeep(logs))
+    // remove formula fields from the record so they don't get logged
+    const rec = removeFormulaFields(_.cloneDeep(record), get(selectedModel))
 
     // no need to log if the record is the same as the last log
-    if (lastLog && _.isEqual(record, lastLog)) return logs
+    if (lastLog && _.isEqual(rec, lastLog)) return logs
 
     console.warn('record logged')
 
-    // ! it is crucial to clone to prevent mutation of the log
-    return [...logs, _.cloneDeep(record)]
+    return [...logs, rec]
   })
 }
 
 selectedModel.subscribe((model) => {
   currentRecord.set(<ObjectValue>initValues(model))
-  createLog({ ...get(currentRecord) })
+
+  recordLogs.set([])
+
+  createLog(_.cloneDeep(get(currentRecord)))
 })
 
 // listen to changes in the record and log them
