@@ -1,6 +1,6 @@
 declare type SimpleValue = string | number | boolean | null | undefined
 
-declare type ArrayValue = Array<SimpleValue | ObjectValue | ArrayValue> | never[]
+declare type ArrayValue = AnyValue[]
 
 declare interface ObjectValue {
   [key: string]: SimpleValue | ObjectValue | ArrayValue
