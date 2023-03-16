@@ -1,4 +1,5 @@
 <script lang="ts">
+import { handleOverrides } from '$lib/helpers/settings'
 import { initValues } from '$lib/utils'
 import ObjectEditorWrapper from './inputWrappers/ObjectEditorWrapper.svelte'
 import SimpleInputWrapper from './inputWrappers/SimpleInputWrapper.svelte'
@@ -7,6 +8,8 @@ export let label: string
 export let schema: NonNullable<CozJSONSchema['items']>
 export let value: ArrayValue
 export let errors: ArrayError
+
+handleOverrides(schema)
 
 $: console.info(`${label} array schema: `, schema)
 

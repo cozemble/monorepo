@@ -1,4 +1,5 @@
 import DateInput from '$lib/components/inputs/simple/DateInput.svelte'
+import ObjectEditorTestCopy from '$lib/components/ObjectEditorTestCopy.svelte'
 
 export const invoiceModel: JSONSchema = {
   type: 'object',
@@ -118,6 +119,117 @@ export const customComponentModel: JSONSchema = {
     dateOfBirth: {
       type: 'string',
       description: 'Date of birth',
+    },
+    now: {
+      type: 'object',
+      properties: {
+        date: {
+          type: 'string',
+          description: 'Date',
+        },
+        time: {
+          type: 'string',
+          description: 'Time',
+        },
+
+        coz: {
+          overrides: {
+            // override the default component for all string fields
+            components: {
+              string: DateInput,
+            },
+          },
+        },
+      },
+    },
+    dudes: {
+      type: 'array',
+      items: {
+        type: 'object',
+        title: 'Dude',
+        properties: {
+          firstName: {
+            type: 'string',
+          },
+          lastName: {
+            type: 'string',
+          },
+          dateOfBirth: {
+            type: 'string',
+          },
+          address: {
+            type: 'object',
+            title: 'Address',
+            properties: {
+              line1: {
+                type: 'string',
+              },
+              line2: {
+                type: 'string',
+              },
+              postcode: {
+                type: 'string',
+              },
+            },
+            coz: {
+              overrides: {
+                components: {
+                  string: null,
+                },
+              },
+            },
+          },
+          family: {
+            type: 'object',
+            title: 'Family',
+            properties: {
+              wife: {
+                type: 'object',
+                title: 'Wife',
+                properties: {
+                  firstName: {
+                    type: 'string',
+                  },
+                  lastName: {
+                    type: 'string',
+                  },
+                },
+              },
+              kids: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  title: 'Kid',
+                  properties: {
+                    firstName: {
+                      type: 'string',
+                    },
+                    lastName: {
+                      type: 'string',
+                    },
+                  },
+                },
+              },
+            },
+            coz: {
+              overrides: {
+                components: {
+                  object: ObjectEditorTestCopy,
+                },
+              },
+            },
+          },
+        },
+        required: ['firstName', 'dateOfBirth'],
+
+        coz: {
+          overrides: {
+            components: {
+              string: DateInput,
+            },
+          },
+        },
+      },
     },
   },
   required: ['dateOfBirth'],

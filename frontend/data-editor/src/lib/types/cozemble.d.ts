@@ -24,6 +24,12 @@ declare interface JSONSchemaCozembleConfigs {
 
   formula?: Formula
   customComponent?: SimpleInputComponent | ObjectEditorComponent
+
+  /** To override the settings of the schema, applied to all fields in this scope */
+  overrides?: {
+    /** To define custom components for a type of a field */
+    components?: Record<JSONSchema['type'], SimpleInputComponent | ObjectEditorComponent | null>
+  }
 }
 
 /** JSON Schema but cozemble specific configs are merged in place */

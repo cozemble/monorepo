@@ -2,21 +2,31 @@
 import { currentRecord } from '$lib/stores/records'
 import StringInput from '$lib/components/inputs/simple/StringInput.svelte'
 import NumberInput from '$lib/components/inputs/simple/NumberInput.svelte'
+import { handleOverrides, getOverrides } from '$lib/helpers/settings'
 
 export let value: string
 export let error: string | undefined = undefined
 export let propertySchema: CozJSONSchema
 
+handleOverrides(propertySchema)
+
 let customComponent = propertySchema.customComponent
 let type = propertySchema.type
 
+const compOverrides = getOverrides()?.components
+
 // TODO fix TypeScript error
-let component: SimpleInputComponent =
-  type === 'string'
-    ? StringInput
-    : type === 'number' || type === 'integer'
-    ? NumberInput
-    : StringInput
+const determineComponent = (): SimpleInputComponent => {
+  if (type === 'string') return compOverrides?.string || StringInput
+
+  if (type === 'number') return compOverrides?.number || NumberInput
+
+  if (type === 'integer') return compOverrides?.integer || NumberInput
+
+  return StringInput
+}
+
+let component: SimpleInputComponent = determineComponent()
 
 // if a formula is defined, the input is readonly and the value is calculated
 let formula = propertySchema.formula
