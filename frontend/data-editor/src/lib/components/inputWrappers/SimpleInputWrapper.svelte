@@ -10,13 +10,15 @@ export let propertySchema: CozJSONSchema
 
 handleOverrides(propertySchema)
 
-let customComponent = propertySchema.customComponent
 let type = propertySchema.type
 
 const compOverrides = getOverrides()?.components
 
 // TODO fix TypeScript error
 const determineComponent = (): SimpleInputComponent => {
+  // if a custom component is defined, use that anyway
+  if (propertySchema?.customComponent) return propertySchema.customComponent
+
   if (type === 'string') return compOverrides?.string || StringInput
 
   if (type === 'number') return compOverrides?.number || NumberInput
@@ -65,7 +67,7 @@ $: if (!!formula) {
     data-tip={error || ''}
   >
     <svelte:component
-      this={customComponent || component}
+      this={component}
       bind:value
       {error}
       readonly={!!formula}
