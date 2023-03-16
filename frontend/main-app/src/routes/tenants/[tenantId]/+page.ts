@@ -5,6 +5,7 @@ import { cozauth } from '../../../lib/auth/cozauth'
 import { allModels } from '../../../lib/models/modelsStore'
 import { eventSourcedModelFns } from '@cozemble/model-event-sourced'
 import { tenantStore } from '../../../lib/tenant/tenantStore'
+import { tenantEntities } from '../../../lib/models/tenantEntityStore'
 
 export const load: PageLoad = async ({ params }) => {
   if (browser) {
@@ -14,6 +15,7 @@ export const load: PageLoad = async ({ params }) => {
     }
     const tenantData = await fetchTenant(params.tenantId, accessToken)
     allModels.set(tenantData.models.map((m) => eventSourcedModelFns.newInstance(m)))
+    tenantEntities.set(tenantData.entities)
     tenantStore.set({ _type: 'tenant', id: params.tenantId, name: tenantData.name })
   }
 }

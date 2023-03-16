@@ -55,3 +55,13 @@ export {
 } from './events'
 
 export { propertyIdFns } from './propertyIdFns'
+
+export {
+  ModelHtmlTemplate,
+  ModelViewId,
+  SummaryView,
+  ModelView,
+  ModelViewName,
+  modelViewFns,
+  NamingView,
+} from './views'

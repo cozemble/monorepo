@@ -91,14 +91,14 @@
 </script>
 
 <form>
-    <label>Property Name</label><br/>
+    <label class="label">Property Name</label><br/>
     <input
             value={property.name.value}
-            class="property-name"
+            class="property-name input input-bordered"
             on:change={propertyNameChanged}/>
     <br/>
-    <label>Property Type</label><br/>
-    <select on:change={propertyTypeChanged} class="property-type">
+    <label class="label">Property Type</label><br/>
+    <select on:change={propertyTypeChanged} class="property-type input input-bordered">
         <option value="">----</option>
         {#each propertyDescriptors.list() as propertyDescriptor}
             <option

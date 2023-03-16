@@ -1,11 +1,13 @@
 import type { Model, ModelEvent } from '@cozemble/model-core'
 import { config } from '../../../lib/config'
+import type { TenantEntity } from '../../../lib/models/tenantEntityStore'
 
 export interface FetchTenantResponse {
   id: string
   name: string
   models: Model[]
   events: ModelEvent[]
+  entities: TenantEntity[]
 }
 
 export async function fetchTenant(

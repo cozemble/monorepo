@@ -2,8 +2,12 @@
     import {allModels, host, putAllModels} from "./modelsStore";
 
     import {ModelEditor} from "@cozemble/model-editor";
-    import type {ModelId} from "@cozemble/model-core";
-    import {createEventDispatcher} from "svelte";
+    import type {ModelId, ModelViewId} from "@cozemble/model-core";
+    import {afterUpdate, createEventDispatcher} from "svelte";
+    import {putEditedSummaryView, putNewSummaryView, tenantEntities} from "./tenantEntityStore";
+    import {getSummaryView} from "./views";
+    import EditModelSummaryView from './EditModelSummaryView.svelte';
+    import CreateModelSummaryView from './CreateModelSummaryView.svelte';
 
     export let tenantId: string
     export let modelId: ModelId
@@ -16,6 +20,20 @@
 
     let sectionToShow = 'model'
 
+    console.log({entities: $tenantEntities})
+    $: summaryView = getSummaryView(modelId, $tenantEntities)
+
+    async function summaryViewCreated(template: string) {
+        await putNewSummaryView(tenantId, modelId, template)
+    }
+
+    async function summaryViewEdited(viewId: ModelViewId, template: string) {
+        await putEditedSummaryView(tenantId, modelId, viewId, template)
+    }
+
+    afterUpdate(() => {
+        console.log({summaryView, entities: $tenantEntities})
+    })
 </script>
 
 
@@ -31,15 +49,18 @@
 </div>
 
 <div class="mt-3">
-{#if sectionToShow === 'model'}
-    <ModelEditor {allModels} {host} {modelId}/>
-    <br/>
-    <button class="btn" type="button" on:click={saveModelBeingEdited}>Save model</button>
-    <button class="btn" type="button" on:click={() => dispatch('finished')}>Cancel</button>
-{/if}
-{#if sectionToShow === 'appearance'}
+    {#if sectionToShow === 'model'}
+        <ModelEditor {allModels} {host} {modelId}/>
+        <br/>
+        <button class="btn" type="button" on:click={saveModelBeingEdited}>Save model</button>
+        <button class="btn" type="button" on:click={() => dispatch('finished')}>Cancel</button>
+    {/if}
+    {#if sectionToShow === 'appearance'}
         <h4>Summary card HTML</h4>
-        <textarea class="textarea w-full input-bordered" rows="5" cols="80"
-                  placeholder="HTML template for how this model looks in a summary card"></textarea>
-{/if}
+        {#if summaryView}
+            <EditModelSummaryView {summaryView} saveHandler={summaryViewEdited}/>
+        {:else}
+            <CreateModelSummaryView saveHandler={summaryViewCreated}/>
+        {/if}
+    {/if}
 </div>

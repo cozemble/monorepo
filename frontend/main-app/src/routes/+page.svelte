@@ -29,7 +29,7 @@
 
 {#if mounted}
     <h1>Welcome friend</h1>
-    <button on:click={loginWithGithub}>Login with Github</button>
+    <button class="btn" on:click={loginWithGithub}>Login with Github</button>
     <br/>
 {:else}
     <p>loading...</p>

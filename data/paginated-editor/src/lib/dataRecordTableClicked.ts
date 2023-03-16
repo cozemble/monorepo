@@ -9,7 +9,6 @@ export function dataRecordTableClicked(
   const nearestTd = target.closest('td')
   if (nearestTd) {
     const dataRecordPath = nearestTd.getAttribute('data-record-path')
-    console.log({ dataRecordPath })
     if (dataRecordPath) {
       focus.update((f) => f.focusFromDottedNamePath(dataRecordPath))
     } else {
