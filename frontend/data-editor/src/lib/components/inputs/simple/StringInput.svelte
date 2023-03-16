@@ -8,7 +8,7 @@ export let readonly: boolean = false
   type="text"
   bind:value
   class="input input-ghost w-full {error && 'input-error'} w-full pr-0"
-  size={value.length || 2}
+  size={value?.length || 2}
   {readonly}
   disabled={readonly}
 />
