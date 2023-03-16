@@ -1,0 +1,1 @@
+export { modelToJson } from './modelToJson'

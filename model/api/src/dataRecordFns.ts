@@ -93,10 +93,7 @@ export const dataRecordFns = {
       return modelFns.setPropertyValue(model, property, value, record)
     }, record)
     record = model.relationships.reduce((record, relationship) => {
-      if (
-        relationship._type === 'relationship' &&
-        relationship.subType === 'has.one.relationship'
-      ) {
+      if (relationship.subType === 'has.one.relationship') {
         const givenValue = givenValues[relationship.name.value]
         if (givenValue) {
           if (givenValue._type === 'data.record') {
@@ -109,6 +106,15 @@ export const dataRecordFns = {
               givenValue,
             )
           }
+        }
+      }
+      if (relationship.subType === 'has.many.relationship') {
+        const givenValue = givenValues[relationship.name.value]
+        if (givenValue) {
+          if (!Array.isArray(givenValue)) {
+            throw new Error(`Given value for ${relationship.name.value} is not an array`)
+          }
+          record.values[relationship.id.value] = givenValue
         }
       }
       return record

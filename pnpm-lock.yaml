@@ -769,6 +769,25 @@ importers:
       typescript: 4.9.5
       vite: 4.1.4
 
+  model/to-json:
+    specifiers:
+      '@cozemble/lang-util': workspace:*
+      '@cozemble/model-api': workspace:*
+      '@cozemble/model-core': workspace:*
+      '@cozemble/model-string-core': workspace:*
+      typescript: ^4.9.3
+      vite: ^4.0.0
+      vitest: ^0.26.2
+    dependencies:
+      '@cozemble/lang-util': link:../../lang/util
+      '@cozemble/model-api': link:../api
+      '@cozemble/model-core': link:../core
+      '@cozemble/model-string-core': link:../string/core
+    devDependencies:
+      typescript: 4.9.5
+      vite: 4.1.4
+      vitest: 0.26.3
+
   scripts/packaging:
     specifiers:
       '@types/node': ^16.11.6
