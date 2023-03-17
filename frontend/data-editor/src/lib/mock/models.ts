@@ -67,6 +67,12 @@ export const formulaModel: JSONSchema = {
     age: {
       type: 'number',
       description: 'Age',
+      coz: {
+        formula: async (record: any) =>
+          record.dateOfBirth
+            ? new Date().getFullYear() - new Date(record.dateOfBirth).getFullYear()
+            : '',
+      },
     },
     async: {
       type: 'object',
@@ -79,26 +85,7 @@ export const formulaModel: JSONSchema = {
         USD: {
           type: 'number',
           description: 'USD',
-        },
-      },
-      required: ['TRY'],
-    },
-  },
-  required: ['dateOfBirth', 'async'],
-
-  // Cozemble specific configurations
-  coz: {
-    properties: {
-      age: {
-        // json-schema doesn't support formula, so we use a custom property
-        formula: async (record: any) =>
-          record.dateOfBirth
-            ? new Date().getFullYear() - new Date(record.dateOfBirth).getFullYear()
-            : '',
-      },
-      async: {
-        properties: {
-          USD: {
+          coz: {
             formula: async (record: any) => {
               // wait for 3 seconds to simulate network latency
               await new Promise((resolve) => setTimeout(resolve, 3000))
@@ -109,8 +96,10 @@ export const formulaModel: JSONSchema = {
           },
         },
       },
+      required: ['TRY'],
     },
   },
+  required: ['dateOfBirth', 'async'],
 }
 
 export const customComponentModel: JSONSchema = {
@@ -142,6 +131,11 @@ export const customComponentModel: JSONSchema = {
               type: 'string',
             },
           },
+
+          coz: {
+            customComponent: DateRangeInput,
+            componentDisplay: 'inline',
+          },
         },
 
         coz: {
@@ -168,6 +162,9 @@ export const customComponentModel: JSONSchema = {
           },
           dateOfBirth: {
             type: 'string',
+            coz: {
+              customComponent: DateInput,
+            },
           },
           address: {
             type: 'object',
@@ -245,22 +242,6 @@ export const customComponentModel: JSONSchema = {
     },
   },
   required: ['dateOfBirth'],
-
-  coz: {
-    properties: {
-      dateOfBirth: {
-        customComponent: DateInput,
-      },
-      now: {
-        properties: {
-          timeSlice: {
-            customComponent: DateRangeInput,
-            componentDisplay: 'inline',
-          },
-        },
-      },
-    },
-  },
 }
 
 export const fruitererModel: JSONSchema = {
@@ -298,59 +279,49 @@ export const fruitererModel: JSONSchema = {
           },
           total: {
             type: 'number',
+            coz: {
+              // formula: async (record: any) => {
+              //   const item = record.items.find((item: any) => item.item === record.item)
+              //   return item ? item.quantity * item.price : 0
+              // },
+            },
           },
+          required: ['item', 'quantity'],
         },
-        required: ['item', 'quantity'],
       },
     },
     subtotal: {
       type: 'number',
-    },
-    tenPercentSalesTax: {
-      type: 'number',
-    },
-    total: {
-      type: 'number',
-    },
-  },
-  required: ['invoiceId'],
-
-  coz: {
-    properties: {
-      // items: {
-      //   properties: {
-      //     total: {
-      //       formula: async (record: any) => {
-      //         const item = record.items.find((item: any) => item.item === record.item)
-      //         return item ? item.quantity * item.price : 0
-      //       }
-
-      // },
-      subtotal: {
+      coz: {
         formula: async (record: any) => {
           return record.items
             ? record.items.reduce(
                 (acc: number, item: any) =>
                   acc +
                   parseFloat(item.quantity) *
-                    parseFloat(record.prices.find((p) => p.item === item.item).price),
+                    parseFloat(record.prices.find((p: any) => p.item === item.item).price),
                 0,
               )
             : 0
         },
       },
-
-      tenPercentSalesTax: {
+    },
+    tenPercentSalesTax: {
+      type: 'number',
+      coz: {
         formula: async (record: any) => {
           return record.subtotal * 0.1
         },
       },
-
-      total: {
+    },
+    total: {
+      type: 'number',
+      coz: {
         formula: async (record: any) => {
           return record.subtotal + record.tenPercentSalesTax
         },
       },
     },
   },
+  required: ['invoiceId'],
 }

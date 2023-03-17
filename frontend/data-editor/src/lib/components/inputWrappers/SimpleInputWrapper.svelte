@@ -17,7 +17,8 @@ const compOverrides = getOverrides()?.components
 // TODO fix TypeScript error
 const determineComponent = (): SimpleInputComponent => {
   // if a custom component is defined, use that anyway
-  if (propertySchema?.customComponent) return propertySchema.customComponent
+  if (propertySchema?.coz?.customComponent)
+    return propertySchema.coz?.customComponent
 
   if (type === 'string') return compOverrides?.string || StringInput
 
@@ -31,7 +32,7 @@ const determineComponent = (): SimpleInputComponent => {
 let component: SimpleInputComponent = determineComponent()
 
 // if a formula is defined, the input is readonly and the value is calculated
-let formula = propertySchema.formula
+let formula = propertySchema.coz?.formula
 let loading = false
 
 $: if (!!formula) {

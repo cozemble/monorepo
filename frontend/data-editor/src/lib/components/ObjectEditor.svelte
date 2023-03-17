@@ -11,19 +11,20 @@ $: properties = schema.properties
 
 $: objectProperties = Object.entries(properties || []).filter(
   ([key, prop]) =>
-    prop.type === 'object' && prop?.componentDisplay !== 'inline',
+    prop.type === 'object' && prop?.coz?.componentDisplay !== 'inline',
 )
 
 $: arrayProperties = Object.entries(properties || []).filter(
-  ([key, prop]) => prop.type === 'array' && prop?.componentDisplay !== 'inline',
+  ([key, prop]) =>
+    prop.type === 'array' && prop?.coz?.componentDisplay !== 'inline',
 )
 
 $: simpleProperties = Object.entries(properties || []).filter(
   ([key, prop]) =>
     (prop.type !== 'object' &&
       prop.type !== 'array' &&
-      prop?.componentDisplay !== 'block') ||
-    prop?.componentDisplay === 'inline',
+      prop?.coz?.componentDisplay !== 'block') ||
+    prop?.coz?.componentDisplay === 'inline',
 )
 //
 </script>

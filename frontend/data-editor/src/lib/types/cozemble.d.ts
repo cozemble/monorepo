@@ -19,9 +19,6 @@ declare type ObjectEditorComponent = import('svelte').ComponentType<
 >
 
 declare interface JSONSchemaCozembleConfigs {
-  properties?: Record<string, JSONSchemaCozembleConfigs>
-  items?: JSONSchemaCozembleConfigs
-
   formula?: Formula
   customComponent?: SimpleInputComponent | ObjectEditorComponent
 
@@ -36,4 +33,6 @@ declare interface JSONSchemaCozembleConfigs {
 }
 
 /** JSON Schema but cozemble specific configs are merged in place */
-declare type CozJSONSchema = JSONSchema & JSONSchemaCozembleConfigs
+declare type CozJSONSchema = JSONSchema & {
+  coz?: JSONSchemaCozembleConfigs
+}
