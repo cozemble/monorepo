@@ -10,15 +10,20 @@ export let errors: ObjectError | undefined
 $: properties = schema.properties
 
 $: objectProperties = Object.entries(properties || []).filter(
-  ([key, prop]) => prop.type === 'object',
+  ([key, prop]) =>
+    prop.type === 'object' && prop?.componentDisplay !== 'inline',
 )
 
 $: arrayProperties = Object.entries(properties || []).filter(
-  ([key, prop]) => prop.type === 'array',
+  ([key, prop]) => prop.type === 'array' && prop?.componentDisplay !== 'inline',
 )
 
 $: simpleProperties = Object.entries(properties || []).filter(
-  ([key, prop]) => prop.type !== 'object' && prop.type !== 'array',
+  ([key, prop]) =>
+    (prop.type !== 'object' &&
+      prop.type !== 'array' &&
+      prop?.componentDisplay !== 'block') ||
+    prop?.componentDisplay === 'inline',
 )
 //
 </script>

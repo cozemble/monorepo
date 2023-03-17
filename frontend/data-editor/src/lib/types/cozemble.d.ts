@@ -25,6 +25,9 @@ declare interface JSONSchemaCozembleConfigs {
   formula?: Formula
   customComponent?: SimpleInputComponent | ObjectEditorComponent
 
+  /** Allow display of a custom component in a block or inline */
+  componentDisplay?: 'inline' | 'block'
+
   /** To override the settings of the schema, applied to all fields in this scope */
   overrides?: {
     /** To define custom components for a type of a field */

@@ -1,5 +1,6 @@
 import DateInput from '$lib/components/inputs/simple/DateInput.svelte'
 import ObjectEditorTestCopy from '$lib/components/ObjectEditorTestCopy.svelte'
+import DateRangeInput from '$lib/components/tableInputCells/DateRangeInput.svelte'
 
 export const invoiceModel: JSONSchema = {
   type: 'object',
@@ -131,6 +132,17 @@ export const customComponentModel: JSONSchema = {
           type: 'string',
           description: 'Time',
         },
+        timeSlice: {
+          type: 'object',
+          properties: {
+            from: {
+              type: 'string',
+            },
+            to: {
+              type: 'string',
+            },
+          },
+        },
 
         coz: {
           overrides: {
@@ -238,6 +250,14 @@ export const customComponentModel: JSONSchema = {
     properties: {
       dateOfBirth: {
         customComponent: DateInput,
+      },
+      now: {
+        properties: {
+          timeSlice: {
+            customComponent: DateRangeInput,
+            componentDisplay: 'inline',
+          },
+        },
       },
     },
   },
