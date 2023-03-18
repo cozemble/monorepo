@@ -39,7 +39,7 @@ let loading = false
 $: if (!!formula) {
   loading = true
 
-  formula($currentRecord, path).then((result) => {
+  formula.exec($currentRecord, path).then((result) => {
     value = result
     loading = false
   })

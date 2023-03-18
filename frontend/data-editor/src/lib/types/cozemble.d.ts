@@ -1,5 +1,14 @@
 /** To calculate the value of a field */
-declare type Formula = (data: any, path: string[]) => Promise<any>
+declare type Formula = {
+  /** list of fields that the formula depends on, on global scope */
+  deps: string[]
+  /**
+   * @param record The whole record
+   * @param path The path to the field in the data
+   * @returns The calculated value for the field
+   */
+  exec: (record: any, path: Path) => Promise<AnyValue>
+}
 
 /** The path to the field in the data */
 declare type Path = string[]

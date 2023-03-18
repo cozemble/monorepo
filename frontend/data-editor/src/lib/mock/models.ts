@@ -68,10 +68,13 @@ export const formulaModel: JSONSchema = {
       type: 'number',
       description: 'Age',
       coz: {
-        formula: async (record: any) =>
-          record.dateOfBirth
-            ? new Date().getFullYear() - new Date(record.dateOfBirth).getFullYear()
-            : '',
+        formula: {
+          deps: ['dateOfBirth'],
+          exec: async (record, self) =>
+            record.dateOfBirth
+              ? new Date().getFullYear() - new Date(record.dateOfBirth).getFullYear()
+              : '',
+        },
       },
     },
     async: {
@@ -86,12 +89,15 @@ export const formulaModel: JSONSchema = {
           type: 'number',
           description: 'USD',
           coz: {
-            formula: async (record: any) => {
-              // wait for 3 seconds to simulate network latency
-              await new Promise((resolve) => setTimeout(resolve, 3000))
-              const response = await fetch('https://api.exchangerate.host/latest?base=TRY')
-              const data = await response.json()
-              return record.async.TRY * data.rates.USD
+            formula: {
+              deps: ['async.TRY'],
+              exec: async (record: any) => {
+                // wait for 3 seconds to simulate network latency
+                await new Promise((resolve) => setTimeout(resolve, 3000))
+                const response = await fetch('https://api.exchangerate.host/latest?base=TRY')
+                const data = await response.json()
+                return record.async.TRY * data.rates.USD
+              },
             },
           },
         },
@@ -280,36 +286,49 @@ export const fruitererModel: JSONSchema = {
           total: {
             type: 'number',
             coz: {
-              formula: async (record, path) => {
-                const itemIndex = path[path.length - 2]
-                const { item } = record.items[itemIndex]
+              formula: {
+                deps: ['items', 'prices'],
+                exec: async (record, path) => {
+                  const itemIndex = path[path.length - 2]
+                  const { item } = record.items[itemIndex]
 
-                const price = record.prices.find((p: any) => p.item === item).price
-                return record.items[itemIndex].quantity * price
+                  const price = record.prices.find((p: any) => p.item === item).price
+                  return record.items[itemIndex].quantity * price
+                },
               },
             },
           },
         },
         required: ['item', 'quantity'],
       },
+      required: ['item', 'quantity'],
     },
     subtotal: {
       type: 'number',
       coz: {
-        formula: async (record, path) =>
-          record.items.reduce((acc: number, item: any) => acc + parseFloat(item.total), 0),
+        formula: {
+          deps: ['items'],
+          exec: async (record, path) =>
+            record.items.reduce((acc: number, item: any) => acc + parseFloat(item.total), 0),
+        },
       },
     },
     tenPercentSalesTax: {
       type: 'number',
       coz: {
-        formula: async (record, path) => parseFloat((record.subtotal * 0.1).toFixed(9)),
+        formula: {
+          deps: ['subtotal'],
+          exec: async (record, path) => parseFloat((record.subtotal * 0.1).toFixed(9)),
+        },
       },
     },
     total: {
       type: 'number',
       coz: {
-        formula: async (record: any) => record.subtotal + record.tenPercentSalesTax,
+        formula: {
+          deps: ['subtotal', 'tenPercentSalesTax'],
+          exec: async (record: any) => record.subtotal + record.tenPercentSalesTax,
+        },
       },
     },
   },
