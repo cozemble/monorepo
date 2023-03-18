@@ -27,16 +27,28 @@ let currentTimeout: NodeJS.Timeout
  */
 function createLog(record: ObjectValue) {
   recordLogs.update((logs) => {
+    // need to clone first to prevent mutations
     const lastLog = _.last(_.cloneDeep(logs))
-    // remove formula fields from the record so they don't get logged
-    const rec = removeFormulaFields(_.cloneDeep(record), get(selectedModel))
+    const currentRecord = _.cloneDeep(record)
 
     // no need to log if the record is the same as the last log
-    if (lastLog && _.isEqual(rec, lastLog)) return logs
+    if (lastLog && _.isEqual(record, lastLog)) return logs
+
+    // mutate the last item if a formula field was changed
+
+    const withoutFormulas = {
+      currentRecord: removeFormulaFields(currentRecord, get(selectedModel)) as ObjectValue,
+      lastLog: removeFormulaFields(lastLog, get(selectedModel)) as ObjectValue,
+    }
+
+    if (_.isEqual(withoutFormulas.currentRecord, withoutFormulas.lastLog)) {
+      logs[logs.length - 1] = currentRecord
+      return logs
+    }
 
     console.warn('record logged')
 
-    return [...logs, rec]
+    return [...logs, currentRecord]
   })
 }
 
