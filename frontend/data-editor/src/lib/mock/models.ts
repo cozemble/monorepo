@@ -286,8 +286,8 @@ export const fruitererModel: JSONSchema = {
               // },
             },
           },
-          required: ['item', 'quantity'],
         },
+        required: ['item', 'quantity'],
       },
     },
     subtotal: {
