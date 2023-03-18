@@ -7,6 +7,7 @@ import { handleOverrides, getOverrides } from '$lib/helpers/settings'
 export let value: string
 export let error: string | undefined = undefined
 export let propertySchema: CozJSONSchema
+export let path: string[]
 
 handleOverrides(propertySchema)
 
@@ -72,6 +73,7 @@ $: if (!!formula) {
       bind:value
       {error}
       readonly={!!formula}
+      {path}
     />
     {#if loading}
       <div

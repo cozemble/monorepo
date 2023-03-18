@@ -2,12 +2,12 @@
 import _ from 'lodash'
 import ObjectEditor from '$lib/components/ObjectEditor.svelte'
 import { getOverrides, handleOverrides } from '$lib/helpers/settings'
-import { onMount } from 'svelte'
 
 export let title: string
 export let schema: CozJSONSchema
 export let value: ObjectValue
 export let errors: ObjectError | undefined
+export let path: string[] = []
 
 handleOverrides(schema)
 
@@ -25,5 +25,5 @@ $: component =
 
 <div class="flex flex-col gap-4 rounded-lg">
   <h2 class="font-bold text-xl text-primary capitalize">{title}</h2>
-  <svelte:component this={component} bind:value {schema} {errors} />
+  <svelte:component this={component} bind:value {schema} {path} {errors} />
 </div>

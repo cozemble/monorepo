@@ -1,10 +1,14 @@
 /** To calculate the value of a field */
 declare type Formula = (data: any) => Promise<any>
 
+/** The path to the field in the data */
+declare type Path = string[]
+
 /** To render a custom component for a field */
 declare type SimpleInputComponent = import('svelte').ComponentType<
   import('svelte').SvelteComponentTyped<{
     value: string | number | boolean
+    path: Path
     error?: string
     readonly?: boolean
   }>
@@ -13,6 +17,7 @@ declare type SimpleInputComponent = import('svelte').ComponentType<
 declare type ObjectEditorComponent = import('svelte').ComponentType<
   import('svelte').SvelteComponentTyped<{
     schema: CozJSONSchema
+    path: Path
     value: ObjectValue
     errors?: ObjectError
   }>

@@ -6,6 +6,7 @@ import ObjectEditorWrapper from './inputWrappers/ObjectEditorWrapper.svelte'
 export let schema: CozJSONSchema
 export let value: ObjectValue
 export let errors: ObjectError | undefined
+export let path: string[]
 
 $: properties = schema.properties
 
@@ -55,6 +56,7 @@ $: simpleProperties = Object.entries(properties || []).filter(
           bind:value={value[key]}
           error={errors ? errors[key] : undefined}
           propertySchema={prop}
+          path={[...path, key]}
         />
       {/each}
     </tr>
@@ -70,6 +72,7 @@ $: simpleProperties = Object.entries(properties || []).filter(
             title={key}
             bind:value={value[key]}
             errors={errors ? errors[key] : {}}
+            path={[...path, key]}
           />
         </td>
       </tr>
@@ -86,6 +89,7 @@ $: simpleProperties = Object.entries(properties || []).filter(
             schema={prop.items}
             bind:value={value[key]}
             errors={errors ? errors[key] : []}
+            path={[...path, key]}
           />
         </td>
       </tr>
