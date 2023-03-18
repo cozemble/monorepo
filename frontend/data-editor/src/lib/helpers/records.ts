@@ -6,7 +6,7 @@ export const removeFormulaFields = (record: AnyValue, model: CozJSONSchema): Any
     return record.reduce((prev: ArrayValue, curr): ArrayValue => {
       const schema = model.items as CozJSONSchema
 
-      if (schema.formula) return prev
+      if (schema?.coz?.formula) return prev
 
       if (_.isObject(curr) || _.isArray(curr)) curr = removeFormulaFields(curr, schema)
 
@@ -21,7 +21,7 @@ export const removeFormulaFields = (record: AnyValue, model: CozJSONSchema): Any
 
       const schema = model.properties[key] as CozJSONSchema
 
-      if (schema.formula) return prev
+      if (schema?.coz?.formula) return prev
 
       if (_.isObject(value) || _.isArray(value))
         return {
@@ -37,5 +37,7 @@ export const removeFormulaFields = (record: AnyValue, model: CozJSONSchema): Any
   }
 
   // simple value
-  if (model.formula) return
+  if (model?.coz?.formula) return
+
+  return record
 }
