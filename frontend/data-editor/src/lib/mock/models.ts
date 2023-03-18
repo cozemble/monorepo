@@ -280,10 +280,13 @@ export const fruitererModel: JSONSchema = {
           total: {
             type: 'number',
             coz: {
-              // formula: async (record: any) => {
-              //   const item = record.items.find((item: any) => item.item === record.item)
-              //   return item ? item.quantity * item.price : 0
-              // },
+              formula: async (record, path) => {
+                const itemIndex = path[path.length - 2]
+                const { item } = record.items[itemIndex]
+
+                const price = record.prices.find((p: any) => p.item === item).price
+                return record.items[itemIndex].quantity * price
+              },
             },
           },
         },
@@ -293,33 +296,20 @@ export const fruitererModel: JSONSchema = {
     subtotal: {
       type: 'number',
       coz: {
-        formula: async (record: any) => {
-          return record.items
-            ? record.items.reduce(
-                (acc: number, item: any) =>
-                  acc +
-                  parseFloat(item.quantity) *
-                    parseFloat(record.prices.find((p: any) => p.item === item.item).price),
-                0,
-              )
-            : 0
-        },
+        formula: async (record, path) =>
+          record.items.reduce((acc: number, item: any) => acc + parseFloat(item.total), 0),
       },
     },
     tenPercentSalesTax: {
       type: 'number',
       coz: {
-        formula: async (record: any) => {
-          return record.subtotal * 0.1
-        },
+        formula: async (record, path) => parseFloat((record.subtotal * 0.1).toFixed(9)),
       },
     },
     total: {
       type: 'number',
       coz: {
-        formula: async (record: any) => {
-          return record.subtotal + record.tenPercentSalesTax
-        },
+        formula: async (record: any) => record.subtotal + record.tenPercentSalesTax,
       },
     },
   },

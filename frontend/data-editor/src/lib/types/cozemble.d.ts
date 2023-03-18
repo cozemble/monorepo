@@ -1,5 +1,5 @@
 /** To calculate the value of a field */
-declare type Formula = (data: any) => Promise<any>
+declare type Formula = (data: any, path: string[]) => Promise<any>
 
 /** The path to the field in the data */
 declare type Path = string[]
