@@ -6,6 +6,8 @@ import { getContext, setContext } from 'svelte'
 const dataRecordEditorClientContext = 'com.cozemble.data.record.editor.client.context'
 
 export interface DataRecordEditorClient {
+  createNewRecord(modelId: ModelId): Promise<DataRecord | null>
+
   dispatchControlEvent(event: DataRecordControlEvent): void
 
   dispatchEditEvent(event: DataRecordEditEvent): void

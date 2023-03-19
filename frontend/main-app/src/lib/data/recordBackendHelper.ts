@@ -12,9 +12,9 @@ import { justErrorMessage } from '@cozemble/lang-util'
 
 export async function saveRecord(
   tenantId: string,
-  modelId: string,
   newRecord: EventSourcedDataRecord,
 ): Promise<RecordSaveOutcome> {
+  const modelId = newRecord.record.modelId.value
   const accessToken = await cozauth.getAccessToken(cozauth.getTenantRoot(tenantId))
   const saveResponse = await fetch(
     `${config.backendUrl()}/api/v1/tenant/${tenantId}/model/${modelId}/record`,

@@ -1,6 +1,7 @@
 <script lang="ts">
     import {allModels} from "../models/modelsStore";
     import DataPanelWithLoader from "./DataPanelWithLoader.svelte";
+    import {records} from "./recordsStore";
 
     export let tenantId: string
     $: actualModels = $allModels.map(m => m.model)
@@ -8,6 +9,11 @@
 
     let modelIdToShow = ''
     $: modelToShow = rootModels.find(m => m.id.value === modelIdToShow) ?? null
+
+    function showModel(modelId: string) {
+        records.set([])
+        modelIdToShow = modelId
+    }
 </script>
 
 {#if rootModels.length === 0}
@@ -19,7 +25,7 @@
         <div>
             <ul class="menu menu-horizontal px-1">
                 {#each rootModels as model}
-                    <li  class:active-nav-item={modelIdToShow === model.id.value} on:click={() => modelIdToShow= model.id.value}><a>{model.name.value}</a></li>
+                    <li  class:active-nav-item={modelIdToShow === model.id.value} on:click={() => showModel(model.id.value)}><a>{model.name.value}</a></li>
                 {/each}
             </ul>
         </div>

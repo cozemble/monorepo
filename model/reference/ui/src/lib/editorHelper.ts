@@ -7,14 +7,14 @@ import type {
 } from '@cozemble/model-core'
 import type { ReferenceProperty } from '@cozemble/model-reference-core'
 import { referencePropertyFns } from '@cozemble/model-reference-core'
-import type { DataRecordEditorClient } from '@cozemble/data-editor-sdk'
+import type { DataRecordEditorClient, DataRecordViewerClient } from '@cozemble/data-editor-sdk'
 import { applyTemplate, modelToJson } from '@cozemble/model-to-json'
-import type { DataRecordViewerClient } from '@cozemble/data-editor-sdk'
 import { modelFns } from '@cozemble/model-api'
 import { strings } from '@cozemble/lang-util'
 
 export interface EditorParams {
   referenceProperty: ReferenceProperty
+  referencedModel: Model
   referencedModelId: ModelId
   summaryView: ModelHtmlTemplate
   models: Model[]
@@ -49,6 +49,7 @@ export function assembleEditorParams(
   return {
     referenceProperty,
     referencedModelId,
+    referencedModel,
     summaryView: summaryView.view.view,
     models: client.getModels(),
   }

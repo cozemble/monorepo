@@ -8,6 +8,7 @@ export async function dereference(
   references: ReferencedRecords | null,
   setter: (value: DataRecord | null) => void,
 ) {
+  console.log({ references, referencedModelId })
   if (!references) {
     setter(null)
     return

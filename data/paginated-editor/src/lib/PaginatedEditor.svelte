@@ -9,6 +9,7 @@
     import {dataRecordViewerHost, eventSourcedDataRecordFns} from '@cozemble/data-editor-sdk'
     import type {PaginatedEditorHost} from './PaginatedEditorHost'
     import {makeDataRecordViewer} from "./makeDataRecordViewer";
+    import {afterUpdate} from "svelte";
 
     export let models: Model[]
     export let model: Model
@@ -51,11 +52,18 @@
         return outcome
     }
 
+    async function justSaveNewRecord(
+        newRecord: EventSourcedDataRecord,
+    ): Promise<RecordSaveOutcome> {
+        modelLevelErrors = []
+        return await paginatedEditorHost.saveNewRecord(newRecord)
+    }
+
     async function saveNewRecord(
         newRecord: EventSourcedDataRecord,
     ): Promise<RecordSaveOutcome> {
         modelLevelErrors = []
-        const outcome = await paginatedEditorHost.saveNewRecord(newRecord)
+        const outcome = await justSaveNewRecord(newRecord)
         if (outcome._type === 'record.save.succeeded') {
             doAddNewRecord = false
         } else {
@@ -63,6 +71,8 @@
         }
         return outcome
     }
+
+    afterUpdate(() => console.log('after update', {doAddNewRecord, recordBeingEdited}))
 </script>
 
 {#each modelLevelErrors as error}
@@ -74,11 +84,11 @@
     <StackingRecordEditor
             recordSearcher={paginatedEditorHost}
             {modelViews}
-            recordEditContext={new RecordEditContext( models, eventSourcedDataRecordFns.newInstance(models, model.id, 'test-user'), saveNewRecord, () => (doAddNewRecord = false), `Add new ${model.name.value}`, )}/>
+            recordEditContext={new RecordEditContext( models, justSaveNewRecord,eventSourcedDataRecordFns.newInstance(models, model.id, 'test-user'), saveNewRecord, () => (doAddNewRecord = false), `Add new ${model.name.value}`, )}/>
 {:else if recordBeingEdited !== null}
     <StackingRecordEditor
             recordSearcher={paginatedEditorHost} {modelViews}
-            recordEditContext={new RecordEditContext( models, eventSourcedDataRecordFns.fromRecord(models, recordBeingEdited), recordEdited, () => (recordBeingEdited = null), `Edit ${model.name.value}`, )}/>
+            recordEditContext={new RecordEditContext( models, justSaveNewRecord,eventSourcedDataRecordFns.fromRecord(models, recordBeingEdited), recordEdited, () => (recordBeingEdited = null), `Edit ${model.name.value}`, )}/>
 {:else}
     <table class="table">
         <thead>

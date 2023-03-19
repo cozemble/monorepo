@@ -5,12 +5,13 @@
     import type {RecordEditContext} from './RecordEditContext'
     import {getEditRecordListener} from './EditRecordListener'
     import {getContext, onDestroy, onMount} from 'svelte'
-    import type {DataRecord, ModelId, ModelView} from "@cozemble/model-core";
+    import type {DataRecord, Model, ModelId, ModelView} from "@cozemble/model-core";
     import type {RecordSearcher} from "./RecordSearcher";
-    import type {Model} from "@cozemble/model-core";
+    import type {RecordCreator} from "./RecordCreator";
 
     export let recordEditContext: RecordEditContext
     export let recordSearcher: RecordSearcher
+    export let recordCreator: RecordCreator
     export let modelViews: ModelView[]
     export let pushContext: (context: RecordEditContext) => void
     export let popContext: () => void
@@ -26,6 +27,11 @@
     }
 
     const dataRecordEditorClient: DataRecordEditorClient = {
+        createNewRecord(modelId: ModelId): Promise<DataRecord | null> {
+            console.log("createNewRecord", {modelId})
+            return recordCreator.createNewRecord(modelId)
+        },
+
         dispatchEditEvent(event: DataRecordEditEvent): void {
             editListener.onEvent(recordEditContext, event)
             recordEditContext.handleDataRecordEditEvent(event)
@@ -47,9 +53,11 @@
     dataRecordEditorHost.setClient(dataRecordEditorClient)
 
     onMount(() => {
+        console.log(`onMount: ${recordEditContext.title} (${recordEditContext.id})`)
         editListener.beginEdit(recordEditContext)
     })
     onDestroy(() => {
+        console.log(`onDestroy: ${recordEditContext.title} (${recordEditContext.id})`)
         editListener.popEdit()
     })
 </script>

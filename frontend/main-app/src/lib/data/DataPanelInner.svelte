@@ -16,7 +16,7 @@
 
     const paginatedEditorHost: PaginatedEditorHost = {
         async recordEdited(editedRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
-            const result = await saveRecord(tenantId, model.id.value, editedRecord)
+            const result = await saveRecord(tenantId,  editedRecord)
             if (result._type === "record.save.succeeded") {
                 records.update(r => r.map(r => r.id.value === editedRecord.record.id.value ? editedRecord.record : r))
             }
@@ -24,8 +24,8 @@
         },
 
         async saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
-            const result = await saveRecord(tenantId, model.id.value, newRecord)
-            if (result._type === "record.save.succeeded") {
+            const result = await saveRecord(tenantId, newRecord)
+            if (result._type === "record.save.succeeded" && newRecord.record.modelId.value === model.id.value) {
                 records.update(r => [...r, newRecord.record])
             }
             return result

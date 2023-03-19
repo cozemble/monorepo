@@ -77,12 +77,12 @@
             return recordSaveSucceeded(record)
         },
         async searchRecords(
-            modelId: ModelId,
-            search: string,
+            _modelId: ModelId,
+            _search: string,
         ): Promise<DataRecord[]> {
             return []
         },
-        async recordById(modelId: ModelId, recordId: DataRecordId): Promise<DataRecord | null> {
+        async recordById(_modelId: ModelId, _recordId: DataRecordId): Promise<DataRecord | null> {
             return null
         },
     }

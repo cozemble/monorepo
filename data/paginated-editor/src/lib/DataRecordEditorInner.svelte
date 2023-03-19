@@ -1,24 +1,24 @@
 <script lang="ts">
-    import type {DataRecord, DataRecordPath, DataRecordPathElement, Model,} from '@cozemble/model-core'
+    import type {DataRecordPathElement,} from '@cozemble/model-core'
     import {modelFns} from '@cozemble/model-api'
-    import type {DataRecordPathFocus} from './DataRecordPathFocus'
-    import type {Writable} from 'svelte/store'
     import DataRecordTable from './DataRecordTable.svelte'
     import HasManyRelationship from './HasManyRelationship.svelte'
     import type {RecordEditContext} from './RecordEditContext'
 
-    export let models: Model[]
-    export let model: Model
-    export let record: DataRecord
+    export let recordEditContext: RecordEditContext
+    const record = recordEditContext.record
+    const model = recordEditContext.model
+    const models = recordEditContext.models
+    const errors = recordEditContext.errors
+    const showErrors = recordEditContext.showErrors
+    const focus = recordEditContext.focus
+
     export let parentPath: DataRecordPathElement[]
-    export let errors: Map<DataRecordPath, string[]>
-    export let showErrors: boolean
-    export let focus: Writable<DataRecordPathFocus>
     export let pushContext: (context: RecordEditContext) => void
     export let popContext: () => void
 </script>
 
-<DataRecordTable {record} {model} {focus} {parentPath} {errors} {showErrors}/>
+<DataRecordTable record={$record} {model} {focus} {parentPath} errors={$errors} showErrors={$showErrors}/>
 
 {#each model.relationships as relationship}
     {@const relatedModel = modelFns.findById(models, relationship.modelId)}
@@ -27,19 +27,15 @@
         <svelte:self
                 {models}
                 model={relatedModel}
-                record={record.values[relationship.id.value]}
+                record={$record.values[relationship.id.value]}
                 {errors}
                 {showErrors}
                 {focus}
                 parentPath={[...parentPath, relationship]}/>
     {:else}
         <HasManyRelationship
-                {models}
+                {recordEditContext}
                 {relationship}
-                {record}
-                {errors}
-                {showErrors}
-                {focus}
                 {parentPath}
                 {pushContext}
                 {popContext}/>

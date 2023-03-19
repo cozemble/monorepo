@@ -1,8 +1,9 @@
 <script lang="ts">
-    import type {RecordEditContext} from './RecordEditContext'
+    import {createDependentRecordContext, type RecordEditContext} from './RecordEditContext'
     import EditRecord from './EditRecord.svelte'
     import type {RecordSearcher} from "./RecordSearcher";
-    import type {ModelView} from "@cozemble/model-core";
+    import type {RecordCreator} from "./RecordCreator";
+    import type {DataRecord, ModelId, ModelView} from "@cozemble/model-core";
 
     export let recordEditContext: RecordEditContext
     export let recordSearcher: RecordSearcher
@@ -10,19 +11,70 @@
 
     let stack: RecordEditContext[] = [recordEditContext]
 
+    function visibleStackItem() {
+        return stack[stack.length - 1]
+    }
+
+    function visibleStackItemIndex() {
+        return stack.length - 1
+    }
+
     function pushContext(context: RecordEditContext) {
-        const current = stack[0]
+        const current = visibleStackItem()
         context.prefixTitle(current.title + ' > ')
 
-        stack = [context, ...stack]
+        stack = [...stack, context,]
+        console.log(`Following push, visible stack item is ${visibleStackItem().id} with title ${visibleStackItem().title}`)
     }
 
     function popContext() {
-        const [_head, ...tail] = stack
-        stack = tail
+        // take the last element off the stack
+        stack = stack.slice(0, -1)
+        console.log(`Following push, visible stack item is ${visibleStackItem().id} with title ${visibleStackItem().title}`)
+    }
+
+    const recordCreator: RecordCreator = {
+        createNewRecord(modelId: ModelId): Promise<DataRecord | null> {
+            console.log("createNewRecord", modelId)
+            return new Promise((resolve, reject) => {
+                const newContext = createDependentRecordContext(recordEditContext, modelId, async (record) => {
+                    const outcome = await recordEditContext.saveNewRecord(record);
+                    if (outcome._type === "record.save.succeeded") {
+                        console.log(`Popping context in succsssful save`)
+                        popContext()
+                        resolve(outcome.record)
+                    } else {
+                        console.log(`Popping context in unsuccsssful save`)
+                        popContext()
+                        reject(outcome.errors.join(", "))
+                    }
+                    return outcome
+                }, () => {
+                    console.log(`Popping context in onCancel`)
+                    popContext()
+                    resolve(null)
+                })
+                pushContext(newContext)
+            })
+        }
     }
 </script>
 
-{#key stack[0].id}
-    <EditRecord recordEditContext={stack[0]} {recordSearcher} {modelViews} {pushContext} {popContext}/>
-{/key}
+{#each stack as stackElement, index}
+    {#key stackElement.id}
+        <div class:hidden={visibleStackItemIndex() !== index}>
+            <EditRecord recordEditContext={stackElement}
+                        {recordSearcher}
+                        {recordCreator}
+                        {modelViews}
+                        {pushContext}
+                        {popContext}/>
+        </div>
+    {/key}
+{/each}
+
+<style>
+    .hidden {
+        display: none;
+    }
+</style>
