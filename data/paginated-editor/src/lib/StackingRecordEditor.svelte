@@ -11,19 +11,29 @@
 
     let stack: RecordEditContext[] = [recordEditContext]
 
+
     function visibleStackItem() {
         return stack[stack.length - 1]
     }
 
-    function visibleStackItemIndex() {
-        return stack.length - 1
+    function showOnlyVisibleStackItem() {
+        const visibleIndex = stack.length - 1
+        const stackContainers = document.querySelectorAll('.stack-container')
+        console.log({stackContainers})
+        stackContainers.forEach((stackContainer:Element, index:number) => {
+            if (index === visibleIndex) {
+                (stackContainer as HTMLElement).style.display = 'none'
+            } else {
+                (stackContainer as HTMLElement).style.display = 'block'
+            }
+        })
     }
 
     function pushContext(context: RecordEditContext) {
         const current = visibleStackItem()
         context.prefixTitle(current.title + ' > ')
 
-        stack = [...stack, context,]
+        stack = [...stack, context]
         console.log(`Following push, visible stack item is ${visibleStackItem().id} with title ${visibleStackItem().title}`)
     }
 
@@ -35,22 +45,18 @@
 
     const recordCreator: RecordCreator = {
         createNewRecord(modelId: ModelId): Promise<DataRecord | null> {
-            console.log("createNewRecord", modelId)
             return new Promise((resolve, reject) => {
                 const newContext = createDependentRecordContext(recordEditContext, modelId, async (record) => {
                     const outcome = await recordEditContext.saveNewRecord(record);
                     if (outcome._type === "record.save.succeeded") {
-                        console.log(`Popping context in succsssful save`)
                         popContext()
                         resolve(outcome.record)
                     } else {
-                        console.log(`Popping context in unsuccsssful save`)
                         popContext()
                         reject(outcome.errors.join(", "))
                     }
                     return outcome
                 }, () => {
-                    console.log(`Popping context in onCancel`)
                     popContext()
                     resolve(null)
                 })
@@ -61,8 +67,9 @@
 </script>
 
 {#each stack as stackElement, index}
+    {@const hidden = index !== (stack.length - 1)}
     {#key stackElement.id}
-        <div class:hidden={visibleStackItemIndex() !== index}>
+        <div class:hidden>
             <EditRecord recordEditContext={stackElement}
                         {recordSearcher}
                         {recordCreator}
