@@ -8,11 +8,14 @@
     import type {EventSourcedDataRecord} from '@cozemble/data-editor-sdk'
     import {eventSourcedDataRecordFns} from '@cozemble/data-editor-sdk'
     import type {PaginatedEditorHost} from './PaginatedEditorHost'
+    import type {ModelView} from "@cozemble/model-core";
 
     export let models: Model[]
     export let model: Model
     export let records: DataRecord[]
     export let paginatedEditorHost: PaginatedEditorHost
+    export let modelViews: ModelView[]
+
 
     let focus: Writable<CellFocus | null> = writable(null)
     let doAddNewRecord = false
@@ -69,10 +72,11 @@
 {#if doAddNewRecord}
     <StackingRecordEditor
             recordSearcher={paginatedEditorHost}
+            {modelViews}
             recordEditContext={new RecordEditContext( models, eventSourcedDataRecordFns.newInstance(models, model.id, 'test-user'), saveNewRecord, () => (doAddNewRecord = false), `Add new ${model.name.value}`, )}/>
 {:else if recordBeingEdited !== null}
     <StackingRecordEditor
-            recordSearcher={paginatedEditorHost}
+            recordSearcher={paginatedEditorHost} {modelViews}
             recordEditContext={new RecordEditContext( models, eventSourcedDataRecordFns.fromRecord(models, recordBeingEdited), recordEdited, () => (recordBeingEdited = null), `Edit ${model.name.value}`, )}/>
 {:else}
     <table class="table">

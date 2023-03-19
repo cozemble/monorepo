@@ -7,6 +7,7 @@
     import {deleteRecord, saveRecord} from "./recordBackendHelper";
     import {createEventDispatcher} from "svelte";
     import {loadRecords} from "./loadRecords";
+    import {modelViews} from "../models/tenantEntityStore";
 
     export let models: Model[]
     export let model: Model
@@ -61,7 +62,7 @@
            bind:value={searchText}/>
 </div>
 <div class="mt-2">
-    <PaginatedEditor {models} {model} records={$records} {paginatedEditorHost}/>
+    <PaginatedEditor {models} {model} modelViews={$modelViews} records={$records} {paginatedEditorHost}/>
 </div>
 <style>
     .search-panel {

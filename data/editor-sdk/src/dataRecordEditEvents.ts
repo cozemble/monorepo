@@ -5,8 +5,10 @@ import type {
   DataRecordPath,
   DataRecordPathElement,
   HasManyRelationship,
+  Model,
   ModelId,
 } from '@cozemble/model-core'
+import { ModelView } from '@cozemble/model-core'
 import { mandatory } from '@cozemble/lang-util'
 
 const dataRecordEditorClientContext = 'com.cozemble.data.record.editor.client.context'
@@ -132,6 +134,10 @@ export interface DataRecordEditorClient {
   dispatchEditEvent(event: DataRecordEditEvent): void
 
   searchRecords(modelId: ModelId, search: string): Promise<DataRecord[]>
+
+  getModelViews(modelId: ModelId): ModelView[]
+
+  getModels(): Model[]
 }
 
 export const dataRecordEditor = {

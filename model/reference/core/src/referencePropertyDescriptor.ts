@@ -29,6 +29,7 @@ export const referencePropertyDescriptor: PropertyDescriptor<ReferenceProperty, 
     },
     validateValue: (property: ReferenceProperty, value: ReferencedRecords | null): string[] => {
       const references = value?.recordIds ?? []
+      console.log({ property, value, references })
       if (references.length === 0) {
         return ['Required']
       }

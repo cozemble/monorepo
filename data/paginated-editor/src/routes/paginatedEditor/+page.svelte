@@ -88,7 +88,7 @@
 <div class="bg-base-100 rounded-lg">
 
     {#if model}
-        <PaginatedEditor {models} {model} {records} paginatedEditorHost={noOpEditorHost}/>
+        <PaginatedEditor {models} {model} {records} modelViews={[]} paginatedEditorHost={noOpEditorHost}/>
     {/if}
 
     <EditEventInspector {editContexts}/>

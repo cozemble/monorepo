@@ -1,7 +1,7 @@
 import { uuids } from '@cozemble/lang-util'
 import type { ModelId, ModelView, ModelViewId } from '@cozemble/model-core'
 import type { Writable } from 'svelte/store'
-import { writable } from 'svelte/store'
+import { derived, writable } from 'svelte/store'
 import { cozauth } from '../auth/cozauth'
 import { config } from '../config'
 
@@ -12,6 +12,10 @@ export interface TenantEntity {
 }
 
 export const tenantEntities: Writable<TenantEntity[]> = writable([])
+export const modelViews = derived(
+  tenantEntities,
+  (entities) => entities.filter((e) => e._type === 'model.view') as ModelView[],
+)
 
 async function saveEntities(tenantId: string, entities: TenantEntity[]) {
   const accessToken = await cozauth.getAccessToken(cozauth.getTenantRoot(tenantId))

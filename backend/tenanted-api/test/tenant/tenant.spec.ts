@@ -1,5 +1,5 @@
 import { uuids } from '@cozemble/lang-util'
-import { beforeAll, describe, expect, test } from 'vitest'
+import { beforeAll, describe, expect, onTestFailed, test } from 'vitest'
 import { appWithTestContainer } from '../../src/appWithTestContainer'
 import { BackendModel } from '@cozemble/backend-tenanted-api-types'
 import { dataRecordFns, modelFns } from '@cozemble/model-api'
@@ -11,6 +11,7 @@ import {
   putRecord,
   simulateNewUser,
 } from './testHelpers'
+import { withAdminPgClient } from '../../src/infra/postgresPool'
 
 const jwtSigningSecret = 'secret'
 const port = 3002
@@ -118,6 +119,13 @@ describe('with a migrated database', () => {
   })
 
   test('can put models into a tenant', async () => {
+    onTestFailed(async (error) => {
+      await withAdminPgClient(async (client) => {
+        const result = await client.query('select * from get_messages_since()')
+        console.error(result.rows)
+      })
+    })
+
     const { tenantId, bearer } = await simulateNewUser(port, jwtSigningSecret)
 
     const model = modelFns.newInstance('Test model')
@@ -192,7 +200,7 @@ describe('with a migrated database', () => {
     })
   })
 
-  test('401 is record put is not authenticated ', async () => {
+  test('401 if record put is not authenticated ', async () => {
     const { tenantId, bearer } = await simulateNewUser(port, jwtSigningSecret)
     const [customerModel] = await putModels(
       port,
@@ -255,6 +263,34 @@ describe('with a migrated database', () => {
       queryCount: 1,
       queryPages: 1,
     })
+  })
+
+  test('can put a record with values that are string arrays', async () => {
+    const { tenantId, bearer } = await simulateNewUser(port, jwtSigningSecret)
+    const [customerModel] = await putModels(
+      port,
+      tenantId,
+      [modelFns.newInstance('Customer')],
+      bearer,
+    )
+    const record = dataRecordFns.random([customerModel], customerModel)
+    record.values = {
+      ...record.values,
+      'string-array': ['a', 'b', 'c'],
+    }
+
+    const putResponse = await fetch(
+      `http://localhost:3002/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + bearer,
+        },
+        body: JSON.stringify([record]),
+      },
+    )
+    await expect(putResponse.status).toBe(200)
   })
 
   test('can put and delete a record', async () => {

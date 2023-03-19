@@ -15,7 +15,7 @@ export function registerReferenceProperty() {
   registerModelEvents()
 }
 
-export { referencePropertyDescriptor } from './referencePropertyDescriptor'
+export { referencePropertyDescriptor, ReferencedRecords } from './referencePropertyDescriptor'
 export {
   newReferencePropertyModelEvent,
   NewReferencePropertyModelEvent,
