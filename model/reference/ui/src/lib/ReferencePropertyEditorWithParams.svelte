@@ -1,12 +1,11 @@
 <script lang="ts">
     import type {DataRecord, DataRecordPath} from '@cozemble/model-core'
-    import {dataRecordControlEvents, dataRecordEditor,} from '@cozemble/data-editor-sdk'
+    import {dataRecordControlEvents, dataRecordEditEvents, dataRecordEditor,} from '@cozemble/data-editor-sdk'
     import {onMount} from "svelte";
     import type {EditorParams} from "./editorHelper";
     import {makeSummaryView} from "./editorHelper";
     import {dataRecordPathFns} from "@cozemble/model-api";
     import type {ReferencedRecords} from "@cozemble/model-reference-core";
-    import {dataRecordEditEvents} from "@cozemble/data-editor-sdk";
 
     export let recordPath: DataRecordPath
     export let record: DataRecord

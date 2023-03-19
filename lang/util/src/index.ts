@@ -39,6 +39,7 @@ import {
   paragraphs,
   snakeCase,
   splitAtFirst,
+  stripHtml,
 } from './string'
 import { getQueryParams } from './urls'
 import {
@@ -129,6 +130,7 @@ const strings = {
   dirname,
   camelcaseToSentenceCase,
   mask,
+  stripHtml,
 }
 
 export const objects = {

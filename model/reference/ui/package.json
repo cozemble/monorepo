@@ -30,7 +30,6 @@
   },
   "devDependencies": {
     "@originjs/vite-plugin-commonjs": "^1.0.3",
-
     "@sveltejs/adapter-auto": "^2.0.0",
     "@sveltejs/kit": "^1.5.0",
     "@sveltejs/package": "^2.0.0",
@@ -42,6 +41,7 @@
     "vite": "^4.0.0"
   },
   "dependencies": {
+    "@cozemble/lang-util": "workspace:*",
     "@cozemble/model-core": "workspace:*",
     "@cozemble/model-api": "workspace:*",
     "@cozemble/model-editor-sdk": "workspace:*",

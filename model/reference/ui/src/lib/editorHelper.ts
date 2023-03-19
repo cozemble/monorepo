@@ -11,6 +11,7 @@ import type { DataRecordEditorClient } from '@cozemble/data-editor-sdk'
 import { applyTemplate, modelToJson } from '@cozemble/model-to-json'
 import type { DataRecordViewerClient } from '@cozemble/data-editor-sdk'
 import { modelFns } from '@cozemble/model-api'
+import { strings } from '@cozemble/lang-util'
 
 export interface EditorParams {
   referenceProperty: ReferenceProperty
@@ -54,5 +55,7 @@ export function assembleEditorParams(
 }
 
 export function makeSummaryView(record: DataRecord, params: EditorParams): string {
-  return applyTemplate(params.summaryView.template, modelToJson(params.models, record))
+  return strings.stripHtml(
+    applyTemplate(params.summaryView.template, modelToJson(params.models, record)),
+  )
 }

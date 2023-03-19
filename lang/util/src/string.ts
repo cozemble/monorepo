@@ -304,3 +304,7 @@ export function mask(header: string | undefined) {
   }
   return null
 }
+
+export function stripHtml(html: string): string {
+  return html.replace(/<\/?[^>]+(>|$)/g, '')
+}
