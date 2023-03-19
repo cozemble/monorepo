@@ -1,14 +1,14 @@
 <script lang="ts">
-    import type {DataRecord, Model} from '@cozemble/model-core'
+    import type {DataRecord, Model, ModelView} from '@cozemble/model-core'
     import type {CellFocus} from './CellFocus'
     import {writable, type Writable} from 'svelte/store'
     import DataTd from './DataTd.svelte'
     import StackingRecordEditor from './StackingRecordEditor.svelte'
     import {RecordEditContext, type RecordSaveOutcome} from './RecordEditContext'
     import type {EventSourcedDataRecord} from '@cozemble/data-editor-sdk'
-    import {eventSourcedDataRecordFns} from '@cozemble/data-editor-sdk'
+    import {dataRecordViewerHost, eventSourcedDataRecordFns} from '@cozemble/data-editor-sdk'
     import type {PaginatedEditorHost} from './PaginatedEditorHost'
-    import type {ModelView} from "@cozemble/model-core";
+    import {makeDataRecordViewer} from "./makeDataRecordViewer";
 
     export let models: Model[]
     export let model: Model
@@ -16,6 +16,7 @@
     export let paginatedEditorHost: PaginatedEditorHost
     export let modelViews: ModelView[]
 
+    dataRecordViewerHost.setClient(makeDataRecordViewer(models, modelViews, paginatedEditorHost))
 
     let focus: Writable<CellFocus | null> = writable(null)
     let doAddNewRecord = false
@@ -95,8 +96,11 @@
                     <DataTd {focus} {rowIndex} {colIndex} {record} {property}/>
                 {/each}
                 <td>
-                    <button class="edit btn btn-active btn-ghost btn-sm" on:click={() => editRecord(record)}>Edit</button>
-                    <button class="delete btn btn-active btn-ghost btn-sm" on:click={() => deleteRecord(record)}>Delete</button>
+                    <button class="edit btn btn-active btn-ghost btn-sm" on:click={() => editRecord(record)}>Edit
+                    </button>
+                    <button class="delete btn btn-active btn-ghost btn-sm" on:click={() => deleteRecord(record)}>
+                        Delete
+                    </button>
                 </td>
             </tr>
         {/each}

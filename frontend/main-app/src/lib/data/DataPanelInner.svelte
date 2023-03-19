@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type {DataRecord, Model, ModelId} from "@cozemble/model-core";
+    import type {DataRecord, DataRecordId, Model, ModelId} from "@cozemble/model-core";
     import type {PaginatedEditorHost, RecordDeleteOutcome, RecordSaveOutcome} from "@cozemble/data-paginated-editor";
     import {PaginatedEditor} from "@cozemble/data-paginated-editor";
     import type {Writable} from "svelte/store";
@@ -42,6 +42,10 @@
         async searchRecords(modelId: ModelId, searchText: string): Promise<DataRecord[]> {
             const result = await loadRecords(tenantId, modelId.value, searchText.trim().length === 0 ? null : searchText)
             return result.records
+        },
+
+        async recordById(modelId: ModelId, recordId: DataRecordId): Promise<DataRecord | null> {
+            return null
         }
     }
 
@@ -58,7 +62,8 @@
 </script>
 
 <div class="search-panel">
-    <input type="text" class="input input-bordered" placeholder={`Search ${model.name.value}`} on:keyup={searchTextChanged}
+    <input type="text" class="input input-bordered" placeholder={`Search ${model.name.value}`}
+           on:keyup={searchTextChanged}
            bind:value={searchText}/>
 </div>
 <div class="mt-2">

@@ -6,7 +6,7 @@
     import {makeSummaryView} from "./editorHelper";
     import {dataRecordPathFns} from "@cozemble/model-api";
     import type {ReferencedRecords} from "@cozemble/model-reference-core";
-    import {dataRecordEditEvents} from "@cozemble/data-editor-sdk/dist/esm";
+    import {dataRecordEditEvents} from "@cozemble/data-editor-sdk";
 
     export let recordPath: DataRecordPath
     export let record: DataRecord
@@ -38,7 +38,7 @@
         if (selectedRecord) {
             const newValue: ReferencedRecords = {
                 _type: "referenced.records",
-                recordIds: [{_type: "data.record.id", value: selectedRecordId}]
+                referencedRecordIds: [{_type: "data.record.id", value: selectedRecordId}]
             }
             dataRecordEditorClient.dispatchEditEvent(
                 dataRecordEditEvents.valueChanged(

@@ -16,6 +16,7 @@
     import type {PaginatedEditorHost, RecordDeleteOutcome,} from '../../lib'
     import {recordSaveSucceeded} from '../../lib'
     import EditEventInspector from './EditEventInspector.svelte'
+    import type {DataRecordId} from "@cozemble/model-core";
 
     export const ssr = false
 
@@ -80,6 +81,9 @@
             search: string,
         ): Promise<DataRecord[]> {
             return []
+        },
+        async recordById(modelId: ModelId, recordId: DataRecordId): Promise<DataRecord | null> {
+            return null
         },
     }
 

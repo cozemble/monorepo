@@ -8,8 +8,8 @@ import type {
 import type { ReferenceProperty } from '@cozemble/model-reference-core'
 import { referencePropertyFns } from '@cozemble/model-reference-core'
 import type { DataRecordEditorClient } from '@cozemble/data-editor-sdk'
-import { modelToJson } from '@cozemble/model-to-json'
-import { applyTemplate } from '@cozemble/model-to-json/dist/esm'
+import { applyTemplate, modelToJson } from '@cozemble/model-to-json'
+import type { DataRecordViewerClient } from '@cozemble/data-editor-sdk'
 
 export interface EditorParams {
   referenceProperty: ReferenceProperty
@@ -19,7 +19,7 @@ export interface EditorParams {
 }
 
 export function assembleEditorParams(
-  client: DataRecordEditorClient,
+  client: DataRecordEditorClient | DataRecordViewerClient,
   recordPath: DataRecordPath,
 ): EditorParams {
   const referenceProperty = recordPath.lastElement as ReferenceProperty

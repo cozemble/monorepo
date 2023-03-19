@@ -4,7 +4,7 @@
     import {onMount} from "svelte";
     import type {EditorParams} from "./editorHelper";
     import {assembleEditorParams} from "./editorHelper";
-    import ReferencePropertyEditorWithValues from "./ReferencePropertyEditorWithValues.svelte";
+    import ReferencePropertyEditorWithParams from "./ReferencePropertyEditorWithParams.svelte";
 
     export let recordPath: DataRecordPath
     export let record: DataRecord
@@ -24,7 +24,7 @@
 </script>
 
 {#if editorParams}
-    <ReferencePropertyEditorWithValues {editorParams} {record} {recordPath}/>
+    <ReferencePropertyEditorWithParams {editorParams} {record} {recordPath}/>
 {/if}
 
 
