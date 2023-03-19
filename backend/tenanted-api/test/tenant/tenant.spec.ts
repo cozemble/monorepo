@@ -119,12 +119,12 @@ describe('with a migrated database', () => {
   })
 
   test('can put models into a tenant', async () => {
-    onTestFailed(async (error) => {
-      await withAdminPgClient(async (client) => {
-        const result = await client.query('select * from get_messages_since()')
-        console.error(result.rows)
-      })
-    })
+    // onTestFailed(async (error) => {
+    //   await withAdminPgClient(async (client) => {
+    //     const result = await client.query('select * from get_messages_since()')
+    //     console.error(result.rows)
+    //   })
+    // })
 
     const { tenantId, bearer } = await simulateNewUser(port, jwtSigningSecret)
 
@@ -263,6 +263,42 @@ describe('with a migrated database', () => {
       queryCount: 1,
       queryPages: 1,
     })
+  })
+
+  test('can get a record by id', async () => {
+    const { tenantId, bearer } = await simulateNewUser(port, jwtSigningSecret)
+    const [customerModel] = await putModels(
+      port,
+      tenantId,
+      [modelFns.newInstance('Customer')],
+      bearer,
+    )
+    const record = dataRecordFns.random([customerModel], customerModel)
+
+    const putResponse = await fetch(
+      `http://localhost:3002/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + bearer,
+        },
+        body: JSON.stringify([record]),
+      },
+    )
+    await expect(putResponse.status).toBe(200)
+
+    const getResponse = await fetch(
+      `http://localhost:3002/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record/${record.id.value}`,
+      {
+        headers: {
+          Authorization: 'Bearer ' + bearer,
+        },
+      },
+    )
+    expect(getResponse.status).toBe(200)
+    const fetched = await getResponse.json()
+    expect(fetched).toEqual(record)
   })
 
   test('can put a record with values that are string arrays', async () => {

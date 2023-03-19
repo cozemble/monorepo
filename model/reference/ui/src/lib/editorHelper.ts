@@ -10,6 +10,7 @@ import { referencePropertyFns } from '@cozemble/model-reference-core'
 import type { DataRecordEditorClient } from '@cozemble/data-editor-sdk'
 import { applyTemplate, modelToJson } from '@cozemble/model-to-json'
 import type { DataRecordViewerClient } from '@cozemble/data-editor-sdk'
+import { modelFns } from '@cozemble/model-api'
 
 export interface EditorParams {
   referenceProperty: ReferenceProperty
@@ -34,8 +35,9 @@ export function assembleEditorParams(
   const summaryView = modelViews.find(
     (e) => e.modelId.value === referencedModelId.value && e.name.value === 'Summary View',
   )
+  const referencedModel = modelFns.findById(client.getModels(), referencedModelId)
   if (!summaryView) {
-    throw new Error('No summary view')
+    throw new Error('No summary view for model ' + referencedModel.name.value)
   }
   if (summaryView.view._type !== 'summary.view') {
     throw new Error('Expected a summary view, got ' + summaryView.view._type + '')

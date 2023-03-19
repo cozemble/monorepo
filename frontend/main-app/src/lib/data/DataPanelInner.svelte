@@ -6,7 +6,7 @@
     import type {EventSourcedDataRecord} from "@cozemble/data-editor-sdk";
     import {deleteRecord, saveRecord} from "./recordBackendHelper";
     import {createEventDispatcher} from "svelte";
-    import {loadRecords} from "./loadRecords";
+    import {findRecordById, loadRecords} from "./loadRecords";
     import {modelViews} from "../models/tenantEntityStore";
 
     export let models: Model[]
@@ -45,7 +45,7 @@
         },
 
         async recordById(modelId: ModelId, recordId: DataRecordId): Promise<DataRecord | null> {
-            return null
+            return findRecordById(tenantId, modelId, recordId)
         }
     }
 
