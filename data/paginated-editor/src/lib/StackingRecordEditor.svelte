@@ -16,31 +16,15 @@
         return stack[stack.length - 1]
     }
 
-    function showOnlyVisibleStackItem() {
-        const visibleIndex = stack.length - 1
-        const stackContainers = document.querySelectorAll('.stack-container')
-        console.log({stackContainers})
-        stackContainers.forEach((stackContainer:Element, index:number) => {
-            if (index === visibleIndex) {
-                (stackContainer as HTMLElement).style.display = 'none'
-            } else {
-                (stackContainer as HTMLElement).style.display = 'block'
-            }
-        })
-    }
-
     function pushContext(context: RecordEditContext) {
         const current = visibleStackItem()
         context.prefixTitle(current.title + ' > ')
 
         stack = [...stack, context]
-        console.log(`Following push, visible stack item is ${visibleStackItem().id} with title ${visibleStackItem().title}`)
     }
 
     function popContext() {
-        // take the last element off the stack
         stack = stack.slice(0, -1)
-        console.log(`Following push, visible stack item is ${visibleStackItem().id} with title ${visibleStackItem().title}`)
     }
 
     const recordCreator: RecordCreator = {
