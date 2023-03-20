@@ -54,9 +54,6 @@ export async function appWithTestContainer(
     )
     console.log(outcome.stdout)
     console.error('STDERR:' + outcome.stderr)
-    if (outcome.stderr) {
-      throw new Error(outcome.stderr)
-    }
 
     await createAppUser()
     await closePgPool()

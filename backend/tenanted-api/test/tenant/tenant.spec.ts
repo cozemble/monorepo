@@ -11,7 +11,6 @@ import {
   putRecord,
   simulateNewUser,
 } from './testHelpers'
-import { withAdminPgClient } from '../../src/infra/postgresPool'
 
 const jwtSigningSecret = 'secret'
 const port = 3002
