@@ -8,6 +8,8 @@
     export let recordEditContext: RecordEditContext
     export let recordSearcher: RecordSearcher
     export let modelViews: ModelView[]
+    export let cancelButtonText = "Cancel"
+
 
     let stack: RecordEditContext[] = [recordEditContext]
 
@@ -59,7 +61,8 @@
                         {recordCreator}
                         {modelViews}
                         {pushContext}
-                        {popContext}/>
+                        {popContext}
+                        {cancelButtonText}/>
         </div>
     {/key}
 {/each}

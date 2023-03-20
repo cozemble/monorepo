@@ -5,6 +5,7 @@
     import {navbarState} from "./navbarState";
     import {openRecordViewStore} from "./openRecordViews";
     import {modelFns} from "@cozemble/model-api";
+    import OpenRecordWithLoader from "./OpenRecordWithLoader.svelte";
 
     export let tenantId: string
     $: actualModels = $allModels.map(m => m.model)
@@ -52,6 +53,6 @@
 
 {#if openRecordToShow}
     {#key openRecordToShow.recordId.value}
-        open record!
+        <OpenRecordWithLoader models={actualModels} openRecord={openRecordToShow} {tenantId}/>
     {/key}
 {/if}
