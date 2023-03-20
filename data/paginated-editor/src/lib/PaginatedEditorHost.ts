@@ -12,4 +12,6 @@ export interface PaginatedEditorHost extends RecordSearcher {
   saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome>
 
   deleteRecord(record: DataRecord): Promise<RecordDeleteOutcome>
+
+  viewRecord(record: DataRecord, viewNow: boolean): void
 }

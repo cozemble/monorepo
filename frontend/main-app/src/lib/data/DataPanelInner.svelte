@@ -8,6 +8,7 @@
     import {createEventDispatcher} from "svelte";
     import {findRecordById, loadRecords} from "./loadRecords";
     import {modelViews} from "../models/tenantEntityStore";
+    import {openRecordViews} from "./openRecordViews";
 
     export let models: Model[]
     export let model: Model
@@ -15,6 +16,9 @@
     export let records: Writable<DataRecord[]>
 
     const paginatedEditorHost: PaginatedEditorHost = {
+        viewRecord(record: DataRecord, openNow: boolean): void {
+            openRecordViews.open(record.modelId, record.id, openNow)
+        },
         async recordEdited(editedRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
             const result = await saveRecord(tenantId,  editedRecord)
             if (result._type === "record.save.succeeded") {

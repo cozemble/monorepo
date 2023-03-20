@@ -34,6 +34,10 @@
         }
     }
 
+    function viewRecord(record: DataRecord) {
+        paginatedEditorHost.viewRecord(record, true)
+    }
+
     function editRecord(record: DataRecord) {
         recordBeingEdited = record
     }
@@ -106,6 +110,8 @@
                     <DataTd {focus} {rowIndex} {colIndex} {record} {property}/>
                 {/each}
                 <td>
+                    <button class="edit btn btn-active btn-ghost btn-sm" on:click={() => viewRecord(record)}>View
+                    </button>
                     <button class="edit btn btn-active btn-ghost btn-sm" on:click={() => editRecord(record)}>Edit
                     </button>
                     <button class="delete btn btn-active btn-ghost btn-sm" on:click={() => deleteRecord(record)}>

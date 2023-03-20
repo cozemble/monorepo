@@ -56,6 +56,9 @@
 
 
     const noOpEditorHost: PaginatedEditorHost = {
+        viewRecord(record: DataRecord, viewNow: boolean): void {
+            console.log('View record', record, viewNow)
+        },
         async recordEdited(
             editedRecord: EventSourcedDataRecord,
         ): Promise<RecordSaveOutcome> {
