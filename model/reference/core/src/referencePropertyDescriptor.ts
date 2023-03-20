@@ -11,9 +11,14 @@ function validateProperty(property: ReferenceProperty): Map<string, string> {
   return errors
 }
 
+export interface ReferencedRecord {
+  _type: 'referenced.record'
+  referencedRecordId: DataRecordId
+}
+
 export interface ReferencedRecords {
   _type: 'referenced.records'
-  referencedRecordIds: DataRecordId[]
+  referencedRecords: ReferencedRecord[]
 }
 
 export const referencePropertyDescriptor: PropertyDescriptor<ReferenceProperty, ReferencedRecords> =
@@ -25,10 +30,10 @@ export const referencePropertyDescriptor: PropertyDescriptor<ReferenceProperty, 
     isUniqueable: false,
     validateProperty,
     randomValue: (): ReferencedRecords => {
-      return { _type: 'referenced.records', referencedRecordIds: [] }
+      return { _type: 'referenced.records', referencedRecords: [] }
     },
     validateValue: (property: ReferenceProperty, value: ReferencedRecords | null): string[] => {
-      const references = value?.referencedRecordIds ?? []
+      const references = value?.referencedRecords ?? []
       if (references.length === 0) {
         return ['Required']
       }

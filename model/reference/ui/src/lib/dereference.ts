@@ -8,15 +8,14 @@ export async function dereference(
   references: ReferencedRecords | null,
   setter: (value: DataRecord | null) => void,
 ) {
-  console.log({ references, referencedModelId })
   if (!references) {
     setter(null)
     return
   }
-  if (references.referencedRecordIds.length === 1) {
+  if (references.referencedRecords.length === 1) {
     const record = await dataRecordViewerClient.recordById(
       referencedModelId,
-      references.referencedRecordIds[0],
+      references.referencedRecords[0].referencedRecordId,
     )
     setter(record)
   } else {

@@ -6,7 +6,6 @@
     import {makeSummaryView} from "./editorHelper";
     import {dataRecordPathFns} from "@cozemble/model-api";
     import type {ReferencedRecords} from "@cozemble/model-reference-core";
-    import {afterUpdate} from "svelte";
 
     export let recordPath: DataRecordPath
     export let record: DataRecord
@@ -14,9 +13,8 @@
 
     let initialValue: ReferencedRecords | null = dataRecordPathFns.getValue(recordPath, record) ?? null
 
-    $:selectedRecordId = initialValue?.referencedRecordIds[0]?.value ?? null;
+    $:selectedRecordId = initialValue?.referencedRecords[0]?.referencedRecordId.value ?? null;
 
-    afterUpdate(() => console.log("afterUpdate", {initialValue, selectedRecordId}))
 
     const dataRecordEditorClient = dataRecordEditor.getClient()
     let options: DataRecord[] = []
@@ -39,9 +37,8 @@
         if (selectedRecord) {
             const newValue: ReferencedRecords = {
                 _type: "referenced.records",
-                referencedRecordIds: [selectedRecord.id]
+                referencedRecords: [{_type: "referenced.record", referencedRecordId: selectedRecord.id}]
             }
-            console.log({initialValue, newValue})
             dataRecordEditorClient.dispatchEditEvent(
                 dataRecordEditEvents.valueChanged(
                     record,
@@ -68,7 +65,6 @@
 
     async function createNewRecord() {
         const createdRecord = await dataRecordEditorClient.createNewRecord(editorParams.referencedModelId)
-        console.log({createdRecord})
         if (createdRecord) {
             options.push(createdRecord)
         }
@@ -78,7 +74,6 @@
     function optionChanged(event: Event) {
         const target = event.target as HTMLSelectElement
         const selectedValue = target.value
-        console.log("selectedValue", selectedValue)
         if (selectedValue === "create.new.record") {
             setTimeout(() => createNewRecord(), 0)
         } else {
