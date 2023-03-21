@@ -1,6 +1,6 @@
 <script lang="ts">
     import type {DataRecordEditEvent, EventSourcedDataRecord,} from '@cozemble/data-editor-sdk'
-    import type {DataRecord, Model, ModelId} from '@cozemble/model-core'
+    import type {DataRecord, DataRecordId, Model, ModelId} from '@cozemble/model-core'
     import PaginatedEditor from '../../lib/PaginatedEditor.svelte'
     import {onMount, setContext} from 'svelte'
     import {
@@ -12,11 +12,11 @@
     import {allModels, invoiceModel} from '../testModels'
     import type {EditRecordListener} from '../../lib/EditRecordListener'
     import {setEditRecordListener} from '../../lib/EditRecordListener'
-    import type {RecordEditContext, RecordSaveOutcome,} from '../../lib/RecordEditContext'
+    import type {RecordEditContext, RecordSaveOutcome,} from '../../lib'
     import type {PaginatedEditorHost, RecordDeleteOutcome,} from '../../lib'
     import {recordSaveSucceeded} from '../../lib'
     import EditEventInspector from './EditEventInspector.svelte'
-    import type {DataRecordId} from "@cozemble/model-core";
+    import type {UploadedAttachment} from "@cozemble/data-editor-sdk";
 
     export const ssr = false
 
@@ -88,6 +88,12 @@
         async recordById(_modelId: ModelId, _recordId: DataRecordId): Promise<DataRecord | null> {
             return null
         },
+        async uploadAttachments(
+            _files: File[],
+            _progressUpdater: (percent: number) => void,
+        ): Promise<UploadedAttachment[]> {
+            return [] as UploadedAttachment[]
+        }
     }
 
 </script>

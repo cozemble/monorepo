@@ -10,6 +10,7 @@
     export let property: AttachmentProperty
     $: minAttachments = property.minAttachments ?? 0
     $: maxAttachments = property.maxAttachments ?? -1
+    $: accept = property.accept ?? null
 
     const formSectionErrorState = editorClient.getErrorState()
 
@@ -23,7 +24,16 @@
         if (value === property.minAttachments) {
             return
         }
-        dispatch('modelChanged', attachmentModelChangedModelEvent(model.id, property.id, value, maxAttachments))
+        dispatch('modelChanged', attachmentModelChangedModelEvent(model.id, property.id, value, maxAttachments, accept))
+    }
+
+    function acceptChanged(event: Event) {
+        const target = event.target as HTMLInputElement
+        const value = target.value
+        if (value === property.accept) {
+            return
+        }
+        dispatch('modelChanged', attachmentModelChangedModelEvent(model.id, property.id, minAttachments, maxAttachments, value))
     }
 
     function maxChanged(event: Event) {
@@ -32,7 +42,7 @@
         if (value === property.maxAttachments) {
             return
         }
-        dispatch('modelChanged', attachmentModelChangedModelEvent(model.id, property.id, minAttachments, value))
+        dispatch('modelChanged', attachmentModelChangedModelEvent(model.id, property.id, minAttachments, value, accept))
     }
 </script>
 
@@ -56,3 +66,14 @@
         showErrors={$formSectionErrorState.showErrors}
         {errors}
         key="maxAttachments"/>
+
+<br/>
+<label for="accept">Accept</label>
+<br/>
+<input class="input input-bordered " type="text" id="accept" value={accept}
+       min="-1" on:blur={acceptChanged}/>
+
+<MaybeErrorMessage
+        showErrors={$formSectionErrorState.showErrors}
+        {errors}
+        key="accept"/>

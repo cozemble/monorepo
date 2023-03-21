@@ -1,7 +1,7 @@
 import type { DataRecordId, ModelId } from '@cozemble/model-core'
 import { cozauth } from '../auth/cozauth'
 import { fetchRecords } from './fetchRecords'
-import type { DataRecord } from '@cozemble/model-core/dist/esm'
+import type { DataRecord } from '@cozemble/model-core'
 import { config } from '../config'
 
 export async function loadRecords(tenantId: string, modelId: string, search: string | null = null) {

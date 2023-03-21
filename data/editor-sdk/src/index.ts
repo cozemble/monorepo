@@ -13,7 +13,7 @@ export {
 export { EventSourcedDataRecord, eventSourcedDataRecordFns } from './EventSourcedDataRecord'
 export { dataRecordEditorHost } from './dataRecordEditorHost'
 export { dataRecordEditor } from './dataRecordEditorHost'
-export { DataRecordEditorClient } from './dataRecordEditorHost'
+export { DataRecordEditorClient, Size, UploadedAttachment } from './dataRecordEditorHost'
 
 export {
   dataRecordViewerHost,

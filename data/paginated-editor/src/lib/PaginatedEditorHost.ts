@@ -3,10 +3,11 @@ import type { EventSourcedDataRecord } from '@cozemble/data-editor-sdk'
 import type { DataRecord } from '@cozemble/model-core'
 import type { JustErrorMessage } from '@cozemble/lang-util'
 import type { RecordSearcher } from './RecordSearcher'
+import type { AttachmentsManager } from './AttachmentsManager'
 
 export type RecordDeleteOutcome = RecordSaveSucceeded | JustErrorMessage
 
-export interface PaginatedEditorHost extends RecordSearcher {
+export interface PaginatedEditorHost extends RecordSearcher, AttachmentsManager {
   recordEdited(editedRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome>
 
   saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome>

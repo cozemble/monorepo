@@ -5,6 +5,19 @@ import { getContext, setContext } from 'svelte'
 
 const dataRecordEditorClientContext = 'com.cozemble.data.record.editor.client.context'
 
+export interface Size {
+  width: number
+  height: number
+}
+
+export interface UploadedAttachment {
+  _type: 'uploaded.attachment'
+  attachmentId: string
+  file: File
+  size: Size | null
+  thumbnailUrl: string | null
+}
+
 export interface DataRecordEditorClient {
   createNewRecord(modelId: ModelId): Promise<DataRecord | null>
 
@@ -17,6 +30,11 @@ export interface DataRecordEditorClient {
   getModelViews(modelId: ModelId): ModelView[]
 
   getModels(): Model[]
+
+  uploadAttachments(
+    files: File[],
+    progressUpdater: (percent: number) => void,
+  ): Promise<UploadedAttachment[]>
 }
 
 export const dataRecordEditor = {

@@ -1,17 +1,19 @@
 <script lang="ts">
     import DataRecordEditor from './DataRecordEditor.svelte'
     import type {DataRecordControlEvent, DataRecordEditEvent, DataRecordEditorClient,} from '@cozemble/data-editor-sdk'
-    import {dataRecordEditorHost} from '@cozemble/data-editor-sdk'
+    import {dataRecordEditorHost, type UploadedAttachment} from '@cozemble/data-editor-sdk'
     import type {RecordEditContext} from './RecordEditContext'
     import {getEditRecordListener} from './EditRecordListener'
     import {getContext, onDestroy, onMount} from 'svelte'
     import type {DataRecord, Model, ModelId, ModelView} from "@cozemble/model-core";
     import type {RecordSearcher} from "./RecordSearcher";
     import type {RecordCreator} from "./RecordCreator";
+    import type {AttachmentsManager} from "./AttachmentsManager";
 
     export let recordEditContext: RecordEditContext
     export let recordSearcher: RecordSearcher
     export let recordCreator: RecordCreator
+    export let attachmentsManager: AttachmentsManager
     export let modelViews: ModelView[]
     export let pushContext: (context: RecordEditContext) => void
     export let popContext: () => void
@@ -29,7 +31,6 @@
 
     const dataRecordEditorClient: DataRecordEditorClient = {
         createNewRecord(modelId: ModelId): Promise<DataRecord | null> {
-            console.log("createNewRecord", {modelId})
             return recordCreator.createNewRecord(modelId)
         },
 
@@ -48,17 +49,21 @@
         },
         getModels(): Model[] {
             return recordEditContext.models
-        }
+        },
+        uploadAttachments(
+            files: File[],
+            progressUpdater: (percent: number) => void,
+        ): Promise<UploadedAttachment[]> {
+            return attachmentsManager.uploadAttachments(files, progressUpdater)
+        },
     }
 
     dataRecordEditorHost.setClient(dataRecordEditorClient)
 
     onMount(() => {
-        console.log(`onMount: ${recordEditContext.title} (${recordEditContext.id})`)
         editListener.beginEdit(recordEditContext)
     })
     onDestroy(() => {
-        console.log(`onDestroy: ${recordEditContext.title} (${recordEditContext.id})`)
         editListener.popEdit()
     })
 </script>

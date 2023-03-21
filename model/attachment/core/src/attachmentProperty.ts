@@ -12,6 +12,7 @@ export interface AttachmentProperty extends Property {
   propertyType: { _type: 'property.type'; type: 'attachment.property' }
   minAttachments?: number | null
   maxAttachments?: number | null
+  accept?: string | null
 }
 
 export function emptyProperty(name: string): AttachmentProperty {
@@ -47,9 +48,19 @@ function maxAttachments(max: number | null): AttachmentPropertyOption {
   }
 }
 
+function accept(accept: string | null): AttachmentPropertyOption {
+  return (property) => {
+    return {
+      ...property,
+      accept,
+    }
+  }
+}
+
 export const attachmentPropertyOptions = {
   minAttachments,
   maxAttachments,
+  accept,
 }
 
 export const attachmentPropertyFns = {

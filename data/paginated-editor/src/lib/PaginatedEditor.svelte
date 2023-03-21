@@ -87,11 +87,13 @@
 {#if doAddNewRecord}
     <StackingRecordEditor
             recordSearcher={paginatedEditorHost}
+            attachmentsManager={paginatedEditorHost}
             {modelViews}
             recordEditContext={new RecordEditContext( models, justSaveNewRecord,eventSourcedDataRecordFns.newInstance(models, model.id, 'test-user'), saveNewRecord, () => (doAddNewRecord = false), `Add new ${model.name.value}`, )}/>
 {:else if recordBeingEdited !== null}
     <StackingRecordEditor
             recordSearcher={paginatedEditorHost} {modelViews}
+            attachmentsManager={paginatedEditorHost}
             recordEditContext={new RecordEditContext( models, justSaveNewRecord,eventSourcedDataRecordFns.fromRecord(models, recordBeingEdited), recordEdited, () => (recordBeingEdited = null), `Edit ${model.name.value}`, )}/>
 {:else}
     <table class="table">

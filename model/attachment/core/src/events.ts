@@ -62,6 +62,7 @@ export interface AttachmentModelChangedModelEvent extends ModelEvent {
   propertyId: PropertyId
   minAttachments: number | null
   maxAttachments: number | null
+  accept: string | null
 }
 
 export function attachmentModelChangedModelEvent(
@@ -69,6 +70,7 @@ export function attachmentModelChangedModelEvent(
   propertyId: PropertyId,
   minAttachments: number | null,
   maxAttachments: number | null,
+  accept: string | null,
 ): AttachmentModelChangedModelEvent {
   return {
     _type: 'attachment.model.changed.model.event',
@@ -77,6 +79,7 @@ export function attachmentModelChangedModelEvent(
     propertyId,
     minAttachments,
     maxAttachments,
+    accept,
   }
 }
 
@@ -95,6 +98,7 @@ export const attachmentModelChangedModelEventDescriptor: ModelEventDescriptor = 
             p as AttachmentProperty,
             attachmentPropertyOptions.maxAttachments(event.maxAttachments),
             attachmentPropertyOptions.minAttachments(event.minAttachments),
+            attachmentPropertyOptions.accept(event.accept),
           )
         }
         return p

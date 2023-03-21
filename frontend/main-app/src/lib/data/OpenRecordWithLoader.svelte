@@ -10,6 +10,8 @@
     import {saveRecord} from "./recordBackendHelper";
     import type {EventSourcedDataRecord} from "@cozemble/data-editor-sdk";
     import {eventSourcedDataRecordFns} from "@cozemble/data-editor-sdk";
+    import type {AttachmentsManager} from "@cozemble/data-paginated-editor/src/lib/AttachmentsManager";
+    import type {UploadedAttachment} from "@cozemble/data-editor-sdk";
 
     export let models: Model[]
     export let openRecord: OpenRecordView
@@ -36,6 +38,15 @@
         }
     }
 
+    const attachmentsManager: AttachmentsManager = {
+        async uploadAttachments(
+            files: File[],
+            progressUpdater: (percent: number) => void,
+        ): Promise<UploadedAttachment[]> {
+            throw new Error("Not implemented")
+        }
+    }
+
     function closeView() {
         openRecordViews.close(openRecord.recordId)
     }
@@ -43,7 +54,7 @@
 </script>
 {#if record}
     <div class="mt-3">
-        <StackingRecordEditor {recordSearcher} modelViews={$modelViews}
+        <StackingRecordEditor {recordSearcher} modelViews={$modelViews} {attachmentsManager}
                               recordEditContext={new RecordEditContext( models, onSaveRecord,eventSourcedDataRecordFns.fromRecord(models, record), onSaveRecord, closeView, `` )}
                               cancelButtonText="Close"/>
     </div>

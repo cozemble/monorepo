@@ -9,6 +9,7 @@
     import {findRecordById, loadRecords} from "./loadRecords";
     import {modelViews} from "../models/tenantEntityStore";
     import {openRecordViews} from "./openRecordViews";
+    import type {UploadedAttachment} from "@cozemble/data-editor-sdk";
 
     export let models: Model[]
     export let model: Model
@@ -50,6 +51,13 @@
 
         async recordById(modelId: ModelId, recordId: DataRecordId): Promise<DataRecord | null> {
             return findRecordById(tenantId, modelId, recordId)
+        },
+
+        uploadAttachments(
+            files: File[],
+            progressUpdater: (percent: number) => void,
+        ): Promise<UploadedAttachment[]> {
+            throw new Error("Not implemented")
         }
     }
 

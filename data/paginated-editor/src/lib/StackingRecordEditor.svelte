@@ -4,10 +4,12 @@
     import type {RecordSearcher} from "./RecordSearcher";
     import type {RecordCreator} from "./RecordCreator";
     import type {DataRecord, ModelId, ModelView} from "@cozemble/model-core";
+    import type {AttachmentsManager} from "./AttachmentsManager";
 
     export let recordEditContext: RecordEditContext
     export let recordSearcher: RecordSearcher
     export let modelViews: ModelView[]
+    export let attachmentsManager: AttachmentsManager
     export let cancelButtonText = "Cancel"
 
 
@@ -59,6 +61,7 @@
             <EditRecord recordEditContext={stackElement}
                         {recordSearcher}
                         {recordCreator}
+                        {attachmentsManager}
                         {modelViews}
                         {pushContext}
                         {popContext}
