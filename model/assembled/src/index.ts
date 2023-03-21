@@ -14,7 +14,10 @@ import {
 } from '@cozemble/model-reference-ui'
 import { registerAttachmentProperty } from '@cozemble/model-attachment-core'
 import { attachmentPropertyType } from '@cozemble/model-attachment-core'
-import { AttachmentPropertyConfigurer } from '@cozemble/model-attachment-ui'
+import {
+  AttachmentPropertyConfigurer,
+  AttachmentPropertyViewer,
+} from '@cozemble/model-attachment-ui'
 
 export { propertyDescriptors } from '@cozemble/model-core'
 
@@ -25,10 +28,8 @@ const propertyEditorMap = new Map<string, any>()
 export const propertyConfigurerRegistry = {
   register: (propertyType: PropertyType, component: any) => {
     propertyConfigurerMap.set(propertyType.type, component)
-    console.log('propertyConfigurerMap', propertyConfigurerMap)
   },
   get: (propertyType: PropertyType) => {
-    console.log('propertyConfigurerMap', propertyConfigurerMap)
     return propertyConfigurerMap.get(propertyType.type) ?? null
   },
 }
@@ -66,6 +67,7 @@ export function registerAllPropertyConfigurers() {
 export function registerAllPropertyViewers() {
   propertyViewerRegistry.register(stringPropertyType, StringPropertyViewer)
   propertyViewerRegistry.register(referencePropertyType, ReferencePropertyViewer)
+  propertyViewerRegistry.register(attachmentPropertyType, AttachmentPropertyViewer)
 }
 
 export function registerAllPropertyEditors() {
