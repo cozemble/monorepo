@@ -60,14 +60,50 @@ selectedModel.subscribe((model) => {
   createLog(_.cloneDeep(get(currentRecord)))
 })
 
+/** Store the record that is awaiting to be logged */
+let awaitingRecord: Record<string, any> | null = null
+
+/** Store the changes that are awaiting to be logged*/
+let awaitingChanges: Record<string, any> | null = null
+
 // listen to changes in the record and log them
 currentRecord.subscribe((record) => {
   console.warn('record changed', record.invoiceNumber)
 
+  // TODO if user switches to editing a different property before the timeout is over, version before the next property is edited should be logged
+
+  const lastLog = _.cloneDeep(_.last(get(recordLogs)))
+
+  const changes = getDifference(_.cloneDeep(record), lastLog)
+
+  const changesComparisonObject = _.defaultsDeep(_.cloneDeep(awaitingChanges), changes)
+
+  // if the record changed but the changes are on different properties, log the previous changes immediately
+  if (awaitingChanges && !_.isEqual(awaitingChanges, changesComparisonObject)) {
+    console.warn('record changed on different properties')
+    console.log('awaitingChanges', awaitingChanges)
+    console.log('changes', changes)
+    console.log('changesComparisonObject', changesComparisonObject)
+
+    clearTimeout(currentTimeout)
+    if (awaitingRecord) createLog(awaitingRecord)
+
+    awaitingRecord = null
+    awaitingChanges = null
+  }
+
   // Clear the timeout action if it exists to keep debouncing
   if (currentTimeout) clearTimeout(currentTimeout)
 
-  currentTimeout = setTimeout(() => createLog(record), LOG_TIMEOUT)
+  awaitingRecord = _.cloneDeep(record)
+  awaitingChanges = getDifference(awaitingRecord, lastLog) as ObjectValue
+
+  currentTimeout = setTimeout(() => {
+    createLog(awaitingRecord as ObjectValue)
+
+    awaitingChanges = null
+    awaitingRecord = null
+  }, LOG_TIMEOUT)
 })
 
 /** Go back to the previous record and remove the last record from the log */

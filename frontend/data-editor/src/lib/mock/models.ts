@@ -10,6 +10,10 @@ export const invoiceModel: JSONSchema = {
       type: 'string',
       description: 'user name',
     },
+    invoiceDescription: {
+      type: 'string',
+      description: 'Description for the invoice',
+    },
     customers: {
       type: 'array',
       items: {
