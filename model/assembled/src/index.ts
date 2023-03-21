@@ -17,6 +17,7 @@ import { attachmentPropertyType } from '@cozemble/model-attachment-core'
 import {
   AttachmentPropertyConfigurer,
   AttachmentPropertyViewer,
+  AttachmentPropertyEditor,
 } from '@cozemble/model-attachment-ui'
 
 export { propertyDescriptors } from '@cozemble/model-core'
@@ -73,4 +74,5 @@ export function registerAllPropertyViewers() {
 export function registerAllPropertyEditors() {
   propertyEditorRegistry.register(stringPropertyType, StringPropertyEditor)
   propertyEditorRegistry.register(referencePropertyType, ReferencePropertyEditor)
+  propertyEditorRegistry.register(attachmentPropertyType, AttachmentPropertyEditor)
 }
