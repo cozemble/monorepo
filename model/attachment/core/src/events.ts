@@ -57,31 +57,33 @@ export const newAttachmentPropertyModelEventDescriptor: ModelEventDescriptor = {
   },
 }
 
-export interface AttachmentdModelChangedModelEvent extends ModelEvent {
+export interface AttachmentModelChangedModelEvent extends ModelEvent {
   _type: 'attachment.model.changed.model.event'
   propertyId: PropertyId
-  minAttachments?: number | null
-  maxAttachments?: number | null
+  minAttachments: number | null
+  maxAttachments: number | null
 }
 
 export function attachmentModelChangedModelEvent(
   modelId: ModelId,
   propertyId: PropertyId,
-  attachmentModelId: ModelId | null,
-) {
+  minAttachments: number | null,
+  maxAttachments: number | null,
+): AttachmentModelChangedModelEvent {
   return {
     _type: 'attachment.model.changed.model.event',
     ...modelEventFns.coreParts(modelId),
 
     propertyId,
-    attachmentModelId,
+    minAttachments,
+    maxAttachments,
   }
 }
 
 export const attachmentModelChangedModelEventDescriptor: ModelEventDescriptor = {
   _type: 'model.event.descriptor',
   modelEventType: 'attachment.model.changed.model.event',
-  applyEvent: (model: Model, event: AttachmentdModelChangedModelEvent): Model => {
+  applyEvent: (model: Model, event: AttachmentModelChangedModelEvent): Model => {
     return {
       ...model,
       properties: model.properties.map((p) => {
@@ -91,8 +93,8 @@ export const attachmentModelChangedModelEventDescriptor: ModelEventDescriptor = 
           }
           return attachmentPropertyFns.applyOptions(
             p as AttachmentProperty,
-            attachmentPropertyOptions.maxAttachments(event.maxAttachments ?? null),
-            attachmentPropertyOptions.minAttachments(event.minAttachments ?? null),
+            attachmentPropertyOptions.maxAttachments(event.maxAttachments),
+            attachmentPropertyOptions.minAttachments(event.minAttachments),
           )
         }
         return p

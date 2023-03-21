@@ -12,6 +12,9 @@ import {
   ReferencePropertyViewer,
   ReferencePropertyEditor,
 } from '@cozemble/model-reference-ui'
+import { registerAttachmentProperty } from '@cozemble/model-attachment-core'
+import { attachmentPropertyType } from '@cozemble/model-attachment-core'
+import { AttachmentPropertyConfigurer } from '@cozemble/model-attachment-ui'
 
 export { propertyDescriptors } from '@cozemble/model-core'
 
@@ -51,11 +54,13 @@ export const propertyEditorRegistry = {
 export function registerAllProperties() {
   registerStringProperty()
   registerReferenceProperty()
+  registerAttachmentProperty()
 }
 
 export function registerAllPropertyConfigurers() {
   propertyConfigurerRegistry.register(stringPropertyType, StringPropertyConfigurer)
   propertyConfigurerRegistry.register(referencePropertyType, ReferencePropertyConfigurer)
+  propertyConfigurerRegistry.register(attachmentPropertyType, AttachmentPropertyConfigurer)
 }
 
 export function registerAllPropertyViewers() {

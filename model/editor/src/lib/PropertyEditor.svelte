@@ -4,7 +4,7 @@
     import {propertyConfigurerRegistry} from '@cozemble/model-assembled'
     import {editorHost, emptyFormErrorState} from '@cozemble/model-editor-sdk'
     import {readable, writable} from 'svelte/store'
-    import {afterUpdate, createEventDispatcher} from 'svelte'
+    import {createEventDispatcher} from 'svelte'
     import type {ModelChangeHandler} from '$lib/ModelEditorHost'
     import {coreModelEvents} from '@cozemble/model-event-sourced'
 
@@ -85,9 +85,6 @@
         modelChangeHandler.modelChanged(model.id, event.detail)
     }
 
-    afterUpdate(() => {
-        console.log({property, propertyDescriptor, errors})
-    })
 </script>
 
 <form>
@@ -149,5 +146,5 @@
         type="submit"
         on:click|preventDefault={saveClicked}
         disabled={errors.size > 0}
-        class="save-property">Save
+        class="btn save-property">Save Property
 </button>

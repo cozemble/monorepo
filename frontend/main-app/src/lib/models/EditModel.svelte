@@ -20,7 +20,6 @@
 
     let sectionToShow = 'model'
 
-    console.log({entities: $tenantEntities})
     $: summaryView = getSummaryView(modelId, $tenantEntities)
 
     async function summaryViewCreated(template: string) {
