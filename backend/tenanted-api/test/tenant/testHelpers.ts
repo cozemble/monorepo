@@ -5,7 +5,7 @@ import { BackendModel } from '@cozemble/backend-tenanted-api-types'
 import jwt from 'jsonwebtoken'
 
 async function postTenant(port: number, id: string, name = 'Test Tenant', ownerId = uuids.v4()) {
-  return fetch(`http://localhost:${port}/api/v1/tenant`, {
+  return await fetch(`http://localhost:${port}/api/v1/tenant`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
