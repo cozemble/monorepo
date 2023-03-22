@@ -18,7 +18,7 @@
     "build-run-db": "npm run compile && npm run bounce:db",
     "bounce:db": "node dist/cjs/devDb.js",
     "compile": "npx tsc -p tsconfig-cjs.json",
-    "server": "NODE_ENV=development node dist/cjs/index.js",
+    "server": "NODE_ENV=development USE_MEMORY_STORAGE=Y node dist/cjs/index.js",
     "dev:db": "nodemon -x \"npm run build-run-db\""
   },
   "devDependencies": {

@@ -10,6 +10,13 @@ import fs from 'fs'
 const jwtSigningSecret = 'secret'
 const port = 3009
 
+const axiosInstance = axios.create({
+  // Other configuration options if needed
+  validateStatus: function (_status) {
+    // Always return true to treat all status codes as successful
+    return true
+  },
+})
 describe('with an empty database, extract_referenced_records:', () => {
   let bearer: string
   let tenantId: string
@@ -44,11 +51,34 @@ describe('with an empty database, extract_referenced_records:', () => {
     expect(response.status).toBe(400)
   })
 
+  test('forbidden if wrong tenant', async () => {
+    const anotherOwnerId = uuids.v4()
+    const anotherTenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
+    await makeTenant(port, anotherTenantId, 'Tenant 2', anotherOwnerId)
+    const anotherBearer = await makeTenantMemberAccessToken(
+      anotherTenantId,
+      anotherOwnerId,
+      jwtSigningSecret,
+    )
+
+    const formData = new FormData()
+    formData.append('file', fs.createReadStream(__dirname + '/one.png'))
+
+    const response: AxiosResponse = await axiosInstance.post(
+      `http://localhost:${port}/api/v1/storage/files/${tenantId}`,
+      formData,
+      {
+        headers: { ...formData.getHeaders(), Authorization: `Bearer ${anotherBearer}` },
+      },
+    )
+    expect(response.status).toBe(403)
+  })
+
   test('can post one file', async () => {
     const formData = new FormData()
     formData.append('file', fs.createReadStream(__dirname + '/one.png'))
 
-    const response: AxiosResponse = await axios.post(
+    const response: AxiosResponse = await axiosInstance.post(
       `http://localhost:${port}/api/v1/storage/files/${tenantId}`,
       formData,
       {
@@ -57,7 +87,8 @@ describe('with an empty database, extract_referenced_records:', () => {
     )
     expect(response.status).toBe(201)
     const json = response.data
-    expect(json).toEqual([
+    expect(json[0].fileId).toBeDefined()
+    expect(json).toMatchObject([
       {
         originalName: 'one.png',
         mimeType: 'image/png',
@@ -74,7 +105,7 @@ describe('with an empty database, extract_referenced_records:', () => {
     const formData = new FormData()
     formData.append('file', fs.createReadStream(__dirname + '/blank-document.pdf'))
 
-    const response: AxiosResponse = await axios.post(
+    const response: AxiosResponse = await axiosInstance.post(
       `http://localhost:${port}/api/v1/storage/files/${tenantId}`,
       formData,
       {
@@ -83,7 +114,7 @@ describe('with an empty database, extract_referenced_records:', () => {
     )
     expect(response.status).toBe(201)
     const json = response.data
-    expect(json).toEqual([
+    expect(json).toMatchObject([
       {
         originalName: 'blank-document.pdf',
         mimeType: 'application/pdf',
@@ -97,7 +128,7 @@ describe('with an empty database, extract_referenced_records:', () => {
     formData.append('file', fs.createReadStream(__dirname + '/one.png'))
     formData.append('file', fs.createReadStream(__dirname + '/two.png'))
 
-    const response: AxiosResponse = await axios.post(
+    const response: AxiosResponse = await axiosInstance.post(
       `http://localhost:${port}/api/v1/storage/files/${tenantId}`,
       formData,
       {
@@ -106,7 +137,7 @@ describe('with an empty database, extract_referenced_records:', () => {
     )
     expect(response.status).toBe(201)
     const json = response.data
-    expect(json).toEqual([
+    expect(json).toMatchObject([
       {
         originalName: 'one.png',
         mimeType: 'image/png',
