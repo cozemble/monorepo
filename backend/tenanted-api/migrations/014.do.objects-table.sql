@@ -51,6 +51,7 @@ ALTER TABLE objects
     ENABLE ROW LEVEL SECURITY;
 
 CREATE OR REPLACE FUNCTION create_object(
+    p_id uuid,
     p_tenant ltree,
     p_name text,
     p_size_in_bytes bigint,
@@ -59,32 +60,37 @@ CREATE OR REPLACE FUNCTION create_object(
     p_storage_details jsonb,
     p_metadata jsonb
 )
-    RETURNS uuid
+    RETURNS json
     LANGUAGE plpgsql
 AS
 $$
 DECLARE
-    v_id uuid;
+    v_object_json json;
 BEGIN
-    INSERT INTO objects (tenant,
+    INSERT INTO objects (id,
+                         tenant,
                          name,
                          size_in_bytes,
                          mime_type,
                          storage_provider,
                          storage_details,
                          metadata)
-    VALUES (p_tenant,
+    VALUES (p_id,
+            p_tenant,
             p_name,
             p_size_in_bytes,
             p_mime_type,
             p_storage_provider,
             p_storage_details,
-            p_metadata)
-    RETURNING id INTO v_id;
+            p_metadata);
 
-    RETURN v_id;
+    -- Call get_object_as_json with the provided id and tenant
+    SELECT get_object_as_json(p_id, p_tenant) INTO v_object_json;
+
+    RETURN v_object_json;
 END;
 $$;
+
 
 CREATE OR REPLACE FUNCTION get_object_as_json(p_id uuid, p_tenant ltree)
     RETURNS json

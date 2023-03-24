@@ -4,14 +4,35 @@ import tenants from './tenants/tenants'
 import auth from './auth/auth'
 import { logRequest } from './infra/logRequest'
 import { makeStorageRoute } from './storage/storage'
-import multer from 'multer'
+import multer, { StorageEngine } from 'multer'
+import { makeMulterGoogleStorage } from './google/storage'
+import { uuids } from '@cozemble/lang-util'
 
 function makeMulterMiddleware() {
   if ((process.env.USE_MEMORY_STORAGE ?? 'N').toLowerCase() === 'y') {
     const storage = multer.memoryStorage()
-    return multer({ storage: storage })
+    const extendedStorage: StorageEngine = {
+      _handleFile(
+        req: express.Request,
+        file: Express.Multer.File,
+        callback: (error?: any, info?: Partial<Express.Multer.File>) => void,
+      ): void {
+        ;(file as any).fileId = uuids.v4()
+        ;(file as any).storageProvider = 'memory'
+        ;(file as any).storageDetails = { bucket: 'memory' }
+        storage._handleFile(req, file, callback)
+      },
+      _removeFile(
+        req: express.Request,
+        file: Express.Multer.File,
+        callback: (error: Error | null) => void,
+      ): void {
+        storage._removeFile(req, file, callback)
+      },
+    }
+    return multer({ storage: extendedStorage })
   }
-  throw new Error('Non-test storage yet to be implemented')
+  return makeMulterGoogleStorage()
 }
 
 export function expressApp(): Express {
@@ -30,8 +51,7 @@ export function expressApp(): Express {
   const routes: Router = Router()
   routes.use('/tenant', tenants)
   routes.use('/auth', auth)
-  const upload = makeMulterMiddleware()
-  routes.use('/storage', makeStorageRoute(upload))
+  routes.use('/storage', makeStorageRoute(makeMulterMiddleware()))
 
   app.use('/api/v1/', [], routes)
 

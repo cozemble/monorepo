@@ -10,6 +10,7 @@
     import {modelViews} from "../models/tenantEntityStore";
     import {openRecordViews} from "./openRecordViews";
     import type {UploadedAttachment} from "@cozemble/data-editor-sdk";
+    import {uploadAttachments as uploadAttachmentsFn} from './attachments'
 
     export let models: Model[]
     export let model: Model
@@ -57,7 +58,7 @@
             files: File[],
             progressUpdater: (percent: number) => void,
         ): Promise<UploadedAttachment[]> {
-            throw new Error("Not implemented")
+            return uploadAttachmentsFn(tenantId, files, progressUpdater)
         }
     }
 
