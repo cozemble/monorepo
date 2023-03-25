@@ -76,8 +76,6 @@ function parseModel(model: Model) {
     }
   }
 
-  // console.log(relationships[0].name)
-
   result.relations = relationships.map(({ name }) => {
     return getRelationName(name)
   })
