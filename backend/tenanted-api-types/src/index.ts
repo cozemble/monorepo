@@ -1,21 +1,27 @@
 import { Model, ModelEvent } from '@cozemble/model-core'
 
-export interface BackendModelEvent {
+export interface CreateTenant {
+  _type: 'create.tenant'
   id: string
-  definition: ModelEvent
+  name: string
+  owner: {
+    userPool: string
+    id: string
+    email: string
+    firstName: string
+  }
 }
 
 export interface BackendModel {
-  id: string
-  name: string
-  definition: Model
-  events: BackendModelEvent[]
+  _type: 'backend.model'
+  model: Model
+  events: ModelEvent[]
 }
 
-export interface BackendTenant {
+export interface Tenant {
+  _type: 'tenant'
   id: string
   name: string
-  models: BackendModel[]
 }
 
 export function accessTokenKey(userPool: string) {

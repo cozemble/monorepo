@@ -16,10 +16,10 @@ type TypeDefinition = {
 }
 
 type PropertyDefinition = {
-  [key: string]: TypeDefinition
+  [key: string]: TypeDefinition | Schema
 }
 
-type Result = {
+type Schema = {
   ref: string
   type: string
   properties: PropertyDefinition
@@ -42,24 +42,25 @@ function parser(rootModel: Model, models: Model[]) {
   const root = parseModel(rootModel)
   const payload = models.map((model: Model) => parseModel(model))
 
-  const relation = root.relations?.length ? root.relations[0] : ''
-  const relationObject = payload
-    .filter(({ ref }) => Object.is(ref, relation))
-    .map(({ type, properties, required }) => ({ type, properties, required }))
+  const relation = root.relations?.length ? root.relations[0] : undefined
+  if (typeof relation !== 'undefined') {
+    const relationObject = payload
+      .filter(({ ref }) => Object.is(ref, relation))
+      .map(({ type, properties, required }) => ({ type, properties, required }))[0]
 
-  // root.properties[relation] = relationObject
-  Object.assign(root.properties, { [relation]: relationObject[0] })
+    Object.assign(root.properties, { [relation]: relationObject })
+  }
+
   delete root.relations
-
   return root
 }
 
 function parseModel(model: Model) {
   const { name, properties, relationships } = model
-  if (_.isUndefined(name)) throw new Error('Schema does not have an `title` property.')
+  if (_.isUndefined(name)) throw new Error('Schema does not have an `name` property.')
   const modelName = getModelName(name)
 
-  const result: Result = {
+  const result: Schema = {
     ref: modelName,
     type: 'object',
     properties: {},
@@ -83,10 +84,10 @@ function parseModel(model: Model) {
   return result
 }
 
-function buildModelTypes({ name, propertyType, validations }: IProperty): TypeDefinition {
+function buildModelTypes({ propertyType, validations }: IProperty): TypeDefinition {
   const resp = {
     type: getPropertyType(propertyType) as string,
-    description: buildDescription({ title: name.value }),
+    // description: buildDescription({ title: name.value }),
   }
 
   if (validations?.length) {

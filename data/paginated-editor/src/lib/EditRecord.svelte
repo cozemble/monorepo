@@ -1,14 +1,23 @@
 <script lang="ts">
     import DataRecordEditor from './DataRecordEditor.svelte'
     import type {DataRecordControlEvent, DataRecordEditEvent, DataRecordEditorClient,} from '@cozemble/data-editor-sdk'
-    import {dataRecordEditorHost} from '@cozemble/data-editor-sdk'
+    import {dataRecordEditorHost, type UploadedAttachment} from '@cozemble/data-editor-sdk'
     import type {RecordEditContext} from './RecordEditContext'
     import {getEditRecordListener} from './EditRecordListener'
     import {getContext, onDestroy, onMount} from 'svelte'
+    import type {DataRecord, Model, ModelId, ModelView} from "@cozemble/model-core";
+    import type {RecordSearcher} from "./RecordSearcher";
+    import type {RecordCreator} from "./RecordCreator";
+    import type {AttachmentsManager} from "./AttachmentsManager";
 
     export let recordEditContext: RecordEditContext
+    export let recordSearcher: RecordSearcher
+    export let recordCreator: RecordCreator
+    export let attachmentsManager: AttachmentsManager
+    export let modelViews: ModelView[]
     export let pushContext: (context: RecordEditContext) => void
     export let popContext: () => void
+    export let cancelButtonText = "Cancel"
 
     const editListener = getEditRecordListener(getContext)
 
@@ -21,6 +30,10 @@
     }
 
     const dataRecordEditorClient: DataRecordEditorClient = {
+        createNewRecord(modelId: ModelId): Promise<DataRecord | null> {
+            return recordCreator.createNewRecord(modelId)
+        },
+
         dispatchEditEvent(event: DataRecordEditEvent): void {
             editListener.onEvent(recordEditContext, event)
             recordEditContext.handleDataRecordEditEvent(event)
@@ -28,7 +41,23 @@
         dispatchControlEvent(event: DataRecordControlEvent): void {
             console.log({event})
         },
+        searchRecords(modelId: ModelId, search: string): Promise<DataRecord[]> {
+            return recordSearcher.searchRecords(modelId, search)
+        },
+        getModelViews(modelId: ModelId): ModelView[] {
+            return modelViews.filter(modelView => modelView.modelId.value === modelId.value)
+        },
+        getModels(): Model[] {
+            return recordEditContext.models
+        },
+        uploadAttachments(
+            files: File[],
+            progressUpdater: (percent: number) => void,
+        ): Promise<UploadedAttachment[]> {
+            return attachmentsManager.uploadAttachments(files, progressUpdater)
+        },
     }
+
     dataRecordEditorHost.setClient(dataRecordEditorClient)
 
     onMount(() => {
@@ -43,11 +72,11 @@
 
 <div class="buttons btn-group my-4">
     <button type="button" class="save btn btn-primary" on:click={handleSave}>Save</button>
-    <button type="button" class="cancel btn btn-error" on:click={handleCancel}>Cancel</button>
+    <button type="button" class="cancel btn btn-error" on:click={handleCancel}>{cancelButtonText}</button>
 </div>
 
 <style>
-  .buttons {
-    margin-top: 1rem;
-  }
+    .buttons {
+        margin-top: 1rem;
+    }
 </style>

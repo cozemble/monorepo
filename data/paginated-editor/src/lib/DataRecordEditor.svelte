@@ -6,22 +6,12 @@
     export let pushContext: (context: RecordEditContext) => void
     export let popContext: () => void
 
-    const record = recordEditContext.record
-    const errors = recordEditContext.errors
-    const focus = recordEditContext.focus
-    const showErrors = recordEditContext.showErrors
 </script>
 
 <h2 class="font-bold text-xl">{recordEditContext.title}</h2>
 
 <DataRecordEditorInner
-        models={recordEditContext.models}
-        model={recordEditContext.model}
-        record={$record}
+        {recordEditContext}
         parentPath={[]}
-        errors={$errors}
-        showErrors={$showErrors}
-        {focus}
         {pushContext}
-        {popContext}
-/>
+        {popContext}/>

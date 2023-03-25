@@ -26,7 +26,7 @@ export function newStringPropertyModelEvent(
     _type: 'new.string.property.model.event',
     ...modelEventFns.coreParts(modelId),
     propertyName,
-    propertyId: propertyId ?? propertyIdFns.newInstance(),
+    propertyId: propertyId ?? propertyIdFns.newInstance(propertyName.value),
   }
 }
 

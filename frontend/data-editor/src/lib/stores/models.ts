@@ -11,7 +11,7 @@ export const selectedModel: Writable<JSONSchema> = writable(invoiceModel)
 /** An adapted version of the selected model to be used by the data editor */
 export const model: Readable<CozJSONSchema> = derived(
   selectedModel,
-  ($selectedModel): CozJSONSchema => _.merge($selectedModel, $selectedModel.coz), // Merge cozemble configs into the model
+  ($selectedModel): CozJSONSchema => $selectedModel, // no more processing needed for now
 )
 
 model.subscribe((value) => console.info('model', value))

@@ -1,4 +1,3 @@
-import { getContext, setContext } from 'svelte'
 import type {
   DataRecord,
   DataRecordId,
@@ -7,9 +6,6 @@ import type {
   HasManyRelationship,
   ModelId,
 } from '@cozemble/model-core'
-import { mandatory } from '@cozemble/lang-util'
-
-const dataRecordEditorClientContext = 'com.cozemble.data.record.editor.client.context'
 
 export interface DataRecordCreatedEvent {
   _type: 'data.record.created'
@@ -123,26 +119,5 @@ export const dataRecordEditEvents = {
       relationship,
       newRecord,
     }
-  },
-}
-
-export interface DataRecordEditorClient {
-  dispatchControlEvent(event: DataRecordControlEvent): void
-
-  dispatchEditEvent(event: DataRecordEditEvent): void
-}
-
-export const dataRecordEditor = {
-  getClient: (): DataRecordEditorClient => {
-    return mandatory(
-      getContext(dataRecordEditorClientContext),
-      `No data record editor client found in context`,
-    )
-  },
-}
-
-export const dataRecordEditorHost = {
-  setClient: (client: DataRecordEditorClient) => {
-    return setContext(dataRecordEditorClientContext, client)
   },
 }

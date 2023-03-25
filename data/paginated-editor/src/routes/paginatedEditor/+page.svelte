@@ -1,7 +1,6 @@
 <script lang="ts">
     import type {DataRecordEditEvent, EventSourcedDataRecord,} from '@cozemble/data-editor-sdk'
-    import {dataRecordEditEvents, eventSourcedDataRecordFns,} from '@cozemble/data-editor-sdk'
-    import type {DataRecord, Model} from '@cozemble/model-core'
+    import type {DataRecord, DataRecordId, Model, ModelId} from '@cozemble/model-core'
     import PaginatedEditor from '../../lib/PaginatedEditor.svelte'
     import {onMount, setContext} from 'svelte'
     import {
@@ -13,15 +12,11 @@
     import {allModels, invoiceModel} from '../testModels'
     import type {EditRecordListener} from '../../lib/EditRecordListener'
     import {setEditRecordListener} from '../../lib/EditRecordListener'
-    import type {RecordEditContext, RecordSaveOutcome,} from '../../lib/RecordEditContext'
+    import type {RecordEditContext, RecordSaveOutcome,} from '../../lib'
     import type {PaginatedEditorHost, RecordDeleteOutcome,} from '../../lib'
-    import {recordSaveFailed, recordSaveSucceeded} from '../../lib'
+    import {recordSaveSucceeded} from '../../lib'
     import EditEventInspector from './EditEventInspector.svelte'
-    import {AxiosGraphQlClient} from '@cozemble/graphql-client'
-    import {hasuraMutationFromEvents} from '@cozemble/data-hasura-mutations'
-    import {modelLevelHasuraErrors} from './recordPathErrorsFromHasuraError'
-    import {dataRecordFns} from '@cozemble/model-api'
-    import {headAndTailFns, justErrorMessage} from '@cozemble/lang-util'
+    import type {UploadedAttachment} from "@cozemble/data-editor-sdk";
 
     export const ssr = false
 
@@ -59,85 +54,11 @@
 
     setEditRecordListener(setContext, editRecordListener)
 
-    const localHasuraClient = new AxiosGraphQlClient(
-        'http://localhost:8080/v1/graphql',
-    )
-    const localHasuraEditorHost: PaginatedEditorHost = {
-        async recordEdited(
-            editedRecord: EventSourcedDataRecord,
-        ): Promise<RecordSaveOutcome> {
-            if (editedRecord.events.length === 0) {
-                return recordSaveSucceeded(editedRecord.record)
-            }
-            const mutation = hasuraMutationFromEvents(
-                models,
-                dataRecordFns.childRecords(models, editedRecord.record),
-                editedRecord.record,
-                headAndTailFns.fromArray(editedRecord.events),
-            )
-            try {
-                const outcome = await localHasuraClient.execute(mutation)
-                console.log('Outcome', outcome)
-                if (outcome._type === 'gql.data') {
-                    records = records.map((r) =>
-                        r.id === editedRecord.record.id ? editedRecord.record : r,
-                    )
-                    return recordSaveSucceeded(editedRecord.record)
-                }
-                return recordSaveFailed(modelLevelHasuraErrors(outcome.errors), new Map())
-            } catch (e: any) {
-                console.error(e)
-                return recordSaveFailed([e.message], new Map())
-            }
-        },
-
-        async saveNewRecord(
-            newRecord: EventSourcedDataRecord,
-        ): Promise<RecordSaveOutcome> {
-            if (newRecord.events.length === 0) {
-                return recordSaveSucceeded(newRecord.record)
-            }
-            const mutation = hasuraMutationFromEvents(
-                models,
-                dataRecordFns.childRecords(models, newRecord.record),
-                newRecord.record,
-                headAndTailFns.fromArray(newRecord.events),
-            )
-            try {
-                const outcome = await localHasuraClient.execute(mutation)
-                console.log('Outcome', outcome)
-                if (outcome._type === 'gql.data') {
-                    records = [...records, newRecord.record]
-                    return recordSaveSucceeded(newRecord.record)
-                }
-                return recordSaveFailed(modelLevelHasuraErrors(outcome.errors), new Map())
-            } catch (e: any) {
-                console.error(e)
-                return recordSaveFailed([e.message], new Map())
-            }
-        },
-
-        async deleteRecord(record: DataRecord): Promise<RecordDeleteOutcome> {
-            let eventSourced = eventSourcedDataRecordFns.fromRecord(models, record)
-            eventSourced = eventSourcedDataRecordFns.addEvent(
-                dataRecordEditEvents.recordDeleted(
-                    record.modelId,
-                    record.id,
-                    'test-user',
-                ),
-                eventSourced,
-            )
-            const outcome = await this.recordEdited(eventSourced)
-            if (outcome._type === 'record.save.succeeded') {
-                records = records.filter((r) => r.id !== record.id)
-                return outcome
-            } else {
-                return justErrorMessage(outcome.errors[0] ?? `Failed to delete record`)
-            }
-        },
-    }
 
     const noOpEditorHost: PaginatedEditorHost = {
+        viewRecord(record: DataRecord, viewNow: boolean): void {
+            console.log('View record', record, viewNow)
+        },
         async recordEdited(
             editedRecord: EventSourcedDataRecord,
         ): Promise<RecordSaveOutcome> {
@@ -158,56 +79,29 @@
             records = records.filter((r) => r.id.value !== record.id.value)
             return recordSaveSucceeded(record)
         },
-    }
-
-    let selectedHost = noOpEditorHost
-
-    const paginatedEditorHost: PaginatedEditorHost = {
-        async recordEdited(
-            editedRecord: EventSourcedDataRecord,
-        ): Promise<RecordSaveOutcome> {
-            return selectedHost.recordEdited(editedRecord)
+        async searchRecords(
+            _modelId: ModelId,
+            _search: string,
+        ): Promise<DataRecord[]> {
+            return []
         },
-
-        async saveNewRecord(
-            newRecord: EventSourcedDataRecord,
-        ): Promise<RecordSaveOutcome> {
-            return selectedHost.saveNewRecord(newRecord)
+        async recordById(_modelId: ModelId, _recordId: DataRecordId): Promise<DataRecord | null> {
+            return null
         },
-
-        async deleteRecord(record: DataRecord): Promise<RecordDeleteOutcome> {
-            return selectedHost.deleteRecord(record)
-        },
-    }
-
-    function persistenceMethodChanged(event: Event) {
-        const target = event.target as HTMLInputElement
-        const value = target.value
-        if (value === 'localHasura') {
-            selectedHost = localHasuraEditorHost
-        } else {
-            selectedHost = noOpEditorHost
+        async uploadAttachments(
+            _files: File[],
+            _progressUpdater: (percent: number) => void,
+        ): Promise<UploadedAttachment[]> {
+            return [] as UploadedAttachment[]
         }
     }
+
 </script>
 
-<div class="bg-base-100 rounded-lg" on:change={persistenceMethodChanged}>
-    <div class="form-control w-full max-w-xs">
-        <label for="persistenceSelect" class="label">Persistence method</label><br
-    />
-
-        <select id="persistenceSelect" class="select select-bordered">
-            <option selected={selectedHost === noOpEditorHost}>------</option>
-            <option
-                    value="localHasura"
-                    selected={selectedHost === localHasuraEditorHost}
-            >Local Hasura (http://localhost:8080/v1/graphql)
-            </option>
-        </select>
-    </div>
+<div class="bg-base-100 rounded-lg">
 
     {#if model}
-        <PaginatedEditor {models} {model} {records} {paginatedEditorHost}/>
+        <PaginatedEditor {models} {model} {records} modelViews={[]} paginatedEditorHost={noOpEditorHost}/>
     {/if}
 
     <EditEventInspector {editContexts}/>

@@ -81,7 +81,7 @@ async function tradeRefreshTokenForUser(client: PoolClient, refreshToken: string
          from trade_refresh_token_for_user($1)`,
     [refreshToken],
   )
-  return userSelectResult.rows[0]
+  return userSelectResult.rows[0].trade_refresh_token_for_user
 }
 
 async function tradeAuthTokenForUser(client: PoolClient, authorizationToken: string) {
@@ -93,9 +93,18 @@ async function tradeAuthTokenForUser(client: PoolClient, authorizationToken: str
   return result.rows[0].trade_auth_token_for_user
 }
 
+async function createAuthToken(client: PoolClient, user: User, userPool: string): Promise<string> {
+  const result = await client.query(
+    `select *
+         from insert_auth_token($1, text2ltree($2))`,
+    [user.user_id, userPool],
+  )
+  return result.rows[0].insert_auth_token
+}
+
 export const db = {
   inTxn,
   users: { getUserByEmail, getUserById, registerUser },
   refreshTokens: { insertRefreshToken, tradeRefreshTokenForUser },
-  authTokens: { tradeAuthTokenForUser },
+  authTokens: { tradeAuthTokenForUser, createAuthToken },
 }

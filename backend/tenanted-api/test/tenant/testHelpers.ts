@@ -1,16 +1,17 @@
 import { expect } from 'vitest'
 import { DataRecord, Model } from '@cozemble/model-core'
 import { uuids } from '@cozemble/lang-util'
-import { BackendModel, BackendTenant } from '@cozemble/backend-tenanted-api-types'
+import { BackendModel } from '@cozemble/backend-tenanted-api-types'
 import jwt from 'jsonwebtoken'
 
 async function postTenant(port: number, id: string, name = 'Test Tenant', ownerId = uuids.v4()) {
-  return fetch(`http://localhost:${port}/api/v1/tenant`, {
+  return await fetch(`http://localhost:${port}/api/v1/tenant`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
+      _type: 'create.tenant',
       id,
       name,
       owner: {
@@ -40,23 +41,17 @@ export async function putModels(
   accessToken: string,
 ): Promise<Model[]> {
   const backendModels: BackendModel[] = models.map((m) => ({
-    id: m.id.value,
-    name: m.name.value,
-    definition: m,
+    _type: 'backend.model',
+    model: m,
     events: [],
   }))
-  const tenant: BackendTenant = {
-    id: tenantId,
-    name: 'Test Tenant',
-    models: backendModels,
-  }
   const putResponse = await fetch(`http://localhost:${port}/api/v1/tenant/${tenantId}/model`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + accessToken,
     },
-    body: JSON.stringify(tenant),
+    body: JSON.stringify(backendModels),
   })
   expect(putResponse.status).toBe(200)
   return models
@@ -106,4 +101,12 @@ export async function makeTenantMemberAccessToken(
     exp: Math.floor(Date.now() / 1000) + 60 * 60,
   }
   return jwt.sign(payload, jwtSigningSecret, {})
+}
+
+export async function simulateNewUser(port: number, jwtSigningSecret: string) {
+  const ownerId = uuids.v4()
+  const tenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
+  await makeTenant(port, tenantId, 'Tenant 2', ownerId)
+  const bearer = await makeTenantMemberAccessToken(tenantId, ownerId, jwtSigningSecret)
+  return { tenantId, ownerId, bearer }
 }

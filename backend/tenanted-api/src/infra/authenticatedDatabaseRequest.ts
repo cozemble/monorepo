@@ -11,7 +11,7 @@ export async function authenticatedDatabaseRequest(
 ) {
   return withAccessToken(req, res, async (claim) => {
     return withAdminPgClient(async (client) => {
-      await withClaimInPgSession(client, claim, async () => {
+      return withClaimInPgSession(client, claim, async () => {
         try {
           return await f(client)
         } catch (e: any) {

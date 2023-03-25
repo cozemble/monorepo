@@ -2,30 +2,44 @@
 import { currentRecord } from '$lib/stores/records'
 import StringInput from '$lib/components/inputs/simple/StringInput.svelte'
 import NumberInput from '$lib/components/inputs/simple/NumberInput.svelte'
+import { handleOverrides, getOverrides } from '$lib/helpers/settings'
 
 export let value: string
 export let error: string | undefined = undefined
 export let propertySchema: CozJSONSchema
+export let path: string[]
 
-let customComponent = propertySchema.customComponent
+handleOverrides(propertySchema)
+
 let type = propertySchema.type
 
+const compOverrides = getOverrides()?.components
+
 // TODO fix TypeScript error
-let component: SimpleInputComponent =
-  type === 'string'
-    ? StringInput
-    : type === 'number' || type === 'integer'
-    ? NumberInput
-    : StringInput
+const determineComponent = (): SimpleInputComponent => {
+  // if a custom component is defined, use that anyway
+  if (propertySchema?.coz?.customComponent)
+    return propertySchema.coz?.customComponent
+
+  if (type === 'string') return compOverrides?.string || StringInput
+
+  if (type === 'number') return compOverrides?.number || NumberInput
+
+  if (type === 'integer') return compOverrides?.integer || NumberInput
+
+  return StringInput
+}
+
+let component: SimpleInputComponent = determineComponent()
 
 // if a formula is defined, the input is readonly and the value is calculated
-let formula = propertySchema.formula
+let formula = propertySchema.coz?.formula
 let loading = false
 
 $: if (!!formula) {
   loading = true
 
-  formula($currentRecord).then((result) => {
+  formula.exec($currentRecord, path).then((result) => {
     value = result
     loading = false
   })
@@ -55,10 +69,11 @@ $: if (!!formula) {
     data-tip={error || ''}
   >
     <svelte:component
-      this={customComponent || component}
+      this={component}
       bind:value
       {error}
       readonly={!!formula}
+      {path}
     />
     {#if loading}
       <div

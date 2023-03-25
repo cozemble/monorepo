@@ -7,6 +7,7 @@ import _ from 'lodash'
 import { removeEmptyValues, initValues, getDifference } from '$lib/utils'
 import { selectedModel } from './models'
 import { addErrors } from '$lib/stores/errors'
+import { removeFormulaFields } from '$lib/helpers/records'
 
 export const currentRecord: Writable<ObjectValue> = writable({})
 
@@ -26,31 +27,83 @@ let currentTimeout: NodeJS.Timeout
  */
 function createLog(record: ObjectValue) {
   recordLogs.update((logs) => {
+    // need to clone first to prevent mutations
     const lastLog = _.last(_.cloneDeep(logs))
+    const currentRecord = _.cloneDeep(record)
 
     // no need to log if the record is the same as the last log
     if (lastLog && _.isEqual(record, lastLog)) return logs
 
+    // mutate the last item if a formula field was changed
+
+    const withoutFormulas = {
+      currentRecord: removeFormulaFields(currentRecord, get(selectedModel)) as ObjectValue,
+      lastLog: removeFormulaFields(lastLog, get(selectedModel)) as ObjectValue,
+    }
+
+    if (_.isEqual(withoutFormulas.currentRecord, withoutFormulas.lastLog)) {
+      logs[logs.length - 1] = currentRecord
+      return logs
+    }
+
     console.warn('record logged')
 
-    // ! it is crucial to clone to prevent mutation of the log
-    return [...logs, _.cloneDeep(record)]
+    return [...logs, currentRecord]
   })
 }
 
 selectedModel.subscribe((model) => {
   currentRecord.set(<ObjectValue>initValues(model))
-  createLog({ ...get(currentRecord) })
+
+  recordLogs.set([])
+
+  createLog(_.cloneDeep(get(currentRecord)))
 })
+
+/** Store the record that is awaiting to be logged */
+let awaitingRecord: Record<string, any> | null = null
+
+/** Store the changes that are awaiting to be logged*/
+let awaitingChanges: Record<string, any> | null = null
 
 // listen to changes in the record and log them
 currentRecord.subscribe((record) => {
   console.warn('record changed', record.invoiceNumber)
 
+  // TODO if user switches to editing a different property before the timeout is over, version before the next property is edited should be logged
+
+  const lastLog = _.cloneDeep(_.last(get(recordLogs)))
+
+  const changes = getDifference(_.cloneDeep(record), lastLog)
+
+  const changesComparisonObject = _.defaultsDeep(_.cloneDeep(awaitingChanges), changes)
+
+  // if the record changed but the changes are on different properties, log the previous changes immediately
+  if (awaitingChanges && !_.isEqual(awaitingChanges, changesComparisonObject)) {
+    console.warn('record changed on different properties')
+    console.log('awaitingChanges', awaitingChanges)
+    console.log('changes', changes)
+    console.log('changesComparisonObject', changesComparisonObject)
+
+    clearTimeout(currentTimeout)
+    if (awaitingRecord) createLog(awaitingRecord)
+
+    awaitingRecord = null
+    awaitingChanges = null
+  }
+
   // Clear the timeout action if it exists to keep debouncing
   if (currentTimeout) clearTimeout(currentTimeout)
 
-  currentTimeout = setTimeout(() => createLog(record), LOG_TIMEOUT)
+  awaitingRecord = _.cloneDeep(record)
+  awaitingChanges = getDifference(awaitingRecord, lastLog) as ObjectValue
+
+  currentTimeout = setTimeout(() => {
+    createLog(awaitingRecord as ObjectValue)
+
+    awaitingChanges = null
+    awaitingRecord = null
+  }, LOG_TIMEOUT)
 })
 
 /** Go back to the previous record and remove the last record from the log */

@@ -21,12 +21,12 @@ describe('with a running backend', () => {
   }, 1000 * 90)
 
   test('returns user json if auth code exists, has not been used and has not expired', async () => {
-    const token = await makeLegitAuthToken()
+    const authorizationToken = await makeLegitAuthToken()
 
     const response = await fetch(`http://localhost:3005/api/v1/auth/token`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token }),
+      body: JSON.stringify({ authorizationToken }),
     })
     expect(response.status).toBe(200)
     const json = await response.json()
@@ -34,18 +34,18 @@ describe('with a running backend', () => {
   })
 
   test('second use of authorization code is 401', async () => {
-    const token = await makeLegitAuthToken()
+    const authorizationToken = await makeLegitAuthToken()
 
     const firstResponse = await fetch(`http://localhost:3005/api/v1/auth/token`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token }),
+      body: JSON.stringify({ authorizationToken }),
     })
     expect(firstResponse.status).toBe(200)
     const secondResponse = await fetch(`http://localhost:3005/api/v1/auth/token`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token }),
+      body: JSON.stringify({ authorizationToken }),
     })
     expect(secondResponse.status).toBe(401)
   })
@@ -54,7 +54,7 @@ describe('with a running backend', () => {
     const response = await fetch(`http://localhost:3005/api/v1/auth/token`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token: '123' }),
+      body: JSON.stringify({ authorizationToken: '123' }),
     })
     expect(response.status).toBe(401)
   })

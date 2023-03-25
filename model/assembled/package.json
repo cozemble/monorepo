@@ -17,6 +17,10 @@
     "@cozemble/lang-util": "workspace:*",
     "@cozemble/model-core": "workspace:*",
     "@cozemble/model-string-core": "workspace:*",
-    "@cozemble/model-string-ui": "workspace:*"
+    "@cozemble/model-string-ui": "workspace:*",
+    "@cozemble/model-reference-core": "workspace:*",
+    "@cozemble/model-reference-ui": "workspace:*",
+    "@cozemble/model-attachment-core": "workspace:*",
+    "@cozemble/model-attachment-ui": "workspace:*"
   }
 }

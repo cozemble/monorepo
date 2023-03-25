@@ -169,8 +169,8 @@ export interface UserId {
 
 export interface DataRecord {
   _type: 'data.record'
-  modelId: ModelId
   id: DataRecordId
+  modelId: ModelId
   createdMillis: TimestampEpochMillis
   updatedMillis: TimestampEpochMillis
   createdBy: UserId

@@ -6,6 +6,8 @@ packages:
   - 'lang/*'
   - 'model/*'
   - 'model/string/*'
+  - 'model/reference/*'
+  - 'model/attachment/*'
   - 'scripts/*'
   - 'sql/*'
   - 'ui/*'

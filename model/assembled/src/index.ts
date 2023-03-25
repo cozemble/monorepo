@@ -5,6 +5,20 @@ import {
   PropertyViewer as StringPropertyViewer,
 } from '@cozemble/model-string-ui'
 import { stringPropertyType, registerStringProperty } from '@cozemble/model-string-core'
+import { registerReferenceProperty } from '@cozemble/model-reference-core'
+import { referencePropertyType } from '@cozemble/model-reference-core'
+import {
+  ReferencePropertyConfigurer,
+  ReferencePropertyViewer,
+  ReferencePropertyEditor,
+} from '@cozemble/model-reference-ui'
+import { registerAttachmentProperty } from '@cozemble/model-attachment-core'
+import { attachmentPropertyType } from '@cozemble/model-attachment-core'
+import {
+  AttachmentPropertyConfigurer,
+  AttachmentPropertyViewer,
+  AttachmentPropertyEditor,
+} from '@cozemble/model-attachment-ui'
 
 export { propertyDescriptors } from '@cozemble/model-core'
 
@@ -41,16 +55,24 @@ export const propertyEditorRegistry = {
 
 export function registerAllProperties() {
   registerStringProperty()
+  registerReferenceProperty()
+  registerAttachmentProperty()
 }
 
 export function registerAllPropertyConfigurers() {
   propertyConfigurerRegistry.register(stringPropertyType, StringPropertyConfigurer)
+  propertyConfigurerRegistry.register(referencePropertyType, ReferencePropertyConfigurer)
+  propertyConfigurerRegistry.register(attachmentPropertyType, AttachmentPropertyConfigurer)
 }
 
 export function registerAllPropertyViewers() {
   propertyViewerRegistry.register(stringPropertyType, StringPropertyViewer)
+  propertyViewerRegistry.register(referencePropertyType, ReferencePropertyViewer)
+  propertyViewerRegistry.register(attachmentPropertyType, AttachmentPropertyViewer)
 }
 
 export function registerAllPropertyEditors() {
   propertyEditorRegistry.register(stringPropertyType, StringPropertyEditor)
+  propertyEditorRegistry.register(referencePropertyType, ReferencePropertyEditor)
+  propertyEditorRegistry.register(attachmentPropertyType, AttachmentPropertyEditor)
 }

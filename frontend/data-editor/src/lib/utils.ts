@@ -66,3 +66,35 @@ export const getDifference = (object: AnyValue, base?: AnyValue): AnyValue => {
 
   return object
 }
+
+/** Converts a value object to a plain JSON schema */
+export const valueToSchema = (value: AnyValue): CozJSONSchema => {
+  // array
+  if (_.isArray(value)) {
+    return {
+      type: 'array',
+      items: valueToSchema(value[0]),
+    }
+  }
+
+  // object
+  if (_.isObject(value)) {
+    return {
+      type: 'object',
+      properties: Object.entries(value).reduce((prev, [key, value]) => {
+        prev[key] = valueToSchema(value)
+
+        return prev
+      }, {} as Record<string, JSONSchema>),
+    }
+  }
+
+  // simple value
+  if (_.isString(value)) return { type: 'string' }
+
+  if (_.isNumber(value)) return { type: 'number' }
+
+  if (_.isBoolean(value)) return { type: 'boolean' }
+
+  return { type: 'null' }
+}

@@ -1,9 +1,9 @@
 <script lang="ts">
-    import type {Property} from '@cozemble/model-core'
+    import type {Property, PropertyId} from '@cozemble/model-core'
     import {modelIdAndNameFns, propertyDescriptors, propertyNameFns, relationshipNameFns,} from '@cozemble/model-core'
-    import PropertyEditor from '$lib/PropertyEditor.svelte'
-    import AddNestedModelDialog from '$lib/AddNestedModelDialog.svelte'
-    import type {ModelEditorHost} from '$lib/ModelEditorHost'
+    import PropertyEditor from './PropertyEditor.svelte'
+    import AddNestedModelDialog from './AddNestedModelDialog.svelte'
+    import type {ModelEditorHost} from './ModelEditorHost'
     import {modelFns, modelOptions} from '@cozemble/model-api'
     import type {EventSourcedModel} from '@cozemble/model-event-sourced'
     import {coreModelEvents} from '@cozemble/model-event-sourced'
@@ -11,8 +11,12 @@
     export let host: ModelEditorHost
     export let allModels: EventSourcedModel[]
     export let eventSourced: EventSourcedModel
+    $: allCoreModels = allModels.map((m) => m.model)
     $: model = eventSourced.model
-    let propertyBeingEdited: Property | null = null
+    let propertyIdBeingEdited: PropertyId | null = null
+    $: propertyBeingEdited = propertyIdBeingEdited
+        ? model.properties.find((p) => p.id.value === propertyIdBeingEdited?.value)
+        : null
 
     function addProperty() {
         const propertyName = `Property ${model.properties.length + 1}`
@@ -25,13 +29,11 @@
     }
 
     function editProperty(p: Property) {
-        propertyBeingEdited = p
+        propertyIdBeingEdited = p.id
     }
 
     function propertyEdited(_event: CustomEvent) {
-        // const property = event.detail.property
-        // host.modelChanged({...model, properties: model.properties.map(p => p.id === property.id ? property : p)})
-        propertyBeingEdited = null
+        propertyIdBeingEdited = null
     }
 
     let addingNestedModel = false
@@ -70,15 +72,14 @@
     <AddNestedModelDialog
             on:relationshipAdded={onRelationshipAdded}
             on:cancel={() => (addingNestedModel = false)}
-            parentModel={model}
-    />
+            parentModel={model}/>
 {:else if propertyBeingEdited}
     <PropertyEditor
             property={propertyBeingEdited}
             modelChangeHandler={host}
+            models={allCoreModels}
             {model}
-            on:save={propertyEdited}
-    />
+            on:save={propertyEdited}/>
 {:else}
     <div data-model-name={model.name.value}>
         <table>
@@ -87,35 +88,27 @@
                 {#each model.properties as property}
                     <th>{property.name.value}</th>
                 {/each}
-                <th/>
             </tr>
             </thead>
             <tbody>
             <tr>
                 {#each model.properties as property}
                     <td>
-                        <button
-                                on:click={() => editProperty(property)}
-                                class="edit-property"
-                                data-property-name={property.name.value}
-                        >Edit
+                        <button on:click={() => editProperty(property)}
+                                class="btn btn-active btn-ghost edit-property"
+                                data-property-name={property.name.value}>Edit
                         </button>
                     </td>
                 {/each}
                 <td>
-                    <button on:click={addProperty} class="add-property"
-                    >Add property
-                    </button
-                    >
+                    <button on:click={addProperty} class="btn btn-active btn-ghost add-property">Add property</button>
                 </td>
             </tr>
             </tbody>
         </table>
         <div class="actions">
-            <button on:click={addNestedModel} class="add-nested-model"
-            >Add nested model
-            </button
-            >
+            <br/>
+            <button on:click={addNestedModel} class="btn btn-active btn-ghost add-nested-model">Add nested model</button>
         </div>
     </div>
 {/if}

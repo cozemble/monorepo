@@ -2,7 +2,7 @@
     import type {Model} from "@cozemble/model-core";
     import {loadRecords} from "./loadRecords";
     import {records} from "./recordsStore";
-    import {onMount} from "svelte";
+    import {onMount, onDestroy} from "svelte";
     import DataPanelInner from "./DataPanelInner.svelte";
 
     export let tenantId: string
@@ -10,8 +10,10 @@
     export let model: Model
 
     onMount(async () => {
+        console.log(`onMount: ${model.name.value}`)
         try {
             const initialRecords = await loadRecords(tenantId, model.id.value)
+            console.log({initialRecords})
             records.set(initialRecords.records)
         } catch (e) {
             console.error(e)
@@ -28,6 +30,10 @@
         }
     }
 
+    onDestroy(() => {
+        console.log(`onDestroy: ${model.name.value}`)
+        records.set([])
+    })
 </script>
 
 <DataPanelInner {models} {model} {tenantId} {records} on:searchTextChanged={searchTextChanged}/>

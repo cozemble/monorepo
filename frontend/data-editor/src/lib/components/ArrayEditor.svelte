@@ -1,4 +1,5 @@
 <script lang="ts">
+import { handleOverrides } from '$lib/helpers/settings'
 import { initValues } from '$lib/utils'
 import ObjectEditorWrapper from './inputWrappers/ObjectEditorWrapper.svelte'
 import SimpleInputWrapper from './inputWrappers/SimpleInputWrapper.svelte'
@@ -7,6 +8,9 @@ export let label: string
 export let schema: NonNullable<CozJSONSchema['items']>
 export let value: ArrayValue
 export let errors: ArrayError
+export let path: string[]
+
+handleOverrides(schema)
 
 $: console.info(`${label} array schema: `, schema)
 
@@ -63,6 +67,7 @@ function addValue() {
                   title={`${label} ${i + 1}`}
                   bind:value={val}
                   errors={errors?.items ? errors.items[i] : undefined}
+                  path={[...path, `${i}`]}
                 />
               </td>
             {:else if schema.type === 'array'}
@@ -72,6 +77,7 @@ function addValue() {
                   {schema}
                   bind:value={val}
                   errors={errors?.items ? errors.items[i] : []}
+                  path={[...path, `${i}`]}
                 />
               </td>
             {:else if schema.type === 'string'}
@@ -79,6 +85,7 @@ function addValue() {
                 bind:value={val}
                 error={errors?.items ? errors.items[i] : undefined}
                 propertySchema={schema}
+                path={[...path, `${i}`]}
               />
             {/if}
           </tr>

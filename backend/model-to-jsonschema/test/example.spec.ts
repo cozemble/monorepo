@@ -40,28 +40,19 @@ describe('given a customer with a has-one address', () => {
       properties: {
         'First name': {
           type: 'string',
-          description: 'first name',
         },
         'Last name': {
           type: 'string',
-          description: 'last name',
         },
         Email: {
           type: 'string',
-          description: 'email',
           pattern: '^[a-zA-Z0-9]+(?:\\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(?:\\.[a-zA-Z0-9]+)*$',
         },
         Address: {
           type: 'object',
           properties: {
-            Street: {
-              type: 'string',
-              description: 'street',
-            },
-            'Post code': {
-              type: 'string',
-              description: 'post code',
-            },
+            Street: { type: 'string' },
+            'Post code': { type: 'string' },
           },
           required: ['Post code'],
         },

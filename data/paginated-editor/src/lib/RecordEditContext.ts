@@ -1,4 +1,4 @@
-import type { DataRecord, DataRecordPath, Model } from '@cozemble/model-core'
+import type { DataRecord, DataRecordPath, Model, ModelId } from '@cozemble/model-core'
 import { DataRecordPathFocus } from './DataRecordPathFocus'
 import { writable, type Writable } from 'svelte/store'
 import { modelFns } from '@cozemble/model-api'
@@ -38,6 +38,7 @@ export type RecordSaveFunction = (record: EventSourcedDataRecord) => Promise<Rec
 export class RecordEditContext {
   constructor(
     public models: Model[],
+    public saveNewRecord: RecordSaveFunction,
     public eventSourcedRecord: EventSourcedDataRecord,
     public onSave: RecordSaveFunction,
     public onCancel: () => void,
@@ -64,11 +65,6 @@ export class RecordEditContext {
   }
 
   async attemptSave() {
-    console.log('attemptSave', {
-      model: this.model,
-      record: this.eventSourcedRecord,
-      errors: this._errors,
-    })
     if (this._errors.size === 0) {
       await this.onSave(this.eventSourcedRecord)
     } else {
@@ -90,4 +86,25 @@ export class RecordEditContext {
     this._errors = modelFns.validate(this.models, this.eventSourcedRecord.record)
     this.errors.set(this._errors)
   }
+}
+
+export function createDependentRecordContext(
+  currentContext: RecordEditContext,
+  dependentModelId: ModelId,
+  onSave: RecordSaveFunction,
+  onCancel: () => void,
+) {
+  const dependentModel = modelFns.findById(currentContext.models, dependentModelId)
+  return new RecordEditContext(
+    currentContext.models,
+    currentContext.saveNewRecord,
+    eventSourcedDataRecordFns.newInstance(
+      currentContext.models,
+      dependentModelId,
+      currentContext.eventSourcedRecord.record.createdBy.value,
+    ),
+    onSave,
+    onCancel,
+    `New ${dependentModel.name.value}`,
+  )
 }

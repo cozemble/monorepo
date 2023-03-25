@@ -1,18 +1,23 @@
 <script lang="ts">
-    import type {DataRecord, Model} from '@cozemble/model-core'
+    import type {DataRecord, Model, ModelView} from '@cozemble/model-core'
     import type {CellFocus} from './CellFocus'
     import {writable, type Writable} from 'svelte/store'
     import DataTd from './DataTd.svelte'
     import StackingRecordEditor from './StackingRecordEditor.svelte'
     import {RecordEditContext, type RecordSaveOutcome} from './RecordEditContext'
     import type {EventSourcedDataRecord} from '@cozemble/data-editor-sdk'
-    import {eventSourcedDataRecordFns} from '@cozemble/data-editor-sdk'
+    import {dataRecordViewerHost, eventSourcedDataRecordFns} from '@cozemble/data-editor-sdk'
     import type {PaginatedEditorHost} from './PaginatedEditorHost'
+    import {makeDataRecordViewer} from "./makeDataRecordViewer";
+    import {afterUpdate} from "svelte";
 
     export let models: Model[]
     export let model: Model
     export let records: DataRecord[]
     export let paginatedEditorHost: PaginatedEditorHost
+    export let modelViews: ModelView[]
+
+    dataRecordViewerHost.setClient(makeDataRecordViewer(models, modelViews, paginatedEditorHost))
 
     let focus: Writable<CellFocus | null> = writable(null)
     let doAddNewRecord = false
@@ -27,6 +32,10 @@
                 modelLevelErrors = [...modelLevelErrors, outcome.message]
             }
         }
+    }
+
+    function viewRecord(record: DataRecord) {
+        paginatedEditorHost.viewRecord(record, true)
     }
 
     function editRecord(record: DataRecord) {
@@ -47,11 +56,18 @@
         return outcome
     }
 
+    async function justSaveNewRecord(
+        newRecord: EventSourcedDataRecord,
+    ): Promise<RecordSaveOutcome> {
+        modelLevelErrors = []
+        return await paginatedEditorHost.saveNewRecord(newRecord)
+    }
+
     async function saveNewRecord(
         newRecord: EventSourcedDataRecord,
     ): Promise<RecordSaveOutcome> {
         modelLevelErrors = []
-        const outcome = await paginatedEditorHost.saveNewRecord(newRecord)
+        const outcome = await justSaveNewRecord(newRecord)
         if (outcome._type === 'record.save.succeeded') {
             doAddNewRecord = false
         } else {
@@ -59,6 +75,8 @@
         }
         return outcome
     }
+
+    afterUpdate(() => console.log('after update', {doAddNewRecord, recordBeingEdited}))
 </script>
 
 {#each modelLevelErrors as error}
@@ -68,10 +86,15 @@
 {/each}
 {#if doAddNewRecord}
     <StackingRecordEditor
-            recordEditContext={new RecordEditContext( models, eventSourcedDataRecordFns.newInstance(models, model.id, 'test-user'), saveNewRecord, () => (doAddNewRecord = false), `Add new ${model.name.value}`, )}/>
+            recordSearcher={paginatedEditorHost}
+            attachmentsManager={paginatedEditorHost}
+            {modelViews}
+            recordEditContext={new RecordEditContext( models, justSaveNewRecord,eventSourcedDataRecordFns.newInstance(models, model.id, 'test-user'), saveNewRecord, () => (doAddNewRecord = false), `Add new ${model.name.value}`, )}/>
 {:else if recordBeingEdited !== null}
     <StackingRecordEditor
-            recordEditContext={new RecordEditContext( models, eventSourcedDataRecordFns.fromRecord(models, recordBeingEdited), recordEdited, () => (recordBeingEdited = null), `Edit ${model.name.value}`, )}/>
+            recordSearcher={paginatedEditorHost} {modelViews}
+            attachmentsManager={paginatedEditorHost}
+            recordEditContext={new RecordEditContext( models, justSaveNewRecord,eventSourcedDataRecordFns.fromRecord(models, recordBeingEdited), recordEdited, () => (recordBeingEdited = null), `Edit ${model.name.value}`, )}/>
 {:else}
     <table class="table">
         <thead>
@@ -89,15 +112,20 @@
                     <DataTd {focus} {rowIndex} {colIndex} {record} {property}/>
                 {/each}
                 <td>
-                    <button class="edit btn btn-warning" on:click={() => editRecord(record)}>Edit</button>
-                    <button class="delete btn btn-error" on:click={() => deleteRecord(record)}>Delete</button>
+                    <button class="edit btn btn-active btn-ghost btn-sm" on:click={() => viewRecord(record)}>View
+                    </button>
+                    <button class="edit btn btn-active btn-ghost btn-sm" on:click={() => editRecord(record)}>Edit
+                    </button>
+                    <button class="delete btn btn-active btn-ghost btn-sm" on:click={() => deleteRecord(record)}>
+                        Delete
+                    </button>
                 </td>
             </tr>
         {/each}
         </tbody>
     </table>
     <div class="actions">
-        <button type="button" class="add-record btn" on:click={beginAddNewRecord}>Add {model.name.value}</button>
+        <button type="button" class="btn add-record btn" on:click={beginAddNewRecord}>Add {model.name.value}</button>
     </div>
 {/if}
 

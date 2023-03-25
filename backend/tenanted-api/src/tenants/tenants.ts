@@ -1,6 +1,7 @@
 import { Request, Response, Router } from 'express'
 import { withAdminPgClient } from '../infra/postgresPool'
 import { authenticatedDatabaseRequest } from '../infra/authenticatedDatabaseRequest'
+import { CreateTenant } from '@cozemble/backend-tenanted-api-types'
 
 const router: Router = Router()
 
@@ -12,19 +13,18 @@ router.get('/:tenantId', (req: Request, res: Response) => {
     if (result.rows.length === 0 || result.rows[0].tenant === null) {
       return res.status(404).send()
     }
-    // I am not smart enough to know how to make the postgres function above return an empty array if there are no models,
-    // so I am doing it here
     const tenant = result.rows[0].tenant
-    if (tenant.models && tenant.models.length > 0 && tenant.models[0].id === null) {
-      tenant.models = []
-    }
     return res.status(200).json({ ...tenant })
   })
 })
 
 router.put('/:tenantId/model', (req: Request, res: Response) => {
+  const models = Array.isArray(req.body) ? req.body : [req.body]
   return authenticatedDatabaseRequest(req, res, async (client) => {
-    const result = await client.query('select * from put_tenant_info($1) as tenant;', [req.body])
+    const result = await client.query(
+      'select * from put_tenant_info(text2ltree($1),$2) as tenant;',
+      [req.params.tenantId, JSON.stringify(models)],
+    )
     if (result.rows.length === 0 || result.rows[0].tenant === null) {
       return res.status(404).send()
     }
@@ -34,7 +34,10 @@ router.put('/:tenantId/model', (req: Request, res: Response) => {
 
 router.post('/', (req: Request, res: Response) => {
   return withAdminPgClient(async (client) => {
-    const body = req.body
+    const body = req.body as CreateTenant
+    if (body._type !== 'create.tenant') {
+      return res.status(400).send()
+    }
     const result = await client.query(
       'select * from post_tenant(text2Ltree($1),$2, text2Ltree($3), $4, $5, $6) as tenant;',
       [
@@ -85,6 +88,16 @@ router.get('/:tenantId/model/:modelId/record', (req: Request, res: Response) => 
   })
 })
 
+router.get('/:tenantId/model/:modelId/record/:recordId', (req: Request, res: Response) => {
+  return authenticatedDatabaseRequest(req, res, async (client) => {
+    const result = await client.query(
+      'select * from get_record(text2Ltree($1), $2, $3) as record;',
+      [req.params.tenantId, req.params.modelId, req.params.recordId],
+    )
+    return res.status(200).json(result.rows[0].record)
+  })
+})
+
 router.delete('/:tenantId/model/:modelId/record/:recordId', (req: Request, res: Response) => {
   return authenticatedDatabaseRequest(req, res, async (client) => {
     await client.query(
@@ -92,6 +105,34 @@ router.delete('/:tenantId/model/:modelId/record/:recordId', (req: Request, res: 
       [req.params.tenantId, req.params.modelId, req.params.recordId],
     )
     return res.status(204).send()
+  })
+})
+
+router.put('/:tenantId/entity', (req: Request, res: Response) => {
+  const entities = Array.isArray(req.body) ? req.body : [req.body]
+  return authenticatedDatabaseRequest(req, res, async (client) => {
+    const result = await client.query(
+      'select * from upsert_tenant_entity_from_jsonb_array($1::ltree, $2::jsonb[]);',
+      [req.params.tenantId, entities],
+    )
+    if (result.rows.length === 0 || result.rows[0].tenant === null) {
+      return res.status(404).send()
+    }
+    return res.status(200).send()
+  })
+})
+
+router.get('/:tenantId/entity', (req: Request, res: Response) => {
+  return authenticatedDatabaseRequest(req, res, async (client) => {
+    const result = await client.query('select * from get_tenant_entities_definitions($1::ltree);', [
+      req.params.tenantId,
+    ])
+
+    if (result.rows.length === 0 || result.rows[0].get_tenant_entities_definitions === null) {
+      return res.status(404).send()
+    }
+
+    return res.status(200).json(result.rows[0].get_tenant_entities_definitions)
   })
 })
 

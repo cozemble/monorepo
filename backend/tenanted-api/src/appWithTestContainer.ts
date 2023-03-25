@@ -36,6 +36,8 @@ export async function appWithTestContainer(
   port = 3000,
   pgDetails?: PgDetails,
 ): Promise<http.Server> {
+  process.env.USE_MEMORY_STORAGE = 'Y'
+
   const container = await new PostgreSqlContainer().start()
   process.env.PGHOST = pgDetails?.host ?? container.getHost()
   process.env.PGPORT = pgDetails?.port ?? container.getPort().toString()
@@ -54,9 +56,6 @@ export async function appWithTestContainer(
     )
     console.log(outcome.stdout)
     console.error('STDERR:' + outcome.stderr)
-    if (outcome.stderr) {
-      throw new Error(outcome.stderr)
-    }
 
     await createAppUser()
     await closePgPool()

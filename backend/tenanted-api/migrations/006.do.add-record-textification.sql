@@ -19,9 +19,13 @@ BEGIN
             IF jsonb_typeof(v) = 'object' THEN
                 RETURN QUERY SELECT * FROM get_jsonb_each(v, current_path);
             ELSEIF jsonb_typeof(v) = 'array' THEN
-                FOR i IN 0 .. jsonb_array_length(v)
+                FOR i IN 0 .. jsonb_array_length(v) - 1
                     LOOP
-                        RETURN QUERY SELECT * FROM get_jsonb_each(v[i], current_path || '[' || i || ']');
+                        IF jsonb_typeof(v -> i) IN ('object', 'array') THEN
+                            RETURN QUERY SELECT * FROM get_jsonb_each(v -> i, current_path || '[' || i || ']');
+                        ELSE
+                            RETURN QUERY SELECT k, v -> i, current_path || '[' || i || ']';
+                        END IF;
                     END LOOP;
             ELSE
                 return query select k, v, current_path;

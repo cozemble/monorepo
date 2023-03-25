@@ -23,6 +23,11 @@ export function pgPool() {
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 2000,
   })
+  pool.on('connect', (client) => {
+    client.on('notice', (message) => {
+      console.log('PostgreSQL Notice:', message)
+    })
+  })
   return pool
 }
 

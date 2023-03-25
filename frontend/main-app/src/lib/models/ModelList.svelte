@@ -9,7 +9,7 @@
 
 </script>
 
-<table>
+<table class="table">
     <thead>
     <tr>
         <th>Model Name</th>
@@ -22,7 +22,7 @@
             <tr>
                 <td>{model.model.name.value}</td>
                 <td>
-                    <button on:click={() => editModel(model)}>Edit</button>
+                    <button class="btn btn-active btn-ghost" on:click={() => editModel(model)}>Edit</button>
                 </td>
             </tr>
         {/if}
