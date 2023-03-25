@@ -3,7 +3,7 @@ import { modelFns, modelOptions, propertyFns, relationshipFns } from '@cozemble/
 import { modelToJsonSchema } from '../src/modelToJsonSchema'
 import { stringPropertyOptions } from '@cozemble/model-string-core'
 
-describe.skip('given a customer with a has-one address', () => {
+describe('given a customer with a has-one address', () => {
   const addressModel = modelFns.newInstance(
     'Address',
     modelOptions.withProperty(propertyFns.newInstance('Street')),
@@ -27,22 +27,28 @@ describe.skip('given a customer with a has-one address', () => {
     ),
     modelOptions.withRelationships(relationshipFns.newInstance('Address', addressModel.id, 'one')),
   )
+
+
   const models = [customerModel, addressModel]
 
   test('I can generate a json schema', () => {
     const schema = modelToJsonSchema(customerModel, models)
+    // console.log(schema, schema.properties)
     const expected = {
+      ref: 'Customer',
       type: 'object',
       properties: {
         'First name': {
           type: 'string',
-          description: 'user name',
+          description: 'first name',
         },
         'Last name': {
           type: 'string',
+          description: 'last name',
         },
         Email: {
           type: 'string',
+          description: 'email',
           pattern: '^[a-zA-Z0-9]+(?:\\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(?:\\.[a-zA-Z0-9]+)*$',
         },
         Address: {
@@ -50,9 +56,11 @@ describe.skip('given a customer with a has-one address', () => {
           properties: {
             Street: {
               type: 'string',
+              description: 'street',
             },
             'Post code': {
               type: 'string',
+              description: 'post code',
             },
           },
           required: ['Post code'],
@@ -60,6 +68,7 @@ describe.skip('given a customer with a has-one address', () => {
       },
       required: ['First name', 'Email'],
     }
-    expect(schema).toMatch(expected)
+    // -
+    expect(JSON.stringify(schema, null, 2)).toMatch(JSON.stringify(expected, null, 2))
   })
 })

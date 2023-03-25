@@ -1,0 +1,94 @@
+{
+    "_type": "model",
+    "id": {
+      "_type": "model.id",
+      "value": "821c7206-78b5-4adf-8cb0-4e5c98e10642"
+    },
+    "name": {
+      "_type": "model.name",
+      "value": "Customer"
+    },
+    "properties": [
+      {
+        "_type": "property",
+        "propertyType": {
+          "_type": "property.type",
+          "type": "string.property"
+        },
+        "id": {
+          "_type": "property.id",
+          "value": "05f0166b-cac4-457d-acb7-0f0a0401eafd"
+        },
+        "version": 1,
+        "name": {
+          "_type": "property.name",
+          "value": "First name"
+        },
+        "required": true,
+        "unique": false,
+        "validations": []
+      },
+      {
+        "_type": "property",
+        "propertyType": {
+          "_type": "property.type",
+          "type": "string.property"
+        },
+        "id": {
+          "_type": "property.id",
+          "value": "c2e2ee81-224b-4d3b-975d-49f7b2b7f44b"
+        },
+        "version": 1,
+        "name": {
+          "_type": "property.name",
+          "value": "Last name"
+        },
+        "required": false,
+        "unique": false,
+        "validations": []
+      },
+      {
+        "_type": "property",
+        "propertyType": {
+          "_type": "property.type",
+          "type": "string.property"
+        },
+        "id": {
+          "_type": "property.id",
+          "value": "a774de6e-02b5-4ef8-9c1d-a5643adc30ba"
+        },
+        "version": 1,
+        "name": {
+          "_type": "property.name",
+          "value": "Email"
+        },
+        "required": true,
+        "unique": false,
+        "validations": [
+          {
+            "regex": "^[a-zA-Z0-9]+(?:\\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(?:\\.[a-zA-Z0-9]+)*$",
+            "message": "Invalid email address",
+            "_type": "regex.validation"
+          }
+        ]
+      }
+    ],
+    "relationships": [
+      {
+        "_type": "relationship",
+        "subType": "has.one.relationship",
+        "modelId": {
+          "_type": "model.id",
+          "value": "bbae38d8-ddbb-4d94-8373-26b2b56f75a4"
+        },
+        "id": {
+          "_type": "relationship.id",
+          "value": "54357738-67b3-4ff7-965e-030e7b9b4605"
+        },
+        "name": {
+          "_type": "relationship.name",
+          "value": "Address"
+        }
+      }
+    ]
+  }

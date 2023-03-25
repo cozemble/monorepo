@@ -12,13 +12,19 @@
     "test:watch": "vitest watch"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.191",
+    "@types/node": "^16.11.6",
+    "@types/uppercamelcase": "^3.0.0",
     "typescript": "^4.9.3",
     "vite": "^4.0.0",
     "vitest": "^0.26.2"
   },
   "dependencies": {
-    "@cozemble/model-core": "workspace:*",
     "@cozemble/model-api": "workspace:*",
-    "@cozemble/model-string-core": "workspace:*"
+    "@cozemble/model-core": "workspace:*",
+    "@cozemble/model-string-core": "workspace:*",
+    "graphql": "16.6.0",
+    "lodash": "^4.17.21",
+    "uppercamelcase": "^3.0.0"
   }
 }
