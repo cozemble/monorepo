@@ -91,7 +91,7 @@ export const attachmentModelChangedModelEventDescriptor: ModelEventDescriptor = 
       ...model,
       properties: model.properties.map((p) => {
         if (propertyIdFns.equals(p.id, event.propertyId)) {
-          if (p.propertyType.type !== 'attachment.property') {
+          if (p.propertyType.value !== 'attachment.property') {
             throw new Error(`Property ${p.id.value} is not a attachment property`)
           }
           return attachmentPropertyFns.applyOptions(

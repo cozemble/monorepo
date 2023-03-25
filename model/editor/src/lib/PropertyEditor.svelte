@@ -38,7 +38,7 @@
         if (!descriptor) {
             return new Map()
         }
-        if (descriptor.propertyType.type === property.propertyType.type) {
+        if (descriptor.propertyType.value === property.propertyType.value) {
             return descriptor.validateProperty(property)
         }
         return new Map()
@@ -99,7 +99,7 @@
         <option value="">----</option>
         {#each propertyDescriptors.list() as propertyDescriptor}
             <option
-                    value={propertyDescriptor.propertyType.type}
+                    value={propertyDescriptor.propertyType.value}
                     selected={propertyTypeFns.equals(
           property.propertyType,
           propertyDescriptor.propertyType,

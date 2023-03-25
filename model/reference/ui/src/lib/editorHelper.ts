@@ -25,7 +25,7 @@ export function assembleEditorParams(
   recordPath: DataRecordPath,
 ): EditorParams {
   const referenceProperty = recordPath.lastElement as ReferenceProperty
-  if (referenceProperty.propertyType.type !== 'reference.property') {
+  if (referenceProperty.propertyType.value !== 'reference.property') {
     throw new Error('Expected a reference property')
   }
   const referencedModelId = referencePropertyFns.oneReference(referenceProperty)

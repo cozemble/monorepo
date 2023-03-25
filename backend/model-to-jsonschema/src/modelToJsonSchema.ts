@@ -109,9 +109,9 @@ const getRelationName = ({ value }: RelationshipName) => {
   return uppercamelcase(path.parse(value).name)
 }
 
-const getPropertyType = ({ type }: PropertyType) => {
+const getPropertyType = ({ value }: PropertyType) => {
   const types = Object.keys(scalarTypes)
-  const propType = type.split('.')[0]
+  const propType = value.split('.')[0]
 
   if (!types.includes(propType)) return undefined
   return propType
@@ -122,16 +122,4 @@ const scalarTypes: Record<ScalarType, GraphQLScalarType> = {
   integer: GraphQLInt,
   number: GraphQLFloat,
   boolean: GraphQLBoolean,
-}
-
-function buildDescription(d: any): string | undefined {
-  let description = ''
-
-  if (d.title && d.description) {
-    description = `${d.title}: ${d.description}`
-  }
-
-  description = d.title || d.description || undefined
-
-  return description.toLowerCase()
 }

@@ -15,7 +15,7 @@ export interface RegexValidation {
 }
 
 export interface StringProperty extends Property {
-  propertyType: { _type: 'property.type'; type: 'string.property' }
+  propertyType: { _type: 'property.type'; value: 'string.property' }
   validations: RegexValidation[]
 }
 
@@ -23,7 +23,7 @@ export function emptyProperty(name: string): StringProperty {
   const id = propertyIdFns.newInstance()
   return {
     _type: 'property',
-    propertyType: { _type: 'property.type', type: 'string.property' },
+    propertyType: { _type: 'property.type', value: 'string.property' },
     id,
     version: 1,
     name: propertyNameFns.newInstance(name),
