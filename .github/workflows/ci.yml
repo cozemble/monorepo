@@ -19,6 +19,14 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
 
+      - name: Cache sharp dependencies
+        uses: actions/cache@v2
+        with:
+          path: /var/cache/apt/archives
+          key: ${{ runner.os }}-apt-cache
+          restore-keys: |
+            ${{ runner.os }}-apt-cache
+
       - name: Install sharp dependencies
         run: sudo apt-get update && sudo apt-get install -y libvips-dev
 
