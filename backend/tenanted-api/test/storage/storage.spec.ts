@@ -10,11 +10,6 @@ import fs from 'fs'
 const jwtSigningSecret = 'secret'
 const port = 3009
 
-const axiosInstance = axios.create({
-  validateStatus: function (_status) {
-    return true
-  },
-})
 describe('with an empty database, extract_referenced_records:', () => {
   let bearer: string
   let tenantId: string
@@ -73,18 +68,7 @@ describe('with an empty database, extract_referenced_records:', () => {
   })
 
   test('can post one file', async () => {
-    const formData = new FormData()
-    formData.append('file', fs.createReadStream(__dirname + '/one.png'))
-
-    const response = await axiosInstance.post(
-      `http://localhost:${port}/api/v1/storage/files/${tenantId}`,
-      formData,
-      {
-        headers: { ...formData.getHeaders(), Authorization: `Bearer ${bearer}` },
-      },
-    )
-    expect(response.status).toBe(201)
-    const json = response.data
+    const json = await postFile(tenantId, bearer)
     expect(json[0].fileId).toBeDefined()
     expect(json).toMatchObject([
       {
@@ -96,18 +80,7 @@ describe('with an empty database, extract_referenced_records:', () => {
   })
 
   test('can get a file as json', async () => {
-    const formData = new FormData()
-    formData.append('file', fs.createReadStream(__dirname + '/one.png'))
-
-    const response = await axiosInstance.post(
-      `http://localhost:${port}/api/v1/storage/files/${tenantId}`,
-      formData,
-      {
-        headers: { ...formData.getHeaders(), Authorization: `Bearer ${bearer}` },
-      },
-    )
-    expect(response.status).toBe(201)
-    const json = response.data
+    const json = await postFile(tenantId, bearer)
     const fileId = json[0].fileId
 
     const fetched = await axiosInstance.get(
@@ -180,3 +153,24 @@ describe('with an empty database, extract_referenced_records:', () => {
     ])
   })
 })
+
+const axiosInstance = axios.create({
+  validateStatus: function (_status) {
+    return true
+  },
+})
+
+async function postFile(tenantId: string, bearer: string, fileName = 'one.png') {
+  const formData = new FormData()
+  formData.append('file', fs.createReadStream(__dirname + `/${fileName}`))
+
+  const response = await axiosInstance.post(
+    `http://localhost:${port}/api/v1/storage/files/${tenantId}`,
+    formData,
+    {
+      headers: { ...formData.getHeaders(), Authorization: `Bearer ${bearer}` },
+    },
+  )
+  expect(response.status).toBe(201)
+  return response.data
+}

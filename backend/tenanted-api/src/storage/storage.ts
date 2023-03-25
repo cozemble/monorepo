@@ -4,6 +4,7 @@ import { authenticatedDatabaseRequest } from '../infra/authenticatedDatabaseRequ
 import pg from 'pg'
 import { canAccessTenant } from '../infra/middleware'
 import { mandatory } from '@cozemble/lang-util'
+import { getFileObject } from './getFileObject'
 
 async function createObject(
   client: pg.PoolClient,
@@ -46,6 +47,17 @@ async function processUpload(
   }
 }
 
+async function handleUpload(req: express.Request, client: pg.PoolClient, res: express.Response) {
+  const uploadedFiles = await Promise.all(
+    (req.files as Express.Multer.File[]).map((file) => processUpload(client, req, file)),
+  )
+  if (uploadedFiles.some((uf) => uf === null)) {
+    return res.status(403).send()
+  }
+
+  res.status(201).json(uploadedFiles)
+}
+
 export function makeStorageRoute(upload: multer.Multer) {
   const router: Router = Router()
 
@@ -56,41 +68,29 @@ export function makeStorageRoute(upload: multer.Multer) {
           message: 'No files uploaded',
         })
       }
-      const uploadedFiles = await Promise.all(
-        (req.files as Express.Multer.File[]).map((file) => processUpload(client, req, file)),
-      )
-      if (uploadedFiles.some((uf) => uf === null)) {
-        return res.status(403).send()
-      }
-
-      res.status(201).json(uploadedFiles)
+      return await handleUpload(req, client, res)
     })
   })
 
   router.get('/files/:tenantId/:fileId', canAccessTenant, (req, res) => {
     return authenticatedDatabaseRequest(req, res, async (client) => {
-      const { tenantId, fileId } = req.params
-      const getObjectResponse = await client.query(
-        `SELECT get_object_as_json( $1, $2 ) as object;`,
-        [fileId, tenantId],
-      )
-      if (getObjectResponse.rows.length === 0 || getObjectResponse.rows[0].object === null) {
-        return res.status(404).send()
+      const object = await getFileObject(req, res, client)
+      if (object !== null) {
+        if (req.headers['accept'] === 'application/json') {
+          return res.status(200).json({
+            fileId: object.id,
+            originalName: object.name,
+            mimeType: object.mime_type,
+            sizeInBytes: object.size_in_bytes,
+            storageProvider: object.storage_provider,
+            storageDetails: object.storage_details,
+            metadata: object.metadata,
+          })
+        }
+        return res.status(400).send()
       }
-      const object = getObjectResponse.rows[0].object
-      if (req.headers['accept'] === 'application/json') {
-        return res.status(200).json({
-          fileId: object.id,
-          originalName: object.name,
-          mimeType: object.mime_type,
-          sizeInBytes: object.size_in_bytes,
-          storageProvider: object.storage_provider,
-          storageDetails: object.storage_details,
-          metadata: object.metadata,
-        })
-      }
-      return res.status(400).send()
     })
   })
+
   return router
 }

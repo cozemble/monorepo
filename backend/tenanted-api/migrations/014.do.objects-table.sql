@@ -16,6 +16,9 @@ create table if not exists objects
     primary key (id, tenant)
 );
 
+create index if not exists objects_tenant_idx on objects (tenant);
+create index if not exists objects_tenant_gist_idx on objects using gist (tenant);
+
 CREATE POLICY objects_insert_policy
     ON objects
     FOR INSERT
@@ -85,14 +88,14 @@ BEGIN
             p_metadata);
 
     -- Call get_object_as_json with the provided id and tenant
-    SELECT get_object_as_json(p_id, p_tenant) INTO v_object_json;
+    SELECT get_object_as_json(p_tenant,p_id) INTO v_object_json;
 
     RETURN v_object_json;
 END;
 $$;
 
 
-CREATE OR REPLACE FUNCTION get_object_as_json(p_id uuid, p_tenant ltree)
+CREATE OR REPLACE FUNCTION get_object_as_json(p_tenant ltree, p_id uuid)
     RETURNS json
     LANGUAGE plpgsql
 AS

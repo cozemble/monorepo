@@ -5,7 +5,7 @@ import auth from './auth/auth'
 import { logRequest } from './infra/logRequest'
 import { makeStorageRoute } from './storage/storage'
 import multer, { StorageEngine } from 'multer'
-import { makeMulterGoogleStorage } from './google/storage'
+import { makeMulterGoogleStorage } from './google/makeMulterGoogleStorage'
 import { uuids } from '@cozemble/lang-util'
 
 function makeMulterMiddleware() {
