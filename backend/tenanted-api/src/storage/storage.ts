@@ -3,25 +3,34 @@ import multer from 'multer'
 import { authenticatedDatabaseRequest } from '../infra/authenticatedDatabaseRequest'
 import pg from 'pg'
 import { canAccessTenant } from '../infra/middleware'
-import { mandatory } from '@cozemble/lang-util'
+import { uuids } from '@cozemble/lang-util'
 import { getFileObject } from './getFileObject'
+import { StorageProvider } from './StorageProvider'
+import sharp from 'sharp'
+
+const thumbnailWidth = 100
 
 async function createObject(
   client: pg.PoolClient,
   tenantId: string,
   file: Express.Multer.File,
+  fileId: string,
+  storageProvider: string,
+  storageDetails: any,
+  thumbnailUrl: string | null,
 ): Promise<any | null> {
   const createObjectResponse = await client.query(
-    `SELECT create_object( $1, $2, $3, $4, $5, $6, $7, $8 ) as object_id;`,
+    `SELECT create_object( $1, $2, $3, $4, $5, $6, $7, $8,$9 ) as object_id;`,
     [
-      mandatory((file as any).fileId, `No file id provided`),
+      fileId,
       tenantId,
       file.originalname,
       file.size,
       file.mimetype,
-      mandatory((file as any).storageProvider, `No storageProvider provided`),
-      mandatory((file as any).storageDetails, `No storageDetails provided`),
+      storageProvider,
+      storageDetails,
       {},
+      thumbnailUrl,
     ],
   )
   if (createObjectResponse.rows.length === 0 || createObjectResponse.rows[0].object_id === null) {
@@ -32,10 +41,35 @@ async function createObject(
 
 async function processUpload(
   client: pg.PoolClient,
-  req: express.Request,
+  storageProvider: StorageProvider,
+  tenantId: string,
   file: Express.Multer.File,
 ) {
-  const object = await createObject(client, req.params.tenantId, file)
+  const fileId = uuids.v4()
+  let thumbnailUrl: string | null = null
+  if (file.mimetype.startsWith('image/')) {
+    const thumbnailBuffer = await sharp(file.buffer).resize(thumbnailWidth).png().toBuffer()
+    thumbnailUrl = await storageProvider.storeThumbnail(
+      tenantId,
+      fileId,
+      thumbnailBuffer,
+      'image/png',
+    )
+  }
+  const { storageProvider: storageProviderName, storageDetails } = await storageProvider.storeFile(
+    tenantId,
+    fileId,
+    file,
+  )
+  const object = await createObject(
+    client,
+    tenantId,
+    file,
+    fileId,
+    storageProviderName,
+    storageDetails,
+    thumbnailUrl,
+  )
   if (object === null) {
     return null
   }
@@ -44,12 +78,21 @@ async function processUpload(
     originalName: file.originalname,
     mimeType: file.mimetype,
     sizeInBytes: file.size,
+    thumbnailUrl,
   }
 }
 
-async function handleUpload(req: express.Request, client: pg.PoolClient, res: express.Response) {
+async function handleUpload(
+  client: pg.PoolClient,
+  storageProvider: StorageProvider,
+  tenantId: string,
+  req: express.Request,
+  res: express.Response,
+) {
   const uploadedFiles = await Promise.all(
-    (req.files as Express.Multer.File[]).map((file) => processUpload(client, req, file)),
+    (req.files as Express.Multer.File[]).map((file) =>
+      processUpload(client, storageProvider, tenantId, file),
+    ),
   )
   if (uploadedFiles.some((uf) => uf === null)) {
     return res.status(403).send()
@@ -58,7 +101,9 @@ async function handleUpload(req: express.Request, client: pg.PoolClient, res: ex
   res.status(201).json(uploadedFiles)
 }
 
-export function makeStorageRoute(upload: multer.Multer) {
+const upload = multer({ storage: multer.memoryStorage() })
+
+export function makeStorageRoute(storageProvider: StorageProvider) {
   const router: Router = Router()
 
   router.post('/files/:tenantId', canAccessTenant, upload.array('file'), (req, res) => {
@@ -68,7 +113,14 @@ export function makeStorageRoute(upload: multer.Multer) {
           message: 'No files uploaded',
         })
       }
-      return await handleUpload(req, client, res)
+      const tenantId = (req.params.tenantId as string) ?? null
+      if (!tenantId) {
+        return res.status(400).json({
+          message: 'No tenant id provided',
+        })
+      }
+
+      return await handleUpload(client, storageProvider, tenantId, req, res)
     })
   })
 
@@ -85,6 +137,7 @@ export function makeStorageRoute(upload: multer.Multer) {
             storageProvider: object.storage_provider,
             storageDetails: object.storage_details,
             metadata: object.metadata,
+            thumbnailUrl: object.thumbnail_url,
           })
         }
         return res.status(400).send()

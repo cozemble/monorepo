@@ -90,14 +90,13 @@ describe('with an empty database, extract_referenced_records:', () => {
       },
     )
     expect(fetched.status).toBe(200)
+    expect(fetched.data.thumbnailUrl).toBeDefined()
     expect(fetched.data).toMatchObject({
       fileId,
       originalName: 'one.png',
       mimeType: 'image/png',
       sizeInBytes: 1182,
-      storageDetails: {
-        bucket: 'memory',
-      },
+      storageDetails: {},
       storageProvider: 'memory',
       metadata: {},
     })

@@ -11,6 +11,7 @@ create table if not exists objects
     storage_provider text      not null,
     storage_details  jsonb     not null,
     metadata         jsonb     not null,
+    thumbnail_url    text               default null,
     created_at       timestamp not null default now(),
     updated_at       timestamp not null default now(),
     primary key (id, tenant)
@@ -61,7 +62,8 @@ CREATE OR REPLACE FUNCTION create_object(
     p_mime_type text,
     p_storage_provider text,
     p_storage_details jsonb,
-    p_metadata jsonb
+    p_metadata jsonb,
+    p_thumbnail_url text
 )
     RETURNS json
     LANGUAGE plpgsql
@@ -77,7 +79,8 @@ BEGIN
                          mime_type,
                          storage_provider,
                          storage_details,
-                         metadata)
+                         metadata,
+                         thumbnail_url)
     VALUES (p_id,
             p_tenant,
             p_name,
@@ -85,10 +88,11 @@ BEGIN
             p_mime_type,
             p_storage_provider,
             p_storage_details,
-            p_metadata);
+            p_metadata,
+            p_thumbnail_url);
 
     -- Call get_object_as_json with the provided id and tenant
-    SELECT get_object_as_json(p_tenant,p_id) INTO v_object_json;
+    SELECT get_object_as_json(p_tenant, p_id) INTO v_object_json;
 
     RETURN v_object_json;
 END;
@@ -112,6 +116,7 @@ BEGIN
                    'storage_provider', storage_provider,
                    'storage_details', storage_details,
                    'metadata', metadata,
+                   'thumbnail_url', thumbnail_url,
                    'created_at', created_at,
                    'updated_at', updated_at
                )

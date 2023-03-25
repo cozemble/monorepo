@@ -4,35 +4,17 @@ import tenants from './tenants/tenants'
 import auth from './auth/auth'
 import { logRequest } from './infra/logRequest'
 import { makeStorageRoute } from './storage/storage'
-import multer, { StorageEngine } from 'multer'
-import { makeMulterGoogleStorage } from './google/makeMulterGoogleStorage'
-import { uuids } from '@cozemble/lang-util'
+import { StorageProvider } from './storage/StorageProvider'
+import { MemoryStorageProvider } from './storage/MemoryStorageProvider'
+import { GoogleStorageProvider } from './storage/GoogleStorageProvider'
+import { gcsObjects1BucketName } from './config'
 
-function makeMulterMiddleware() {
+function makeStorageProvider(): StorageProvider {
   if ((process.env.USE_MEMORY_STORAGE ?? 'N').toLowerCase() === 'y') {
-    const storage = multer.memoryStorage()
-    const extendedStorage: StorageEngine = {
-      _handleFile(
-        req: express.Request,
-        file: Express.Multer.File,
-        callback: (error?: any, info?: Partial<Express.Multer.File>) => void,
-      ): void {
-        ;(file as any).fileId = uuids.v4()
-        ;(file as any).storageProvider = 'memory'
-        ;(file as any).storageDetails = { bucket: 'memory' }
-        storage._handleFile(req, file, callback)
-      },
-      _removeFile(
-        req: express.Request,
-        file: Express.Multer.File,
-        callback: (error: Error | null) => void,
-      ): void {
-        storage._removeFile(req, file, callback)
-      },
-    }
-    return multer({ storage: extendedStorage })
+    return new MemoryStorageProvider()
+  } else {
+    return new GoogleStorageProvider(gcsObjects1BucketName)
   }
-  return makeMulterGoogleStorage()
 }
 
 export function expressApp(): Express {
@@ -51,7 +33,7 @@ export function expressApp(): Express {
   const routes: Router = Router()
   routes.use('/tenant', tenants)
   routes.use('/auth', auth)
-  routes.use('/storage', makeStorageRoute(makeMulterMiddleware()))
+  routes.use('/storage', makeStorageRoute(makeStorageProvider()))
 
   app.use('/api/v1/', [], routes)
 
