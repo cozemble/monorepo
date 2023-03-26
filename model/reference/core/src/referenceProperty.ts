@@ -10,7 +10,7 @@ import {
 export const referencePropertyType = propertyTypeFns.newInstance('reference.property')
 
 export interface ReferenceProperty extends Property {
-  propertyType: { _type: 'property.type'; type: 'reference.property' }
+  propertyType: { _type: 'property.type'; value: 'reference.property' }
   referencedModels: ModelId[]
   cardinality: 'one' | 'many'
 }
@@ -19,7 +19,7 @@ export function emptyProperty(name: string): ReferenceProperty {
   const id = propertyIdFns.newInstance()
   return {
     _type: 'property',
-    propertyType: { _type: 'property.type', type: 'reference.property' },
+    propertyType: { _type: 'property.type', value: 'reference.property' },
     id,
     version: 1,
     name: propertyNameFns.newInstance(name),

@@ -85,7 +85,7 @@ export const referencedModelChangedModelEventDescriptor: ModelEventDescriptor = 
       ...model,
       properties: model.properties.map((p) => {
         if (propertyIdFns.equals(p.id, event.propertyId)) {
-          if (p.propertyType.type !== 'reference.property') {
+          if (p.propertyType.value !== 'reference.property') {
             throw new Error(`Property ${p.id.value} is not a reference property`)
           }
           return referencePropertyFns.applyOptions(

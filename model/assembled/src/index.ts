@@ -28,28 +28,28 @@ const propertyEditorMap = new Map<string, any>()
 
 export const propertyConfigurerRegistry = {
   register: (propertyType: PropertyType, component: any) => {
-    propertyConfigurerMap.set(propertyType.type, component)
+    propertyConfigurerMap.set(propertyType.value, component)
   },
   get: (propertyType: PropertyType) => {
-    return propertyConfigurerMap.get(propertyType.type) ?? null
+    return propertyConfigurerMap.get(propertyType.value) ?? null
   },
 }
 
 export const propertyViewerRegistry = {
   register: (propertyType: PropertyType, component: any) => {
-    propertyViewerMap.set(propertyType.type, component)
+    propertyViewerMap.set(propertyType.value, component)
   },
   get: (propertyType: PropertyType) => {
-    return propertyViewerMap.get(propertyType.type) ?? null
+    return propertyViewerMap.get(propertyType.value) ?? null
   },
 }
 
 export const propertyEditorRegistry = {
   register: (propertyType: PropertyType, component: any) => {
-    propertyEditorMap.set(propertyType.type, component)
+    propertyEditorMap.set(propertyType.value, component)
   },
   get: (propertyType: PropertyType) => {
-    return propertyEditorMap.get(propertyType.type) ?? null
+    return propertyEditorMap.get(propertyType.value) ?? null
   },
 }
 

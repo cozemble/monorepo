@@ -2,18 +2,18 @@ import { clock, type Option, uuids } from '@cozemble/lang-util'
 
 export interface PropertyType {
   _type: 'property.type'
-  type: string
+  value: string
 }
 
 export const propertyTypeFns = {
-  newInstance: (type: string): PropertyType => {
+  newInstance: (value: string): PropertyType => {
     return {
       _type: 'property.type',
-      type,
+      value,
     }
   },
   equals: (a: PropertyType, b: PropertyType): boolean => {
-    return a.type === b.type
+    return a.value === b.value
   },
 }
 
