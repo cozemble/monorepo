@@ -4,6 +4,7 @@
     import type {AttachmentList} from "@cozemble/model-attachment-core";
     import type {AttachmentReference} from "@cozemble/model-attachment-core";
     import {dataRecordPathFns} from "@cozemble/model-api";
+    import {dataRecordEditEvents} from "@cozemble/data-editor-sdk/dist/esm";
 
     export let recordPath: DataRecordPath
     export let record: DataRecord
@@ -38,13 +39,23 @@
                 contentType: ul.file.type,
                 sizeInBytes: ul.file.size,
                 size: null,
-                thumbnailUrl: null
+                thumbnailUrl: ul.thumbnailUrl
             }))
             const newAttachments = {
                 ...attachments,
                 attachmentReferences: [...attachments.attachmentReferences, ...newAttachmentRefs]
             }
-            console.log({files: fileList, uploaded})
+            console.log({files: fileList, uploaded, newAttachments})
+            dataRecordEditorClient.dispatchEditEvent(
+                dataRecordEditEvents.valueChanged(
+                    record,
+                    recordPath,
+                    attachments,
+                    newAttachments,
+                    null,
+                ),
+            )
+
         } catch (e: any) {
             error = e.message
         }

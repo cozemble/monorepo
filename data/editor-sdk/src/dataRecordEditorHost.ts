@@ -15,6 +15,7 @@ export interface UploadedAttachment {
   attachmentId: string
   file: File
   size: Size | null
+  thumbnailUrl: string | null
 }
 
 export interface DataRecordEditorClient {

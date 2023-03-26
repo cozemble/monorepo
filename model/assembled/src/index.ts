@@ -29,8 +29,10 @@ const propertyEditorMap = new Map<string, any>()
 export const propertyConfigurerRegistry = {
   register: (propertyType: PropertyType, component: any) => {
     propertyConfigurerMap.set(propertyType.value, component)
+    console.log({ propertyConfigurerMap })
   },
   get: (propertyType: PropertyType) => {
+    console.log({ propertyConfigurerMap })
     return propertyConfigurerMap.get(propertyType.value) ?? null
   },
 }

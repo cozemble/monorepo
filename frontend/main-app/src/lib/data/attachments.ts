@@ -45,5 +45,6 @@ export async function uploadAttachments(
     attachmentId: uploadResponse.fileId,
     file: files[index],
     size: null,
+    thumbnailUrl: uploadResponse.thumbnailUrl,
   }))
 }

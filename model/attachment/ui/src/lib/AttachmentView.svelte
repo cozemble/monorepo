@@ -3,4 +3,11 @@
 
     export let attachment:AttachmentReference
 </script>
-{JSON.stringify(attachment)}
+<img src={attachment.thumbnailUrl}/>
+
+<style>
+    img {
+        width: 50%;
+        height: 50%;
+    }
+</style>
