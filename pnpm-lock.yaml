@@ -45,7 +45,7 @@ importers:
       postgraphile-plugin-nested-mutations: ^1.1.0
       ts-node: ^10.9.1
       typescript: ^4.9.3
-      vite: ^4.0.0
+      vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
       '@cozemble/lang-util': link:../../lang/util
@@ -131,7 +131,7 @@ importers:
       '@cozemble/model-core': workspace:*
       '@cozemble/model-string-core': workspace:*
       typescript: ^4.9.3
-      vite: ^4.0.0
+      vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
       '@cozemble/model-api': link:../../model/api
@@ -154,7 +154,7 @@ importers:
       lodash: ^4.17.21
       typescript: ^4.9.3
       uppercamelcase: ^3.0.0
-      vite: ^4.0.0
+      vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
       '@cozemble/model-api': link:../../model/api
@@ -209,7 +209,7 @@ importers:
       ts-node: ^10.9.1
       typescript: ^4.9.3
       undici: ^5.21.0
-      vite: ^4.0.0
+      vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
       '@cozemble/backend-tenanted-api-types': link:../tenanted-api-types
@@ -256,7 +256,7 @@ importers:
     specifiers:
       '@cozemble/model-core': workspace:*
       typescript: ^4.9.3
-      vite: ^4.0.0
+      vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
       '@cozemble/model-core': link:../../model/core
@@ -291,7 +291,7 @@ importers:
       '@cozemble/model-core': workspace:*
       '@cozemble/model-string-core': workspace:*
       typescript: ^4.9.3
-      vite: ^4.0.0
+      vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
       '@cozemble/data-editor-sdk': link:../editor-sdk
@@ -328,7 +328,7 @@ importers:
       tailwindcss: ^3.2.4
       tslib: ^2.4.1
       typescript: ^4.9.3
-      vite: ^4.0.0
+      vite: 4.1.4
     dependencies:
       '@cozemble/data-editor-sdk': link:../editor-sdk
       '@cozemble/data-hasura-mutations': link:../hasura-mutations
@@ -358,7 +358,7 @@ importers:
     specifiers:
       postgraphile: ^4.12.12
       typescript: ^4.9.3
-      vite: ^4.0.0
+      vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
       postgraphile: 4.13.0
@@ -385,7 +385,7 @@ importers:
       tslib: ^2.4.1
       typescript: ^4.9.3
       uniqid: ^5.4.0
-      vite: ^4.0.0
+      vite: 4.1.4
     devDependencies:
       '@sveltejs/adapter-auto': 1.0.3_@sveltejs+kit@1.11.0
       '@sveltejs/kit': 1.11.0_svelte@3.56.0+vite@4.1.4
@@ -429,7 +429,7 @@ importers:
       tailwindcss: ^3.2.4
       tslib: ^2.4.1
       typescript: ^4.9.3
-      vite: ^4.0.0
+      vite: 4.1.4
     dependencies:
       '@cozemble/backend-tenanted-api-types': link:../../backend/tenanted-api-types
       '@cozemble/data-editor-sdk': link:../../data/editor-sdk
@@ -464,7 +464,7 @@ importers:
       svelte-check: ^3.0.1
       tslib: ^2.4.1
       typescript: ^4.9.3
-      vite: ^4.0.0
+      vite: 4.1.4
     devDependencies:
       '@sveltejs/adapter-auto': 1.0.3_@sveltejs+kit@1.11.0
       '@sveltejs/kit': 1.11.0_svelte@3.56.0+vite@4.1.4
@@ -479,7 +479,7 @@ importers:
       '@cozemble/graphql-core': workspace:*
       axios: ^1.2.3
       typescript: ^4.9.3
-      vite: ^4.0.0
+      vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
       '@cozemble/graphql-core': link:../core
@@ -495,7 +495,7 @@ importers:
       graphql: 16.6.0
       graphql-tag: 2.12.6
       typescript: ^4.9.3
-      vite: ^4.0.0
+      vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
       '@cozemble/lang-util': link:../../lang/util
@@ -514,7 +514,7 @@ importers:
       nanoid: 3.3.4
       typescript: ^4.9.3
       uuid: 9.0.0
-      vite: ^4.0.0
+      vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
       dayjs: 1.11.7
@@ -533,7 +533,7 @@ importers:
       '@cozemble/model-core': workspace:*
       '@cozemble/model-string-core': workspace:*
       typescript: ^4.9.3
-      vite: ^4.0.0
+      vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
       '@cozemble/lang-util': link:../../lang/util
@@ -572,7 +572,7 @@ importers:
       '@cozemble/lang-util': workspace:*
       '@cozemble/model-core': workspace:*
       typescript: ^4.9.3
-      vite: ^4.0.0
+      vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
       '@cozemble/lang-util': link:../../../lang/util
@@ -599,7 +599,7 @@ importers:
       svelte-check: ^3.0.1
       tslib: ^2.4.1
       typescript: ^4.9.3
-      vite: ^4.0.0
+      vite: 4.1.4
     dependencies:
       '@cozemble/data-editor-sdk': link:../../../data/editor-sdk
       '@cozemble/lang-util': link:../../../lang/util
@@ -650,7 +650,7 @@ importers:
       svelte-check: ^2.9.2
       tslib: ^2.4.1
       typescript: ^4.9.3
-      vite: ^4.0.0
+      vite: 4.1.4
     dependencies:
       '@cozemble/lang-util': link:../../lang/util
       '@cozemble/model-api': link:../api
@@ -696,7 +696,7 @@ importers:
       '@cozemble/model-api': workspace:*
       '@cozemble/model-core': workspace:*
       typescript: ^4.9.3
-      vite: ^4.0.0
+      vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
       '@cozemble/lang-util': link:../../lang/util
@@ -740,7 +740,7 @@ importers:
       svelte-check: ^3.0.1
       tslib: ^2.4.1
       typescript: ^4.9.3
-      vite: ^4.0.0
+      vite: 4.1.4
     dependencies:
       '@cozemble/data-editor-sdk': link:../../../data/editor-sdk
       '@cozemble/lang-util': link:../../../lang/util
@@ -769,7 +769,7 @@ importers:
       '@cozemble/model-event-sourced': workspace:*
       '@cozemble/sql-actions': workspace:*
       typescript: ^4.9.3
-      vite: ^4.0.0
+      vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
       '@cozemble/lang-util': link:../../lang/util
@@ -793,7 +793,7 @@ importers:
       '@cozemble/model-string-sql-actions': workspace:*
       '@cozemble/sql-actions': workspace:*
       typescript: ^4.9.3
-      vite: ^4.0.0
+      vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
       '@cozemble/lang-util': link:../../lang/util
@@ -814,7 +814,7 @@ importers:
       '@cozemble/lang-util': workspace:*
       '@cozemble/model-core': workspace:*
       typescript: ^4.9.3
-      vite: ^4.0.0
+      vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
       '@cozemble/lang-util': link:../../../lang/util
@@ -831,7 +831,7 @@ importers:
       '@cozemble/model-string-core': workspace:*
       '@cozemble/sql-actions': workspace:*
       typescript: ^4.9.3
-      vite: ^4.0.0
+      vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
       '@cozemble/model-api': link:../../api
@@ -857,7 +857,7 @@ importers:
       svelte-check: ^2.9.2
       tslib: ^2.4.1
       typescript: ^4.9.3
-      vite: ^4.0.0
+      vite: 4.1.4
     dependencies:
       '@cozemble/data-editor-sdk': link:../../../data/editor-sdk
       '@cozemble/model-api': link:../../api
@@ -881,7 +881,7 @@ importers:
       '@cozemble/model-core': workspace:*
       '@cozemble/model-string-core': workspace:*
       typescript: ^4.9.3
-      vite: ^4.0.0
+      vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
       '@cozemble/lang-util': link:../../lang/util
@@ -906,7 +906,7 @@ importers:
       '@cozemble/lang-util': workspace:*
       nanoid: 3.3.4
       typescript: ^4.9.3
-      vite: ^4.0.0
+      vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
       '@cozemble/lang-util': link:../../lang/util
@@ -925,7 +925,7 @@ importers:
       svelte-check: ^2.9.2
       tslib: ^2.4.1
       typescript: ^4.9.3
-      vite: ^4.0.0
+      vite: 4.1.4
     devDependencies:
       '@sveltejs/adapter-auto': 1.0.3_@sveltejs+kit@1.11.0
       '@sveltejs/kit': 1.11.0_svelte@3.56.0+vite@4.1.4
