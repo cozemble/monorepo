@@ -1,19 +1,20 @@
 <script lang="ts">
     import type {DataRecord, DataRecordPath} from '@cozemble/model-core'
     import {dataRecordEditor} from "@cozemble/data-editor-sdk";
-    import type {AttachmentList} from "@cozemble/model-attachment-core";
-    import type {AttachmentReference} from "@cozemble/model-attachment-core";
+    import type {AttachmentList, AttachmentReference} from "@cozemble/model-attachment-core";
     import {dataRecordPathFns} from "@cozemble/model-api";
     import {dataRecordEditEvents} from "@cozemble/data-editor-sdk/dist/esm";
+    import AttachmentView from "./AttachmentView.svelte";
 
     export let recordPath: DataRecordPath
     export let record: DataRecord
     let error: string | null = null
     let uploadProgress = 0
+    let uploading = false
 
     const dataRecordEditorClient = dataRecordEditor.getClient()
 
-    const attachments = dataRecordPathFns.getValue(recordPath, record) as AttachmentList ?? ({
+    let attachments = dataRecordPathFns.getValue(recordPath, record) as AttachmentList ?? ({
         _type: 'attachment.list',
         attachmentReferences: []
     })
@@ -22,6 +23,9 @@
     function uploadProgressUpdate(percentage: number) {
         console.log("Upload progress:", percentage)
         uploadProgress = percentage
+        if(percentage === 100) {
+            uploading = false
+        }
     }
 
     async function handleFileSelect(event: Event) {
@@ -31,6 +35,7 @@
             return;
         }
         try {
+            uploading = true
             const uploaded = await dataRecordEditorClient.uploadAttachments(Array.from(fileList), uploadProgressUpdate)
             const newAttachmentRefs: AttachmentReference[] = uploaded.map(ul => ({
                 _type: 'attachment.reference',
@@ -55,9 +60,11 @@
                     null,
                 ),
             )
-
+            attachments = newAttachments
         } catch (e: any) {
             error = e.message
+        } finally {
+            uploading = false
         }
     }
 </script>
@@ -79,13 +86,17 @@
     }
 </style>
 
-<input type="file" accept="*/*" class="file-input file-input-bordered file-input-xs w-full max-w-xs"
-       on:change={handleFileSelect}/>
+{#each attachments.attachmentReferences as attachment}
+    <AttachmentView {attachment}/>
+{/each}
 
-{#if uploadProgress > 0 && uploadProgress < 100}
+{#if uploading}
     <div class="progress">
         <div class="progress-bar" style="width: {uploadProgress}%"></div>
     </div>
+{:else}
+    <input type="file" accept="*/*" class="file-input file-input-bordered file-input-xs w-full max-w-xs"
+           on:change={handleFileSelect}/>
 {/if}
 
 {#if error}
