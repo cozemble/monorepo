@@ -107,9 +107,9 @@ const getRelationName = ({ value }: RelationshipName) => {
   return uppercamelcase(path.parse(value).name)
 }
 
-const getPropertyType = ({ value }: PropertyType) => {
+const getPropertyType = ({ type }: PropertyType) => {
   const types = Object.keys(scalarTypes)
-  const propType = value.split('.')[0]
+  const propType = type.split('.')[0]
 
   if (!types.includes(propType)) return undefined
   return propType
