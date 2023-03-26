@@ -102,6 +102,23 @@ describe('with an empty database, extract_referenced_records:', () => {
     })
   })
 
+  test('can get a signed url to view the full attachment', async () => {
+    const postResponse = await postFile(tenantId, bearer)
+    const fileId = postResponse[0].fileId
+
+    const signedUrlResponse = await axiosInstance.post(
+      `http://localhost:${port}/api/v1/storage/urls/${tenantId}/${fileId}`,
+      null,
+      {
+        headers: { Authorization: `Bearer ${bearer}` },
+      },
+    )
+    expect(signedUrlResponse.status).toBe(201)
+    expect(signedUrlResponse.data.url).toBe(
+      `placeholder url for tenant id ${tenantId} and attachment id ${fileId}`,
+    )
+  })
+
   test('can post a pdf', async () => {
     const formData = new FormData()
     formData.append('file', fs.createReadStream(__dirname + '/blank-document.pdf'))

@@ -8,6 +8,7 @@ import { StorageProvider } from './storage/StorageProvider'
 import { MemoryStorageProvider } from './storage/MemoryStorageProvider'
 import { GoogleStorageProvider } from './storage/GoogleStorageProvider'
 import { gcsObjects1BucketName } from './config'
+import { makeSignedUrlsRoute } from './storage/signedUrls'
 
 function makeStorageProvider(): StorageProvider {
   if ((process.env.USE_MEMORY_STORAGE ?? 'N').toLowerCase() === 'y') {
@@ -34,6 +35,7 @@ export function expressApp(): Express {
   routes.use('/tenant', tenants)
   routes.use('/auth', auth)
   routes.use('/storage', makeStorageRoute(makeStorageProvider()))
+  routes.use('/storage', makeSignedUrlsRoute(makeStorageProvider()))
 
   app.use('/api/v1/', [], routes)
 

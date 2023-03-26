@@ -89,7 +89,7 @@ export async function getAttachmentViewUrls(
 
   const responses = await Promise.all(
     endpoints.map((endpoint) => {
-      return axiosInstance.get(endpoint, {
+      return axiosInstance.post(endpoint, null, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },

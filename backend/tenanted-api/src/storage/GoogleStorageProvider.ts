@@ -56,4 +56,22 @@ export class GoogleStorageProvider implements StorageProvider {
 
     return `https://storage.googleapis.com/${this.bucketName}/${thumbnailPath}`
   }
+
+  async createSignedUrl(tenantId: string, attachmentId: string): Promise<string> {
+    const bucket = this.storage.bucket(this.bucketName)
+    const attachmentPath = `tenant/${tenantId}/file/${attachmentId}`
+
+    const gcsFile = bucket.file(attachmentPath)
+
+    try {
+      const [signedUrl] = await gcsFile.getSignedUrl({
+        version: 'v4',
+        action: 'read',
+        expires: Date.now() + 1000 * 60 * 60, // 1 hour from now
+      })
+      return signedUrl
+    } catch (error: any) {
+      throw new Error(`Failed to create signed URL: ${error.message}`)
+    }
+  }
 }
