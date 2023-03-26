@@ -56,6 +56,13 @@
         ): Promise<UploadedAttachment[]> {
             return attachmentsManager.uploadAttachments(files, progressUpdater)
         },
+        deleteAttachments(attachmentIds: string[]): Promise<void> {
+            return attachmentsManager.deleteAttachments(attachmentIds)
+        },
+
+        getAttachmentViewUrls(attachmentIds: string[]): Promise<string[]> {
+            return attachmentsManager.getAttachmentViewUrls(attachmentIds)
+        }
     }
 
     dataRecordEditorHost.setClient(dataRecordEditorClient)

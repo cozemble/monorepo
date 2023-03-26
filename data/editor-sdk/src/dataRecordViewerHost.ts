@@ -11,6 +11,8 @@ export interface DataRecordViewerClient {
   getModels(): Model[]
 
   recordById(modelId: ModelId, recordId: DataRecordId): Promise<DataRecord | null>
+
+  getAttachmentViewUrls(attachmentIds: string[]): Promise<string[]>
 }
 
 export const dataRecordViewer = {

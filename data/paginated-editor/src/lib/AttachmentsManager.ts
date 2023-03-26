@@ -5,4 +5,8 @@ export interface AttachmentsManager {
     files: File[],
     progressUpdater: (percent: number) => void,
   ): Promise<UploadedAttachment[]>
+
+  deleteAttachments(attachmentIds: string[]): Promise<void>
+
+  getAttachmentViewUrls(attachmentIds: string[]): Promise<string[]>
 }

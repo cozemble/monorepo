@@ -44,7 +44,16 @@
             progressUpdater: (percent: number) => void,
         ): Promise<UploadedAttachment[]> {
             throw new Error("Not implemented")
+        },
+
+        async deleteAttachments(attachmentIds: string[]): Promise<void> {
+            throw new Error('Not implemented')
+        },
+
+        async getAttachmentViewUrls(attachmentIds: string[]): Promise<string[]> {
+            throw new Error('Not implemented')
         }
+
     }
 
     function closeView() {

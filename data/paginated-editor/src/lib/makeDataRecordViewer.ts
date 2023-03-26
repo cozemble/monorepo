@@ -11,5 +11,6 @@ export function makeDataRecordViewer(
     getModelViews: () => modelViews,
     getModels: () => models,
     recordById: paginatedEditorHost.recordById,
+    getAttachmentViewUrls: paginatedEditorHost.getAttachmentViewUrls,
   }
 }

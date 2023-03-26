@@ -19,6 +19,7 @@
 
     dataRecordViewerHost.setClient(makeDataRecordViewer(models, modelViews, paginatedEditorHost))
 
+
     let focus: Writable<CellFocus | null> = writable(null)
     let doAddNewRecord = false
     let recordBeingEdited: DataRecord | null = null

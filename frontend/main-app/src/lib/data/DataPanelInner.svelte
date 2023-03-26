@@ -3,14 +3,17 @@
     import type {PaginatedEditorHost, RecordDeleteOutcome, RecordSaveOutcome} from "@cozemble/data-paginated-editor";
     import {PaginatedEditor} from "@cozemble/data-paginated-editor";
     import type {Writable} from "svelte/store";
-    import type {EventSourcedDataRecord} from "@cozemble/data-editor-sdk";
+    import type {EventSourcedDataRecord, UploadedAttachment} from "@cozemble/data-editor-sdk";
     import {deleteRecord, saveRecord} from "./recordBackendHelper";
     import {createEventDispatcher} from "svelte";
     import {findRecordById, loadRecords} from "./loadRecords";
     import {modelViews} from "../models/tenantEntityStore";
     import {openRecordViews} from "./openRecordViews";
-    import type {UploadedAttachment} from "@cozemble/data-editor-sdk";
-    import {uploadAttachments as uploadAttachmentsFn} from './attachments'
+    import {
+        deleteAttachments as deleteAttachmentsFn,
+        getAttachmentViewUrls as getAttachmentViewUrlsFn,
+        uploadAttachments as uploadAttachmentsFn
+    } from './attachments'
 
     export let models: Model[]
     export let model: Model
@@ -22,7 +25,7 @@
             openRecordViews.open(record.modelId, record.id, openNow)
         },
         async recordEdited(editedRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
-            const result = await saveRecord(tenantId,  editedRecord)
+            const result = await saveRecord(tenantId, editedRecord)
             if (result._type === "record.save.succeeded") {
                 records.update(r => r.map(r => r.id.value === editedRecord.record.id.value ? editedRecord.record : r))
             }
@@ -59,6 +62,15 @@
             progressUpdater: (percent: number) => void,
         ): Promise<UploadedAttachment[]> {
             return uploadAttachmentsFn(tenantId, files, progressUpdater)
+        },
+
+        async deleteAttachments(attachmentIds: string[]): Promise<void> {
+            return deleteAttachmentsFn(tenantId, attachmentIds)
+
+        },
+
+        async getAttachmentViewUrls(attachmentIds: string[]): Promise<string[]> {
+            return getAttachmentViewUrlsFn(tenantId, attachmentIds)
         }
     }
 

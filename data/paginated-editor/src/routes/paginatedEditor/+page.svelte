@@ -93,6 +93,11 @@
             _progressUpdater: (percent: number) => void,
         ): Promise<UploadedAttachment[]> {
             return [] as UploadedAttachment[]
+        },
+        async deleteAttachments(attachmentIds: string[]): Promise<void> {},
+
+        async getAttachmentViewUrls(attachmentIds: string[]): Promise<string[]> {
+            throw new Error('Not implemented')
         }
     }
 

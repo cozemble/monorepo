@@ -35,6 +35,10 @@ export interface DataRecordEditorClient {
     files: File[],
     progressUpdater: (percent: number) => void,
   ): Promise<UploadedAttachment[]>
+
+  deleteAttachments(attachmentIds: string[]): Promise<void>
+
+  getAttachmentViewUrls(attachmentIds: string[]): Promise<string[]>
 }
 
 export const dataRecordEditor = {

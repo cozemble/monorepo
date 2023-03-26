@@ -2,23 +2,23 @@
     import type {DataRecord, DataRecordPath} from '@cozemble/model-core'
     import type {AttachmentList} from "@cozemble/model-attachment-core";
     import {dataRecordPathFns} from "@cozemble/model-api";
-    import AttachmentView from "./AttachmentView.svelte";
+    import ShowAttachmentThumbs from "./ShowAttachmentThumbs.svelte";
 
     export let recordPath: DataRecordPath
     export let record: DataRecord
-    let error: string | null = null
 
-    $: value = dataRecordPathFns.getValue(recordPath, record) as AttachmentList ?? null
+
+    $: attachmentList = dataRecordPathFns.getValue(recordPath, record) as AttachmentList ?? ({
+        _type: 'attachment.list',
+        attachmentReferences: []
+    })
+
 </script>
 
-{#if value}
-    {#each value.attachmentReferences as attachment}
-        <AttachmentView {attachment}/>
-    {/each}
+
+{#if attachmentList}
+    <ShowAttachmentThumbs attachments={attachmentList.attachmentReferences}/>
 {:else}
     <p>No attachments</p>
 {/if}
 
-{#if error}
-    <p>{error}</p>
-{/if}

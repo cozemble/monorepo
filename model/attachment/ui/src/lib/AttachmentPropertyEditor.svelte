@@ -5,12 +5,15 @@
     import {dataRecordPathFns} from "@cozemble/model-api";
     import {dataRecordEditEvents} from "@cozemble/data-editor-sdk/dist/esm";
     import AttachmentView from "./AttachmentView.svelte";
+    import AttachmentsRibbon from "$lib/AttachmentsRibbon.svelte";
 
     export let recordPath: DataRecordPath
     export let record: DataRecord
     let error: string | null = null
     let uploadProgress = 0
     let uploading = false
+    let selectedAttachments: AttachmentReference[] = []
+
 
     const dataRecordEditorClient = dataRecordEditor.getClient()
 
@@ -19,11 +22,19 @@
         attachmentReferences: []
     })
 
+    function toggleSelection(attachment: AttachmentReference) {
+        if (selectedAttachments.includes(attachment)) {
+            selectedAttachments = selectedAttachments.filter(a => a !== attachment)
+        } else {
+            selectedAttachments = [...selectedAttachments, attachment]
+        }
+    }
+
 
     function uploadProgressUpdate(percentage: number) {
         console.log("Upload progress:", percentage)
         uploadProgress = percentage
-        if(percentage === 100) {
+        if (percentage === 100) {
             uploading = false
         }
     }
@@ -67,27 +78,39 @@
             uploading = false
         }
     }
+
+    function onDeleteAttachments(event: CustomEvent<AttachmentReference[]>) {
+        const {detail: attachmentsToDelete} = event
+        const remainingAttachmentReferences = attachments.attachmentReferences.filter(a => !attachmentsToDelete.includes(a))
+        const newAttachments = ({
+            _type: 'attachment.list',
+            attachmentReferences: remainingAttachmentReferences
+        })
+        dataRecordEditorClient.dispatchEditEvent(
+            dataRecordEditEvents.valueChanged(
+                record,
+                recordPath,
+                attachments,
+                newAttachments,
+                null,
+            ),
+        )
+
+        selectedAttachments = selectedAttachments.filter(a => !attachmentsToDelete.includes(a))
+        dataRecordEditorClient.deleteAttachments(attachmentsToDelete.map(a => a.attachmentId))
+    }
+
 </script>
 
-<style>
-    .progress {
-        background-color: #f3f3f3;
-        border-radius: 5px;
-        height: 20px;
-        width: 100%;
-        max-width: 250px;
-        overflow: hidden;
-    }
 
-    .progress-bar {
-        background-color: #4caf50;
-        height: 100%;
-        transition: width 0.4s ease;
-    }
-</style>
+{#if selectedAttachments.length > 0}
+    <AttachmentsRibbon {selectedAttachments} on:deleteAttachments={onDeleteAttachments}/>
+{/if}
 
 {#each attachments.attachmentReferences as attachment}
-    <AttachmentView {attachment}/>
+    <div class="attachment-container" on:click={() => toggleSelection(attachment)}>
+        <AttachmentView {attachment}/>
+    </div>
 {/each}
 
 {#if uploading}
@@ -111,3 +134,35 @@
         </div>
     </div>
 {/if}
+
+<style>
+
+    .progress {
+        background-color: #f3f3f3;
+        border-radius: 5px;
+        height: 20px;
+        width: 100%;
+        max-width: 250px;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        background-color: #4caf50;
+        height: 100%;
+        transition: width 0.4s ease;
+    }
+
+    .attachment-container {
+        display: inline-block;
+        margin: 0.5rem;
+        border: 2px solid #ccc;
+        border-radius: 0.25rem;
+        padding: 0.5rem;
+        cursor: pointer;
+    }
+
+    .attachment-container.selected {
+        border-color: #000;
+    }
+
+</style>
