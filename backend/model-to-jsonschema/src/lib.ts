@@ -24,9 +24,9 @@ function getRelationName({ value }: RelationshipName) {
   return uppercamelcase(path.parse(value).name)
 }
 
-function getPropertyType({ type }: PropertyType) {
+function getPropertyType({ value }: PropertyType) {
   const types = Object.keys(scalarTypes)
-  const propType = type.split('.')[0]
+  const propType = value.split('.')[0]
 
   if (!types.includes(propType)) return undefined
   return propType

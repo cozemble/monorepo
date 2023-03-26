@@ -44,7 +44,7 @@ importers:
       postgraphile: ^4.12.12
       postgraphile-plugin-nested-mutations: ^1.1.0
       ts-node: ^10.9.1
-      typescript: ^4.9.3
+      typescript: ^5.0.2
       vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
@@ -66,8 +66,8 @@ importers:
       '@types/cors': 2.8.13
       '@types/express': 4.17.17
       nodemon: 2.0.21
-      ts-node: 10.9.1_typescript@4.9.5
-      typescript: 4.9.5
+      ts-node: 10.9.1_typescript@5.0.2
+      typescript: 5.0.2
       vite: 4.1.4
       vitest: 0.26.3
 
@@ -100,7 +100,7 @@ importers:
       pluralize: ^8.0.0
       ramda: ^0.28.0
       ts-jest: ^29.0.5
-      typescript: ^4.9.3
+      typescript: ^5.0.2
       uppercamelcase: ^3.0.0
       vitest: ^0.26.2
     dependencies:
@@ -121,8 +121,8 @@ importers:
       '@types/uppercamelcase': 3.0.0
       jest-diff: 29.5.0
       jest-matcher-utils: 29.5.0
-      ts-jest: 29.0.5_typescript@4.9.5
-      typescript: 4.9.5
+      ts-jest: 29.0.5_typescript@5.0.2
+      typescript: 5.0.2
       vitest: 0.26.3
 
   backend/model-to-gql:
@@ -130,7 +130,7 @@ importers:
       '@cozemble/model-api': workspace:*
       '@cozemble/model-core': workspace:*
       '@cozemble/model-string-core': workspace:*
-      typescript: ^4.9.3
+      typescript: ^5.0.2
       vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
@@ -138,7 +138,7 @@ importers:
       '@cozemble/model-core': link:../../model/core
       '@cozemble/model-string-core': link:../../model/string/core
     devDependencies:
-      typescript: 4.9.5
+      typescript: 5.0.2
       vite: 4.1.4
       vitest: 0.26.3
 
@@ -152,7 +152,7 @@ importers:
       '@types/uppercamelcase': ^3.0.0
       graphql: 16.6.0
       lodash: ^4.17.21
-      typescript: ^4.9.3
+      typescript: ^5.0.2
       uppercamelcase: ^3.0.0
       vite: 4.1.4
       vitest: ^0.26.2
@@ -167,7 +167,7 @@ importers:
       '@types/lodash': 4.14.191
       '@types/node': 16.18.16
       '@types/uppercamelcase': 3.0.0
-      typescript: 4.9.5
+      typescript: 5.0.2
       vite: 4.1.4_@types+node@16.18.16
       vitest: 0.26.3
 
@@ -207,7 +207,7 @@ importers:
       sharp: ^0.32.0
       testcontainers: ^9.1.2
       ts-node: ^10.9.1
-      typescript: ^4.9.3
+      typescript: ^5.0.2
       undici: ^5.21.0
       vite: 4.1.4
       vitest: ^0.26.2
@@ -246,8 +246,8 @@ importers:
       nodemon: 2.0.21
       postgrator-cli: 6.0.1_pg@8.10.0
       testcontainers: 9.1.3
-      ts-node: 10.9.1_65w256gcgmxfcz3fxhbqinpra4
-      typescript: 4.9.5
+      ts-node: 10.9.1_szaju5dhyuwhxrpyacxphv2gve
+      typescript: 5.0.2
       undici: 5.21.0
       vite: 4.1.4_@types+node@16.18.16
       vitest: 0.26.3
@@ -255,13 +255,13 @@ importers:
   backend/tenanted-api-types:
     specifiers:
       '@cozemble/model-core': workspace:*
-      typescript: ^4.9.3
+      typescript: ^5.0.2
       vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
       '@cozemble/model-core': link:../../model/core
     devDependencies:
-      typescript: 4.9.5
+      typescript: 5.0.2
       vite: 4.1.4
       vitest: 0.26.3
 
@@ -272,7 +272,7 @@ importers:
       '@cozemble/model-core': workspace:*
       svelte: ^3.54.0
       svelte-check: ^2.9.2
-      typescript: ^4.9.3
+      typescript: ^5.0.2
     dependencies:
       '@cozemble/lang-util': link:../../lang/util
       '@cozemble/model-api': link:../../model/api
@@ -280,7 +280,7 @@ importers:
     devDependencies:
       svelte: 3.56.0
       svelte-check: 2.10.3_svelte@3.56.0
-      typescript: 4.9.5
+      typescript: 5.0.2
 
   data/hasura-mutations:
     specifiers:
@@ -290,7 +290,7 @@ importers:
       '@cozemble/model-api': workspace:*
       '@cozemble/model-core': workspace:*
       '@cozemble/model-string-core': workspace:*
-      typescript: ^4.9.3
+      typescript: ^5.0.2
       vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
@@ -301,7 +301,7 @@ importers:
       '@cozemble/model-core': link:../../model/core
       '@cozemble/model-string-core': link:../../model/string/core
     devDependencies:
-      typescript: 4.9.5
+      typescript: 5.0.2
       vite: 4.1.4
       vitest: 0.26.3
 
@@ -327,7 +327,7 @@ importers:
       svelte-check: ^2.9.2
       tailwindcss: ^3.2.4
       tslib: ^2.4.1
-      typescript: ^4.9.3
+      typescript: ^5.0.2
       vite: 4.1.4
     dependencies:
       '@cozemble/data-editor-sdk': link:../editor-sdk
@@ -342,7 +342,7 @@ importers:
       '@originjs/vite-plugin-commonjs': 1.0.3
       '@sveltejs/adapter-auto': 1.0.3_@sveltejs+kit@1.11.0
       '@sveltejs/kit': 1.11.0_svelte@3.56.0+vite@4.1.4
-      '@sveltejs/package': 1.0.2_rx3ssngbibhj4vpczagsdyy47u
+      '@sveltejs/package': 1.0.2_2sicejs5pp65ytzskiuvcrduim
       autoprefixer: 10.4.14_postcss@8.4.21
       cypress: 12.7.0
       daisyui: 2.51.3_j7yt3jd32cwenjqavrrga47yr4
@@ -351,19 +351,19 @@ importers:
       svelte-check: 2.10.3_ow7olcacshthqqeelqr3bj7eae
       tailwindcss: 3.2.7_postcss@8.4.21
       tslib: 2.5.0
-      typescript: 4.9.5
+      typescript: 5.0.2
       vite: 4.1.4
 
   data/postgraphile-api:
     specifiers:
       postgraphile: ^4.12.12
-      typescript: ^4.9.3
+      typescript: ^5.0.2
       vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
       postgraphile: 4.13.0
     devDependencies:
-      typescript: 4.9.5
+      typescript: 5.0.2
       vite: 4.1.4
       vitest: 0.26.3
 
@@ -383,7 +383,7 @@ importers:
       svelte-check: ^3.0.1
       tailwindcss: ^3.2.4
       tslib: ^2.4.1
-      typescript: ^4.9.3
+      typescript: ^5.0.2
       uniqid: ^5.4.0
       vite: 4.1.4
     devDependencies:
@@ -401,7 +401,7 @@ importers:
       svelte-check: 3.1.4_ow7olcacshthqqeelqr3bj7eae
       tailwindcss: 3.2.7_postcss@8.4.21
       tslib: 2.5.0
-      typescript: 4.9.5
+      typescript: 5.0.2
       uniqid: 5.4.0
       vite: 4.1.4
 
@@ -428,7 +428,7 @@ importers:
       svelte-check: ^3.0.1
       tailwindcss: ^3.2.4
       tslib: ^2.4.1
-      typescript: ^4.9.3
+      typescript: ^5.0.2
       vite: 4.1.4
     dependencies:
       '@cozemble/backend-tenanted-api-types': link:../../backend/tenanted-api-types
@@ -453,7 +453,7 @@ importers:
       svelte-check: 3.1.4_ow7olcacshthqqeelqr3bj7eae
       tailwindcss: 3.2.7_postcss@8.4.21
       tslib: 2.5.0
-      typescript: 4.9.5
+      typescript: 5.0.2
       vite: 4.1.4
 
   frontend/website:
@@ -463,7 +463,7 @@ importers:
       svelte: ^3.54.0
       svelte-check: ^3.0.1
       tslib: ^2.4.1
-      typescript: ^4.9.3
+      typescript: ^5.0.2
       vite: 4.1.4
     devDependencies:
       '@sveltejs/adapter-auto': 1.0.3_@sveltejs+kit@1.11.0
@@ -471,21 +471,21 @@ importers:
       svelte: 3.56.0
       svelte-check: 3.1.4_svelte@3.56.0
       tslib: 2.5.0
-      typescript: 4.9.5
+      typescript: 5.0.2
       vite: 4.1.4
 
   graphql/client:
     specifiers:
       '@cozemble/graphql-core': workspace:*
       axios: ^1.2.3
-      typescript: ^4.9.3
+      typescript: ^5.0.2
       vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
       '@cozemble/graphql-core': link:../core
       axios: 1.3.4
     devDependencies:
-      typescript: 4.9.5
+      typescript: 5.0.2
       vite: 4.1.4
       vitest: 0.26.3
 
@@ -494,7 +494,7 @@ importers:
       '@cozemble/lang-util': workspace:*
       graphql: 16.6.0
       graphql-tag: 2.12.6
-      typescript: ^4.9.3
+      typescript: ^5.0.2
       vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
@@ -502,7 +502,7 @@ importers:
       graphql: 16.6.0
       graphql-tag: 2.12.6_graphql@16.6.0
     devDependencies:
-      typescript: 4.9.5
+      typescript: 5.0.2
       vite: 4.1.4
       vitest: 0.26.3
 
@@ -512,7 +512,7 @@ importers:
       dayjs: ~1.11.7
       mergician: ^1.0.3
       nanoid: 3.3.4
-      typescript: ^4.9.3
+      typescript: ^5.0.2
       uuid: 9.0.0
       vite: 4.1.4
       vitest: ^0.26.2
@@ -523,7 +523,7 @@ importers:
       uuid: 9.0.0
     devDependencies:
       '@types/uuid': 9.0.0
-      typescript: 4.9.5
+      typescript: 5.0.2
       vite: 4.1.4
       vitest: 0.26.3
 
@@ -532,7 +532,7 @@ importers:
       '@cozemble/lang-util': workspace:*
       '@cozemble/model-core': workspace:*
       '@cozemble/model-string-core': workspace:*
-      typescript: ^4.9.3
+      typescript: ^5.0.2
       vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
@@ -540,7 +540,7 @@ importers:
       '@cozemble/model-core': link:../core
       '@cozemble/model-string-core': link:../string/core
     devDependencies:
-      typescript: 4.9.5
+      typescript: 5.0.2
       vite: 4.1.4
       vitest: 0.26.3
 
@@ -554,7 +554,7 @@ importers:
       '@cozemble/model-reference-ui': workspace:*
       '@cozemble/model-string-core': workspace:*
       '@cozemble/model-string-ui': workspace:*
-      typescript: ^4.9.3
+      typescript: ^5.0.2
     dependencies:
       '@cozemble/lang-util': link:../../lang/util
       '@cozemble/model-attachment-core': link:../attachment/core
@@ -565,20 +565,20 @@ importers:
       '@cozemble/model-string-core': link:../string/core
       '@cozemble/model-string-ui': link:../string/ui
     devDependencies:
-      typescript: 4.9.5
+      typescript: 5.0.2
 
   model/attachment/core:
     specifiers:
       '@cozemble/lang-util': workspace:*
       '@cozemble/model-core': workspace:*
-      typescript: ^4.9.3
+      typescript: ^5.0.2
       vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
       '@cozemble/lang-util': link:../../../lang/util
       '@cozemble/model-core': link:../../core
     devDependencies:
-      typescript: 4.9.5
+      typescript: 5.0.2
       vite: 4.1.4
       vitest: 0.26.3
 
@@ -598,7 +598,7 @@ importers:
       svelte: ^3.54.0
       svelte-check: ^3.0.1
       tslib: ^2.4.1
-      typescript: ^4.9.3
+      typescript: ^5.0.2
       vite: 4.1.4
     dependencies:
       '@cozemble/data-editor-sdk': link:../../../data/editor-sdk
@@ -611,22 +611,22 @@ importers:
       '@originjs/vite-plugin-commonjs': 1.0.3
       '@sveltejs/adapter-auto': 2.0.0_@sveltejs+kit@1.11.0
       '@sveltejs/kit': 1.11.0_svelte@3.56.0+vite@4.1.4
-      '@sveltejs/package': 2.0.2_rx3ssngbibhj4vpczagsdyy47u
+      '@sveltejs/package': 2.0.2_2sicejs5pp65ytzskiuvcrduim
       publint: 0.1.10
       svelte: 3.56.0
       svelte-check: 3.1.4_svelte@3.56.0
       tslib: 2.5.0
-      typescript: 4.9.5
+      typescript: 5.0.2
       vite: 4.1.4
 
   model/core:
     specifiers:
       '@cozemble/lang-util': workspace:*
-      typescript: ^4.9.3
+      typescript: ^5.0.2
     dependencies:
       '@cozemble/lang-util': link:../../lang/util
     devDependencies:
-      typescript: 4.9.5
+      typescript: 5.0.2
 
   model/editor:
     specifiers:
@@ -649,7 +649,7 @@ importers:
       svelte: ^3.54.0
       svelte-check: ^2.9.2
       tslib: ^2.4.1
-      typescript: ^4.9.3
+      typescript: ^5.0.2
       vite: 4.1.4
     dependencies:
       '@cozemble/lang-util': link:../../lang/util
@@ -667,12 +667,12 @@ importers:
       '@originjs/vite-plugin-commonjs': 1.0.3
       '@sveltejs/adapter-auto': 1.0.3_@sveltejs+kit@1.11.0
       '@sveltejs/kit': 1.11.0_svelte@3.56.0+vite@4.1.4
-      '@sveltejs/package': 1.0.2_rx3ssngbibhj4vpczagsdyy47u
+      '@sveltejs/package': 1.0.2_2sicejs5pp65ytzskiuvcrduim
       cypress: 12.7.0
       svelte: 3.56.0
       svelte-check: 2.10.3_svelte@3.56.0
       tslib: 2.5.0
-      typescript: 4.9.5
+      typescript: 5.0.2
       vite: 4.1.4
 
   model/editor-sdk:
@@ -681,21 +681,21 @@ importers:
       '@cozemble/model-core': workspace:*
       svelte: ^3.54.0
       svelte-check: ^2.9.2
-      typescript: ^4.9.3
+      typescript: ^5.0.2
     dependencies:
       '@cozemble/lang-util': link:../../lang/util
       '@cozemble/model-core': link:../core
     devDependencies:
       svelte: 3.56.0
       svelte-check: 2.10.3_svelte@3.56.0
-      typescript: 4.9.5
+      typescript: 5.0.2
 
   model/event-sourced:
     specifiers:
       '@cozemble/lang-util': workspace:*
       '@cozemble/model-api': workspace:*
       '@cozemble/model-core': workspace:*
-      typescript: ^4.9.3
+      typescript: ^5.0.2
       vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
@@ -703,7 +703,7 @@ importers:
       '@cozemble/model-api': link:../api
       '@cozemble/model-core': link:../core
     devDependencies:
-      typescript: 4.9.5
+      typescript: 5.0.2
       vite: 4.1.4
       vitest: 0.26.3
 
@@ -739,7 +739,7 @@ importers:
       svelte: ^3.54.0
       svelte-check: ^3.0.1
       tslib: ^2.4.1
-      typescript: ^4.9.3
+      typescript: ^5.0.2
       vite: 4.1.4
     dependencies:
       '@cozemble/data-editor-sdk': link:../../../data/editor-sdk
@@ -753,12 +753,12 @@ importers:
       '@originjs/vite-plugin-commonjs': 1.0.3
       '@sveltejs/adapter-auto': 2.0.0_@sveltejs+kit@1.11.0
       '@sveltejs/kit': 1.11.0_svelte@3.56.0+vite@4.1.4
-      '@sveltejs/package': 2.0.2_rx3ssngbibhj4vpczagsdyy47u
+      '@sveltejs/package': 2.0.2_2sicejs5pp65ytzskiuvcrduim
       publint: 0.1.10
       svelte: 3.56.0
       svelte-check: 3.1.4_svelte@3.56.0
       tslib: 2.5.0
-      typescript: 4.9.5
+      typescript: 5.0.2
       vite: 4.1.4
 
   model/sql-actions:
@@ -768,7 +768,7 @@ importers:
       '@cozemble/model-core': workspace:*
       '@cozemble/model-event-sourced': workspace:*
       '@cozemble/sql-actions': workspace:*
-      typescript: ^4.9.3
+      typescript: ^5.0.2
       vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
@@ -778,7 +778,7 @@ importers:
       '@cozemble/model-event-sourced': link:../event-sourced
       '@cozemble/sql-actions': link:../../sql/actions
     devDependencies:
-      typescript: 4.9.5
+      typescript: 5.0.2
       vite: 4.1.4
       vitest: 0.26.3
 
@@ -792,7 +792,7 @@ importers:
       '@cozemble/model-string-core': workspace:*
       '@cozemble/model-string-sql-actions': workspace:*
       '@cozemble/sql-actions': workspace:*
-      typescript: ^4.9.3
+      typescript: ^5.0.2
       vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
@@ -805,7 +805,7 @@ importers:
       '@cozemble/model-string-sql-actions': link:../string/sql-actions
       '@cozemble/sql-actions': link:../../sql/actions
     devDependencies:
-      typescript: 4.9.5
+      typescript: 5.0.2
       vite: 4.1.4
       vitest: 0.26.3
 
@@ -813,14 +813,14 @@ importers:
     specifiers:
       '@cozemble/lang-util': workspace:*
       '@cozemble/model-core': workspace:*
-      typescript: ^4.9.3
+      typescript: ^5.0.2
       vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
       '@cozemble/lang-util': link:../../../lang/util
       '@cozemble/model-core': link:../../core
     devDependencies:
-      typescript: 4.9.5
+      typescript: 5.0.2
       vite: 4.1.4
       vitest: 0.26.3
 
@@ -830,7 +830,7 @@ importers:
       '@cozemble/model-sql-actions': workspace:*
       '@cozemble/model-string-core': workspace:*
       '@cozemble/sql-actions': workspace:*
-      typescript: ^4.9.3
+      typescript: ^5.0.2
       vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
@@ -839,7 +839,7 @@ importers:
       '@cozemble/model-string-core': link:../core
       '@cozemble/sql-actions': link:../../../sql/actions
     devDependencies:
-      typescript: 4.9.5
+      typescript: 5.0.2
       vite: 4.1.4
       vitest: 0.26.3
 
@@ -856,7 +856,7 @@ importers:
       svelte: ^3.54.0
       svelte-check: ^2.9.2
       tslib: ^2.4.1
-      typescript: ^4.9.3
+      typescript: ^5.0.2
       vite: 4.1.4
     dependencies:
       '@cozemble/data-editor-sdk': link:../../../data/editor-sdk
@@ -867,11 +867,11 @@ importers:
     devDependencies:
       '@sveltejs/adapter-auto': 1.0.3_@sveltejs+kit@1.11.0
       '@sveltejs/kit': 1.11.0_svelte@3.56.0+vite@4.1.4
-      '@sveltejs/package': 1.0.2_rx3ssngbibhj4vpczagsdyy47u
+      '@sveltejs/package': 1.0.2_2sicejs5pp65ytzskiuvcrduim
       svelte: 3.56.0
       svelte-check: 2.10.3_svelte@3.56.0
       tslib: 2.5.0
-      typescript: 4.9.5
+      typescript: 5.0.2
       vite: 4.1.4
 
   model/to-json:
@@ -880,7 +880,7 @@ importers:
       '@cozemble/model-api': workspace:*
       '@cozemble/model-core': workspace:*
       '@cozemble/model-string-core': workspace:*
-      typescript: ^4.9.3
+      typescript: ^5.0.2
       vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
@@ -889,7 +889,7 @@ importers:
       '@cozemble/model-core': link:../core
       '@cozemble/model-string-core': link:../string/core
     devDependencies:
-      typescript: 4.9.5
+      typescript: 5.0.2
       vite: 4.1.4
       vitest: 0.26.3
 
@@ -905,14 +905,14 @@ importers:
     specifiers:
       '@cozemble/lang-util': workspace:*
       nanoid: 3.3.4
-      typescript: ^4.9.3
+      typescript: ^5.0.2
       vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
       '@cozemble/lang-util': link:../../lang/util
       nanoid: 3.3.4
     devDependencies:
-      typescript: 4.9.5
+      typescript: 5.0.2
       vite: 4.1.4
       vitest: 0.26.3
 
@@ -924,16 +924,16 @@ importers:
       svelte: ^3.54.0
       svelte-check: ^2.9.2
       tslib: ^2.4.1
-      typescript: ^4.9.3
+      typescript: ^5.0.2
       vite: 4.1.4
     devDependencies:
       '@sveltejs/adapter-auto': 1.0.3_@sveltejs+kit@1.11.0
       '@sveltejs/kit': 1.11.0_svelte@3.56.0+vite@4.1.4
-      '@sveltejs/package': 1.0.2_rx3ssngbibhj4vpczagsdyy47u
+      '@sveltejs/package': 1.0.2_2sicejs5pp65ytzskiuvcrduim
       svelte: 3.56.0
       svelte-check: 2.10.3_svelte@3.56.0
       tslib: 2.5.0
-      typescript: 4.9.5
+      typescript: 5.0.2
       vite: 4.1.4
 
 packages:
@@ -1716,7 +1716,7 @@ packages:
       - supports-color
     dev: true
 
-  /@sveltejs/package/1.0.2_rx3ssngbibhj4vpczagsdyy47u:
+  /@sveltejs/package/1.0.2_2sicejs5pp65ytzskiuvcrduim:
     resolution: {integrity: sha512-VY9U+05d9uNFDj7ScKRlHORYlfPSHwJewBjV+V2RsnViexpLFPUrboC9SiPYDCpLnbeqwXerxhO6twGHUBGeIA==}
     engines: {node: ^16.14 || >=18}
     hasBin: true
@@ -1727,12 +1727,12 @@ packages:
       kleur: 4.1.5
       sade: 1.8.1
       svelte: 3.56.0
-      svelte2tsx: 0.6.9_rx3ssngbibhj4vpczagsdyy47u
+      svelte2tsx: 0.6.9_2sicejs5pp65ytzskiuvcrduim
     transitivePeerDependencies:
       - typescript
     dev: true
 
-  /@sveltejs/package/2.0.2_rx3ssngbibhj4vpczagsdyy47u:
+  /@sveltejs/package/2.0.2_2sicejs5pp65ytzskiuvcrduim:
     resolution: {integrity: sha512-cCOCcO8yMHnhHyaR51nQtvKZ3o/vSU9UYI1EXLT1j2CKNPMuH1/g6JNwKcNNrtQGwwquudc69ZeYy8D/TDNwEw==}
     engines: {node: ^16.14 || >=18}
     hasBin: true
@@ -1743,7 +1743,7 @@ packages:
       kleur: 4.1.5
       sade: 1.8.1
       svelte: 3.56.0
-      svelte2tsx: 0.6.9_rx3ssngbibhj4vpczagsdyy47u
+      svelte2tsx: 0.6.9_2sicejs5pp65ytzskiuvcrduim
     transitivePeerDependencies:
       - typescript
     dev: true
@@ -7064,8 +7064,8 @@ packages:
       picocolors: 1.0.0
       sade: 1.8.1
       svelte: 3.56.0
-      svelte-preprocess: 4.10.7_43ik3n3dn3mv5h2n7glrsh2ngy
-      typescript: 4.9.5
+      svelte-preprocess: 4.10.7_dgt26ejjdh232vghpvgcfu5t3m
+      typescript: 5.0.2
     transitivePeerDependencies:
       - '@babel/core'
       - coffeescript
@@ -7092,8 +7092,8 @@ packages:
       picocolors: 1.0.0
       sade: 1.8.1
       svelte: 3.56.0
-      svelte-preprocess: 4.10.7_rx3ssngbibhj4vpczagsdyy47u
-      typescript: 4.9.5
+      svelte-preprocess: 4.10.7_2sicejs5pp65ytzskiuvcrduim
+      typescript: 5.0.2
     transitivePeerDependencies:
       - '@babel/core'
       - coffeescript
@@ -7170,7 +7170,58 @@ packages:
       svelte: 3.56.0
     dev: true
 
-  /svelte-preprocess/4.10.7_43ik3n3dn3mv5h2n7glrsh2ngy:
+  /svelte-preprocess/4.10.7_2sicejs5pp65ytzskiuvcrduim:
+    resolution: {integrity: sha512-sNPBnqYD6FnmdBrUmBCaqS00RyCsCpj2BG58A1JBswNF7b0OKviwxqVrOL/CKyJrLSClrSeqQv5BXNg2RUbPOw==}
+    engines: {node: '>= 9.11.2'}
+    requiresBuild: true
+    peerDependencies:
+      '@babel/core': ^7.10.2
+      coffeescript: ^2.5.1
+      less: ^3.11.3 || ^4.0.0
+      node-sass: '*'
+      postcss: ^7 || ^8
+      postcss-load-config: ^2.1.0 || ^3.0.0 || ^4.0.0
+      pug: ^3.0.0
+      sass: ^1.26.8
+      stylus: ^0.55.0
+      sugarss: ^2.0.0
+      svelte: ^3.23.0
+      typescript: ^3.9.5 || ^4.0.0
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
+      coffeescript:
+        optional: true
+      less:
+        optional: true
+      node-sass:
+        optional: true
+      postcss:
+        optional: true
+      postcss-load-config:
+        optional: true
+      pug:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      typescript:
+        optional: true
+    dependencies:
+      '@types/pug': 2.0.6
+      '@types/sass': 1.45.0
+      detect-indent: 6.1.0
+      magic-string: 0.25.9
+      sorcery: 0.10.0
+      strip-indent: 3.0.0
+      svelte: 3.56.0
+      typescript: 5.0.2
+    dev: true
+
+  /svelte-preprocess/4.10.7_dgt26ejjdh232vghpvgcfu5t3m:
     resolution: {integrity: sha512-sNPBnqYD6FnmdBrUmBCaqS00RyCsCpj2BG58A1JBswNF7b0OKviwxqVrOL/CKyJrLSClrSeqQv5BXNg2RUbPOw==}
     engines: {node: '>= 9.11.2'}
     requiresBuild: true
@@ -7219,58 +7270,7 @@ packages:
       sorcery: 0.10.0
       strip-indent: 3.0.0
       svelte: 3.56.0
-      typescript: 4.9.5
-    dev: true
-
-  /svelte-preprocess/4.10.7_rx3ssngbibhj4vpczagsdyy47u:
-    resolution: {integrity: sha512-sNPBnqYD6FnmdBrUmBCaqS00RyCsCpj2BG58A1JBswNF7b0OKviwxqVrOL/CKyJrLSClrSeqQv5BXNg2RUbPOw==}
-    engines: {node: '>= 9.11.2'}
-    requiresBuild: true
-    peerDependencies:
-      '@babel/core': ^7.10.2
-      coffeescript: ^2.5.1
-      less: ^3.11.3 || ^4.0.0
-      node-sass: '*'
-      postcss: ^7 || ^8
-      postcss-load-config: ^2.1.0 || ^3.0.0 || ^4.0.0
-      pug: ^3.0.0
-      sass: ^1.26.8
-      stylus: ^0.55.0
-      sugarss: ^2.0.0
-      svelte: ^3.23.0
-      typescript: ^3.9.5 || ^4.0.0
-    peerDependenciesMeta:
-      '@babel/core':
-        optional: true
-      coffeescript:
-        optional: true
-      less:
-        optional: true
-      node-sass:
-        optional: true
-      postcss:
-        optional: true
-      postcss-load-config:
-        optional: true
-      pug:
-        optional: true
-      sass:
-        optional: true
-      stylus:
-        optional: true
-      sugarss:
-        optional: true
-      typescript:
-        optional: true
-    dependencies:
-      '@types/pug': 2.0.6
-      '@types/sass': 1.45.0
-      detect-indent: 6.1.0
-      magic-string: 0.25.9
-      sorcery: 0.10.0
-      strip-indent: 3.0.0
-      svelte: 3.56.0
-      typescript: 4.9.5
+      typescript: 5.0.2
     dev: true
 
   /svelte-preprocess/5.0.1_43ik3n3dn3mv5h2n7glrsh2ngy:
@@ -7375,7 +7375,7 @@ packages:
     engines: {node: '>= 8'}
     dev: true
 
-  /svelte2tsx/0.6.9_rx3ssngbibhj4vpczagsdyy47u:
+  /svelte2tsx/0.6.9_2sicejs5pp65ytzskiuvcrduim:
     resolution: {integrity: sha512-yQT83cQMztgRTkJPEUYgrHYnJA8WmFC1TqOGabZ2DgSlmuqZK1qI6uxCFF1IEQRxgvkVPvYR5+H0W51ujSia2Q==}
     peerDependencies:
       svelte: ^3.55
@@ -7384,7 +7384,7 @@ packages:
       dedent-js: 1.0.1
       pascal-case: 3.1.2
       svelte: 3.56.0
-      typescript: 4.9.5
+      typescript: 5.0.2
     dev: true
 
   /symbol-observable/1.2.0:
@@ -7600,7 +7600,7 @@ packages:
     resolution: {integrity: sha512-e4g0EJtAjk64xgnFPD6kTBUtpnMVzDrMb12N1YZV0VvSlhnVT3SGxiYTLdGy8Q5cYHOIC/FAHmZ10eGrAguicQ==}
     dev: false
 
-  /ts-jest/29.0.5_typescript@4.9.5:
+  /ts-jest/29.0.5_typescript@5.0.2:
     resolution: {integrity: sha512-PL3UciSgIpQ7f6XjVOmbi96vmDHUqAyqDr8YxzopDqX3kfgYtX1cuNeBjP+L9sFXi6nzsGGA6R3fP3DDDJyrxA==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     hasBin: true
@@ -7628,11 +7628,11 @@ packages:
       lodash.memoize: 4.1.2
       make-error: 1.3.6
       semver: 7.3.8
-      typescript: 4.9.5
+      typescript: 5.0.2
       yargs-parser: 21.1.1
     dev: true
 
-  /ts-node/10.9.1_65w256gcgmxfcz3fxhbqinpra4:
+  /ts-node/10.9.1_szaju5dhyuwhxrpyacxphv2gve:
     resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
     hasBin: true
     peerDependencies:
@@ -7658,12 +7658,12 @@ packages:
       create-require: 1.1.1
       diff: 4.0.2
       make-error: 1.3.6
-      typescript: 4.9.5
+      typescript: 5.0.2
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
     dev: true
 
-  /ts-node/10.9.1_typescript@4.9.5:
+  /ts-node/10.9.1_typescript@5.0.2:
     resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
     hasBin: true
     peerDependencies:
@@ -7688,7 +7688,7 @@ packages:
       create-require: 1.1.1
       diff: 4.0.2
       make-error: 1.3.6
-      typescript: 4.9.5
+      typescript: 5.0.2
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
     dev: true
@@ -7849,6 +7849,12 @@ packages:
   /typescript/4.9.5:
     resolution: {integrity: sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==}
     engines: {node: '>=4.2.0'}
+    hasBin: true
+    dev: true
+
+  /typescript/5.0.2:
+    resolution: {integrity: sha512-wVORMBGO/FAs/++blGNeAVdbNKtIh1rbBL2EyQ1+J9lClJ93KiiKe8PmFIVdXhHcyv44SL9oglmfeSsndo0jRw==}
+    engines: {node: '>=12.20'}
     hasBin: true
     dev: true
 
