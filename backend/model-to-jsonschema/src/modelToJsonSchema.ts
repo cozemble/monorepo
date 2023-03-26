@@ -5,7 +5,7 @@ import _ from 'lodash'
 import { Model, ModelName, Property, PropertyType, RelationshipName } from '@cozemble/model-core'
 import { GraphQLScalarType, GraphQLString, GraphQLInt, GraphQLFloat, GraphQLBoolean } from 'graphql'
 
-export function modelToJsonSchema(rootModel: Model, models: Model[]): any {
+export function modelToJsonSchema(rootModel: Model, models: Model[]): Schema {
   return parser(rootModel, models)
 }
 
@@ -97,8 +97,6 @@ function buildModelTypes({ propertyType, validations }: IProperty): TypeDefiniti
   return resp
 }
 
-type ScalarType = 'boolean' | 'integer' | 'number' | 'string'
-
 const getModelName = ({ value }: ModelName) => {
   if (typeof value === 'undefined') return ''
   return uppercamelcase(path.parse(value).name)
@@ -116,6 +114,8 @@ const getPropertyType = ({ type }: PropertyType) => {
   if (!types.includes(propType)) return undefined
   return propType
 }
+
+type ScalarType = 'boolean' | 'integer' | 'number' | 'string'
 
 const scalarTypes: Record<ScalarType, GraphQLScalarType> = {
   string: GraphQLString,
