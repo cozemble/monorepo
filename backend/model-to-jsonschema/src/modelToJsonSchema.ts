@@ -1,40 +1,11 @@
-import uppercamelcase from 'uppercamelcase'
-import * as path from 'path'
 import _ from 'lodash'
 
-import { Model, ModelName, Property, PropertyType, RelationshipName } from '@cozemble/model-core'
-import { GraphQLScalarType, GraphQLString, GraphQLInt, GraphQLFloat, GraphQLBoolean } from 'graphql'
+import { Model } from '@cozemble/model-core'
+import { buildModelTypes, getModelName, getRelationName } from './lib'
+import { IProperty, Schema } from './types/schema'
 
 export function modelToJsonSchema(rootModel: Model, models: Model[]): Schema {
   return parser(rootModel, models)
-}
-
-type TypeDefinition = {
-  type: string
-  pattern?: string
-  description?: string
-}
-
-type PropertyDefinition = {
-  [key: string]: TypeDefinition | Schema
-}
-
-type Schema = {
-  ref: string
-  type: string
-  properties: PropertyDefinition
-  required: string[]
-  relations?: string[]
-}
-
-type Validation = {
-  regex: string
-  message: string
-  _type: 'regex.validation'
-}
-
-interface IProperty extends Property {
-  validations: Validation[]
 }
 
 function parser(rootModel: Model, models: Model[]) {
@@ -82,44 +53,4 @@ function parseModel(model: Model) {
   })
 
   return result
-}
-
-function buildModelTypes({ propertyType, validations }: IProperty): TypeDefinition {
-  const resp = {
-    type: getPropertyType(propertyType) as string,
-    // description: buildDescription({ title: name.value }),
-  }
-
-  if (validations?.length) {
-    Object.assign(resp, { pattern: validations[0].regex })
-  }
-
-  return resp
-}
-
-const getModelName = ({ value }: ModelName) => {
-  if (typeof value === 'undefined') return ''
-  return uppercamelcase(path.parse(value).name)
-}
-
-const getRelationName = ({ value }: RelationshipName) => {
-  if (typeof value === 'undefined') return ''
-  return uppercamelcase(path.parse(value).name)
-}
-
-const getPropertyType = ({ type }: PropertyType) => {
-  const types = Object.keys(scalarTypes)
-  const propType = type.split('.')[0]
-
-  if (!types.includes(propType)) return undefined
-  return propType
-}
-
-type ScalarType = 'boolean' | 'integer' | 'number' | 'string'
-
-const scalarTypes: Record<ScalarType, GraphQLScalarType> = {
-  string: GraphQLString,
-  integer: GraphQLInt,
-  number: GraphQLFloat,
-  boolean: GraphQLBoolean,
 }
