@@ -11,6 +11,11 @@
     import type {AttachmentIdAndFileName, EventSourcedDataRecord, UploadedAttachment} from "@cozemble/data-editor-sdk";
     import {dataRecordViewerHost, eventSourcedDataRecordFns} from "@cozemble/data-editor-sdk";
     import {makeDataRecordViewer} from "./makeDataRecordViewer";
+    import {
+        deleteAttachments as deleteAttachmentsFn,
+        getAttachmentViewUrls as getAttachmentViewUrlsFn,
+        uploadAttachments as uploadAttachmentsFn
+    } from "./attachments";
 
     export let models: Model[]
     export let openRecord: OpenRecordView
@@ -42,17 +47,16 @@
             files: File[],
             progressUpdater: (percent: number) => void,
         ): Promise<UploadedAttachment[]> {
-            throw new Error("Not implemented")
+            return uploadAttachmentsFn(tenantId, files, progressUpdater)
         },
 
         async deleteAttachments(attachmentIds: string[]): Promise<void> {
-            throw new Error('Not implemented')
+            return deleteAttachmentsFn(tenantId, attachmentIds)
         },
 
-        async getAttachmentViewUrls(attachmentIds: AttachmentIdAndFileName[]): Promise<string[]> {
-            throw new Error('Not implemented')
+        async getAttachmentViewUrls(attachments: AttachmentIdAndFileName[]): Promise<string[]> {
+            return getAttachmentViewUrlsFn(tenantId, attachments)
         }
-
     }
 
     function closeView() {
