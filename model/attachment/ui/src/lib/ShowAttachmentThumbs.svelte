@@ -2,9 +2,11 @@
     import type {AttachmentReference} from "@cozemble/model-attachment-core";
     import AttachmentView from "./AttachmentView.svelte";
     import AttachmentsRibbon from "./AttachmentsRibbon.svelte";
+    import {createEventDispatcher} from "svelte";
 
     export let attachments: AttachmentReference[]
     let selectedAttachments: AttachmentReference[] = []
+    const dispatch = createEventDispatcher()
 
     function toggleSelection(attachment: AttachmentReference) {
         if (selectedAttachments.includes(attachment)) {
@@ -13,10 +15,17 @@
             selectedAttachments = [...selectedAttachments, attachment]
         }
     }
+
+    function onDeleteAttachments(event: CustomEvent<AttachmentReference[]>) {
+        const attachmentReferences = event.detail
+        selectedAttachments = selectedAttachments.filter(a => !attachmentReferences.includes(a))
+        console.log({event, selectedAttachments})
+        dispatch("deleteAttachments", attachmentReferences)
+    }
 </script>
 
 {#if selectedAttachments.length > 0}
-    <AttachmentsRibbon {selectedAttachments}/>
+    <AttachmentsRibbon {selectedAttachments} on:deleteAttachments={onDeleteAttachments}/>
 {/if}
 {#each attachments as attachment}
     {@const selected = selectedAttachments.includes(attachment)}

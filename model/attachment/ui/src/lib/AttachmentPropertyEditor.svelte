@@ -3,7 +3,7 @@
     import {dataRecordEditor} from "@cozemble/data-editor-sdk";
     import type {AttachmentList, AttachmentReference} from "@cozemble/model-attachment-core";
     import {dataRecordPathFns} from "@cozemble/model-api";
-    import {dataRecordEditEvents} from "@cozemble/data-editor-sdk/dist/esm";
+    import {dataRecordEditEvents} from "@cozemble/data-editor-sdk";
     import AttachmentView from "./AttachmentView.svelte";
     import AttachmentsRibbon from "$lib/AttachmentsRibbon.svelte";
 

@@ -17,13 +17,16 @@
     export let paginatedEditorHost: PaginatedEditorHost
     export let modelViews: ModelView[]
 
-    dataRecordViewerHost.setClient(makeDataRecordViewer(models, modelViews, paginatedEditorHost))
-
+    dataRecordViewerHost.setClient(makeDataRecordViewer(models, modelViews, paginatedEditorHost, recordEdited, onError))
 
     let focus: Writable<CellFocus | null> = writable(null)
     let doAddNewRecord = false
     let recordBeingEdited: DataRecord | null = null
     let modelLevelErrors: string[] = []
+
+    function onError(error: Error) {
+        modelLevelErrors = [...modelLevelErrors, error.message]
+    }
 
     async function deleteRecord(record: DataRecord) {
         const confirmed = confirm('Are you sure you want to delete this record?')
@@ -51,6 +54,7 @@
         editedRecord: EventSourcedDataRecord,
     ): Promise<RecordSaveOutcome> {
         const outcome = await paginatedEditorHost.recordEdited(editedRecord)
+        console.log({outcome, editedRecord})
         if (outcome._type === 'record.save.succeeded') {
             recordBeingEdited = null
         }
