@@ -34,23 +34,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- return all the keys and values in a jsonb object that are uuids
-CREATE OR REPLACE FUNCTION values_keyed_by_uuid(jsonb_data jsonb)
-    RETURNS TABLE
-            (
-                key   text,
-                value jsonb,
-                path   text
-            )
-AS
-$$
-BEGIN
-    RETURN QUERY SELECT key, value, path
-                 FROM get_jsonb_each(jsonb_data)
-                 WHERE key ~* '^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$';
-END;
-$$ LANGUAGE plpgsql;
-
 -- returns a textification of a jsonb object
 CREATE OR REPLACE FUNCTION textify_record(jsonb_data jsonb)
     RETURNS text
@@ -61,7 +44,7 @@ DECLARE
 BEGIN
     SELECT string_agg(lower(CAST(get_jsonb_each.value AS text)), ' ') INTO lower_value
     FROM get_jsonb_each(jsonb_data) AS get_jsonb_each
-    WHERE get_jsonb_each.key ~* '^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$';
+    WHERE get_jsonb_each.path ~* '^.values.';
 
     RETURN lower_value;
 END;

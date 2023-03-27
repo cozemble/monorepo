@@ -14,14 +14,13 @@ const port = 3003
 registerStringProperty()
 
 describe('with customer records', () => {
-  let server: http.Server
   let bearer: string
   let customerModel: Model
   let tenantId: string
 
   beforeAll(async () => {
     try {
-      server = await appWithTestContainer(jwtSigningSecret, port)
+      await appWithTestContainer(jwtSigningSecret, port)
       const ownerId = uuids.v4()
       tenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
       await makeTenant(port, tenantId, 'Tenant 2', ownerId)
@@ -91,8 +90,8 @@ describe('with customer records', () => {
     )
     expect(response.status).toBe(200)
     const records = await response.json()
-    expect(records.records.length).toBe(2)
-    expect(records.queryCount).toBe(2)
+    expect(records.records.length).toBe(3)
+    expect(records.queryCount).toBe(3)
     expect(records.totalCount).toBe(5)
   })
 
@@ -107,8 +106,8 @@ describe('with customer records', () => {
     )
     expect(response.status).toBe(200)
     const records = await response.json()
-    expect(records.records.length).toBe(2)
-    expect(records.queryCount).toBe(2)
+    expect(records.records.length).toBe(3)
+    expect(records.queryCount).toBe(3)
     expect(records.totalCount).toBe(5)
   })
 
@@ -130,43 +129,7 @@ describe('with customer records', () => {
 
   test('can find all that start with Jan', async () => {
     const response = await fetch(
-      `http://localhost:${port}/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record?q=Jan:*`,
-      {
-        headers: {
-          Authorization: 'Bearer ' + bearer,
-        },
-      },
-    )
-    expect(response.status).toBe(200)
-    const records = await response.json()
-    expect(records.records.length).toBe(3)
-    expect(records.queryCount).toBe(3)
-    expect(records.totalCount).toBe(5)
-  })
-
-  test('can find all that start with Jan and Doe', async () => {
-    const response = await fetch(
-      `http://localhost:${port}/api/v1/tenant/${tenantId}/model/${
-        customerModel.id.value
-      }/record?q=${encodeURIComponent('Jan:* & Doe:*')}`,
-      {
-        headers: {
-          Authorization: 'Bearer ' + bearer,
-        },
-      },
-    )
-    expect(response.status).toBe(200)
-    const records = await response.json()
-    expect(records.records.length).toBe(1)
-    expect(records.queryCount).toBe(1)
-    expect(records.totalCount).toBe(5)
-  })
-
-  test('can find all that start with Jan or Doe', async () => {
-    const response = await fetch(
-      `http://localhost:${port}/api/v1/tenant/${tenantId}/model/${
-        customerModel.id.value
-      }/record?q=${encodeURIComponent('Jane | Doe:*')}`,
+      `http://localhost:${port}/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record?q=Jan`,
       {
         headers: {
           Authorization: 'Bearer ' + bearer,

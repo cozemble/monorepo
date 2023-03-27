@@ -31,8 +31,6 @@
                 null,
             ),
         )
-        console.log({attachmentList, newAttachmentList})
-
     }
 </script>
 
