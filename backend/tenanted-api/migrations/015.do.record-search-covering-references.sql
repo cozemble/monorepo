@@ -14,6 +14,13 @@ DECLARE
     query_pages INTEGER;
     total_pages INTEGER;
 BEGIN
+    PERFORM insert_message('DEBUG',
+                           'Querying records for model  ' || given_model_id || '  and tenant  ' ||
+                           ltree2text(given_tenant_id) ||
+                           '  with query  ' || COALESCE(given_q, 'NULL') || '  and limit  ' || given_limit ||
+                           '  and offset  ' ||
+                           given_offset);
+
     SELECT ARRAY(
                    SELECT DISTINCT ON (o.id) o.definition
                    FROM record o
@@ -35,6 +42,8 @@ BEGIN
       AND o.tenant = given_tenant_id
       AND (given_q IS NULL OR o.text ILIKE ('%' || given_q || '%') OR c.text ILIKE ('%' || given_q || '%'));
 
+    PERFORM insert_message('DEBUG', 'Found ' || query_count || ' records');
+
     SELECT COUNT(*) AS tc
     INTO total_count
     FROM record
@@ -54,4 +63,4 @@ BEGIN
             'records', records
         );
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql
