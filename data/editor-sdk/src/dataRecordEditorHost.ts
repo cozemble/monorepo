@@ -18,6 +18,11 @@ export interface UploadedAttachment {
   thumbnailUrl: string | null
 }
 
+export interface AttachmentIdAndFileName {
+  attachmentId: string
+  fileName: string
+}
+
 export interface DataRecordEditorClient {
   createNewRecord(modelId: ModelId): Promise<DataRecord | null>
 
@@ -38,7 +43,7 @@ export interface DataRecordEditorClient {
 
   deleteAttachments(attachmentIds: string[]): Promise<void>
 
-  getAttachmentViewUrls(attachmentIds: string[]): Promise<string[]>
+  getAttachmentViewUrls(attachments: AttachmentIdAndFileName[]): Promise<string[]>
 }
 
 export const dataRecordEditor = {

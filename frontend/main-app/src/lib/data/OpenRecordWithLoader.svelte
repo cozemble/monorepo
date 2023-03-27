@@ -12,6 +12,7 @@
     import {eventSourcedDataRecordFns} from "@cozemble/data-editor-sdk";
     import type {AttachmentsManager} from "@cozemble/data-paginated-editor/src/lib/AttachmentsManager";
     import type {UploadedAttachment} from "@cozemble/data-editor-sdk";
+    import type {AttachmentIdAndFileName} from "@cozemble/data-editor-sdk";
 
     export let models: Model[]
     export let openRecord: OpenRecordView
@@ -50,7 +51,7 @@
             throw new Error('Not implemented')
         },
 
-        async getAttachmentViewUrls(attachmentIds: string[]): Promise<string[]> {
+        async getAttachmentViewUrls(attachmentIds: AttachmentIdAndFileName[]): Promise<string[]> {
             throw new Error('Not implemented')
         }
 

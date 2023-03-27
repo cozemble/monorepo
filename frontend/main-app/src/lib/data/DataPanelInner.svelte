@@ -14,6 +14,7 @@
         getAttachmentViewUrls as getAttachmentViewUrlsFn,
         uploadAttachments as uploadAttachmentsFn
     } from './attachments'
+    import type {AttachmentIdAndFileName} from "@cozemble/data-editor-sdk";
 
     export let models: Model[]
     export let model: Model
@@ -69,8 +70,8 @@
 
         },
 
-        async getAttachmentViewUrls(attachmentIds: string[]): Promise<string[]> {
-            return getAttachmentViewUrlsFn(tenantId, attachmentIds)
+        async getAttachmentViewUrls(attachments: AttachmentIdAndFileName[]): Promise<string[]> {
+            return getAttachmentViewUrlsFn(tenantId, attachments)
         }
     }
 

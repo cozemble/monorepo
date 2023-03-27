@@ -9,6 +9,7 @@
     import type {RecordSearcher} from "./RecordSearcher";
     import type {RecordCreator} from "./RecordCreator";
     import type {AttachmentsManager} from "./AttachmentsManager";
+    import type {AttachmentIdAndFileName} from "@cozemble/data-editor-sdk";
 
     export let recordEditContext: RecordEditContext
     export let recordSearcher: RecordSearcher
@@ -60,7 +61,7 @@
             return attachmentsManager.deleteAttachments(attachmentIds)
         },
 
-        getAttachmentViewUrls(attachmentIds: string[]): Promise<string[]> {
+        getAttachmentViewUrls(attachmentIds: AttachmentIdAndFileName[]): Promise<string[]> {
             return attachmentsManager.getAttachmentViewUrls(attachmentIds)
         }
     }

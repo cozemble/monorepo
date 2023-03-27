@@ -105,9 +105,12 @@ describe('with an empty database, extract_referenced_records:', () => {
   test('can get a signed url to view the full attachment', async () => {
     const postResponse = await postFile(tenantId, bearer)
     const fileId = postResponse[0].fileId
+    const fileName = postResponse[0].originalName
 
     const signedUrlResponse = await axiosInstance.post(
-      `http://localhost:${port}/api/v1/storage/urls/${tenantId}/${fileId}`,
+      `http://localhost:${port}/api/v1/storage/urls/${tenantId}/${fileId}/${encodeURIComponent(
+        fileName,
+      )}`,
       null,
       {
         headers: { Authorization: `Bearer ${bearer}` },

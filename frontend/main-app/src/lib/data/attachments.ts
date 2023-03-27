@@ -2,6 +2,7 @@ import type { UploadedAttachment } from '@cozemble/data-editor-sdk'
 import { config } from '../config'
 import axios from 'axios'
 import { cozauth } from '../auth/cozauth'
+import type { AttachmentIdAndFileName } from '@cozemble/data-editor-sdk'
 
 const axiosInstance = axios.create({
   validateStatus: function () {
@@ -80,11 +81,13 @@ export async function deleteAttachments(tenantId: string, attachmentIds: string[
 
 export async function getAttachmentViewUrls(
   tenantId: string,
-  attachmentIds: string[],
+  attachments: AttachmentIdAndFileName[],
 ): Promise<string[]> {
   const accessToken = await mandatoryAccessToken(tenantId)
-  const endpoints = attachmentIds.map((attachmentId) => {
-    return `${config.backendUrl()}/api/v1/storage/urls/${tenantId}/${attachmentId}`
+  const endpoints = attachments.map((a) => {
+    return `${config.backendUrl()}/api/v1/storage/urls/${tenantId}/${
+      a.attachmentId
+    }/${encodeURIComponent(a.fileName)}`
   })
 
   const responses = await Promise.all(

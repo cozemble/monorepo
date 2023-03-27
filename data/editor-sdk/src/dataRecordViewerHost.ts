@@ -1,7 +1,7 @@
 import { mandatory } from '@cozemble/lang-util'
 import { DataRecord, DataRecordId, Model, ModelId, ModelView } from '@cozemble/model-core'
-import { DataRecordControlEvent, DataRecordEditEvent } from './dataRecordEditEvents'
 import { getContext, setContext } from 'svelte'
+import { AttachmentIdAndFileName } from './dataRecordEditorHost'
 
 const dataRecordViewerClientContext = 'com.cozemble.data.record.viewer.client.context'
 
@@ -12,7 +12,7 @@ export interface DataRecordViewerClient {
 
   recordById(modelId: ModelId, recordId: DataRecordId): Promise<DataRecord | null>
 
-  getAttachmentViewUrls(attachmentIds: string[]): Promise<string[]>
+  getAttachmentViewUrls(attachments: AttachmentIdAndFileName[]): Promise<string[]>
 }
 
 export const dataRecordViewer = {

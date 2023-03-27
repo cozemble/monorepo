@@ -12,5 +12,5 @@ export interface StorageProvider {
     file: Express.Multer.File,
   ): Promise<{ storageProvider: string; storageDetails: any }>
 
-  createSignedUrl(tenantId: string, attachmentId: string): Promise<string>
+  createSignedUrl(tenantId: string, attachmentId: string, fileName: string): Promise<string>
 }

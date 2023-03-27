@@ -11,7 +11,7 @@ export {
 } from './dataRecordEditEvents'
 
 export { EventSourcedDataRecord, eventSourcedDataRecordFns } from './EventSourcedDataRecord'
-export { dataRecordEditorHost } from './dataRecordEditorHost'
+export { dataRecordEditorHost, AttachmentIdAndFileName } from './dataRecordEditorHost'
 export { dataRecordEditor } from './dataRecordEditorHost'
 export { DataRecordEditorClient, Size, UploadedAttachment } from './dataRecordEditorHost'
 

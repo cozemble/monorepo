@@ -1,4 +1,5 @@
 import type { UploadedAttachment } from '@cozemble/data-editor-sdk'
+import type { AttachmentIdAndFileName } from '@cozemble/data-editor-sdk'
 
 export interface AttachmentsManager {
   uploadAttachments(
@@ -8,5 +9,5 @@ export interface AttachmentsManager {
 
   deleteAttachments(attachmentIds: string[]): Promise<void>
 
-  getAttachmentViewUrls(attachmentIds: string[]): Promise<string[]>
+  getAttachmentViewUrls(attachmentIds: AttachmentIdAndFileName[]): Promise<string[]>
 }

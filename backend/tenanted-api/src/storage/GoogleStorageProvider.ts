@@ -57,11 +57,12 @@ export class GoogleStorageProvider implements StorageProvider {
     return `https://storage.googleapis.com/${this.bucketName}/${thumbnailPath}`
   }
 
-  async createSignedUrl(tenantId: string, attachmentId: string): Promise<string> {
+  async createSignedUrl(tenantId: string, attachmentId: string, fileName: string): Promise<string> {
     const bucket = this.storage.bucket(this.bucketName)
-    const attachmentPath = `tenant/${tenantId}/file/${attachmentId}`
+    const fileExtension = path.extname(fileName)
+    const filePath = `tenant/${tenantId}/file/${attachmentId}${fileExtension}`
 
-    const gcsFile = bucket.file(attachmentPath)
+    const gcsFile = bucket.file(filePath)
 
     try {
       const [signedUrl] = await gcsFile.getSignedUrl({

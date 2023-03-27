@@ -8,7 +8,7 @@
     const dispatch = createEventDispatcher()
 
     async function viewClicked() {
-        const urls = await viewClient.getAttachmentViewUrls(selectedAttachments.map(attachment => attachment.attachmentId))
+        const urls = await viewClient.getAttachmentViewUrls(selectedAttachments.map(attachment => ({attachmentId:attachment.attachmentId, fileName:attachment.fileName})))
         urls.forEach(url => {
             window.open(url, "_blank")
         })

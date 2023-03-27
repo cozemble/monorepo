@@ -1,5 +1,10 @@
 <script lang="ts">
-    import type {DataRecordEditEvent, EventSourcedDataRecord,} from '@cozemble/data-editor-sdk'
+    import type {
+        AttachmentIdAndFileName,
+        DataRecordEditEvent,
+        EventSourcedDataRecord,
+        UploadedAttachment,
+    } from '@cozemble/data-editor-sdk'
     import type {DataRecord, DataRecordId, Model, ModelId} from '@cozemble/model-core'
     import PaginatedEditor from '../../lib/PaginatedEditor.svelte'
     import {onMount, setContext} from 'svelte'
@@ -12,11 +17,9 @@
     import {allModels, invoiceModel} from '../testModels'
     import type {EditRecordListener} from '../../lib/EditRecordListener'
     import {setEditRecordListener} from '../../lib/EditRecordListener'
-    import type {RecordEditContext, RecordSaveOutcome,} from '../../lib'
-    import type {PaginatedEditorHost, RecordDeleteOutcome,} from '../../lib'
+    import type {PaginatedEditorHost, RecordDeleteOutcome, RecordEditContext, RecordSaveOutcome,} from '../../lib'
     import {recordSaveSucceeded} from '../../lib'
     import EditEventInspector from './EditEventInspector.svelte'
-    import type {UploadedAttachment} from "@cozemble/data-editor-sdk";
 
     export const ssr = false
 
@@ -94,9 +97,10 @@
         ): Promise<UploadedAttachment[]> {
             return [] as UploadedAttachment[]
         },
-        async deleteAttachments(attachmentIds: string[]): Promise<void> {},
+        async deleteAttachments(attachmentIds: string[]): Promise<void> {
+        },
 
-        async getAttachmentViewUrls(attachmentIds: string[]): Promise<string[]> {
+        async getAttachmentViewUrls(attachmentIds: AttachmentIdAndFileName[]): Promise<string[]> {
             throw new Error('Not implemented')
         }
     }

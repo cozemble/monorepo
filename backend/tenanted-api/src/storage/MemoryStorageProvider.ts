@@ -18,7 +18,7 @@ export class MemoryStorageProvider implements StorageProvider {
     return 'https://via.placeholder.com/150'
   }
 
-  async createSignedUrl(tenantId: string, attachmentId: string): Promise<string> {
+  async createSignedUrl(tenantId: string, attachmentId: string, fileName: string): Promise<string> {
     return `placeholder url for tenant id ${tenantId} and attachment id ${attachmentId}`
   }
 }
