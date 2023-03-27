@@ -4,21 +4,19 @@
     import {openRecordViews} from "./openRecordViews";
     import {onMount} from "svelte";
     import {findRecordById, loadRecords} from "./loadRecords";
-    import type {RecordSaveOutcome, RecordSearcher} from "@cozemble/data-paginated-editor";
+    import type {AttachmentsManager, RecordSaveOutcome, RecordSearcher} from "@cozemble/data-paginated-editor";
     import {RecordEditContext, StackingRecordEditor} from "@cozemble/data-paginated-editor";
     import {modelViews} from "../models/tenantEntityStore";
     import {saveRecord} from "./recordBackendHelper";
-    import type {EventSourcedDataRecord} from "@cozemble/data-editor-sdk";
-    import {eventSourcedDataRecordFns} from "@cozemble/data-editor-sdk";
-    import type {AttachmentsManager} from "@cozemble/data-paginated-editor/src/lib/AttachmentsManager";
-    import type {UploadedAttachment} from "@cozemble/data-editor-sdk";
-    import type {AttachmentIdAndFileName} from "@cozemble/data-editor-sdk";
+    import type {AttachmentIdAndFileName, EventSourcedDataRecord, UploadedAttachment} from "@cozemble/data-editor-sdk";
+    import {dataRecordViewerHost, eventSourcedDataRecordFns} from "@cozemble/data-editor-sdk";
+    import {makeDataRecordViewer} from "./makeDataRecordViewer";
 
     export let models: Model[]
     export let openRecord: OpenRecordView
     export let tenantId: string
     let record: DataRecord | null = null
-
+    let error: string | null = null
 
     onMount(async () => {
         record = await findRecordById(tenantId, openRecord.modelId, openRecord.recordId)
@@ -61,11 +59,22 @@
         openRecordViews.close(openRecord.recordId)
     }
 
+    dataRecordViewerHost.setClient(makeDataRecordViewer(models, $modelViews, recordSearcher, attachmentsManager, onSaveRecord, onError))
+
+    function onError(e: Error) {
+        error = e.message
+    }
 </script>
 {#if record}
     <div class="mt-3">
         <StackingRecordEditor {recordSearcher} modelViews={$modelViews} {attachmentsManager}
                               recordEditContext={new RecordEditContext( models, onSaveRecord,eventSourcedDataRecordFns.fromRecord(models, record), onSaveRecord, closeView, `` )}
                               cancelButtonText="Close"/>
+    </div>
+{/if}
+
+{#if error}
+    <div class="alert alert-danger" role="alert">
+        {error}
     </div>
 {/if}
