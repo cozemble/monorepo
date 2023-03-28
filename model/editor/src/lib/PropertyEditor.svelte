@@ -103,7 +103,7 @@
                     selected={propertyTypeFns.equals(
           property.propertyType,
           propertyDescriptor.propertyType,
-        )}>{propertyDescriptor.name.name}</option>
+        )}>{propertyDescriptor.name.value}</option>
         {/each}
     </select>
 

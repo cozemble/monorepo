@@ -1,8 +1,11 @@
 import { clock, type Option, uuids } from '@cozemble/lang-util'
 
-export interface PropertyType {
+interface TinyValue<T = string> {
+  value: T
+}
+
+export interface PropertyType extends TinyValue {
   _type: 'property.type'
-  value: string
 }
 
 export const propertyTypeFns = {
@@ -17,14 +20,12 @@ export const propertyTypeFns = {
   },
 }
 
-export interface PropertyId {
+export interface PropertyId extends TinyValue {
   _type: 'property.id'
-  value: string
 }
 
-export interface PropertyName {
+export interface PropertyName extends TinyValue {
   _type: 'property.name'
-  value: string
 }
 
 export const propertyNameFns = {
@@ -46,9 +47,8 @@ export interface Property {
   unique: boolean
 }
 
-export interface ModelId {
+export interface ModelId extends TinyValue {
   _type: 'model.id'
-  value: string
 }
 
 export interface ModelIdAndName {
@@ -86,19 +86,16 @@ export interface HasManyRelationship {
 export type Cardinality = 'one' | 'many'
 export type Relationship = HasOneRelationship | HasManyRelationship
 
-export interface ModelName {
+export interface ModelName extends TinyValue {
   _type: 'model.name'
-  value: string
 }
 
-export interface RelationshipName {
+export interface RelationshipName extends TinyValue {
   _type: 'relationship.name'
-  value: string
 }
 
-export interface RelationshipId {
+export interface RelationshipId extends TinyValue {
   _type: 'relationship.id'
-  value: string
 }
 
 export const relationshipNameFns = {
@@ -145,14 +142,12 @@ export interface ModelPath<E extends ModelPathElement> {
   parentElements: ModelPathElement[]
 }
 
-export interface DataRecordId {
+export interface DataRecordId extends TinyValue {
   _type: 'data.record.id'
-  value: string
 }
 
-export interface TimestampEpochMillis {
+export interface TimestampEpochMillis extends TinyValue<number> {
   _type: 'timestamp.epoch.millis'
-  value: number
 }
 
 export function timestampEpochMillis(value = clock.now().getTime()): TimestampEpochMillis {
@@ -162,9 +157,8 @@ export function timestampEpochMillis(value = clock.now().getTime()): TimestampEp
   }
 }
 
-export interface UserId {
+export interface UserId extends TinyValue {
   _type: 'user.id'
-  value: string
 }
 
 export interface DataRecord {
@@ -212,9 +206,8 @@ export interface DataRecordPath {
   lastElement: Property
 }
 
-export interface DottedName {
+export interface DottedName extends TinyValue {
   _type: 'dotted.name'
-  name: string
 }
 
 export type ModelOption = Option<Model>
@@ -231,10 +224,9 @@ export function emptyModel(name: string | ModelName): Model {
   }
 }
 
-export interface DottedPath {
+export interface DottedPath extends TinyValue {
   _type: 'dotted.path'
   partType: 'id' | 'name'
-  value: string
 }
 
 export const dottedPathFns = {
