@@ -39,7 +39,7 @@ export const attachmentPropertyDescriptor: PropertyDescriptor<AttachmentProperty
   {
     _type: 'property.descriptor',
     propertyType: attachmentPropertyType,
-    name: { _type: 'dotted.name', name: 'Attachment.Any' },
+    name: { _type: 'dotted.name', value: 'Attachment.Any' },
     isRequireable: false,
     isUniqueable: false,
     validateProperty,

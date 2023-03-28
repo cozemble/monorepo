@@ -33,7 +33,7 @@ import { newStringPropertyModelEvent } from './events'
 export const stringPropertyDescriptor: PropertyDescriptor<StringProperty, string> = {
   _type: 'property.descriptor',
   propertyType: stringPropertyType,
-  name: { _type: 'dotted.name', name: 'String' },
+  name: { _type: 'dotted.name', value: 'String' },
   isRequireable: true,
   isUniqueable: true,
   validateProperty,

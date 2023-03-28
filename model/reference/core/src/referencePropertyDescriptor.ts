@@ -25,7 +25,7 @@ export const referencePropertyDescriptor: PropertyDescriptor<ReferenceProperty, 
   {
     _type: 'property.descriptor',
     propertyType: referencePropertyType,
-    name: { _type: 'dotted.name', name: 'Reference.Another Record' },
+    name: { _type: 'dotted.name', value: 'Reference.Another Record' },
     isRequireable: true,
     isUniqueable: false,
     validateProperty,
