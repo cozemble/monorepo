@@ -1,11 +1,11 @@
 import { expect, test } from 'vitest'
-import { dataRecordFns, modelFns, modelOptions, propertyFns, relationshipFns } from '../src'
+import { dataRecordFns, modelFns, modelOptions, propertyFns, nestedModelFns } from '../src'
 import type { DataRecord } from '@cozemble/model-core'
 
 test('one level deep has-one relationship', () => {
   const child = modelFns.newInstance('child', modelOptions.withProperty(propertyFns.newInstance()))
-  const childRelationship = relationshipFns.newInstance('Child', child.id, 'one')
-  const parent = modelFns.newInstance('parent', modelOptions.withRelationships(childRelationship))
+  const childRelationship = nestedModelFns.newInstance('Child', child.id, 'one')
+  const parent = modelFns.newInstance('parent', modelOptions.withNestedModels(childRelationship))
   let record = dataRecordFns.newInstance(parent, 'test-user')
   expect(record.values[childRelationship.id.value]).toBeUndefined()
   record = dataRecordFns.fullStructure([parent, child], record)
@@ -17,10 +17,10 @@ test('one level deep has-one relationship', () => {
 
 test('two levels deep has-one relationship', () => {
   const child = modelFns.newInstance('child', modelOptions.withProperty(propertyFns.newInstance()))
-  const childRelationship = relationshipFns.newInstance('Child', child.id, 'one')
-  const middle = modelFns.newInstance('middle', modelOptions.withRelationships(childRelationship))
-  const middleRelationship = relationshipFns.newInstance('Middle', middle.id, 'one')
-  const parent = modelFns.newInstance('parent', modelOptions.withRelationships(middleRelationship))
+  const childRelationship = nestedModelFns.newInstance('Child', child.id, 'one')
+  const middle = modelFns.newInstance('middle', modelOptions.withNestedModels(childRelationship))
+  const middleRelationship = nestedModelFns.newInstance('Middle', middle.id, 'one')
+  const parent = modelFns.newInstance('parent', modelOptions.withNestedModels(middleRelationship))
   let record = dataRecordFns.newInstance(parent, 'test-user')
   expect(record.values[middleRelationship.id.value]).toBeUndefined()
   record = dataRecordFns.fullStructure([parent, middle, child], record)
@@ -37,10 +37,10 @@ test('two levels deep has-one relationship', () => {
 
 test('two levels deep has-one relationship with middle existing', () => {
   const child = modelFns.newInstance('child', modelOptions.withProperty(propertyFns.newInstance()))
-  const childRelationship = relationshipFns.newInstance('Child', child.id, 'one')
-  const middle = modelFns.newInstance('middle', modelOptions.withRelationships(childRelationship))
-  const middleRelationship = relationshipFns.newInstance('Middle', middle.id, 'one')
-  const parent = modelFns.newInstance('parent', modelOptions.withRelationships(middleRelationship))
+  const childRelationship = nestedModelFns.newInstance('Child', child.id, 'one')
+  const middle = modelFns.newInstance('middle', modelOptions.withNestedModels(childRelationship))
+  const middleRelationship = nestedModelFns.newInstance('Middle', middle.id, 'one')
+  const parent = modelFns.newInstance('parent', modelOptions.withNestedModels(middleRelationship))
   let parentRecord = dataRecordFns.newInstance(parent, 'test-user')
   let middleRecord = dataRecordFns.newInstance(middle, 'test-user')
   parentRecord.values[middleRelationship.id.value] = middleRecord
@@ -58,8 +58,8 @@ test('two levels deep has-one relationship with middle existing', () => {
 
 test('one level deep has-many relationship', () => {
   const child = modelFns.newInstance('child', modelOptions.withProperty(propertyFns.newInstance()))
-  const childRelationship = relationshipFns.newInstance('Children', child.id, 'many')
-  const parent = modelFns.newInstance('parent', modelOptions.withRelationships(childRelationship))
+  const childRelationship = nestedModelFns.newInstance('Children', child.id, 'many')
+  const parent = modelFns.newInstance('parent', modelOptions.withNestedModels(childRelationship))
   let record = dataRecordFns.newInstance(parent, 'test-user')
   expect(record.values[childRelationship.id.value]).toBeUndefined()
   record = dataRecordFns.fullStructure([parent, child], record)
@@ -68,11 +68,11 @@ test('one level deep has-many relationship', () => {
 
 test('top level has-many with child has-one', () => {
   const child = modelFns.newInstance('child', modelOptions.withProperty(propertyFns.newInstance()))
-  const childRelationship = relationshipFns.newInstance('Children', child.id, 'one')
-  const middle = modelFns.newInstance('middle', modelOptions.withRelationships(childRelationship))
-  const middleRelationship = relationshipFns.newInstance('Middle', middle.id, 'many')
+  const childRelationship = nestedModelFns.newInstance('Children', child.id, 'one')
+  const middle = modelFns.newInstance('middle', modelOptions.withNestedModels(childRelationship))
+  const middleRelationship = nestedModelFns.newInstance('Middle', middle.id, 'many')
 
-  const parent = modelFns.newInstance('parent', modelOptions.withRelationships(middleRelationship))
+  const parent = modelFns.newInstance('parent', modelOptions.withNestedModels(middleRelationship))
   let parentRecord = dataRecordFns.newInstance(parent, 'test-user')
   let middleRecord = dataRecordFns.newInstance(middle, 'test-user')
   parentRecord.values[middleRelationship.id.value] = [middleRecord]

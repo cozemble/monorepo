@@ -33,7 +33,6 @@
   },
   "dependencies": {
     "@cozemble/data-editor-sdk": "workspace:*",
-    "@cozemble/data-hasura-mutations": "workspace:*",
     "@cozemble/graphql-client": "workspace:*",
     "@cozemble/lang-util": "workspace:*",
     "@cozemble/model-api": "workspace:*",

@@ -1,6 +1,6 @@
 <script lang="ts">
     import type {Property, PropertyId} from '@cozemble/model-core'
-    import {modelIdAndNameFns, propertyDescriptors, propertyNameFns, relationshipNameFns,} from '@cozemble/model-core'
+    import {modelIdAndNameFns, nestedModelNameFns, propertyDescriptors, propertyNameFns,} from '@cozemble/model-core'
     import PropertyEditor from './PropertyEditor.svelte'
     import AddNestedModelDialog from './AddNestedModelDialog.svelte'
     import type {ModelEditorHost} from './ModelEditorHost'
@@ -17,7 +17,7 @@
     $: propertyBeingEdited = modelFns.maybePropertyWithId(model, propertyIdBeingEdited)
 
     function addProperty() {
-        const propertyName = `Property ${model.properties.length + 1}`
+        const propertyName = `Property ${model.slots.length + 1}`
         host.modelChanged(
             model.id,
             propertyDescriptors
@@ -55,11 +55,11 @@
         host.modelAdded(relatedModel)
         host.modelChanged(
             model.id,
-            coreModelEvents.relationshipAdded(
+            coreModelEvents.nestedModelAdded(
                 parentModel,
                 childModel,
                 cardinality,
-                relationshipNameFns.newInstance(relationshipName),
+                nestedModelNameFns.newInstance(relationshipName),
             ),
         )
         addingNestedModel = false
@@ -83,22 +83,22 @@
         <table>
             <thead>
             <tr>
-                {#each model.properties as property}
-                    <th>{property.name.value}</th>
+                {#each model.slots as slot}
+                    <th>{slot.name.value}</th>
                 {/each}
             </tr>
             </thead>
             <tbody>
             <tr>
-                {#each model.properties as property}
+                {#each model.slots as slot}
                     <td>
-                        {#if property._type === 'property'}
-                            <button on:click={() => editProperty(property)}
+                        {#if slot._type === 'property'}
+                            <button on:click={() => editProperty(slot)}
                                     class="btn btn-active btn-ghost edit-property"
-                                    data-property-name={property.name.value}>Edit
+                                    data-property-name={slot.name.value}>Edit
                             </button>
                         {:else}
-                            <p>To do {property._type}</p>
+                            <p>To do {slot._type}</p>
                         {/if}
                     </td>
                 {/each}
@@ -116,10 +116,10 @@
     </div>
 {/if}
 
-{#each model.relationships as relationship}
-    {@const eventSourced = host.modelWithId(allModels, relationship.modelId)}
-    <div class="relationship-container">
-        <h5>{relationship.name.value}</h5>
+{#each model.nestedModels as nestedModel}
+    {@const eventSourced = host.modelWithId(allModels, nestedModel.modelId)}
+    <div class="nested-model-container">
+        <h5>{nestedModel.name.value}</h5>
         <svelte:self {allModels} {eventSourced} {host}/>
     </div>
 {/each}
@@ -129,7 +129,7 @@
         margin-top: 1em;
     }
 
-    .relationship-container {
+    .nested-model-container {
         margin-left: 30px;
     }
 

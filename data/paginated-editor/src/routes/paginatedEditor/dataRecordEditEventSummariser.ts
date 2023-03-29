@@ -10,8 +10,8 @@ export function dataRecordEditEventSummariser(editEvent: DataRecordEditEvent): s
     const parentPath = dataRecordPathElementFns.toDottedNamePath(editEvent.parentPath).value
     const path =
       parentPath === ''
-        ? editEvent.relationship.name.value
-        : `${parentPath}.${editEvent.relationship.name.value}`
+        ? editEvent.nestedModel.name.value
+        : `${parentPath}.${editEvent.nestedModel.name.value}`
     return `Added item to ${path}`
   }
   return null

@@ -14,18 +14,18 @@ import {
   modelNameFns,
   type ModelPath,
   type ModelPathElement,
+  type NestedModel,
   propertyDescriptors,
-  type Relationship,
 } from '@cozemble/model-core'
 import { clock, mandatory, options, strings } from '@cozemble/lang-util'
 import { propertyFns } from './propertyFns'
-import { relationshipFns } from './relationshipFns'
 import { modelPathFns } from './modelPathFns'
 import {
   ManyCardinalityValuesForModelPath,
   SingleCardinalityValuesForModelPath,
   singleCardinalityValuesForModelPathResponse,
 } from './valuesForModelPath'
+import { nestedModelFns } from './nestedModelFns'
 
 export const modelOptions = {
   withProperty(p: Property | string): ModelOption {
@@ -35,10 +35,10 @@ export const modelOptions = {
     return this.withProperties(p)
   },
   withProperties(...ps: Property[]): ModelOption {
-    return (model) => ({ ...model, properties: [...model.properties, ...ps] })
+    return (model) => ({ ...model, slots: [...model.slots, ...ps] })
   },
-  withRelationships(...rs: Relationship[]): ModelOption {
-    return (model) => ({ ...model, relationships: [...model.relationships, ...rs] })
+  withNestedModels(...ns: NestedModel[]): ModelOption {
+    return (model) => ({ ...model, nestedModels: [...model.nestedModels, ...ns] })
   },
   withParentModelId(parentModelId: ModelId): ModelOption {
     return (model) => ({ ...model, parentModelId })
@@ -76,7 +76,7 @@ export const modelFns = {
   },
   propertyWithId(model: Model, propertyId: PropertyId): Property {
     return mandatory(
-      model.properties.find(
+      model.slots.find(
         (p) => p.id.value === propertyId.value && p._type === 'property',
       ) as Property,
       `Property not found: ${propertyId.value}`,
@@ -87,7 +87,7 @@ export const modelFns = {
       return null
     }
     return mandatory(
-      model.properties.find(
+      model.slots.find(
         (p) => p.id.value === propertyId.value && p._type === 'property',
       ) as Property,
       `Property not found: ${propertyId.value}`,
@@ -104,18 +104,18 @@ export const modelFns = {
       updatedMillis: { _type: 'timestamp.epoch.millis', value: clock.now().getTime() },
     }
   },
-  addRelationship(
+  addNestedModelRelationship(
     cardinality: Cardinality,
     modelName: string,
-    relationshipName: string,
+    nestedName: string,
     model: Model,
   ): { model: Model; relatedModel: Model } {
     const relatedModel = modelFns.newInstance(modelName, modelOptions.withParentModelId(model.id))
     model = {
       ...model,
-      relationships: [
-        ...model.relationships,
-        relationshipFns.newInstance(relationshipName, relatedModel.id, cardinality),
+      nestedModels: [
+        ...model.nestedModels,
+        nestedModelFns.newInstance(nestedName, relatedModel.id, cardinality),
       ],
     }
     return { model, relatedModel }
@@ -124,45 +124,45 @@ export const modelFns = {
     const property = propertyFns.newInstance('Untitled Property', ...propertyOpts)
     return {
       ...model,
-      properties: [...model.properties, property],
+      slots: [...model.slots, property],
     }
   },
   allPaths(models: Model[], model: Model): ModelPath<ModelPathElement>[] {
-    const propertyPaths = model.properties.map((p) => modelPathFns.newInstance(p))
-    const relationshipPaths = model.relationships.flatMap((r) => {
+    const propertyPaths = model.slots.map((p) => modelPathFns.newInstance(p))
+    const nestedModelPaths = model.nestedModels.flatMap((r) => {
       return modelFns
         .allPaths(models, modelFns.findById(models, r.modelId))
         .map((p) => modelPathFns.prefix(r, p))
     })
-    return [...propertyPaths, ...relationshipPaths]
+    return [...propertyPaths, ...nestedModelPaths]
   },
   elementByName(model: Model, name: string): ModelPathElement {
     return mandatory(
-      model.properties.find((p) => p.name.value === name) ||
-        model.properties.find((p) => strings.camelize(p.name.value) === name) ||
-        model.relationships.find((r) => r.name.value === name) ||
-        model.relationships.find((r) => strings.camelize(r.name.value) === name),
+      model.slots.find((p) => p.name.value === name) ||
+        model.slots.find((p) => strings.camelize(p.name.value) === name) ||
+        model.nestedModels.find((r) => r.name.value === name) ||
+        model.nestedModels.find((r) => strings.camelize(r.name.value) === name),
       `Model element not found, name = ${name}, model = ${model.name.value}`,
     )
   },
   maybeElementById(model: Model, id: string): ModelPathElement | null {
     return (
-      model.properties.find((p) => p.id.value === id) ||
-      model.relationships.find((r) => r.id.value === id) ||
+      model.slots.find((p) => p.id.value === id) ||
+      model.nestedModels.find((r) => r.id.value === id) ||
       null
     )
   },
   elementById(model: Model, id: string): ModelPathElement {
     return mandatory(
-      model.properties.find((p) => p.id.value === id) ||
-        model.relationships.find((r) => r.id.value === id),
+      model.slots.find((p) => p.id.value === id) ||
+        model.nestedModels.find((r) => r.id.value === id),
       `Model element not found, id = ${name}, model = ${model.name.value}`,
     )
   },
   elementsByName(models: Model[], model: Model, names: string[]): ModelPathElement[] {
     return names.reduce((elements, name) => {
       const element = modelFns.elementByName(model, name)
-      if (element._type === 'relationship') {
+      if (element._type === 'nested.model') {
         model = modelFns.findById(models, element.modelId)
       }
       return [...elements, element]
@@ -171,7 +171,7 @@ export const modelFns = {
   elementsById(models: Model[], model: Model, ids: string[]): ModelPathElement[] {
     return ids.reduce((elements, id) => {
       const element = modelFns.elementById(model, id)
-      if (element._type === 'relationship') {
+      if (element._type === 'nested.model') {
         model = modelFns.findById(models, element.modelId)
       }
       return [...elements, element]
@@ -189,6 +189,6 @@ export const modelFns = {
     }, new Map<DataRecordPath, string[]>())
   },
   properties(model: Model): Property[] {
-    return model.properties.filter((p) => p._type === 'property') as Property[]
+    return model.slots.filter((p) => p._type === 'property') as Property[]
   },
 }

@@ -48,7 +48,6 @@
     "@cozemble/model-api": "workspace:*",
     "@cozemble/model-core": "workspace:*",
     "@cozemble/model-event-sourced": "workspace:*",
-    "@cozemble/model-sql-actions-player": "workspace:*",
     "@cozemble/model-string-core": "workspace:*",
     "@google-cloud/storage": "^6.9.4",
     "child-process-promise": "^2.2.1",

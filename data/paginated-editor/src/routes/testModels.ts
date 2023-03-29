@@ -1,4 +1,4 @@
-import { modelFns, modelOptions, relationshipFns } from '@cozemble/model-api'
+import { modelFns, modelOptions, nestedModelFns } from '@cozemble/model-api'
 import { stringPropertyFns, stringPropertyOptions } from '@cozemble/model-string-core'
 
 const addressModel = modelFns.newInstance(
@@ -32,7 +32,7 @@ export const customerModel = modelFns.newInstance(
       ),
     ),
   ),
-  modelOptions.withRelationships(relationshipFns.newInstance('Address', addressModel.id, 'one')),
+  modelOptions.withNestedModels(nestedModelFns.newInstance('Address', addressModel.id, 'one')),
 )
 
 export const lineItemModel = modelFns.newInstance(
@@ -48,9 +48,9 @@ export const invoiceModel = modelFns.newInstance(
   modelOptions.withProperties(
     stringPropertyFns.newInstance('Invoice ID', stringPropertyOptions.required),
   ),
-  modelOptions.withRelationships(
-    relationshipFns.newInstance('Customer', customerModel.id, 'one'),
-    relationshipFns.newInstance('Line Items', lineItemModel.id, 'many'),
+  modelOptions.withNestedModels(
+    nestedModelFns.newInstance('Customer', customerModel.id, 'one'),
+    nestedModelFns.newInstance('Line Items', lineItemModel.id, 'many'),
   ),
 )
 

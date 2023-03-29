@@ -19,24 +19,24 @@
         class="table">
     <thead class="">
     <tr>
-        {#each model.properties as property}
-            <th>{property.name.value}</th>
+        {#each model.slots as slot}
+            <th>{slot.name.value}</th>
         {/each}
     </tr>
     </thead>
     <tbody>
     <tr>
-        {#each model.properties as property}
-            {#if property._type === 'property'}
+        {#each model.slots as slot}
+            {#if slot._type === 'property'}
                 <DataRecordTableTd
-                        {property}
+                        property={slot}
                         {record}
                         {parentPath}
                         {errors}
                         {focus}
                         {showErrors}/>
             {:else}
-                <td>To do {property._type}</td>
+                <td>To do {slot._type}</td>
             {/if}
         {/each}
     </tr>

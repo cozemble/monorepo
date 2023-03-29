@@ -1,17 +1,11 @@
 import { describe, expect, test } from 'vitest'
-import {
-  dataRecordFns,
-  dataRecordPathFns,
-  modelFns,
-  modelOptions,
-  relationshipFns,
-} from '../../src'
+import { dataRecordFns, dataRecordPathFns, modelFns, modelOptions, nestedModelFns } from '../../src'
 import {
   registerStringProperty,
   stringPropertyFns,
   stringPropertyOptions,
 } from '@cozemble/model-string-core'
-import type { HasManyRelationship, HasOneRelationship } from '@cozemble/model-core'
+import type { NestedModel } from '@cozemble/model-core'
 
 registerStringProperty()
 
@@ -44,14 +38,14 @@ describe('Given a model with a top level required string property', () => {
 describe('Given a model with a required string property in a has-one relationship', () => {
   const requiredPostcode = stringPropertyFns.newInstance('postcode', stringPropertyOptions.required)
   const addressModel = modelFns.newInstance('Address', modelOptions.withProperty(requiredPostcode))
-  const addressRelationship = relationshipFns.newInstance(
+  const addressRelationship = nestedModelFns.newInstance(
     'address',
     addressModel.id,
     'one',
-  ) as HasOneRelationship
+  ) as NestedModel
   const customerModel = modelFns.newInstance(
     'Customer',
-    modelOptions.withRelationships(addressRelationship),
+    modelOptions.withNestedModels(addressRelationship),
   )
 
   test('validation fails record for relationship is missing', () => {
@@ -68,14 +62,14 @@ describe('Given a model with a required string property in a has-many relationsh
   const requiredPostcode = stringPropertyFns.newInstance('postcode', stringPropertyOptions.required)
   const addressModel = modelFns.newInstance('Address', modelOptions.withProperty(requiredPostcode))
   const emptyAddress = dataRecordFns.newInstance(addressModel, 'test-user')
-  const addressRelationship = relationshipFns.newInstance(
+  const addressRelationship = nestedModelFns.newInstance(
     'address',
     addressModel.id,
     'many',
-  ) as HasManyRelationship
+  ) as NestedModel
   const customerModel = modelFns.newInstance(
     'Customer',
-    modelOptions.withRelationships(addressRelationship),
+    modelOptions.withNestedModels(addressRelationship),
   )
 
   test('validation fails record for relationship is missing', () => {
@@ -86,7 +80,7 @@ describe('Given a model with a required string property in a has-many relationsh
       [
         dataRecordPathFns.newInstance(
           requiredPostcode,
-          dataRecordPathFns.newHasManyRelationshipPathElement(addressRelationship, 0),
+          dataRecordPathFns.newNestedRecordArrayPathElement(addressRelationship, 0),
         ),
         ['Required'],
       ],

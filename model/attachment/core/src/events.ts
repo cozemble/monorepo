@@ -44,18 +44,14 @@ export const newAttachmentPropertyModelEventDescriptor: ModelEventDescriptor = {
       id: event.propertyId,
       name: event.propertyName,
     }
-    if (
-      model.properties.some((p) => p.id.value === event.propertyId.value && p._type === 'property')
-    ) {
+    if (model.slots.some((p) => p.id.value === event.propertyId.value && p._type === 'property')) {
       newProperty = { ...newProperty, id: event.propertyId }
       return {
         ...model,
-        properties: model.properties.map((p) =>
-          p.id.value === event.propertyId.value ? newProperty : p,
-        ),
+        slots: model.slots.map((p) => (p.id.value === event.propertyId.value ? newProperty : p)),
       }
     }
-    return { ...model, properties: [...model.properties, newProperty] }
+    return { ...model, slots: [...model.slots, newProperty] }
   },
 }
 
@@ -91,7 +87,7 @@ export const attachmentModelChangedModelEventDescriptor: ModelEventDescriptor = 
   applyEvent: (model: Model, event: AttachmentModelChangedModelEvent): Model => {
     return {
       ...model,
-      properties: model.properties.map((p) => {
+      slots: model.slots.map((p) => {
         if (p.id.value === event.propertyId.value && p._type === 'property') {
           if (p.propertyType.value !== 'attachment.property') {
             throw new Error(`Property ${p.id.value} is not a attachment property`)

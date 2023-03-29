@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type {DataRecordPathElement, HasManyRelationship,} from '@cozemble/model-core'
+    import type {DataRecordPathElement, NestedModel,} from '@cozemble/model-core'
     import {dataRecordTableClicked} from './dataRecordTableClicked'
     import {modelFns} from '@cozemble/model-api'
     import DataRecordTableTd from './DataRecordTableTd.svelte'
@@ -9,7 +9,7 @@
 
     export let recordEditContext: RecordEditContext
     export let parentPath: DataRecordPathElement[]
-    export let relationship: HasManyRelationship
+    export let nestedModel: NestedModel
     export let pushContext: (context: RecordEditContext) => void
     export let popContext: () => void
 
@@ -21,8 +21,8 @@
 
     const dataRecordEditorClient = dataRecordEditor.getClient()
 
-    $: model = modelFns.findById(models, relationship.modelId)
-    $: records = $record.values[relationship.id.value] ?? []
+    $: model = modelFns.findById(models, nestedModel.modelId)
+    $: records = $record.values[nestedModel.id.value] ?? []
 
     async function onNewItemSaved(newRecord: EventSourcedDataRecord) {
         popContext()
@@ -30,7 +30,7 @@
             dataRecordEditEvents.hasManyItemAdded(
                 $record,
                 parentPath,
-                relationship,
+                nestedModel,
                 newRecord.record,
             ),
         )
@@ -58,18 +58,18 @@
 >
     <thead>
     <tr>
-        {#each model.properties as property}
-            <th>{property.name.value}</th>
+        {#each model.slots as slot}
+            <th>{slot.name.value}</th>
         {/each}
     </tr>
     </thead>
     <tbody>
     {#each records as record}
         <tr>
-            {#each model.properties as property}
-                {#if property._type === 'property'}
+            {#each model.slots as slot}
+                {#if slot._type === 'property'}
                     <DataRecordTableTd
-                            {property}
+                            property={slot}
                             {record}
                             {parentPath}
                             errors={$errors}
@@ -77,7 +77,7 @@
                             showErrors={$showErrors}
                     />
                 {:else}
-                    <td>To do {property._type}</td>
+                    <td>To do {slot._type}</td>
                 {/if}
             {/each}
         </tr>

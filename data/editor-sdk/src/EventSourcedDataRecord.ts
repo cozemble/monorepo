@@ -17,7 +17,7 @@ function applyEvent(models: Model[], event: DataRecordEditEvent, record: DataRec
     return dataRecordPathFns.addHasManyItem(
       models,
       event.parentPath,
-      event.relationship,
+      event.nestedModel,
       record,
       event.newRecord,
     )

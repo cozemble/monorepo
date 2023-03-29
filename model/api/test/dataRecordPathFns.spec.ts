@@ -5,10 +5,10 @@ import {
   modelFns,
   modelOptions,
   propertyFns,
-  relationshipFns,
+  nestedModelFns,
 } from '../src'
 import { registerStringProperty } from '@cozemble/model-string-core'
-import type { HasOneRelationship } from '@cozemble/model-core'
+import type { NestedModel } from '@cozemble/model-core'
 
 registerStringProperty()
 
@@ -17,7 +17,7 @@ describe('given a model with root property', () => {
     'Customer',
     modelOptions.withProperty(propertyFns.newInstance('First name')),
   )
-  const property = customer.properties[0]
+  const property = modelFns.properties(customer)[0]
 
   test('getValue returns null when the record is null or undefined', () => {
     expect(dataRecordPathFns.getValue(dataRecordPathFns.newInstance(property), null)).toBeNull()
@@ -44,10 +44,10 @@ describe('given a model with root property in a has-one relationship', () => {
   )
   const customer = modelFns.newInstance(
     'Customer',
-    modelOptions.withRelationships(relationshipFns.newInstance('Address', address.id, 'one')),
+    modelOptions.withNestedModels(nestedModelFns.newInstance('Address', address.id, 'one')),
   )
-  const relationship = customer.relationships[0] as HasOneRelationship
-  const property = address.properties[0]
+  const relationship = customer.nestedModels[0]
+  const property = modelFns.properties(address)[0]
   const models = [customer, address]
 
   test('getValue returns null when the relationship value is null', () => {

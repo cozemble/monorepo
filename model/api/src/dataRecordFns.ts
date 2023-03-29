@@ -5,12 +5,12 @@ import {
   type DataRecordAndPath,
   dataRecordAndPathFns,
   dottedPathFns,
-  hasManyRelationshipPathElement,
   type Model,
   propertyDescriptors,
 } from '@cozemble/model-core'
 import { modelFns } from './modelsFns'
 import { dataRecordPathElementFns } from './dataRecordPathElementFns'
+import { nestedRecordArrayPathElement } from '@cozemble/model-core'
 
 function getChildRecord(
   models: Model[],
@@ -51,9 +51,9 @@ export const dataRecordFns = {
     createdBy = dataRecord.createdBy,
   ): DataRecord {
     const model = modelFns.findById(models, dataRecord.modelId)
-    return model.relationships.reduce((acc, rel) => {
-      if (rel._type === 'relationship') {
-        if (rel.subType === 'has.one.relationship') {
+    return model.nestedModels.reduce((acc, rel) => {
+      if (rel._type === 'nested.model') {
+        if (rel.cardinality === 'one') {
           if (!acc.values[rel.id.value]) {
             acc.values[rel.id.value] = dataRecordFns.newInstance(
               modelFns.findById(models, rel.modelId),
@@ -84,26 +84,24 @@ export const dataRecordFns = {
       updatedMillis: { _type: 'timestamp.epoch.millis', value: clock.now().getTime() },
       values: {},
     }
-    record = model.properties.reduce((record, property) => {
-      if (property._type === 'model.reference' || property._type === 'inlined.model.reference') {
+    record = model.slots.reduce((record, slot) => {
+      if (slot._type === 'model.reference' || slot._type === 'inlined.model.reference') {
         return record
       }
-      const givenValue = givenValues[property.name.value]
+      const givenValue = givenValues[slot.name.value]
       const hasGivenValue = givenValue !== undefined
-      const value = hasGivenValue
-        ? givenValue
-        : propertyDescriptors.mandatory(property).randomValue()
-      return modelFns.setPropertyValue(model, property, value, record)
+      const value = hasGivenValue ? givenValue : propertyDescriptors.mandatory(slot).randomValue()
+      return modelFns.setPropertyValue(model, slot, value, record)
     }, record)
-    record = model.relationships.reduce((record, relationship) => {
-      if (relationship.subType === 'has.one.relationship') {
-        const givenValue = givenValues[relationship.name.value]
+    record = model.nestedModels.reduce((record, nestedModel) => {
+      if (nestedModel.cardinality === 'one') {
+        const givenValue = givenValues[nestedModel.name.value]
         if (givenValue) {
           if (givenValue._type === 'data.record') {
-            record.values[relationship.id.value] = givenValue
+            record.values[nestedModel.id.value] = givenValue
           } else {
-            const relatedModel = modelFns.findById(models, relationship.modelId)
-            record.values[relationship.id.value] = dataRecordFns.random(
+            const relatedModel = modelFns.findById(models, nestedModel.modelId)
+            record.values[nestedModel.id.value] = dataRecordFns.random(
               models,
               relatedModel,
               givenValue,
@@ -111,13 +109,13 @@ export const dataRecordFns = {
           }
         }
       }
-      if (relationship.subType === 'has.many.relationship') {
-        const givenValue = givenValues[relationship.name.value]
+      if (nestedModel.cardinality === 'many') {
+        const givenValue = givenValues[nestedModel.name.value]
         if (givenValue) {
           if (!Array.isArray(givenValue)) {
-            throw new Error(`Given value for ${relationship.name.value} is not an array`)
+            throw new Error(`Given value for ${nestedModel.name.value} is not an array`)
           }
-          record.values[relationship.id.value] = givenValue
+          record.values[nestedModel.id.value] = givenValue
         }
       }
       return record
@@ -132,22 +130,22 @@ export const dataRecordFns = {
       dottedNamePath,
     )
     return mandatory(
-      dataRecordPathElementFns.getChildRecord(models, record, pathElements),
+      dataRecordPathElementFns.getNestedRecord(models, record, pathElements),
       `Child record not found for path ${dottedNamePath.value}`,
     )
   },
   childRecords: (models: Model[], record: DataRecord): DataRecordAndPath[] => {
     const model = modelFns.findById(models, record.modelId)
-    return model.relationships.reduce((acc, rel) => {
-      if (rel.subType === 'has.one.relationship') {
-        const childRecord = record.values[rel.id.value] ?? null
-        acc = getChildRecord(models, childRecord, acc, rel)
+    return model.nestedModels.reduce((acc, nested) => {
+      if (nested.cardinality === 'one') {
+        const childRecord = record.values[nested.id.value] ?? null
+        acc = getChildRecord(models, childRecord, acc, nested)
       } else {
-        const childRecords = record.values[rel.id.value] ?? []
+        const childRecords = record.values[nested.id.value] ?? []
         acc = [
           ...acc,
           ...childRecords.flatMap((cr: DataRecord, index: number) =>
-            getChildRecord(models, cr, acc, hasManyRelationshipPathElement(rel, index)),
+            getChildRecord(models, cr, acc, nestedRecordArrayPathElement(nested, index)),
           ),
         ]
       }

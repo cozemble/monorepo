@@ -104,8 +104,8 @@
     <table class="table">
         <thead>
         <tr>
-            {#each model.properties as property}
-                <th class="data-cell">{property.name.value}</th>
+            {#each model.slots as slot}
+                <th class="data-cell">{slot.name.value}</th>
             {/each}
             <th>Actions</th>
         </tr>
@@ -113,11 +113,11 @@
         <tbody>
         {#each records as record, rowIndex}
             <tr data-row-index={rowIndex}>
-                {#each model.properties as property, colIndex}
-                    {#if property._type === "property"}
-                        <DataTd {focus} {rowIndex} {colIndex} {record} {property}/>
+                {#each model.slots as slot, colIndex}
+                    {#if slot._type === "property"}
+                        <DataTd {focus} {rowIndex} {colIndex} {record} property={slot}/>
                     {:else}
-                        <td>To do {property._type}</td>
+                        <td>To do {slot._type}</td>
                     {/if}
                 {/each}
                 <td>

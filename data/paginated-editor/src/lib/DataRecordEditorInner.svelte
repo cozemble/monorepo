@@ -20,22 +20,22 @@
 
 <DataRecordTable record={$record} {model} {focus} {parentPath} errors={$errors} showErrors={$showErrors}/>
 
-{#each model.relationships as relationship}
-    {@const relatedModel = modelFns.findById(models, relationship.modelId)}
-    <h3>{relationship.name.value}</h3>
-    {#if relationship.subType === 'has.one.relationship'}
+{#each model.nestedModels as nestedModel}
+    {@const relatedModel = modelFns.findById(models, nestedModel.modelId)}
+    <h3>{nestedModel.name.value}</h3>
+    {#if nestedModel.cardinality === 'one'}
         <svelte:self
                 {models}
                 model={relatedModel}
-                record={$record.values[relationship.id.value]}
+                record={$record.values[nestedModel.id.value]}
                 {errors}
                 {showErrors}
                 {focus}
-                parentPath={[...parentPath, relationship]}/>
+                parentPath={[...parentPath, nestedModel]}/>
     {:else}
         <HasManyRelationship
                 {recordEditContext}
-                {relationship}
+                {nestedModel}
                 {parentPath}
                 {pushContext}
                 {popContext}/>

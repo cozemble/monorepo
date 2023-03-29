@@ -7,10 +7,9 @@ import type {
   ModelName,
   PropertyId,
   PropertyName,
-  RelationshipName,
 } from '@cozemble/model-core'
-import { modelEventDescriptors, modelEventFns, propertyIdFns } from '@cozemble/model-core'
-import { modelIdFns, relationshipFns } from '@cozemble/model-api'
+import { modelEventDescriptors, modelEventFns, NestedModelName } from '@cozemble/model-core'
+import { modelIdFns, nestedModelFns } from '@cozemble/model-api'
 
 export interface ModelRenamed extends ModelEvent {
   _type: 'model.renamed.event'
@@ -61,56 +60,56 @@ const propertyRenamedDescriptor: ModelEventDescriptor<PropertyRenamed> = {
   applyEvent: (model, event) => {
     return {
       ...model,
-      properties: model.properties.map((property) => {
-        if (property.id.value === event.propertyId.value && property._type === 'property') {
+      slots: model.slots.map((slot) => {
+        if (slot.id.value === event.propertyId.value && slot._type === 'property') {
           return {
-            ...property,
+            ...slot,
             name: event.newPropertyName,
           }
         } else {
-          return property
+          return slot
         }
       }),
     }
   },
 }
 
-export interface RelationshipAdded extends ModelEvent {
-  _type: 'relationship.added.event'
+export interface NestedModelAdded extends ModelEvent {
+  _type: 'nested.model.added.event'
   cardinality: Cardinality
   parentModel: ModelIdAndName
   childModel: ModelIdAndName
-  relationshipName: RelationshipName
+  nestedModelName: NestedModelName
 }
 
-function relationshipAdded(
+function nestedModelAdded(
   parentModel: ModelIdAndName,
   childModel: ModelIdAndName,
   cardinality: Cardinality,
-  relationshipName: RelationshipName,
-): RelationshipAdded {
+  nestedModelName: NestedModelName,
+): NestedModelAdded {
   return {
-    _type: 'relationship.added.event',
+    _type: 'nested.model.added.event',
     ...modelEventFns.coreParts(parentModel.id),
     parentModel,
     childModel,
     cardinality,
-    relationshipName,
+    nestedModelName,
   }
 }
 
-const relationshipAddedDescriptor: ModelEventDescriptor<RelationshipAdded> = {
+const nestedModelAddedDescriptor: ModelEventDescriptor<NestedModelAdded> = {
   _type: 'model.event.descriptor',
-  modelEventType: 'relationship.added.event',
+  modelEventType: 'nested.model.added.event',
   applyEvent: (model, event) => {
-    const newRelationship = relationshipFns.newInstance(
-      event.relationshipName,
+    const newNestedModel = nestedModelFns.newInstance(
+      event.nestedModelName,
       event.childModel.id,
       event.cardinality,
     )
     return {
       ...model,
-      relationships: [...model.relationships, newRelationship],
+      nestedModels: [...model.nestedModels, newNestedModel],
     }
   },
 }
@@ -156,7 +155,7 @@ const booleanPropertyChangeDescriptor: ModelEventDescriptor<BooleanPropertyChang
   applyEvent: (model, event) => {
     return {
       ...model,
-      properties: model.properties.map((property) => {
+      slots: model.slots.map((property) => {
         if (property.id.value === event.propertyId.value && property._type === 'property') {
           return {
             ...property,
@@ -172,13 +171,13 @@ const booleanPropertyChangeDescriptor: ModelEventDescriptor<BooleanPropertyChang
 
 modelEventDescriptors.register(modelRenamedDescriptor)
 modelEventDescriptors.register(propertyRenamedDescriptor)
-modelEventDescriptors.register(relationshipAddedDescriptor)
+modelEventDescriptors.register(nestedModelAddedDescriptor)
 modelEventDescriptors.register(booleanPropertyChangeDescriptor)
 
 export const coreModelEvents = {
   modelRenamed,
   propertyRenamed,
-  relationshipAdded,
+  nestedModelAdded,
   modelCreated,
   booleanPropertyChanged,
 }
