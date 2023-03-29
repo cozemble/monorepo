@@ -2,11 +2,10 @@
     import {onMount} from 'svelte'
 
     import {registerAllProperties, registerAllPropertyConfigurers,} from '@cozemble/model-assembled'
-    import ModelEditor from '$lib/ModelEditor.svelte'
+    import ModelEditor from '../../lib/ModelEditor.svelte'
     import {allModels, bootstrapHost, clearLocalStorage, host} from './host'
     import type {EventSourcedModel} from '@cozemble/model-event-sourced'
-    import {events, eventTypes, sqlMigrations} from './toSql'
-    import {registerStringPropertyEventToSqlActions} from '@cozemble/model-string-sql-actions'
+    import {events, eventTypes} from './toSql'
 
     let mounted = false
     let firstModel: EventSourcedModel | null = null
@@ -19,18 +18,6 @@
         bootstrapHost(localStorage)
         firstModel = $allModels[0]
     })
-
-    registerStringPropertyEventToSqlActions()
-
-    async function apply() {
-        await fetch('http://localhost:3000/api/v1/model/apply', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify($allModels),
-        })
-    }
 
     function showEvent(index: number) {
         eventIndexToShow = index
@@ -50,19 +37,13 @@
     <ModelEditor modelId={firstModel.model.id} {allModels} {host}/>
 {/if}
 <hr/>
-<pre>{#each $sqlMigrations as migration}{migration} <br/>{/each}</pre>
-<br/>
-<button type="button" on:click={apply}>Apply to database</button>
-<hr/>
 <br/>
 <div class="inspector">
     <div class="events-inspector">
         <div class="event-types">
             <h5>Event types</h5>
             {#each $eventTypes as eventType, index}
-                <a href="#!" class="event-type" on:click={() => showEvent(index)}
-                >{index}. {eventType}</a
-                ><br/>
+                <a href="#!" class="event-type" on:click={() => showEvent(index)}>{index}. {eventType}</a><br/>
             {/each}
         </div>
         {#if eventIndexToShow !== null}
@@ -75,9 +56,7 @@
     <div class="models-inspector">
         <h5>Models</h5>
         {#each $allModels as model, index}
-            <a href="#!" class="model-name" on:click={() => showModel(index)}
-            >{index}. {model.model.name.value}</a
-            ><br/>
+            <a href="#!" class="model-name" on:click={() => showModel(index)}>{index}. {model.model.name.value}</a><br/>
         {/each}
         {#if modelIndexToShow !== null}
             {@const model = $allModels[modelIndexToShow]}

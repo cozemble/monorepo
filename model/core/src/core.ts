@@ -67,53 +67,35 @@ export const modelIdAndNameFns = {
   },
 }
 
-export interface HasOneRelationship {
-  _type: 'relationship'
-  subType: 'has.one.relationship'
-  id: RelationshipId
-  name: RelationshipName
-  modelId: ModelId
-}
-
-export interface HasManyRelationship {
-  _type: 'relationship'
-  subType: 'has.many.relationship'
-  id: RelationshipId
-  name: RelationshipName
-  modelId: ModelId
-}
-
 export type Cardinality = 'one' | 'many'
-export type Relationship = HasOneRelationship | HasManyRelationship
+
+export interface NestedModelId extends TinyValue {
+  _type: 'nested.model.id'
+}
+
+export interface NestedModelName extends TinyValue {
+  _type: 'nested.model.name'
+}
+
+export const nestedModelNameFns = {
+  newInstance: (value: string): NestedModelName => {
+    return {
+      _type: 'nested.model.name',
+      value,
+    }
+  },
+}
+
+export interface NestedModel {
+  _type: 'nested.model'
+  id: NestedModelId
+  name: NestedModelName
+  cardinality: Cardinality
+  modelId: ModelId
+}
 
 export interface ModelName extends TinyValue {
   _type: 'model.name'
-}
-
-export interface RelationshipName extends TinyValue {
-  _type: 'relationship.name'
-}
-
-export interface RelationshipId extends TinyValue {
-  _type: 'relationship.id'
-}
-
-export const relationshipNameFns = {
-  newInstance: (value: string): RelationshipName => {
-    return {
-      _type: 'relationship.name',
-      value,
-    }
-  },
-}
-
-export const relationshipIdFns = {
-  newInstance: (value: string = uuids.v4()): RelationshipId => {
-    return {
-      _type: 'relationship.id',
-      value,
-    }
-  },
 }
 
 export const modelNameFns = {
@@ -165,11 +147,11 @@ export interface Model {
   id: ModelId
   parentModelId?: ModelId
   name: ModelName
-  properties: ModelSlot[]
-  relationships: Relationship[]
+  slots: ModelSlot[]
+  nestedModels: NestedModel[]
 }
 
-export type ModelPathElement = Relationship | Property | ModelReference | InlinedModelReference
+export type ModelPathElement = NestedModel | Property | ModelReference | InlinedModelReference
 
 export interface ModelPath<E extends ModelPathElement> {
   _type: 'model.path'
@@ -213,19 +195,19 @@ export interface ByIndexRecordReference {
 
 export type RecordReference = ByIndexRecordReference
 
-export interface HasManyRelationshipPathElement {
-  _type: 'has.many.relationship.path.element'
-  relationship: HasManyRelationship
+export interface NestedRecordArrayPathElement {
+  _type: 'nested.record.array.path.element'
+  nestedModel: NestedModel
   recordReference: RecordReference
 }
 
-export function hasManyRelationshipPathElement(
-  relationship: HasManyRelationship,
+export function nestedRecordArrayPathElement(
+  nestedModel: NestedModel,
   index: number,
-): HasManyRelationshipPathElement {
+): NestedRecordArrayPathElement {
   return {
-    _type: 'has.many.relationship.path.element',
-    relationship,
+    _type: 'nested.record.array.path.element',
+    nestedModel,
     recordReference: {
       _type: 'by.index.record.reference',
       index,
@@ -234,8 +216,8 @@ export function hasManyRelationshipPathElement(
 }
 
 export type DataRecordPathElement =
-  | HasManyRelationshipPathElement
-  | HasOneRelationship
+  | NestedRecordArrayPathElement
+  | NestedModel
   | ModelReference
   | InlinedModelReference
 
@@ -258,8 +240,8 @@ export function emptyModel(name: string | ModelName): Model {
     _type: 'model',
     id: { _type: 'model.id', value: uuids.v4() },
     name,
-    properties: [],
-    relationships: [],
+    slots: [],
+    nestedModels: [],
   }
 }
 

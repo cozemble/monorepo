@@ -5,10 +5,10 @@ import {
   modelFns,
   modelOptions,
   propertyFns,
-  relationshipFns,
+  nestedModelFns,
 } from '../../src'
 import { registerStringProperty } from '@cozemble/model-string-core'
-import { dottedPathFns, type HasOneRelationship, type Property } from '@cozemble/model-core'
+import { dottedPathFns, type NestedModel, type Property } from '@cozemble/model-core'
 import { addressModel, customerModel, invoiceModel, invoiceModels } from '../../src/invoiceModel'
 
 registerStringProperty()
@@ -18,7 +18,7 @@ describe('Given a model with a top level property', () => {
     'Customer',
     modelOptions.withProperties(propertyFns.newInstance('First name')),
   )
-  const [firstName] = customer.properties
+  const [firstName] = modelFns.properties(customer)
   const path = dataRecordPathFns.newInstance(firstName)
 
   test('setValue can set the value of that property', () => {
@@ -42,15 +42,15 @@ describe('Given a model nested property', () => {
     'Address',
     modelOptions.withProperties(propertyFns.newInstance('Street')),
   )
-  const [street] = address.properties
-  const addressRelationship = relationshipFns.newInstance(
+  const [street] = modelFns.properties(address)
+  const addressRelationship = nestedModelFns.newInstance(
     'Address',
     address.id,
     'one',
-  ) as HasOneRelationship
+  ) as NestedModel
   const customer = modelFns.newInstance(
     'Customer',
-    modelOptions.withRelationships(addressRelationship),
+    modelOptions.withNestedModels(addressRelationship),
   )
   const path = dataRecordPathFns.newInstance(street, addressRelationship)
   const models = [customer, address]
@@ -79,8 +79,8 @@ test('fromDottedPath two levels deep', () => {
     invoiceModel,
     dottedPathFns.newInstance('customer.address.line1', 'name'),
   )
-  const customer = modelFns.elementByName(invoiceModel, 'Customer') as HasOneRelationship
-  const address = modelFns.elementByName(customerModel, 'Address') as HasOneRelationship
+  const customer = modelFns.elementByName(invoiceModel, 'Customer') as NestedModel
+  const address = modelFns.elementByName(customerModel, 'Address') as NestedModel
   const line1 = modelFns.elementByName(addressModel, 'Line 1') as Property
   expect(path).toEqual(dataRecordPathFns.newInstance(line1, customer, address))
 })

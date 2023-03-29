@@ -1,7 +1,7 @@
 import uppercamelcase from 'uppercamelcase'
 import * as path from 'path'
 
-import { ModelName, PropertyType, RelationshipName } from '@cozemble/model-core'
+import { ModelName, PropertyType, NestedModelName } from '@cozemble/model-core'
 import { IProperty, TypeDefinition, scalarTypes } from './types/schema'
 
 function buildModelTypes({ propertyType, validations }: IProperty): TypeDefinition {
@@ -19,7 +19,7 @@ function getModelName({ value }: ModelName) {
   return uppercamelcase(path.parse(value).name)
 }
 
-function getRelationName({ value }: RelationshipName) {
+function getRelationName({ value }: NestedModelName) {
   if (typeof value === 'undefined') return ''
   return uppercamelcase(path.parse(value).name)
 }

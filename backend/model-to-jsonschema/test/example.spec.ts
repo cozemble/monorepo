@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { modelFns, modelOptions, propertyFns, relationshipFns } from '@cozemble/model-api'
+import { modelFns, modelOptions, propertyFns, nestedModelFns } from '@cozemble/model-api'
 import { modelToJsonSchema } from '../src/modelToJsonSchema'
 import { stringPropertyOptions } from '@cozemble/model-string-core'
 
@@ -25,9 +25,8 @@ describe('given a customer with a has-one address', () => {
         ),
       ),
     ),
-    modelOptions.withRelationships(relationshipFns.newInstance('Address', addressModel.id, 'one')),
+    modelOptions.withNestedModels(nestedModelFns.newInstance('Address', addressModel.id, 'one')),
   )
-
 
   const models = [customerModel, addressModel]
 

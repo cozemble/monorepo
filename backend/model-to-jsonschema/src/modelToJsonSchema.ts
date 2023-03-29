@@ -3,6 +3,7 @@ import _ from 'lodash'
 import { Model } from '@cozemble/model-core'
 import { buildModelTypes, getModelName, getRelationName } from './lib'
 import { IProperty, Schema } from './types/schema'
+import { modelFns } from '@cozemble/model-api'
 
 export function modelToJsonSchema(rootModel: Model, models: Model[]): Schema {
   return parser(rootModel, models)
@@ -27,7 +28,8 @@ function parser(rootModel: Model, models: Model[]) {
 }
 
 function parseModel(model: Model) {
-  const { name, properties, relationships } = model
+  const { name, nestedModels } = model
+  const properties = modelFns.properties(model)
   if (_.isUndefined(name)) throw new Error('Schema does not have an `name` property.')
   const modelName = getModelName(name)
 
@@ -48,7 +50,7 @@ function parseModel(model: Model) {
     }
   }
 
-  result.relations = relationships.map(({ name }) => {
+  result.relations = nestedModels.map(({ name }) => {
     return getRelationName(name)
   })
 

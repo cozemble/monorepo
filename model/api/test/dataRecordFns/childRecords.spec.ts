@@ -10,8 +10,8 @@ import {
 } from '../../src/invoiceModel'
 import {
   dataRecordAndPathFns,
-  hasManyRelationshipPathElement,
-  type HasOneRelationship,
+  nestedRecordArrayPathElement,
+  type NestedModel,
 } from '@cozemble/model-core'
 import { registerStringProperty } from '@cozemble/model-string-core'
 
@@ -20,7 +20,7 @@ registerStringProperty()
 describe('model with one has one relationship', () => {
   const address = dataRecordFns.random(invoiceModels, addressModel)
   const customer = dataRecordFns.random(invoiceModels, customerModel)
-  const addressRelationship = customerModel.relationships[0] as HasOneRelationship
+  const addressRelationship = customerModel.nestedModels[0]
 
   test('childRecords is empty if no record is there', () => {
     const childRecords = dataRecordFns.childRecords(invoiceModels, customer)
@@ -38,8 +38,8 @@ describe('model with nested has one relationship', () => {
   const address = dataRecordFns.random(invoiceModels, addressModel)
   const customer = dataRecordFns.random(invoiceModels, customerModel)
   const invoice = dataRecordFns.random(invoiceModels, invoiceModel)
-  const addressRelationship = customerModel.relationships[0] as HasOneRelationship
-  const customerRelationship = invoiceModel.relationships[0] as HasOneRelationship
+  const addressRelationship = customerModel.nestedModels[0]
+  const customerRelationship = invoiceModel.nestedModels[0]
 
   test('childRecords is empty if no record is there', () => {
     const childRecords = dataRecordFns.childRecords(invoiceModels, invoice)
@@ -98,7 +98,7 @@ describe('model with one has many relationship', () => {
     const childRecords = dataRecordFns.childRecords(invoiceModels, invoiceWithOneLineItem1)
     expect(childRecords).toEqual([
       dataRecordAndPathFns.newInstance(lineItem1, [
-        hasManyRelationshipPathElement(invoiceLineItemsRelationship, 0),
+        nestedRecordArrayPathElement(invoiceLineItemsRelationship, 0),
       ]),
     ])
   })
@@ -111,10 +111,10 @@ describe('model with one has many relationship', () => {
     const childRecords = dataRecordFns.childRecords(invoiceModels, invoiceWithOneLineItem1)
     expect(childRecords).toEqual([
       dataRecordAndPathFns.newInstance(lineItem1, [
-        hasManyRelationshipPathElement(invoiceLineItemsRelationship, 0),
+        nestedRecordArrayPathElement(invoiceLineItemsRelationship, 0),
       ]),
       dataRecordAndPathFns.newInstance(lineItem2, [
-        hasManyRelationshipPathElement(invoiceLineItemsRelationship, 1),
+        nestedRecordArrayPathElement(invoiceLineItemsRelationship, 1),
       ]),
     ])
   })

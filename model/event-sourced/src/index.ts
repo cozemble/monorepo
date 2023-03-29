@@ -2,7 +2,7 @@ export {
   coreModelEvents,
   ModelCreated,
   PropertyRenamed,
-  RelationshipAdded,
+  NestedModelAdded,
   ModelRenamed,
   BooleanPropertyChanged,
 } from './events'

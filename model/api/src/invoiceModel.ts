@@ -1,7 +1,7 @@
-import type { HasManyRelationship } from '@cozemble/model-core'
 import { stringPropertyFns, stringPropertyOptions } from '@cozemble/model-string-core'
 import { modelFns, modelOptions } from './modelsFns'
-import { relationshipFns } from './relationshipFns'
+import { nestedModelFns } from './nestedModelFns'
+import { NestedModel } from '@cozemble/model-core'
 
 export const addressModel = modelFns.newInstance(
   'Address',
@@ -34,7 +34,7 @@ export const customerModel = modelFns.newInstance(
       ),
     ),
   ),
-  modelOptions.withRelationships(relationshipFns.newInstance('Address', addressModel.id, 'one')),
+  modelOptions.withNestedModels(nestedModelFns.newInstance('Address', addressModel.id, 'one')),
 )
 
 export const lineItemModel = modelFns.newInstance(
@@ -50,15 +50,15 @@ export const invoiceModel = modelFns.newInstance(
   modelOptions.withProperties(
     stringPropertyFns.newInstance('Invoice ID', stringPropertyOptions.required),
   ),
-  modelOptions.withRelationships(
-    relationshipFns.newInstance('Customer', customerModel.id, 'one'),
-    relationshipFns.newInstance('Line Items', lineItemModel.id, 'many'),
+  modelOptions.withNestedModels(
+    nestedModelFns.newInstance('Customer', customerModel.id, 'one'),
+    nestedModelFns.newInstance('Line Items', lineItemModel.id, 'many'),
   ),
 )
 
 export const invoiceLineItemsRelationship = modelFns.elementByName(
   invoiceModel,
   'Line Items',
-) as HasManyRelationship
+) as NestedModel
 
 export const invoiceModels = [invoiceModel, customerModel, lineItemModel, addressModel]

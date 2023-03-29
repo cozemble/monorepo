@@ -1,1 +1,0 @@
-export { hasuraMutationFromEvents } from './hasuraMutationFromEvents'

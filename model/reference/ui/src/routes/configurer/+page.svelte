@@ -8,7 +8,7 @@
     import type {ReferenceProperty} from "@cozemble/model-reference-core";
 
     const model = modelFns.newInstance('Invoice', modelOptions.withProperty(referencePropertyFns.newInstance('Property 1')))
-    const property = model.properties[0] as ReferenceProperty
+    const property = modelFns.properties(model)[0] as ReferenceProperty
     const formErrorState = writable(emptyFormErrorState())
     editorHost.setErrorState(formErrorState)
 

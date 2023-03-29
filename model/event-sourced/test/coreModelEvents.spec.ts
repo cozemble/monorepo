@@ -1,4 +1,4 @@
-import { modelFns, modelOptions, propertyFns, relationshipFns } from '@cozemble/model-api'
+import { modelFns, modelOptions, propertyFns, nestedModelFns } from '@cozemble/model-api'
 import { expect, test } from 'vitest'
 import { coreModelEvents } from '../src'
 import {
@@ -6,7 +6,7 @@ import {
   modelIdAndNameFns,
   modelNameFns,
   propertyNameFns,
-  relationshipNameFns,
+  nestedModelNameFns,
 } from '@cozemble/model-core'
 import { arrays } from '@cozemble/lang-util'
 
@@ -24,7 +24,7 @@ test('has event that renames a property in a model model', () => {
     'Customer',
     modelOptions.withProperty(propertyFns.newInstance('name')),
   )
-  const nameProperty = customer.properties[0]
+  const nameProperty = modelFns.properties(customer)[0]
   const event = coreModelEvents.propertyRenamed(
     customer.id,
     nameProperty.id,
@@ -32,7 +32,7 @@ test('has event that renames a property in a model model', () => {
   )
 
   const mutatedCustomer = modelEventDescriptors.applyEvent(customer, event)
-  const mutatedNameProperty = mutatedCustomer.properties[0]
+  const mutatedNameProperty = modelFns.properties(mutatedCustomer)[0]
 
   expect(mutatedNameProperty.name).toEqual(propertyNameFns.newInstance('fullName'))
 })
@@ -42,17 +42,17 @@ test('has event that adds a relationship to a model', () => {
   const address = modelFns.newInstance('Address')
   const customRef = modelIdAndNameFns.newInstance(customer.id, customer.name)
   const addressRef = modelIdAndNameFns.newInstance(address.id, address.name)
-  const event = coreModelEvents.relationshipAdded(
+  const event = coreModelEvents.nestedModelAdded(
     customRef,
     addressRef,
     'one',
-    relationshipNameFns.newInstance('Address'),
+    nestedModelNameFns.newInstance('Address'),
   )
 
   const mutatedCustomer = modelEventDescriptors.applyEvent(customer, event)
 
-  expect(arrays.dropFields(mutatedCustomer.relationships, 'id')).toEqual(
-    arrays.dropFields([relationshipFns.newInstance('Address', address.id, 'one')], 'id'),
+  expect(arrays.dropFields(mutatedCustomer.nestedModels, 'id')).toEqual(
+    arrays.dropFields([nestedModelFns.newInstance('Address', address.id, 'one')], 'id'),
   )
 })
 
@@ -61,7 +61,7 @@ test('has event that makes a property required', () => {
     'Customer',
     modelOptions.withProperty(propertyFns.newInstance('name')),
   )
-  const nameProperty = customer.properties[0]
+  const nameProperty = modelFns.properties(customer)[0]
   const makeRequiredEvent = coreModelEvents.booleanPropertyChanged(
     customer.id,
     nameProperty.id,
@@ -70,7 +70,7 @@ test('has event that makes a property required', () => {
   )
 
   let mutatedCustomer = modelEventDescriptors.applyEvent(customer, makeRequiredEvent)
-  expect(mutatedCustomer.properties[0].required).toEqual(true)
+  expect(modelFns.properties(mutatedCustomer)[0].required).toEqual(true)
 
   const makeNonRequiredEvent = coreModelEvents.booleanPropertyChanged(
     customer.id,
@@ -79,7 +79,7 @@ test('has event that makes a property required', () => {
     false,
   )
   mutatedCustomer = modelEventDescriptors.applyEvent(customer, makeNonRequiredEvent)
-  expect(mutatedCustomer.properties[0].required).toEqual(false)
+  expect(modelFns.properties(mutatedCustomer)[0].required).toEqual(false)
 })
 
 test('has event that makes a property unique', () => {
@@ -87,7 +87,7 @@ test('has event that makes a property unique', () => {
     'Customer',
     modelOptions.withProperty(propertyFns.newInstance('name')),
   )
-  const nameProperty = customer.properties[0]
+  const nameProperty = modelFns.properties(customer)[0]
   const makeUniqueEvent = coreModelEvents.booleanPropertyChanged(
     customer.id,
     nameProperty.id,
@@ -96,7 +96,7 @@ test('has event that makes a property unique', () => {
   )
 
   let mutatedCustomer = modelEventDescriptors.applyEvent(customer, makeUniqueEvent)
-  expect(mutatedCustomer.properties[0].unique).toEqual(true)
+  expect(modelFns.properties(mutatedCustomer)[0].unique).toEqual(true)
 
   const makeNonUniqueEvent = coreModelEvents.booleanPropertyChanged(
     customer.id,
@@ -105,5 +105,5 @@ test('has event that makes a property unique', () => {
     false,
   )
   mutatedCustomer = modelEventDescriptors.applyEvent(customer, makeNonUniqueEvent)
-  expect(mutatedCustomer.properties[0].unique).toEqual(false)
+  expect(modelFns.properties(mutatedCustomer)[0].unique).toEqual(false)
 })

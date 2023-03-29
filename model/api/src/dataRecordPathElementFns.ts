@@ -1,29 +1,24 @@
 import type { DataRecord, DataRecordPathElement, DottedPath, Model } from '@cozemble/model-core'
-import {
-  dottedPathFns,
-  type HasManyRelationshipPathElement,
-  hasManyRelationshipPathElement,
-  type HasOneRelationship,
-} from '@cozemble/model-core'
+import { dottedPathFns } from '@cozemble/model-core'
 import { modelFns } from './modelsFns'
+import { NestedModel, NestedRecordArrayPathElement } from '@cozemble/model-core'
 
 export const dataRecordPathElementFns = {
-  hasManyRelationshipPathElement,
   toDottedNamePath(elements: DataRecordPathElement[]): DottedPath {
     return {
       _type: 'dotted.path',
       partType: 'name',
       value: elements
         .map((element) => {
-          if (element._type === 'has.many.relationship.path.element') {
-            return element.relationship.name.value
+          if (element._type === 'nested.record.array.path.element') {
+            return element.nestedModel.name.value
           }
           return element.name.value
         })
         .join('.'),
     }
   },
-  getChildRecord(
+  getNestedRecord(
     models: Model[],
     record: DataRecord,
     elements: DataRecordPathElement[],
@@ -33,14 +28,17 @@ export const dataRecordPathElementFns = {
       if (currentRecord === null) {
         return null
       }
-      if (element._type === 'has.many.relationship.path.element') {
-        const relationship = element.relationship
-        const relationshipArray = record.values[relationship.id.value]
+      if (element._type === 'inlined.model.reference' || element._type === 'model.reference') {
+        throw new Error(`Invalid element in path: ${element._type}`)
+      }
+      if (element._type === 'nested.record.array.path.element') {
+        const nestedModel = element.nestedModel
+        const relationshipArray = record.values[nestedModel.id.value]
         if (!relationshipArray) {
           return null
         }
         if (!Array.isArray(relationshipArray)) {
-          throw new Error(`Expected relationship array: ${relationship.name.value}`)
+          throw new Error(`Expected relationship array: ${nestedModel.name.value}`)
         }
         currentRecord = relationshipArray[element.recordReference.index] ?? null
       } else {
@@ -61,24 +59,24 @@ export const dataRecordPathElementFns = {
         if (parts.length !== 2) {
           throw new Error(`Invalid name: ${name}`)
         }
-        const [relationshipName, recordIndex] = parts
-        const relationship = model.relationships.find(
-          (relationship) => relationship.name.value === relationshipName,
+        const [nestedModelName, recordIndex] = parts
+        const nestedModel = model.nestedModels.find(
+          (relationship) => relationship.name.value === nestedModelName,
         )
-        if (!relationship) {
-          throw new Error(`Relationship not found: ${relationshipName}`)
+        if (!nestedModel) {
+          throw new Error(`Nested model not found: ${nestedModelName}`)
         }
-        if (relationship.subType !== 'has.many.relationship') {
-          throw new Error(`Expected has many relationship: ${relationshipName}`)
+        if (nestedModel.cardinality !== 'many') {
+          throw new Error(`Expected has many nested model: ${nestedModelName}`)
         }
-        const result: HasManyRelationshipPathElement = {
-          _type: 'has.many.relationship.path.element',
-          relationship,
+        const result: NestedRecordArrayPathElement = {
+          _type: 'nested.record.array.path.element',
+          nestedModel,
           recordReference: { _type: 'by.index.record.reference', index: parseInt(recordIndex) },
         }
         return result
       } else {
-        return modelFns.elementByName(model, name) as HasOneRelationship
+        return modelFns.elementByName(model, name) as NestedModel
       }
     })
   },

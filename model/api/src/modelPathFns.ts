@@ -43,7 +43,7 @@ export const modelPathFns = {
   },
   cardinality<E extends ModelPathElement>(path: ModelPath<E>): Cardinality {
     const hasAtLeastOneMany = path.parentElements.some(
-      (element) => element._type === 'relationship' && element.subType === 'has.many.relationship',
+      (element) => element._type === 'nested.model' && element.cardinality === 'many',
     )
     return hasAtLeastOneMany ? 'many' : 'one'
   },
@@ -63,7 +63,7 @@ export const modelPathFns = {
   ): ModelPath<E> {
     const elements = names.map((name) => {
       const element = modelFns.elementByName(model, name)
-      if (element._type === 'relationship') {
+      if (element._type === 'nested.model') {
         model = modelFns.findById(models, element.modelId)
       }
       return element

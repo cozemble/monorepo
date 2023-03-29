@@ -3,9 +3,9 @@ import type {
   DataRecordId,
   DataRecordPath,
   DataRecordPathElement,
-  HasManyRelationship,
   ModelId,
 } from '@cozemble/model-core'
+import { NestedModel } from '@cozemble/model-core'
 
 export interface DataRecordCreatedEvent {
   _type: 'data.record.created'
@@ -66,7 +66,7 @@ export interface HasManyItemAdded {
   _type: 'data.record.has.many.item.added'
   record: DataRecord
   parentPath: DataRecordPathElement[]
-  relationship: HasManyRelationship
+  nestedModel: NestedModel
   newRecord: DataRecord
 }
 
@@ -109,14 +109,14 @@ export const dataRecordEditEvents = {
   hasManyItemAdded(
     record: DataRecord,
     parentPath: DataRecordPathElement[],
-    relationship: HasManyRelationship,
+    nestedModel: NestedModel,
     newRecord: DataRecord,
   ): HasManyItemAdded {
     return {
       _type: 'data.record.has.many.item.added',
       record,
       parentPath,
-      relationship,
+      nestedModel,
       newRecord,
     }
   },

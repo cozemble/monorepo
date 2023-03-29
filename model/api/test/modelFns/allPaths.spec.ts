@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { modelFns, modelOptions, propertyFns, relationshipFns } from '../../src'
+import { modelFns, modelOptions, propertyFns, nestedModelFns } from '../../src'
 import { modelPathFns } from '../../src/modelPathFns'
 
 test('an empty model has no paths', () => {
@@ -15,7 +15,7 @@ test('a model with two top level properties ', () => {
       propertyFns.newInstance('Last name'),
     ),
   )
-  const [firstName, lastName] = model.properties
+  const [firstName, lastName] = model.slots
   expect(modelFns.allPaths([model], model)).toEqual([
     modelPathFns.newInstance(firstName),
     modelPathFns.newInstance(lastName),
@@ -30,7 +30,7 @@ test('a model with two two relationships containing two properties each', () => 
       propertyFns.newInstance('Postcode'),
     ),
   )
-  const [street, postcode] = addressModel.properties
+  const [street, postcode] = addressModel.slots
 
   const summaryModel = modelFns.newInstance(
     'Summary',
@@ -39,12 +39,12 @@ test('a model with two two relationships containing two properties each', () => 
       propertyFns.newInstance('Summary'),
     ),
   )
-  const [preferences, summary] = summaryModel.properties
-  const addressRelationship = relationshipFns.newInstance('address', addressModel.id, 'one')
-  const summaryRelationship = relationshipFns.newInstance('summary', summaryModel.id, 'one')
+  const [preferences, summary] = summaryModel.slots
+  const addressRelationship = nestedModelFns.newInstance('address', addressModel.id, 'one')
+  const summaryRelationship = nestedModelFns.newInstance('summary', summaryModel.id, 'one')
   const customerModel = modelFns.newInstance(
     'Customer',
-    modelOptions.withRelationships(addressRelationship, summaryRelationship),
+    modelOptions.withNestedModels(addressRelationship, summaryRelationship),
   )
   expect(modelFns.allPaths([addressModel, summaryModel], customerModel)).toEqual([
     modelPathFns.newInstance(street, addressRelationship),

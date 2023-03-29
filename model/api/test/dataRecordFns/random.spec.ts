@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { dataRecordFns, modelFns, modelOptions, propertyFns, relationshipFns } from '../../src'
+import { dataRecordFns, modelFns, modelOptions, propertyFns, nestedModelFns } from '../../src'
 import { propertyDescriptors } from '@cozemble/model-core'
 import { registerStringProperty } from '@cozemble/model-string-core'
 
@@ -13,7 +13,7 @@ describe('Given a model with two top level properties', () => {
       propertyFns.newInstance('Last name'),
     ),
   )
-  const [firstName, lastname] = model.properties
+  const [firstName, lastname] = modelFns.properties(model)
 
   test('random returns a random value for that property', () => {
     const record = dataRecordFns.random([model], model)
@@ -33,9 +33,9 @@ describe('Given a model with two nested properties', () => {
     'Address',
     modelOptions.withProperties(propertyFns.newInstance('Street'), propertyFns.newInstance('Town')),
   )
-  const [street, town] = addressModel.properties
-  const address = relationshipFns.newInstance('Address', addressModel.id, 'one')
-  const customerModel = modelFns.newInstance('Customer', modelOptions.withRelationships(address))
+  const [street, town] = modelFns.properties(addressModel)
+  const address = nestedModelFns.newInstance('Address', addressModel.id, 'one')
+  const customerModel = modelFns.newInstance('Customer', modelOptions.withNestedModels(address))
 
   test('random returns nothing for the nested property by default', () => {
     const record = dataRecordFns.random([customerModel, addressModel], customerModel)

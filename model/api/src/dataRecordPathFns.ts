@@ -4,24 +4,29 @@ import type {
   DataRecordPath,
   DataRecordPathElement,
   DottedPath,
-  HasManyRelationship,
-  HasManyRelationshipPathElement,
   Model,
   ModelPathElement,
   Property,
 } from '@cozemble/model-core'
-import { propertyDescriptors, dottedPathFns } from '@cozemble/model-core'
+import {
+  dottedPathFns,
+  NestedModel,
+  NestedRecordArrayPathElement,
+  propertyDescriptors,
+} from '@cozemble/model-core'
 import { dataRecordFns } from './dataRecordFns'
 import { modelFns } from './modelsFns'
-import { relationshipFns } from './relationshipFns'
+import { nestedModelFns } from './nestedModelFns'
 
 function modelElementsToDataRecordPath(lastElement: Property, parentElements: ModelPathElement[]) {
   const parentRecordPathElements: DataRecordPathElement[] = parentElements.map((element) => {
-    if (element._type === 'relationship') {
-      if (element.subType === 'has.one.relationship') {
+    if (element._type === 'nested.model') {
+      if (element.cardinality === 'one') {
         return element
       }
-      throw new Error(`Invalid element in path: ${element.subType}`)
+      throw new Error(
+        `Invalid element in path: nested model with cardinality many: ${element._type}`,
+      )
     }
     throw new Error(`Invalid element in path: ${element._type}`)
   })
@@ -68,10 +73,10 @@ export const dataRecordPathFns = {
       if (acc === undefined) {
         return undefined
       }
-      if (parentElement._type === 'relationship') {
+      if (parentElement._type === 'nested.model') {
         return acc.values[parentElement.id.value]
-      } else if (parentElement._type === 'has.many.relationship.path.element') {
-        const relationshipRecords = acc.values[parentElement.relationship.id.value] ?? []
+      } else if (parentElement._type === 'nested.record.array.path.element') {
+        const relationshipRecords = acc.values[parentElement.nestedModel.id.value] ?? []
         return relationshipRecords[parentElement.recordReference.index]
       }
     }, record)
@@ -90,8 +95,8 @@ export const dataRecordPathFns = {
         .setValue(path.lastElement, initialRecord, t)
     }
     path.parentElements.reduce((record, parentElement, index) => {
-      if (parentElement._type === 'relationship') {
-        if (parentElement.subType === 'has.one.relationship') {
+      if (parentElement._type === 'nested.model') {
+        if (parentElement.cardinality === 'one') {
           let nestedRecord = record.values[parentElement.id.value]
           if (nestedRecord === undefined) {
             const nestedModel = modelFns.findById(models, parentElement.modelId)
@@ -105,7 +110,9 @@ export const dataRecordPathFns = {
           record.values[parentElement.id.value] = nestedRecord
           return nestedRecord
         } else {
-          throw new Error(`Not implemented: ${parentElement.subType}`)
+          throw new Error(
+            `Not implemented: nested model with cardinality ${parentElement.cardinality}`,
+          )
         }
       }
     }, initialRecord)
@@ -116,7 +123,7 @@ export const dataRecordPathFns = {
       if (pathType === 'name') {
         const dotted = [
           ...path.parentElements.map((element) => {
-            if (element._type === 'relationship') {
+            if (element._type === 'nested.model') {
               return element.name.value
             }
             throw new Error(`Invalid element in path: ${element._type}`)
@@ -128,7 +135,7 @@ export const dataRecordPathFns = {
         return dottedPathFns.newInstance(dotted, 'name')
       }
       const parentIds = path.parentElements.map((e) => {
-        if (e._type === 'relationship') {
+        if (e._type === 'nested.model') {
           return e.id.value
         }
         throw new Error(`Invalid element in path: ${e._type}`)
@@ -163,28 +170,28 @@ export const dataRecordPathFns = {
   addHasManyItem(
     models: Model[],
     parentPath: DataRecordPathElement[],
-    relationship: HasManyRelationship,
+    nestedModel: NestedModel,
     initialRecord: DataRecord,
     item: DataRecord,
   ): DataRecord {
     if (parentPath.length === 0) {
-      let items: DataRecord[] = (relationshipFns.getValue(initialRecord, relationship) ??
+      let items: DataRecord[] = (nestedModelFns.getValue(initialRecord, nestedModel) ??
         []) as DataRecord[]
       items = [...items, item]
       return {
         ...initialRecord,
-        values: { ...initialRecord.values, [relationship.id.value]: items },
+        values: { ...initialRecord.values, [nestedModel.id.value]: items },
       }
     }
     throw new Error('Not implemented: addHasManyItem with parent paths')
   },
-  newHasManyRelationshipPathElement(
-    relationship: HasManyRelationship,
+  newNestedRecordArrayPathElement(
+    nestedModel: NestedModel,
     index: number,
-  ): HasManyRelationshipPathElement {
+  ): NestedRecordArrayPathElement {
     return {
-      _type: 'has.many.relationship.path.element',
-      relationship,
+      _type: 'nested.record.array.path.element',
+      nestedModel,
       recordReference: { _type: 'by.index.record.reference', index },
     }
   },
@@ -196,17 +203,17 @@ export const dataRecordPathFns = {
         if (parts.length !== 2) {
           throw new Error(`Invalid path: ${name}`)
         }
-        const [relationshipName, index] = parts
-        const relationshipElement = modelFns.elementByName(model, relationshipName)
+        const [nestedModelName, index] = parts
+        const nestedModelElement = modelFns.elementByName(model, nestedModelName)
         if (
-          relationshipElement._type !== 'relationship' ||
-          relationshipElement.subType !== 'has.many.relationship'
+          nestedModelElement._type !== 'nested.model' ||
+          nestedModelElement.cardinality !== 'many'
         ) {
           throw new Error(`Invalid path: ${name}`)
         }
-        model = modelFns.findById(models, relationshipElement.modelId)
-        return dataRecordPathFns.newHasManyRelationshipPathElement(
-          relationshipElement,
+        model = modelFns.findById(models, nestedModelElement.modelId)
+        return dataRecordPathFns.newNestedRecordArrayPathElement(
+          nestedModelElement,
           parseInt(index),
         )
       }
@@ -221,7 +228,7 @@ export const dataRecordPathFns = {
       if (element._type === 'inlined.model.reference') {
         throw new Error(`Invalid path: ${name} - found an unknown element type: ${element._type}`)
       }
-      if (element.subType === 'has.many.relationship') {
+      if (element.cardinality === 'many') {
         throw new Error(`Invalid path: ${name} - found a has many relationship in the parent path`)
       }
       model = modelFns.findById(models, element.modelId)

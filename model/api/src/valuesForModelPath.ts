@@ -10,7 +10,7 @@ import { propertyDescriptors } from '@cozemble/model-core'
 import { dataRecordPathFns } from './dataRecordPathFns'
 import { DataRecordPathAndValue, dataRecordRecordPathAndValue, modelPathFns } from './modelPathFns'
 import { modelFns } from './modelsFns'
-import { relationshipFns } from './relationshipFns'
+import { nestedModelFns } from './nestedModelFns'
 
 type PathRecordProperty = {
   parentElements: DataRecordPathElement[]
@@ -40,9 +40,9 @@ function getValuesRecursive(
   ) {
     throw new Error(`to do ${parentElement._type}`)
   }
-  if (parentElement.subType === 'has.one.relationship') {
+  if (parentElement.cardinality === 'one') {
     return acc.flatMap((prp) => {
-      const childRecord = relationshipFns.getOneValue(prp.record, parentElement)
+      const childRecord = nestedModelFns.getOneValue(prp.record, parentElement)
       if (childRecord === null) {
         return [{ ...prp, property: null, terminal: true }]
       }
@@ -52,7 +52,7 @@ function getValuesRecursive(
     })
   } else {
     return acc.flatMap((prp) => {
-      const childRecords = relationshipFns.getManyValues(prp.record, parentElement)
+      const childRecords = nestedModelFns.getManyValues(prp.record, parentElement)
       if (childRecords === null || childRecords.length === 0) {
         return [{ ...prp, property: null, terminal: true }]
       }
@@ -63,7 +63,7 @@ function getValuesRecursive(
             record: childRecord,
             parentElements: [
               ...prp.parentElements,
-              dataRecordPathFns.newHasManyRelationshipPathElement(parentElement, index),
+              dataRecordPathFns.newNestedRecordArrayPathElement(parentElement, index),
             ],
           },
         ])

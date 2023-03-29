@@ -65,16 +65,14 @@ export const newStringPropertyModelEventDescriptor: ModelEventDescriptor = {
       id: event.propertyId,
       name: event.propertyName,
     }
-    if (model.properties.some((p) => p.id.value === event.propertyId.value)) {
+    if (model.slots.some((p) => p.id.value === event.propertyId.value)) {
       newProperty = { ...newProperty, id: event.propertyId }
       return {
         ...model,
-        properties: model.properties.map((p) =>
-          p.id.value === event.propertyId.value ? newProperty : p,
-        ),
+        slots: model.slots.map((p) => (p.id.value === event.propertyId.value ? newProperty : p)),
       }
     }
-    return { ...model, properties: [...model.properties, newProperty] }
+    return { ...model, slots: [...model.slots, newProperty] }
   },
 }
 

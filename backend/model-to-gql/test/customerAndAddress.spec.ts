@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { modelFns, modelOptions, propertyFns, relationshipFns } from '@cozemble/model-api'
+import { modelFns, modelOptions, propertyFns, nestedModelFns } from '@cozemble/model-api'
 import { generateGqlSchema } from '../src/generateGqlSchema'
 
 describe.skip('given a customer with a has-one address', () => {
@@ -12,7 +12,7 @@ describe.skip('given a customer with a has-one address', () => {
     'Customer',
     modelOptions.withProperty(propertyFns.newInstance('First name')),
     modelOptions.withProperty(propertyFns.newInstance('Last name')),
-    modelOptions.withRelationships(relationshipFns.newInstance('Address', addressModel.id, 'one')),
+    modelOptions.withNestedModels(nestedModelFns.newInstance('Address', addressModel.id, 'one')),
   )
   const models = [customerModel, addressModel]
 
