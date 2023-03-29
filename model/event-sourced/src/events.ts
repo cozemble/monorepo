@@ -62,7 +62,7 @@ const propertyRenamedDescriptor: ModelEventDescriptor<PropertyRenamed> = {
     return {
       ...model,
       properties: model.properties.map((property) => {
-        if (propertyIdFns.equals(property.id, event.propertyId)) {
+        if (property.id.value === event.propertyId.value && property._type === 'property') {
           return {
             ...property,
             name: event.newPropertyName,
@@ -157,7 +157,7 @@ const booleanPropertyChangeDescriptor: ModelEventDescriptor<BooleanPropertyChang
     return {
       ...model,
       properties: model.properties.map((property) => {
-        if (propertyIdFns.equals(property.id, event.propertyId)) {
+        if (property.id.value === event.propertyId.value && property._type === 'property') {
           return {
             ...property,
             [event.booleanPropertyName]: event.newValue,

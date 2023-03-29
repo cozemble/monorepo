@@ -125,16 +125,51 @@ export const modelNameFns = {
   },
 }
 
+export interface ModelReferenceName extends TinyValue {
+  _type: 'model.reference.name'
+}
+
+export interface ModelReferenceId extends TinyValue {
+  _type: 'model.reference.id'
+}
+
+export interface InlinedModelReferenceId extends TinyValue {
+  _type: 'inlined.model.reference.id'
+}
+
+export interface InlinedModelReferenceName extends TinyValue {
+  _type: 'inlined.model.reference.name'
+}
+
+export interface ModelReference {
+  _type: 'model.reference'
+  id: ModelReferenceId
+  name: ModelReferenceName
+  modelId: ModelId
+  cardinality: Cardinality
+  inverseName?: ModelReferenceName
+}
+
+export interface InlinedModelReference {
+  _type: 'inlined.model.reference'
+  id: InlinedModelReferenceId
+  name: InlinedModelReferenceName
+  modelId: ModelId
+  cardinality: Cardinality
+}
+
+export type ModelSlot = Property | ModelReference | InlinedModelReference
+
 export interface Model {
   _type: 'model'
   id: ModelId
   parentModelId?: ModelId
   name: ModelName
-  properties: Property[]
+  properties: ModelSlot[]
   relationships: Relationship[]
 }
 
-export type ModelPathElement = Relationship | Property
+export type ModelPathElement = Relationship | Property | ModelReference | InlinedModelReference
 
 export interface ModelPath<E extends ModelPathElement> {
   _type: 'model.path'
@@ -198,7 +233,11 @@ export function hasManyRelationshipPathElement(
   }
 }
 
-export type DataRecordPathElement = HasManyRelationshipPathElement | HasOneRelationship
+export type DataRecordPathElement =
+  | HasManyRelationshipPathElement
+  | HasOneRelationship
+  | ModelReference
+  | InlinedModelReference
 
 export interface DataRecordPath {
   _type: 'data.record.path'

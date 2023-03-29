@@ -23,10 +23,14 @@ export class DataRecordPathFocus {
   ) {}
 
   setInitial(model: Model): DataRecordPathFocus {
+    const properties = modelFns.properties(model)
+    if (properties.length === 0) {
+      return this
+    }
     return new DataRecordPathFocus(
       this.models,
       this.recordProvider,
-      dataRecordPathFns.newInstance(model.properties[0]),
+      dataRecordPathFns.newInstance(properties[0]),
     )
   }
 

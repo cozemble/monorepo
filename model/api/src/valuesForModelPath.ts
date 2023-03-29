@@ -34,6 +34,12 @@ function getValuesRecursive(
   if (parentElement._type === 'property') {
     throw new Error('Invalid element in path (property)')
   }
+  if (
+    parentElement._type === 'model.reference' ||
+    parentElement._type === 'inlined.model.reference'
+  ) {
+    throw new Error(`to do ${parentElement._type}`)
+  }
   if (parentElement.subType === 'has.one.relationship') {
     return acc.flatMap((prp) => {
       const childRecord = relationshipFns.getOneValue(prp.record, parentElement)

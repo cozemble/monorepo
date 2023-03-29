@@ -65,12 +65,12 @@ export const newStringPropertyModelEventDescriptor: ModelEventDescriptor = {
       id: event.propertyId,
       name: event.propertyName,
     }
-    if (model.properties.some((p) => propertyIdFns.equals(p.id, event.propertyId))) {
+    if (model.properties.some((p) => p.id.value === event.propertyId.value)) {
       newProperty = { ...newProperty, id: event.propertyId }
       return {
         ...model,
         properties: model.properties.map((p) =>
-          propertyIdFns.equals(p.id, event.propertyId) ? newProperty : p,
+          p.id.value === event.propertyId.value ? newProperty : p,
         ),
       }
     }

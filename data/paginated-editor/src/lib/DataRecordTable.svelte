@@ -27,13 +27,17 @@
     <tbody>
     <tr>
         {#each model.properties as property}
-            <DataRecordTableTd
-                    {property}
-                    {record}
-                    {parentPath}
-                    {errors}
-                    {focus}
-                    {showErrors}/>
+            {#if property._type === 'property'}
+                <DataRecordTableTd
+                        {property}
+                        {record}
+                        {parentPath}
+                        {errors}
+                        {focus}
+                        {showErrors}/>
+            {:else}
+                <td>To do {property._type}</td>
+            {/if}
         {/each}
     </tr>
     </tbody>

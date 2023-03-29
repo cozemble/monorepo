@@ -6,6 +6,7 @@
     import type {ModelEvent, ModelId} from '@cozemble/model-core'
     import {eventSourcedModelFns} from '@cozemble/model-event-sourced'
     import type {ModelChangeHandler} from '$lib/ModelEditorHost'
+    import type {Property} from "@cozemble/model-core";
 
     let mounted = false
     onMount(() => {
@@ -20,7 +21,7 @@
             modelOptions.withProperty(propertyFns.newInstance('Untitled Property')),
         ),
     )
-    $: property = eventSourced.model.properties[0]
+    $: property = eventSourced.model.properties[0] as Property
 
     const modelChangeHandler: ModelChangeHandler = {
         modelChanged(_id: ModelId, event: ModelEvent) {

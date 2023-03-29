@@ -99,7 +99,7 @@ function applyValueChange(
 function toGqlObject(models: Model[], record: DataRecord): GqlObject {
   const model = modelFns.findById(models, record.modelId)
   const values = model.properties.flatMap((property) => {
-    if (record.values[property.id.value] !== undefined) {
+    if (property._type === 'property' && record.values[property.id.value] !== undefined) {
       const fetchedValue = propertyDescriptors.mandatory(property).getValue(property, record)
       return value(property.name.value, fetchedValue)
     }

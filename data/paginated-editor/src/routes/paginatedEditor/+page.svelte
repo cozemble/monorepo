@@ -97,10 +97,11 @@
         ): Promise<UploadedAttachment[]> {
             return [] as UploadedAttachment[]
         },
-        async deleteAttachments(attachmentIds: string[]): Promise<void> {
+        async deleteAttachments(_attachmentIds: string[]): Promise<void> {
+            throw new Error('Not implemented')
         },
 
-        async getAttachmentViewUrls(attachmentIds: AttachmentIdAndFileName[]): Promise<string[]> {
+        async getAttachmentViewUrls(_attachmentIds: AttachmentIdAndFileName[]): Promise<string[]> {
             throw new Error('Not implemented')
         }
     }

@@ -9,13 +9,12 @@ import type {
   PropertyOption,
 } from '@cozemble/model-core'
 import {
+  type DataRecordPath,
   emptyModel,
   modelNameFns,
-  propertyDescriptors,
-  propertyIdFns,
-  type DataRecordPath,
   type ModelPath,
   type ModelPathElement,
+  propertyDescriptors,
   type Relationship,
 } from '@cozemble/model-core'
 import { clock, mandatory, options, strings } from '@cozemble/lang-util'
@@ -77,7 +76,20 @@ export const modelFns = {
   },
   propertyWithId(model: Model, propertyId: PropertyId): Property {
     return mandatory(
-      model.properties.find((p) => propertyIdFns.equals(p.id, propertyId)),
+      model.properties.find(
+        (p) => p.id.value === propertyId.value && p._type === 'property',
+      ) as Property,
+      `Property not found: ${propertyId.value}`,
+    )
+  },
+  maybePropertyWithId(model: Model, propertyId: PropertyId | null): Property | null {
+    if (propertyId === null) {
+      return null
+    }
+    return mandatory(
+      model.properties.find(
+        (p) => p.id.value === propertyId.value && p._type === 'property',
+      ) as Property,
       `Property not found: ${propertyId.value}`,
     )
   },
@@ -175,5 +187,8 @@ export const modelFns = {
       validateValues(path, value, errors)
       return errors
     }, new Map<DataRecordPath, string[]>())
+  },
+  properties(model: Model): Property[] {
+    return model.properties.filter((p) => p._type === 'property') as Property[]
   },
 }
