@@ -43,7 +43,7 @@ function parseModel(model: Model) {
     const key = property.name.value
 
     result.properties[key] = buildModelTypes(property as IProperty)
-    if (property.required) {
+    if (property._type === 'property' && property.required) {
       result.required.push(key)
     }
   }

@@ -85,6 +85,9 @@ export const dataRecordFns = {
       values: {},
     }
     record = model.properties.reduce((record, property) => {
+      if (property._type === 'model.reference' || property._type === 'inlined.model.reference') {
+        return record
+      }
       const givenValue = givenValues[property.name.value]
       const hasGivenValue = givenValue !== undefined
       const value = hasGivenValue

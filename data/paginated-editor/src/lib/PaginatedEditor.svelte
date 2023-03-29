@@ -114,7 +114,11 @@
         {#each records as record, rowIndex}
             <tr data-row-index={rowIndex}>
                 {#each model.properties as property, colIndex}
-                    <DataTd {focus} {rowIndex} {colIndex} {record} {property}/>
+                    {#if property._type === "property"}
+                        <DataTd {focus} {rowIndex} {colIndex} {record} {property}/>
+                    {:else}
+                        <td>To do {property._type}</td>
+                    {/if}
                 {/each}
                 <td>
                     <button class="edit btn btn-active btn-ghost btn-sm" on:click={() => viewRecord(record)}>View

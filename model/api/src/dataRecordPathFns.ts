@@ -214,6 +214,13 @@ export const dataRecordPathFns = {
       if (element._type === 'property') {
         throw new Error(`Invalid path: ${name} - found a property in the parent path`)
       }
+      if (element._type === 'model.reference') {
+        model = modelFns.findById(models, element.modelId)
+        return element
+      }
+      if (element._type === 'inlined.model.reference') {
+        throw new Error(`Invalid path: ${name} - found an unknown element type: ${element._type}`)
+      }
       if (element.subType === 'has.many.relationship') {
         throw new Error(`Invalid path: ${name} - found a has many relationship in the parent path`)
       }

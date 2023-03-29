@@ -67,14 +67,18 @@
     {#each records as record}
         <tr>
             {#each model.properties as property}
-                <DataRecordTableTd
-                        {property}
-                        {record}
-                        {parentPath}
-                        errors={$errors}
-                        {focus}
-                        showErrors={$showErrors}
-                />
+                {#if property._type === 'property'}
+                    <DataRecordTableTd
+                            {property}
+                            {record}
+                            {parentPath}
+                            errors={$errors}
+                            {focus}
+                            showErrors={$showErrors}
+                    />
+                {:else}
+                    <td>To do {property._type}</td>
+                {/if}
             {/each}
         </tr>
     {/each}

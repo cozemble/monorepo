@@ -14,9 +14,7 @@
     $: allCoreModels = allModels.map((m) => m.model)
     $: model = eventSourced.model
     let propertyIdBeingEdited: PropertyId | null = null
-    $: propertyBeingEdited = propertyIdBeingEdited
-        ? model.properties.find((p) => p.id.value === propertyIdBeingEdited?.value)
-        : null
+    $: propertyBeingEdited = modelFns.maybePropertyWithId(model, propertyIdBeingEdited)
 
     function addProperty() {
         const propertyName = `Property ${model.properties.length + 1}`
@@ -94,10 +92,14 @@
             <tr>
                 {#each model.properties as property}
                     <td>
-                        <button on:click={() => editProperty(property)}
-                                class="btn btn-active btn-ghost edit-property"
-                                data-property-name={property.name.value}>Edit
-                        </button>
+                        {#if property._type === 'property'}
+                            <button on:click={() => editProperty(property)}
+                                    class="btn btn-active btn-ghost edit-property"
+                                    data-property-name={property.name.value}>Edit
+                            </button>
+                        {:else}
+                            <p>To do {property._type}</p>
+                        {/if}
                     </td>
                 {/each}
                 <td>
@@ -108,7 +110,8 @@
         </table>
         <div class="actions">
             <br/>
-            <button on:click={addNestedModel} class="btn btn-active btn-ghost add-nested-model">Add nested model</button>
+            <button on:click={addNestedModel} class="btn btn-active btn-ghost add-nested-model">Add nested model
+            </button>
         </div>
     </div>
 {/if}

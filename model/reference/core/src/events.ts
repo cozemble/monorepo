@@ -44,12 +44,14 @@ export const newReferencePropertyModelEventDescriptor: ModelEventDescriptor = {
       id: event.propertyId,
       name: event.propertyName,
     }
-    if (model.properties.some((p) => propertyIdFns.equals(p.id, event.propertyId))) {
+    if (
+      model.properties.some((p) => p.id.value === event.propertyId.value && p._type === 'property')
+    ) {
       newProperty = { ...newProperty, id: event.propertyId }
       return {
         ...model,
         properties: model.properties.map((p) =>
-          propertyIdFns.equals(p.id, event.propertyId) ? newProperty : p,
+          p.id.value === event.propertyId.value ? newProperty : p,
         ),
       }
     }
@@ -84,7 +86,7 @@ export const referencedModelChangedModelEventDescriptor: ModelEventDescriptor = 
     return {
       ...model,
       properties: model.properties.map((p) => {
-        if (propertyIdFns.equals(p.id, event.propertyId)) {
+        if (p.id.value === event.propertyId.value && p._type === 'property') {
           if (p.propertyType.value !== 'reference.property') {
             throw new Error(`Property ${p.id.value} is not a reference property`)
           }

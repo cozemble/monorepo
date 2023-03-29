@@ -40,6 +40,13 @@ export {
   DataRecordAndPath,
   dataRecordAndPathFns,
   hasManyRelationshipPathElement,
+  ModelReference,
+  ModelReferenceName,
+  ModelReferenceId,
+  ModelSlot,
+  InlinedModelReferenceId,
+  InlinedModelReference,
+  InlinedModelReferenceName,
 } from './core'
 
 export { propertyDescriptors } from './propertyDescriptor'
