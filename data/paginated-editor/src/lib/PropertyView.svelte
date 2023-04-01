@@ -13,8 +13,7 @@
     <svelte:component
             this={viewer}
             recordPath={dataRecordPathFns.newInstance(property)}
-            {record}
-    />
+            {record}/>
 {:else}
     <div>Unknown property type: {property.propertyType.value}</div>
 {/if}

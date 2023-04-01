@@ -26,8 +26,6 @@
                 referencedModelId,
             ),
         )
-
-        // dispatch('modelChanged', referencedModelChangedModelEvent(model.id, property.id, referencedModelId))
     }
 
 </script>
