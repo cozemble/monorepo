@@ -6,6 +6,8 @@
     import {allModels, bootstrapHost, clearLocalStorage, host} from './host'
     import type {EventSourcedModel} from '@cozemble/model-event-sourced'
     import {events, eventTypes} from './toSql'
+    import {modelFns} from "@cozemble/model-api/dist/esm";
+    import {eventSourcedModelFns} from "@cozemble/model-event-sourced/dist/esm";
 
     let mounted = false
     let firstModel: EventSourcedModel | null = null
@@ -31,8 +33,15 @@
         clearLocalStorage(localStorage)
         firstModel = $allModels[0]
     }
+
+    function addModel() {
+        const model = modelFns.newInstance("Random model")
+        const eventSourced = eventSourcedModelFns.newInstance(model)
+        $allModels.push(eventSourced)
+    }
 </script>
 
+<button class="btn" on:click={addModel}>Add a random model</button>
 {#if mounted && firstModel}
     <ModelEditor modelId={firstModel.model.id} {allModels} {host}/>
 {/if}

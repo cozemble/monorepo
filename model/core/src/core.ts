@@ -115,6 +115,24 @@ export interface ModelReferenceId extends TinyValue {
   _type: 'model.reference.id'
 }
 
+export const modelReferenceNameFns = {
+  newInstance: (value: string): ModelReferenceName => {
+    return {
+      _type: 'model.reference.name',
+      value,
+    }
+  },
+}
+
+export const modelReferenceIdFns = {
+  newInstance: (value: string = uuids.v4()): ModelReferenceId => {
+    return {
+      _type: 'model.reference.id',
+      value,
+    }
+  },
+}
+
 export interface InlinedModelReferenceId extends TinyValue {
   _type: 'inlined.model.reference.id'
 }
@@ -127,9 +145,39 @@ export interface ModelReference {
   _type: 'model.reference'
   id: ModelReferenceId
   name: ModelReferenceName
-  modelId: ModelId
+  referencedModels: ModelId[]
   cardinality: Cardinality
   inverseName?: ModelReferenceName
+}
+
+export const modelReferenceFns = {
+  newInstance: (
+    referencedModels: ModelId[],
+    name: ModelReferenceName,
+    id = modelReferenceIdFns.newInstance(uuids.v4()),
+    cardinality: Cardinality = 'one',
+  ): ModelReference => {
+    return {
+      _type: 'model.reference',
+      id,
+      name,
+      referencedModels,
+      cardinality,
+    }
+  },
+  validate: (modelReference: ModelReference): Map<string, string> => {
+    const errors = new Map<string, string>()
+    if (modelReference.referencedModels.length === 0) {
+      errors.set('referencedModels', 'Required')
+    }
+    return errors
+  },
+  oneReference: (reference: ModelReference): ModelId | null => {
+    if (reference.cardinality !== 'one') {
+      throw new Error('Cannot get one reference from many reference')
+    }
+    return reference.referencedModels[0] ?? null
+  },
 }
 
 export interface InlinedModelReference {

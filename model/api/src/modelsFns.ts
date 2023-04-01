@@ -14,6 +14,9 @@ import {
   modelNameFns,
   type ModelPath,
   type ModelPathElement,
+  ModelReference,
+  ModelSlot,
+  ModelSlotId,
   type NestedModel,
   propertyDescriptors,
 } from '@cozemble/model-core'
@@ -26,7 +29,6 @@ import {
   singleCardinalityValuesForModelPathResponse,
 } from './valuesForModelPath'
 import { nestedModelFns } from './nestedModelFns'
-import { ModelSlot, ModelSlotId } from '@cozemble/model-core'
 
 export const modelOptions = {
   withProperty(p: Property | string): ModelOption {
@@ -34,6 +36,9 @@ export const modelOptions = {
       p = propertyFns.newInstance(p)
     }
     return this.withProperties(p)
+  },
+  withSlot(slot: ModelSlot): ModelOption {
+    return (model) => ({ ...model, slots: [...model.slots, slot] })
   },
   withProperties(...ps: Property[]): ModelOption {
     return (model) => ({ ...model, slots: [...model.slots, ...ps] })

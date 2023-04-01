@@ -1,14 +1,22 @@
 <script lang="ts">
     import type {Model, ModelSlot, PropertyDescriptor} from '@cozemble/model-core'
-    import {modelSlotNameFns, propertyDescriptors, propertyTypeFns,} from '@cozemble/model-core'
+    import {
+        modelReferenceIdFns,
+        modelReferenceNameFns,
+        modelSlotNameFns,
+        propertyDescriptors,
+        propertyIdFns,
+        propertyNameFns,
+        propertyTypeFns,
+    } from '@cozemble/model-core'
     import {editorHost, emptyFormErrorState} from '@cozemble/model-editor-sdk'
     import {readable, writable} from 'svelte/store'
     import {createEventDispatcher} from 'svelte'
     import type {ModelChangeHandler} from './ModelEditorHost'
-    import {coreModelEvents} from '@cozemble/model-event-sourced'
+    import {coreModelEvents, modelSlotEvents} from '@cozemble/model-event-sourced'
     import PropertyEditor from "./PropertyEditor.svelte";
     import {validateSlot} from "./validateSlot";
-    import {propertyIdFns, propertyNameFns} from "@cozemble/model-core";
+    import ModelReferenceEditor from "./ModelReferenceEditor.svelte";
 
     export let modelChangeHandler: ModelChangeHandler
     export let model: Model
@@ -20,11 +28,17 @@
     editorHost.setModels(readable(models))
 
 
-    function propertyTypeChanged(event: Event) {
+    function slotTypeChanged(event: Event) {
         const target = event.target as HTMLSelectElement
-        let propertyDescriptor = propertyDescriptors.get(
-            propertyTypeFns.newInstance(target.value),
-        )
+        if (target.value === 'model.reference') {
+            return modelChangeHandler.modelChanged(
+                model.id,
+                modelSlotEvents.newModelReference(model.id,
+                    modelReferenceNameFns.newInstance(modelSlot.name.value),
+                    modelReferenceIdFns.newInstance(modelSlot.id.value)),
+            )
+        }
+        let propertyDescriptor = propertyDescriptors.get(propertyTypeFns.newInstance(target.value))
         if (propertyDescriptor) {
             const propertyName = propertyNameFns.newInstance(modelSlot.name.value)
             const propertyId = propertyIdFns.newInstance(modelSlot.id.value)
@@ -33,7 +47,7 @@
                 propertyDescriptor.newProperty(model.id, propertyName, propertyId),
             )
         } else {
-            alert('No property descriptor found for ' + target.value)
+            alert('Dont know how to handle model slot type ' + target.value)
         }
     }
 
@@ -79,7 +93,7 @@
             on:change={slotNameChanged}/>
     <br/>
     <label class="label">Property Type</label><br/>
-    <select on:change={propertyTypeChanged} class="property-type input input-bordered">
+    <select on:change={slotTypeChanged} class="property-type input input-bordered">
         <option value="">----</option>
         {#each propertyDescriptors.list() as propertyDescriptor}
             <option
@@ -93,6 +107,12 @@
         <PropertyEditor
                 property={modelSlot}
                 {modelChangeHandler}
+                {model}/>
+    {:else if modelSlot._type === 'model.reference'}
+        <ModelReferenceEditor
+                modelReference={modelSlot}
+                {modelChangeHandler}
+                {models}
                 {model}/>
     {:else}
         <p>To do ${modelSlot._type}</p>

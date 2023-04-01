@@ -47,6 +47,9 @@ export {
   ModelSlotId,
   ModelSlotName,
   modelSlotNameFns,
+  modelReferenceNameFns,
+  modelReferenceIdFns,
+  modelReferenceFns,
 } from './core'
 
 export { propertyDescriptors } from './propertyDescriptor'

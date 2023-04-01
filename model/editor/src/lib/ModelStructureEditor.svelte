@@ -93,14 +93,10 @@
             <tr>
                 {#each model.slots as slot}
                     <td>
-                        {#if slot._type === 'property'}
-                            <button on:click={() => editSlot(slot)}
-                                    class="btn btn-active btn-ghost edit-property"
-                                    data-property-name={slot.name.value}>Edit
-                            </button>
-                        {:else}
-                            <p>To do {slot._type}</p>
-                        {/if}
+                        <button on:click={() => editSlot(slot)}
+                                class="btn btn-active btn-ghost edit-property"
+                                data-property-name={slot.name.value}>Edit
+                        </button>
                     </td>
                 {/each}
                 <td>

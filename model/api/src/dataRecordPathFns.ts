@@ -222,7 +222,10 @@ export const dataRecordPathFns = {
         throw new Error(`Invalid path: ${name} - found a property in the parent path`)
       }
       if (element._type === 'model.reference') {
-        model = modelFns.findById(models, element.modelId)
+        if (element.referencedModels.length > 1) {
+          throw new Error(`to do : ${name} - model references with more than one referenced model`)
+        }
+        model = modelFns.findById(models, element.referencedModels[0])
         return element
       }
       if (element._type === 'inlined.model.reference') {
