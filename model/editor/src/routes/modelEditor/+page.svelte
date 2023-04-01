@@ -5,9 +5,9 @@
     import ModelEditor from '../../lib/ModelEditor.svelte'
     import {allModels, bootstrapHost, clearLocalStorage, host} from './host'
     import type {EventSourcedModel} from '@cozemble/model-event-sourced'
+    import {eventSourcedModelFns} from "@cozemble/model-event-sourced";
     import {events, eventTypes} from './toSql'
-    import {modelFns} from "@cozemble/model-api/dist/esm";
-    import {eventSourcedModelFns} from "@cozemble/model-event-sourced/dist/esm";
+    import {modelFns} from "@cozemble/model-api";
 
     let mounted = false
     let firstModel: EventSourcedModel | null = null

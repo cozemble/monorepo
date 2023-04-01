@@ -9,7 +9,8 @@
     import {dataRecordViewerHost, eventSourcedDataRecordFns} from '@cozemble/data-editor-sdk'
     import type {PaginatedEditorHost} from './PaginatedEditorHost'
     import {makeDataRecordViewer} from "./makeDataRecordViewer";
-    import {afterUpdate} from "svelte";
+    import {slotViewerRegistry} from "@cozemble/model-assembled";
+    import ModelReferenceViewer from "./modelReferences/ModelReferenceViewer.svelte";
 
     export let models: Model[]
     export let model: Model
@@ -54,7 +55,6 @@
         editedRecord: EventSourcedDataRecord,
     ): Promise<RecordSaveOutcome> {
         const outcome = await paginatedEditorHost.recordEdited(editedRecord)
-        console.log({outcome, editedRecord})
         if (outcome._type === 'record.save.succeeded') {
             recordBeingEdited = null
         }
@@ -81,7 +81,7 @@
         return outcome
     }
 
-    afterUpdate(() => console.log('after update', {doAddNewRecord, recordBeingEdited}))
+    slotViewerRegistry.register('model.reference', ModelReferenceViewer)
 </script>
 
 {#each modelLevelErrors as error}
@@ -114,10 +114,10 @@
         {#each records as record, rowIndex}
             <tr data-row-index={rowIndex}>
                 {#each model.slots as modelSlot, colIndex}
-                    {#if modelSlot._type === "property"}
+                    {#if modelSlot._type === 'property' || modelSlot._type === 'model.reference'}
                         <DataTd {focus} {rowIndex} {colIndex} {record} {modelSlot}/>
                     {:else}
-                        <td>To do {modelSlot._type}</td>
+                        <td>To do: {modelSlot._type}</td>
                     {/if}
                 {/each}
                 <td>

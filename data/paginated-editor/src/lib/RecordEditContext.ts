@@ -8,7 +8,7 @@ import {
   eventSourcedDataRecordFns,
 } from '@cozemble/data-editor-sdk'
 import { uuids } from '@cozemble/lang-util'
-import type { DataRecordControlEvent } from '@cozemble/data-editor-sdk/dist/esm'
+import type { DataRecordControlEvent } from '@cozemble/data-editor-sdk'
 
 export interface RecordSaveSucceeded {
   _type: 'record.save.succeeded'

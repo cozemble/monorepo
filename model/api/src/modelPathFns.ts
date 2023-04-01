@@ -1,18 +1,16 @@
 import { arrays } from '@cozemble/lang-util'
 import type {
+  Cardinality,
   DataRecord,
   DataRecordValuePath,
+  DottedPath,
   Model,
   ModelPath,
   ModelPathElement,
-  Property,
-  Cardinality,
-  DottedPath,
 } from '@cozemble/model-core'
-import { dottedPathFns } from '@cozemble/model-core'
+import { dottedPathFns, LeafModelSlot } from '@cozemble/model-core'
 import { modelFns } from './modelsFns'
 import { valuesForModelPath, ValuesForModelPath } from './valuesForModelPath'
-import { LeafModelSlot } from '@cozemble/model-core/dist/esm'
 
 export interface DataRecordPathAndValue<T = any> {
   _type: 'data.record.path.and.value'
