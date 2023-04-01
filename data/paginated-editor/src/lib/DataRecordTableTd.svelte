@@ -1,6 +1,6 @@
 <script lang="ts">
     import type {DataRecordPathFocus} from './DataRecordPathFocus'
-    import type {DataRecord, DataRecordPath, DataRecordPathElement, Property,} from '@cozemble/model-core'
+    import type {DataRecord, DataRecordPropertyPath, DataRecordPathParentElement, Property,} from '@cozemble/model-core'
     import type {Writable} from 'svelte/store'
     import PropertyEdit from './SlotEdit.svelte'
     import PropertyView from './SlotView.svelte'
@@ -9,8 +9,8 @@
 
     export let property: Property
     export let record: DataRecord
-    export let parentPath: DataRecordPathElement[]
-    export let errors: Map<DataRecordPath, string[]>
+    export let parentPath: DataRecordPathParentElement[]
+    export let errors: Map<DataRecordPropertyPath, string[]>
     export let showErrors: boolean
     export let focus: Writable<DataRecordPathFocus>
 

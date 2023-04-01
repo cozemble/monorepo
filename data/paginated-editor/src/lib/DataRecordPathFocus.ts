@@ -6,8 +6,8 @@ import {
 } from '@cozemble/model-api'
 import type {
   DataRecord,
-  DataRecordPath,
-  DataRecordPathElement,
+  DataRecordPropertyPath,
+  DataRecordPathParentElement,
   Model,
   ModelPath,
   Property,
@@ -19,7 +19,7 @@ export class DataRecordPathFocus {
   constructor(
     private readonly models: Model[],
     private readonly recordProvider: () => DataRecord,
-    private readonly focus: DataRecordPath | null = null,
+    private readonly focus: DataRecordPropertyPath | null = null,
   ) {}
 
   setInitial(model: Model): DataRecordPathFocus {
@@ -78,7 +78,7 @@ export class DataRecordPathFocus {
     return this._newFocus(null)
   }
 
-  isPropertyFocussed(property: Property, parentPath: DataRecordPathElement[]): boolean {
+  isPropertyFocussed(property: Property, parentPath: DataRecordPathParentElement[]): boolean {
     if (this.focus === null) {
       return false
     }
@@ -89,7 +89,7 @@ export class DataRecordPathFocus {
     return dottedPathFns.equals(propertyPath, focusPath)
   }
 
-  _newFocus(focus: DataRecordPath | null): DataRecordPathFocus {
+  _newFocus(focus: DataRecordPropertyPath | null): DataRecordPathFocus {
     return new DataRecordPathFocus(this.models, this.recordProvider, focus)
   }
 }

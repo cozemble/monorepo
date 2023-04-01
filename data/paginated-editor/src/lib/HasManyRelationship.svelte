@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type {DataRecordPathElement, NestedModel,} from '@cozemble/model-core'
+    import type {DataRecordPathParentElement, NestedModel,} from '@cozemble/model-core'
     import {dataRecordTableClicked} from './dataRecordTableClicked'
     import {modelFns} from '@cozemble/model-api'
     import DataRecordTableTd from './DataRecordTableTd.svelte'
@@ -8,7 +8,7 @@
     import {dataRecordEditEvents, dataRecordEditor, eventSourcedDataRecordFns,} from '@cozemble/data-editor-sdk'
 
     export let recordEditContext: RecordEditContext
-    export let parentPath: DataRecordPathElement[]
+    export let parentPath: DataRecordPathParentElement[]
     export let nestedModel: NestedModel
     export let pushContext: (context: RecordEditContext) => void
     export let popContext: () => void

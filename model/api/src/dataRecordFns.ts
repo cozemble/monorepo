@@ -1,5 +1,5 @@
 import { clock, mandatory, uuids } from '@cozemble/lang-util'
-import type { DataRecordPathElement } from '@cozemble/model-core'
+import type { DataRecordPathParentElement } from '@cozemble/model-core'
 import {
   type DataRecord,
   type DataRecordAndPath,
@@ -16,7 +16,7 @@ function getChildRecord(
   models: Model[],
   childRecord: DataRecord | null,
   acc: DataRecordAndPath[],
-  rel: DataRecordPathElement,
+  rel: DataRecordPathParentElement,
 ) {
   if (childRecord) {
     acc = [

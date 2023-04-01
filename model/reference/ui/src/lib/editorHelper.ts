@@ -1,6 +1,6 @@
 import type {
   DataRecord,
-  DataRecordPath,
+  DataRecordPropertyPath,
   Model,
   ModelHtmlTemplate,
   ModelId,
@@ -22,7 +22,7 @@ export interface EditorParams {
 
 export function assembleEditorParams(
   client: DataRecordEditorClient | DataRecordViewerClient,
-  recordPath: DataRecordPath,
+  recordPath: DataRecordPropertyPath,
 ): EditorParams {
   const referenceProperty = recordPath.lastElement as ReferenceProperty
   if (referenceProperty.propertyType.value !== 'reference.property') {

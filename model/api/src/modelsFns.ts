@@ -9,7 +9,7 @@ import type {
   PropertyOption,
 } from '@cozemble/model-core'
 import {
-  type DataRecordPath,
+  type DataRecordPropertyPath,
   emptyModel,
   modelNameFns,
   type ModelPath,
@@ -54,7 +54,7 @@ export const modelOptions = {
 function validateValues(
   path: ModelPath<Property>,
   value: SingleCardinalityValuesForModelPath | ManyCardinalityValuesForModelPath,
-  errors: Map<DataRecordPath, string[]>,
+  errors: Map<DataRecordPropertyPath, string[]>,
 ) {
   if (value._type === 'single.cardinality.values.for.model.path.response') {
     const property = path.lastElement
@@ -192,7 +192,7 @@ export const modelFns = {
       return [...elements, element]
     }, [] as ModelPathElement[])
   },
-  validate(models: Model[], record: DataRecord): Map<DataRecordPath, string[]> {
+  validate(models: Model[], record: DataRecord): Map<DataRecordPropertyPath, string[]> {
     const model = modelFns.findById(models, record.modelId)
     const pathsToProperties: ModelPath<Property>[] = modelFns
       .allPaths(models, model)
@@ -201,7 +201,7 @@ export const modelFns = {
       const value = modelPathFns.getValues(models, path, record)
       validateValues(path, value, errors)
       return errors
-    }, new Map<DataRecordPath, string[]>())
+    }, new Map<DataRecordPropertyPath, string[]>())
   },
   properties(model: Model): Property[] {
     return model.slots.filter((p) => p._type === 'property') as Property[]

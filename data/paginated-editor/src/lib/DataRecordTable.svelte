@@ -1,14 +1,14 @@
 <script lang="ts">
     import type {DataRecordPathFocus} from './DataRecordPathFocus'
-    import type {DataRecord, DataRecordPath, DataRecordPathElement, Model,} from '@cozemble/model-core'
+    import type {DataRecord, DataRecordPropertyPath, DataRecordPathParentElement, Model,} from '@cozemble/model-core'
     import type {Writable} from 'svelte/store'
     import {dataRecordTableClicked} from './dataRecordTableClicked'
     import DataRecordTableTd from './DataRecordTableTd.svelte'
 
     export let model: Model
     export let record: DataRecord
-    export let parentPath: DataRecordPathElement[]
-    export let errors: Map<DataRecordPath, string[]>
+    export let parentPath: DataRecordPathParentElement[]
+    export let errors: Map<DataRecordPropertyPath, string[]>
     export let focus: Writable<DataRecordPathFocus>
     export let showErrors: boolean
 </script>

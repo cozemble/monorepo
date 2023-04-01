@@ -1,9 +1,9 @@
 <script lang="ts">
-    import type {DataRecord, DataRecordPath} from '@cozemble/model-core'
+    import type {DataRecord, DataRecordPropertyPath} from '@cozemble/model-core'
     import {dataRecordControlEvents, dataRecordEditEvents, dataRecordEditor,} from '@cozemble/data-editor-sdk'
     import {dataRecordPathFns} from '@cozemble/model-api'
 
-    export let recordPath: DataRecordPath
+    export let recordPath: DataRecordPropertyPath
     export let record: DataRecord
 
     const dataRecordEditorClient = dataRecordEditor.getClient()

@@ -1,10 +1,14 @@
-import type { DataRecordPath, DataRecordPathElement, Property } from '@cozemble/model-core'
+import type {
+  DataRecordPropertyPath,
+  DataRecordPathParentElement,
+  Property,
+} from '@cozemble/model-core'
 import { dottedPathFns } from '@cozemble/model-core'
 import { dataRecordPathFns } from '@cozemble/model-api'
 
 export function getMyErrors(
-  errors: Map<DataRecordPath, string[]>,
-  parentPath: DataRecordPathElement[],
+  errors: Map<DataRecordPropertyPath, string[]>,
+  parentPath: DataRecordPathParentElement[],
   property: Property,
 ): string[] {
   const path = dataRecordPathFns.newInstance(property, ...parentPath)

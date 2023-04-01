@@ -1,10 +1,15 @@
-import type { DataRecord, DataRecordPathElement, DottedPath, Model } from '@cozemble/model-core'
+import type {
+  DataRecord,
+  DataRecordPathParentElement,
+  DottedPath,
+  Model,
+} from '@cozemble/model-core'
 import { dottedPathFns } from '@cozemble/model-core'
 import { modelFns } from './modelsFns'
 import { NestedModel, NestedRecordArrayPathElement } from '@cozemble/model-core'
 
 export const dataRecordPathElementFns = {
-  toDottedNamePath(elements: DataRecordPathElement[]): DottedPath {
+  toDottedNamePath(elements: DataRecordPathParentElement[]): DottedPath {
     return {
       _type: 'dotted.path',
       partType: 'name',
@@ -21,7 +26,7 @@ export const dataRecordPathElementFns = {
   getNestedRecord(
     models: Model[],
     record: DataRecord,
-    elements: DataRecordPathElement[],
+    elements: DataRecordPathParentElement[],
   ): DataRecord | null {
     let currentRecord = record
     for (const element of elements) {
@@ -51,7 +56,7 @@ export const dataRecordPathElementFns = {
     models: Model[],
     model: Model,
     dottedNamePath: DottedPath,
-  ): DataRecordPathElement[] {
+  ): DataRecordPathParentElement[] {
     const names = dottedPathFns.split(dottedNamePath)
     return names.map((name) => {
       if (name.indexOf('.') !== -1) {
@@ -80,7 +85,7 @@ export const dataRecordPathElementFns = {
       }
     })
   },
-  same(a: DataRecordPathElement[], b: DataRecordPathElement[]): boolean {
+  same(a: DataRecordPathParentElement[], b: DataRecordPathParentElement[]): boolean {
     return this.toDottedNamePath(a).value === this.toDottedNamePath(b).value
   },
 }

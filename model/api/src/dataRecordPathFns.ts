@@ -1,8 +1,8 @@
 import { arrays, errors, strings } from '@cozemble/lang-util'
 import type {
   DataRecord,
-  DataRecordPath,
-  DataRecordPathElement,
+  DataRecordPropertyPath,
+  DataRecordPathParentElement,
   DottedPath,
   Model,
   ModelPathElement,
@@ -19,7 +19,7 @@ import { modelFns } from './modelsFns'
 import { nestedModelFns } from './nestedModelFns'
 
 function modelElementsToDataRecordPath(lastElement: Property, parentElements: ModelPathElement[]) {
-  const parentRecordPathElements: DataRecordPathElement[] = parentElements.map((element) => {
+  const parentRecordPathElements: DataRecordPathParentElement[] = parentElements.map((element) => {
     if (element._type === 'nested.model') {
       if (element.cardinality === 'one') {
         return element
@@ -33,7 +33,11 @@ function modelElementsToDataRecordPath(lastElement: Property, parentElements: Mo
   return dataRecordPathFns.newInstance(lastElement, ...parentRecordPathElements)
 }
 
-function fromDottedIdPath(models: Model[], model: Model, dottedPath: DottedPath): DataRecordPath {
+function fromDottedIdPath(
+  models: Model[],
+  model: Model,
+  dottedPath: DottedPath,
+): DataRecordPropertyPath {
   const elements = modelFns.elementsById(models, model, dottedPathFns.split(dottedPath))
   const [parentElements, lastElement] = arrays.splitLast(elements)
   if (lastElement._type !== 'property') {
@@ -42,7 +46,11 @@ function fromDottedIdPath(models: Model[], model: Model, dottedPath: DottedPath)
   return modelElementsToDataRecordPath(lastElement, parentElements)
 }
 
-function fromDottedNamePath(models: Model[], model: Model, dottedPath: DottedPath): DataRecordPath {
+function fromDottedNamePath(
+  models: Model[],
+  model: Model,
+  dottedPath: DottedPath,
+): DataRecordPropertyPath {
   const elements = modelFns.elementsByName(models, model, dottedPathFns.split(dottedPath))
   const [parentElements, lastElement] = arrays.splitLast(elements)
   if (lastElement._type !== 'property') {
@@ -54,15 +62,15 @@ function fromDottedNamePath(models: Model[], model: Model, dottedPath: DottedPat
 export const dataRecordPathFns = {
   newInstance: (
     lastElement: Property,
-    ...parentElements: DataRecordPathElement[]
-  ): DataRecordPath => {
+    ...parentElements: DataRecordPathParentElement[]
+  ): DataRecordPropertyPath => {
     return {
-      _type: 'data.record.path',
+      _type: 'data.record.property.path',
       parentElements,
       lastElement,
     }
   },
-  getValue<T>(path: DataRecordPath, record: DataRecord): T | null {
+  getValue<T>(path: DataRecordPropertyPath, record: DataRecord): T | null {
     if (record === null || record === undefined) {
       return null
     }
@@ -85,7 +93,7 @@ export const dataRecordPathFns = {
   },
   setValue<T>(
     models: Model[],
-    path: DataRecordPath,
+    path: DataRecordPropertyPath,
     initialRecord: DataRecord,
     t: T | null,
   ): DataRecord {
@@ -118,7 +126,7 @@ export const dataRecordPathFns = {
     }, initialRecord)
     return initialRecord
   },
-  toDottedPath(path: DataRecordPath, pathType: 'id' | 'name' = 'id'): DottedPath {
+  toDottedPath(path: DataRecordPropertyPath, pathType: 'id' | 'name' = 'id'): DottedPath {
     try {
       if (pathType === 'name') {
         const dotted = [
@@ -149,7 +157,7 @@ export const dataRecordPathFns = {
       )
     }
   },
-  fromDottedPath(models: Model[], model: Model, dottedPath: DottedPath): DataRecordPath {
+  fromDottedPath(models: Model[], model: Model, dottedPath: DottedPath): DataRecordPropertyPath {
     try {
       return dottedPath.partType === 'name'
         ? fromDottedNamePath(models, model, dottedPath)
@@ -161,7 +169,7 @@ export const dataRecordPathFns = {
       )
     }
   },
-  sameDottedPaths(path1: DataRecordPath, path2: DataRecordPath): boolean {
+  sameDottedPaths(path1: DataRecordPropertyPath, path2: DataRecordPropertyPath): boolean {
     return dottedPathFns.equals(
       dataRecordPathFns.toDottedPath(path1),
       dataRecordPathFns.toDottedPath(path2),
@@ -169,7 +177,7 @@ export const dataRecordPathFns = {
   },
   addHasManyItem(
     models: Model[],
-    parentPath: DataRecordPathElement[],
+    parentPath: DataRecordPathParentElement[],
     nestedModel: NestedModel,
     initialRecord: DataRecord,
     item: DataRecord,
@@ -197,7 +205,7 @@ export const dataRecordPathFns = {
   },
   fromNames(models: Model[], model: Model, ...names: string[]) {
     const [parentNames, propertyName] = arrays.splitLast(names)
-    const elements: DataRecordPathElement[] = parentNames.map((name) => {
+    const elements: DataRecordPathParentElement[] = parentNames.map((name) => {
       if (name.indexOf('.') !== -1) {
         const parts = name.split('.')
         if (parts.length !== 2) {

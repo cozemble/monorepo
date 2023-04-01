@@ -1,8 +1,8 @@
 import type {
   DataRecord,
   DataRecordId,
-  DataRecordPath,
-  DataRecordPathElement,
+  DataRecordPropertyPath,
+  DataRecordPathParentElement,
   ModelId,
 } from '@cozemble/model-core'
 import { NestedModel } from '@cozemble/model-core'
@@ -50,13 +50,13 @@ export function dataRecordDeletedEvent(
 export interface DataRecordEditAborted {
   _type: 'data.record.edit.aborted'
   record: DataRecord
-  path: DataRecordPath
+  path: DataRecordPropertyPath
 }
 
 export interface DataRecordValueChanged<T = any> {
   _type: 'data.record.value.changed'
   record: DataRecord
-  path: DataRecordPath
+  path: DataRecordPropertyPath
   oldValue: T | null
   newValue: T | null
   confirmMethod: 'Enter' | 'Tab' | null
@@ -65,7 +65,7 @@ export interface DataRecordValueChanged<T = any> {
 export interface HasManyItemAdded {
   _type: 'data.record.has.many.item.added'
   record: DataRecord
-  parentPath: DataRecordPathElement[]
+  parentPath: DataRecordPathParentElement[]
   nestedModel: NestedModel
   newRecord: DataRecord
 }
@@ -79,7 +79,7 @@ export type DataRecordEditEvent =
 export type DataRecordControlEvent = DataRecordEditAborted
 
 export const dataRecordControlEvents = {
-  editAborted(record: DataRecord, path: DataRecordPath): DataRecordEditAborted {
+  editAborted(record: DataRecord, path: DataRecordPropertyPath): DataRecordEditAborted {
     return {
       _type: 'data.record.edit.aborted',
       record,
@@ -92,7 +92,7 @@ export const dataRecordEditEvents = {
   recordDeleted: dataRecordDeletedEvent,
   valueChanged<T>(
     record: DataRecord,
-    path: DataRecordPath,
+    path: DataRecordPropertyPath,
     oldValue: T | null,
     newValue: T | null,
     confirmMethod: 'Enter' | 'Tab' | null,
@@ -108,7 +108,7 @@ export const dataRecordEditEvents = {
   },
   hasManyItemAdded(
     record: DataRecord,
-    parentPath: DataRecordPathElement[],
+    parentPath: DataRecordPathParentElement[],
     nestedModel: NestedModel,
     newRecord: DataRecord,
   ): HasManyItemAdded {

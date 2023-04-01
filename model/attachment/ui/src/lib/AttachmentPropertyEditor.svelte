@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type {DataRecord, DataRecordPath} from '@cozemble/model-core'
+    import type {DataRecord, DataRecordPropertyPath} from '@cozemble/model-core'
     import {dataRecordEditor} from "@cozemble/data-editor-sdk";
     import type {AttachmentList, AttachmentReference} from "@cozemble/model-attachment-core";
     import {dataRecordPathFns} from "@cozemble/model-api";
@@ -7,7 +7,7 @@
     import AttachmentView from "./AttachmentView.svelte";
     import AttachmentsRibbon from "$lib/AttachmentsRibbon.svelte";
 
-    export let recordPath: DataRecordPath
+    export let recordPath: DataRecordPropertyPath
     export let record: DataRecord
     let error: string | null = null
     let uploadProgress = 0

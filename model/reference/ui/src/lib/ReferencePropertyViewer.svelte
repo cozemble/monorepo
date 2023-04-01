@@ -1,11 +1,11 @@
 <script lang="ts">
-    import type {DataRecord, DataRecordPath} from '@cozemble/model-core'
+    import type {DataRecord, DataRecordPropertyPath} from '@cozemble/model-core'
     import {assembleEditorParams, type EditorParams} from "./editorHelper";
     import {dataRecordViewer} from "@cozemble/data-editor-sdk";
     import {onMount} from "svelte";
     import ReferencePropertyViewerWithParams from "./ReferencePropertyViewerWithParams.svelte";
 
-    export let recordPath: DataRecordPath
+    export let recordPath: DataRecordPropertyPath
     export let record: DataRecord
     let editorParams: EditorParams | null = null
     let error: string | null = null

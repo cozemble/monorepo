@@ -1,10 +1,10 @@
 <script lang="ts">
-    import type {DataRecord, DataRecordPathElement, Property,} from '@cozemble/model-core'
+    import type {DataRecord, DataRecordPathParentElement, Property,} from '@cozemble/model-core'
     import {slotEditorRegistry} from '@cozemble/model-assembled'
     import {dataRecordPathFns} from '@cozemble/model-api'
 
     export let property: Property
-    export let parentPath: DataRecordPathElement[]
+    export let parentPath: DataRecordPathParentElement[]
     export let record: DataRecord
 
     $: editor = slotEditorRegistry.get(property.propertyType)

@@ -279,15 +279,15 @@ export function nestedRecordArrayPathElement(
   }
 }
 
-export type DataRecordPathElement =
+export type DataRecordPathParentElement =
   | NestedRecordArrayPathElement
   | NestedModel
   | ModelReference
   | InlinedModelReference
 
-export interface DataRecordPath {
-  _type: 'data.record.path'
-  parentElements: DataRecordPathElement[]
+export interface DataRecordPropertyPath {
+  _type: 'data.record.property.path'
+  parentElements: DataRecordPathParentElement[]
   lastElement: Property
 }
 
@@ -336,11 +336,14 @@ export const dottedPathFns = {
   },
 }
 
-export type DataRecordAndPath = { parentElements: DataRecordPathElement[]; record: DataRecord }
+export type DataRecordAndPath = {
+  parentElements: DataRecordPathParentElement[]
+  record: DataRecord
+}
 
 function dataRecordAndPath(
   record: DataRecord,
-  parentElements: DataRecordPathElement[],
+  parentElements: DataRecordPathParentElement[],
 ): DataRecordAndPath {
   return {
     parentElements,
@@ -350,7 +353,10 @@ function dataRecordAndPath(
 
 export const dataRecordAndPathFns = {
   newInstance: dataRecordAndPath,
-  prefix(element: DataRecordPathElement, recordAndPath: DataRecordAndPath): DataRecordAndPath {
+  prefix(
+    element: DataRecordPathParentElement,
+    recordAndPath: DataRecordAndPath,
+  ): DataRecordAndPath {
     return dataRecordAndPath(recordAndPath.record, [element, ...recordAndPath.parentElements])
   },
 }

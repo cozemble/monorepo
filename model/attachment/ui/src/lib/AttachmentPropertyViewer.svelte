@@ -1,12 +1,12 @@
 <script lang="ts">
-    import type {DataRecord, DataRecordPath} from '@cozemble/model-core'
+    import type {DataRecord, DataRecordPropertyPath} from '@cozemble/model-core'
     import type {AttachmentList, AttachmentReference} from "@cozemble/model-attachment-core";
     import {dataRecordPathFns} from "@cozemble/model-api";
     import ShowAttachmentThumbs from "./ShowAttachmentThumbs.svelte";
     import {dataRecordViewer} from "@cozemble/data-editor-sdk";
     import {dataRecordEditEvents} from "@cozemble/data-editor-sdk";
 
-    export let recordPath: DataRecordPath
+    export let recordPath: DataRecordPropertyPath
     export let record: DataRecord
 
     const viewClient = dataRecordViewer.getClient()

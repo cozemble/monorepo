@@ -1,6 +1,6 @@
 import type {
   DataRecord,
-  DataRecordPathElement,
+  DataRecordPathParentElement,
   Model,
   ModelPath,
   ModelPathElement,
@@ -13,7 +13,7 @@ import { modelFns } from './modelsFns'
 import { nestedModelFns } from './nestedModelFns'
 
 type PathRecordProperty = {
-  parentElements: DataRecordPathElement[]
+  parentElements: DataRecordPathParentElement[]
   record: DataRecord
   property: Property | null
   terminal: boolean

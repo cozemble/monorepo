@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type {DataRecordPathElement,} from '@cozemble/model-core'
+    import type {DataRecordPathParentElement,} from '@cozemble/model-core'
     import {modelFns} from '@cozemble/model-api'
     import DataRecordTable from './DataRecordTable.svelte'
     import HasManyRelationship from './HasManyRelationship.svelte'
@@ -13,7 +13,7 @@
     const showErrors = recordEditContext.showErrors
     const focus = recordEditContext.focus
 
-    export let parentPath: DataRecordPathElement[]
+    export let parentPath: DataRecordPathParentElement[]
     export let pushContext: (context: RecordEditContext) => void
     export let popContext: () => void
 </script>

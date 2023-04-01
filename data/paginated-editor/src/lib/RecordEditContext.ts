@@ -1,4 +1,4 @@
-import type { DataRecord, DataRecordPath, Model, ModelId } from '@cozemble/model-core'
+import type { DataRecord, DataRecordPropertyPath, Model, ModelId } from '@cozemble/model-core'
 import { DataRecordPathFocus } from './DataRecordPathFocus'
 import { writable, type Writable } from 'svelte/store'
 import { modelFns } from '@cozemble/model-api'
@@ -21,12 +21,12 @@ export function recordSaveSucceeded(record: DataRecord): RecordSaveSucceeded {
 export interface RecordSaveFailed {
   _type: 'record.save.failed'
   errors: string[]
-  dataErrors: Map<DataRecordPath, string[]>
+  dataErrors: Map<DataRecordPropertyPath, string[]>
 }
 
 export function recordSaveFailed(
   errors: string[],
-  dataErrors: Map<DataRecordPath, string[]>,
+  dataErrors: Map<DataRecordPropertyPath, string[]>,
 ): RecordSaveFailed {
   return { _type: 'record.save.failed', errors, dataErrors }
 }
@@ -43,8 +43,8 @@ export class RecordEditContext {
     public onSave: RecordSaveFunction,
     public onCancel: () => void,
     public title: string,
-    public _errors: Map<DataRecordPath, string[]> = new Map(),
-    public errors: Writable<Map<DataRecordPath, string[]>> = writable(_errors),
+    public _errors: Map<DataRecordPropertyPath, string[]> = new Map(),
+    public errors: Writable<Map<DataRecordPropertyPath, string[]>> = writable(_errors),
     public model = modelFns.findById(models, eventSourcedRecord.record.modelId),
     public focus = writable(
       new DataRecordPathFocus(models, () => eventSourcedRecord.record).setInitial(model),
