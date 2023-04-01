@@ -1,8 +1,8 @@
 import { arrays, errors, strings } from '@cozemble/lang-util'
 import type {
   DataRecord,
-  DataRecordPropertyPath,
   DataRecordPathParentElement,
+  DataRecordValuePath,
   DottedPath,
   Model,
   ModelPathElement,
@@ -10,6 +10,9 @@ import type {
 } from '@cozemble/model-core'
 import {
   dottedPathFns,
+  LeafModelSlot,
+  modelPathElementFns,
+  modelReferenceFns,
   NestedModel,
   NestedRecordArrayPathElement,
   propertyDescriptors,
@@ -17,6 +20,7 @@ import {
 import { dataRecordFns } from './dataRecordFns'
 import { modelFns } from './modelsFns'
 import { nestedModelFns } from './nestedModelFns'
+import { ReferencedRecords, referencedRecordsFns } from '@cozemble/model-core'
 
 function modelElementsToDataRecordPath(lastElement: Property, parentElements: ModelPathElement[]) {
   const parentRecordPathElements: DataRecordPathParentElement[] = parentElements.map((element) => {
@@ -30,14 +34,14 @@ function modelElementsToDataRecordPath(lastElement: Property, parentElements: Mo
     }
     throw new Error(`Invalid element in path: ${element._type}`)
   })
-  return dataRecordPathFns.newInstance(lastElement, ...parentRecordPathElements)
+  return dataRecordValuePathFns.newInstance(lastElement, ...parentRecordPathElements)
 }
 
 function fromDottedIdPath(
   models: Model[],
   model: Model,
   dottedPath: DottedPath,
-): DataRecordPropertyPath {
+): DataRecordValuePath {
   const elements = modelFns.elementsById(models, model, dottedPathFns.split(dottedPath))
   const [parentElements, lastElement] = arrays.splitLast(elements)
   if (lastElement._type !== 'property') {
@@ -50,7 +54,7 @@ function fromDottedNamePath(
   models: Model[],
   model: Model,
   dottedPath: DottedPath,
-): DataRecordPropertyPath {
+): DataRecordValuePath {
   const elements = modelFns.elementsByName(models, model, dottedPathFns.split(dottedPath))
   const [parentElements, lastElement] = arrays.splitLast(elements)
   if (lastElement._type !== 'property') {
@@ -59,23 +63,36 @@ function fromDottedNamePath(
   return modelElementsToDataRecordPath(lastElement, parentElements)
 }
 
-export const dataRecordPathFns = {
+function setLeafSlotValue<T>(path: DataRecordValuePath, record: DataRecord, t: T | null) {
+  if (path.lastElement._type === 'property') {
+    return propertyDescriptors.mandatory(path.lastElement).setValue(path.lastElement, record, t)
+  }
+  if (t === null) {
+    return modelReferenceFns.setReferences(path.lastElement, record, referencedRecordsFns.empty())
+  }
+  return modelReferenceFns.setReferences(path.lastElement, record, t as ReferencedRecords)
+}
+
+export const dataRecordValuePathFns = {
   newInstance: (
-    lastElement: Property,
+    lastElement: LeafModelSlot,
     ...parentElements: DataRecordPathParentElement[]
-  ): DataRecordPropertyPath => {
+  ): DataRecordValuePath => {
     return {
-      _type: 'data.record.property.path',
+      _type: 'data.record.value.path',
       parentElements,
       lastElement,
     }
   },
-  getValue<T>(path: DataRecordPropertyPath, record: DataRecord): T | null {
+  getValue<T>(path: DataRecordValuePath, record: DataRecord): T | null {
     if (record === null || record === undefined) {
       return null
     }
     if (path.parentElements.length === 0) {
-      return propertyDescriptors.mandatory(path.lastElement).getValue(path.lastElement, record)
+      if (path.lastElement._type === 'property') {
+        return propertyDescriptors.mandatory(path.lastElement).getValue(path.lastElement, record)
+      }
+      return modelReferenceFns.dereferenceOne(path.lastElement, record) as T
     }
     const deref = path.parentElements.reduce((acc, parentElement) => {
       if (acc === undefined) {
@@ -88,19 +105,17 @@ export const dataRecordPathFns = {
         return relationshipRecords[parentElement.recordReference.index]
       }
     }, record)
-    const reducedPath = dataRecordPathFns.newInstance(path.lastElement)
-    return dataRecordPathFns.getValue(reducedPath, deref)
+    const reducedPath = dataRecordValuePathFns.newInstance(path.lastElement)
+    return dataRecordValuePathFns.getValue(reducedPath, deref)
   },
   setValue<T>(
     models: Model[],
-    path: DataRecordPropertyPath,
+    path: DataRecordValuePath,
     initialRecord: DataRecord,
     t: T | null,
   ): DataRecord {
     if (path.parentElements.length === 0) {
-      return propertyDescriptors
-        .mandatory(path.lastElement)
-        .setValue(path.lastElement, initialRecord, t)
+      return setLeafSlotValue(path, initialRecord, t)
     }
     path.parentElements.reduce((record, parentElement, index) => {
       if (parentElement._type === 'nested.model') {
@@ -111,9 +126,7 @@ export const dataRecordPathFns = {
             nestedRecord = dataRecordFns.newInstance(nestedModel, record.createdBy.value)
           }
           if (index === path.parentElements.length - 1) {
-            nestedRecord = propertyDescriptors
-              .mandatory(path.lastElement)
-              .setValue(path.lastElement, nestedRecord, t)
+            nestedRecord = setLeafSlotValue(path, nestedRecord, t)
           }
           record.values[parentElement.id.value] = nestedRecord
           return nestedRecord
@@ -126,7 +139,7 @@ export const dataRecordPathFns = {
     }, initialRecord)
     return initialRecord
   },
-  toDottedPath(path: DataRecordPropertyPath, pathType: 'id' | 'name' = 'id'): DottedPath {
+  toDottedPath(path: DataRecordValuePath, pathType: 'id' | 'name' = 'id'): DottedPath {
     try {
       if (pathType === 'name') {
         const dotted = [
@@ -157,7 +170,7 @@ export const dataRecordPathFns = {
       )
     }
   },
-  fromDottedPath(models: Model[], model: Model, dottedPath: DottedPath): DataRecordPropertyPath {
+  fromDottedPath(models: Model[], model: Model, dottedPath: DottedPath): DataRecordValuePath {
     try {
       return dottedPath.partType === 'name'
         ? fromDottedNamePath(models, model, dottedPath)
@@ -169,10 +182,10 @@ export const dataRecordPathFns = {
       )
     }
   },
-  sameDottedPaths(path1: DataRecordPropertyPath, path2: DataRecordPropertyPath): boolean {
+  sameDottedPaths(path1: DataRecordValuePath, path2: DataRecordValuePath): boolean {
     return dottedPathFns.equals(
-      dataRecordPathFns.toDottedPath(path1),
-      dataRecordPathFns.toDottedPath(path2),
+      dataRecordValuePathFns.toDottedPath(path1),
+      dataRecordValuePathFns.toDottedPath(path2),
     )
   },
   addHasManyItem(
@@ -204,7 +217,7 @@ export const dataRecordPathFns = {
     }
   },
   fromNames(models: Model[], model: Model, ...names: string[]) {
-    const [parentNames, propertyName] = arrays.splitLast(names)
+    const [parentNames, leafSlotName] = arrays.splitLast(names)
     const elements: DataRecordPathParentElement[] = parentNames.map((name) => {
       if (name.indexOf('.') !== -1) {
         const parts = name.split('.')
@@ -213,28 +226,18 @@ export const dataRecordPathFns = {
         }
         const [nestedModelName, index] = parts
         const nestedModelElement = modelFns.elementByName(model, nestedModelName)
-        if (
-          nestedModelElement._type !== 'nested.model' ||
-          nestedModelElement.cardinality !== 'many'
-        ) {
+        if (nestedModelElement._type !== 'nested.model') {
           throw new Error(`Invalid path: ${name}`)
         }
         model = modelFns.findById(models, nestedModelElement.modelId)
-        return dataRecordPathFns.newNestedRecordArrayPathElement(
+        return dataRecordValuePathFns.newNestedRecordArrayPathElement(
           nestedModelElement,
           parseInt(index),
         )
       }
       const element = modelFns.elementByName(model, name)
-      if (element._type === 'property') {
-        throw new Error(`Invalid path: ${name} - found a property in the parent path`)
-      }
-      if (element._type === 'model.reference') {
-        if (element.referencedModels.length > 1) {
-          throw new Error(`to do : ${name} - model references with more than one referenced model`)
-        }
-        model = modelFns.findById(models, element.referencedModels[0])
-        return element
+      if (element._type === 'property' || element._type === 'model.reference') {
+        throw new Error(`Invalid path: ${name} - found a ${element._type} in the parent path`)
       }
       if (element._type === 'inlined.model.reference') {
         throw new Error(`Invalid path: ${name} - found an unknown element type: ${element._type}`)
@@ -245,10 +248,10 @@ export const dataRecordPathFns = {
       model = modelFns.findById(models, element.modelId)
       return element
     })
-    const lastElement = modelFns.elementByName(model, propertyName)
-    if (lastElement._type !== 'property') {
-      throw new Error(`Invalid path: ${names.join('.')} - last element is not a property`)
+    const lastElement = modelFns.elementByName(model, leafSlotName)
+    if (!modelPathElementFns.isLeafSlot(lastElement)) {
+      throw new Error(`Invalid path: ${names.join('.')} - last element is not a leaf model slot`)
     }
-    return dataRecordPathFns.newInstance(lastElement, ...elements)
+    return dataRecordValuePathFns.newInstance(lastElement as LeafModelSlot, ...elements)
   },
 }

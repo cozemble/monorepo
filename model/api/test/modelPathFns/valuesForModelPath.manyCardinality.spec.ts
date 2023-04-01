@@ -1,6 +1,6 @@
 import {
   dataRecordFns,
-  dataRecordPathFns,
+  dataRecordValuePathFns,
   modelFns,
   modelOptions,
   modelPathFns,
@@ -93,10 +93,10 @@ describe('given a path of invoice.single.lineItems.anotherSingle.quantity', () =
     expect(valuesForModelPath(models, path, record)).toEqual(
       manyCardinalityValuesForModelPathResponse([
         dataRecordRecordPathAndValue(
-          dataRecordPathFns.newInstance(
+          dataRecordValuePathFns.newInstance(
             quantity,
             singleRelationship,
-            dataRecordPathFns.newNestedRecordArrayPathElement(lineItemsRelationship, 0),
+            dataRecordValuePathFns.newNestedRecordArrayPathElement(lineItemsRelationship, 0),
             anotherSingleRelationship,
           ),
           null,
@@ -118,10 +118,10 @@ describe('given a path of invoice.single.lineItems.anotherSingle.quantity', () =
     expect(valuesForModelPath(models, path, record)).toEqual(
       manyCardinalityValuesForModelPathResponse([
         dataRecordRecordPathAndValue(
-          dataRecordPathFns.newInstance(
+          dataRecordValuePathFns.newInstance(
             quantity,
             singleRelationship,
-            dataRecordPathFns.newNestedRecordArrayPathElement(lineItemsRelationship, 0),
+            dataRecordValuePathFns.newNestedRecordArrayPathElement(lineItemsRelationship, 0),
             anotherSingleRelationship,
           ),
           null,
@@ -146,10 +146,10 @@ describe('given a path of invoice.single.lineItems.anotherSingle.quantity', () =
     expect(valuesForModelPath(models, path, record)).toEqual(
       manyCardinalityValuesForModelPathResponse([
         dataRecordRecordPathAndValue(
-          dataRecordPathFns.newInstance(
+          dataRecordValuePathFns.newInstance(
             quantity,
             singleRelationship,
-            dataRecordPathFns.newNestedRecordArrayPathElement(lineItemsRelationship, 0),
+            dataRecordValuePathFns.newNestedRecordArrayPathElement(lineItemsRelationship, 0),
             anotherSingleRelationship,
           ),
           3,
@@ -191,19 +191,19 @@ describe('given a path of invoice.single.lineItems.anotherSingle.quantity', () =
     expect(valuesForModelPath(models, path, record)).toEqual(
       manyCardinalityValuesForModelPathResponse([
         dataRecordRecordPathAndValue(
-          dataRecordPathFns.newInstance(
+          dataRecordValuePathFns.newInstance(
             quantity,
             singleRelationship,
-            dataRecordPathFns.newNestedRecordArrayPathElement(lineItemsRelationship, 0),
+            dataRecordValuePathFns.newNestedRecordArrayPathElement(lineItemsRelationship, 0),
             anotherSingleRelationship,
           ),
           3,
         ),
         dataRecordRecordPathAndValue(
-          dataRecordPathFns.newInstance(
+          dataRecordValuePathFns.newInstance(
             quantity,
             singleRelationship,
-            dataRecordPathFns.newNestedRecordArrayPathElement(lineItemsRelationship, 1),
+            dataRecordValuePathFns.newNestedRecordArrayPathElement(lineItemsRelationship, 1),
             anotherSingleRelationship,
           ),
           4,

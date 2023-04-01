@@ -33,7 +33,7 @@ export const dataRecordPathElementFns = {
       if (currentRecord === null) {
         return null
       }
-      if (element._type === 'inlined.model.reference' || element._type === 'model.reference') {
+      if (element._type === 'inlined.model.reference') {
         throw new Error(`Invalid element in path: ${element._type}`)
       }
       if (element._type === 'nested.record.array.path.element') {

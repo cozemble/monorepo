@@ -1,12 +1,12 @@
 import {
-  dataRecordPathFns,
+  dataRecordValuePathFns,
   modelFns,
   modelPathFns,
   valuesForModelPathFns,
 } from '@cozemble/model-api'
 import type {
   DataRecord,
-  DataRecordPropertyPath,
+  DataRecordValuePath,
   DataRecordPathParentElement,
   Model,
   ModelPath,
@@ -19,7 +19,7 @@ export class DataRecordPathFocus {
   constructor(
     private readonly models: Model[],
     private readonly recordProvider: () => DataRecord,
-    private readonly focus: DataRecordPropertyPath | null = null,
+    private readonly focus: DataRecordValuePath | null = null,
   ) {}
 
   setInitial(model: Model): DataRecordPathFocus {
@@ -30,7 +30,7 @@ export class DataRecordPathFocus {
     return new DataRecordPathFocus(
       this.models,
       this.recordProvider,
-      dataRecordPathFns.newInstance(properties[0]),
+      dataRecordValuePathFns.newInstance(properties[0]),
     )
   }
 
@@ -50,7 +50,8 @@ export class DataRecordPathFocus {
         valuesForModelPathFns.flatten(modelPathFns.getValues(models, p, record)),
       )
       const indexOfFocus = allValues.findIndex(
-        (v) => v.value && v.value.path && dataRecordPathFns.sameDottedPaths(v.value.path, focus),
+        (v) =>
+          v.value && v.value.path && dataRecordValuePathFns.sameDottedPaths(v.value.path, focus),
       )
       console.log({ indexOfFocus })
       if (indexOfFocus === -1) {
@@ -66,7 +67,7 @@ export class DataRecordPathFocus {
 
   focusFromDottedNamePath(dottedNamePath: string): DataRecordPathFocus {
     const model = modelFns.findById(this.models, this.recordProvider().modelId)
-    const newFocus = dataRecordPathFns.fromDottedPath(
+    const newFocus = dataRecordValuePathFns.fromDottedPath(
       this.models,
       model,
       dottedPathFns.dottedNamePath(dottedNamePath),
@@ -82,14 +83,14 @@ export class DataRecordPathFocus {
     if (this.focus === null) {
       return false
     }
-    const propertyPath = dataRecordPathFns.toDottedPath(
-      dataRecordPathFns.newInstance(property, ...parentPath),
+    const propertyPath = dataRecordValuePathFns.toDottedPath(
+      dataRecordValuePathFns.newInstance(property, ...parentPath),
     )
-    const focusPath = dataRecordPathFns.toDottedPath(this.focus)
+    const focusPath = dataRecordValuePathFns.toDottedPath(this.focus)
     return dottedPathFns.equals(propertyPath, focusPath)
   }
 
-  _newFocus(focus: DataRecordPropertyPath | null): DataRecordPathFocus {
+  _newFocus(focus: DataRecordValuePath | null): DataRecordPathFocus {
     return new DataRecordPathFocus(this.models, this.recordProvider, focus)
   }
 }

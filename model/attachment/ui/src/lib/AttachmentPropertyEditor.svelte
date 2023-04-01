@@ -1,13 +1,13 @@
 <script lang="ts">
-    import type {DataRecord, DataRecordPropertyPath} from '@cozemble/model-core'
+    import type {DataRecord, DataRecordValuePath} from '@cozemble/model-core'
     import {dataRecordEditor} from "@cozemble/data-editor-sdk";
     import type {AttachmentList, AttachmentReference} from "@cozemble/model-attachment-core";
-    import {dataRecordPathFns} from "@cozemble/model-api";
+    import {dataRecordValuePathFns} from "@cozemble/model-api";
     import {dataRecordEditEvents} from "@cozemble/data-editor-sdk";
     import AttachmentView from "./AttachmentView.svelte";
     import AttachmentsRibbon from "$lib/AttachmentsRibbon.svelte";
 
-    export let recordPath: DataRecordPropertyPath
+    export let recordPath: DataRecordValuePath
     export let record: DataRecord
     let error: string | null = null
     let uploadProgress = 0
@@ -17,7 +17,7 @@
 
     const dataRecordEditorClient = dataRecordEditor.getClient()
 
-    let attachments = dataRecordPathFns.getValue(recordPath, record) as AttachmentList ?? ({
+    let attachments = dataRecordValuePathFns.getValue(recordPath, record) as AttachmentList ?? ({
         _type: 'attachment.list',
         attachmentReferences: []
     })

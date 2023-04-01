@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { dataRecordFns, dataRecordPathFns, modelFns, nestedModelFns } from '../../src'
+import { dataRecordFns, dataRecordValuePathFns, modelFns, nestedModelFns } from '../../src'
 import { invoiceModel, invoiceModels, lineItemModel } from '../../src/invoiceModel'
 import type { DataRecord } from '@cozemble/model-core'
 import { registerStringProperty } from '@cozemble/model-string-core'
@@ -12,7 +12,7 @@ describe('Given the invoice model', () => {
     const lineItemsRelationship = modelFns.elementByName(invoiceModel, 'Line Items') as NestedModel
     const initialRecord = dataRecordFns.newInstance(invoiceModel, 'mike')
     const newLineItem = dataRecordFns.random(invoiceModels, lineItemModel)
-    const mutated = dataRecordPathFns.addHasManyItem(
+    const mutated = dataRecordValuePathFns.addHasManyItem(
       invoiceModels,
       [],
       lineItemsRelationship,

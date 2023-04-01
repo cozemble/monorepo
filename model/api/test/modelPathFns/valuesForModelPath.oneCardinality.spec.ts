@@ -1,6 +1,6 @@
 import {
   dataRecordFns,
-  dataRecordPathFns,
+  dataRecordValuePathFns,
   modelFns,
   modelOptions,
   modelPathFns,
@@ -51,7 +51,11 @@ describe('given a path of invoice.single.anotherSingle.quantity', () => {
     expect(valuesForModelPath(models, path, emptyRecord)).toEqual(
       singleCardinalityValuesForModelPathResponse(
         dataRecordRecordPathAndValue(
-          dataRecordPathFns.newInstance(quantity, singleRelationship, anotherSingleRelationship),
+          dataRecordValuePathFns.newInstance(
+            quantity,
+            singleRelationship,
+            anotherSingleRelationship,
+          ),
           null,
         ),
       ),
@@ -65,7 +69,11 @@ describe('given a path of invoice.single.anotherSingle.quantity', () => {
     expect(valuesForModelPath(models, path, record)).toEqual(
       singleCardinalityValuesForModelPathResponse(
         dataRecordRecordPathAndValue(
-          dataRecordPathFns.newInstance(quantity, singleRelationship, anotherSingleRelationship),
+          dataRecordValuePathFns.newInstance(
+            quantity,
+            singleRelationship,
+            anotherSingleRelationship,
+          ),
           null,
         ),
       ),
@@ -81,7 +89,11 @@ describe('given a path of invoice.single.anotherSingle.quantity', () => {
     expect(valuesForModelPath(models, path, record)).toEqual(
       singleCardinalityValuesForModelPathResponse(
         dataRecordRecordPathAndValue(
-          dataRecordPathFns.newInstance(quantity, singleRelationship, anotherSingleRelationship),
+          dataRecordValuePathFns.newInstance(
+            quantity,
+            singleRelationship,
+            anotherSingleRelationship,
+          ),
           null,
         ),
       ),
@@ -100,7 +112,11 @@ describe('given a path of invoice.single.anotherSingle.quantity', () => {
     expect(valuesForModelPath(models, path, record)).toEqual(
       singleCardinalityValuesForModelPathResponse(
         dataRecordRecordPathAndValue(
-          dataRecordPathFns.newInstance(quantity, singleRelationship, anotherSingleRelationship),
+          dataRecordValuePathFns.newInstance(
+            quantity,
+            singleRelationship,
+            anotherSingleRelationship,
+          ),
           null,
         ),
       ),
@@ -120,7 +136,11 @@ describe('given a path of invoice.single.anotherSingle.quantity', () => {
     expect(valuesForModelPath(models, path, record)).toEqual(
       singleCardinalityValuesForModelPathResponse(
         dataRecordRecordPathAndValue(
-          dataRecordPathFns.newInstance(quantity, singleRelationship, anotherSingleRelationship),
+          dataRecordValuePathFns.newInstance(
+            quantity,
+            singleRelationship,
+            anotherSingleRelationship,
+          ),
           '2',
         ),
       ),
@@ -139,7 +159,11 @@ describe('given a path of invoice.single.anotherSingle.quantity', () => {
     expect(valuesForModelPath(models, path, record)).toEqual(
       singleCardinalityValuesForModelPathResponse(
         dataRecordRecordPathAndValue(
-          dataRecordPathFns.newInstance(quantity, singleRelationship, anotherSingleRelationship),
+          dataRecordValuePathFns.newInstance(
+            quantity,
+            singleRelationship,
+            anotherSingleRelationship,
+          ),
           null,
         ),
       ),

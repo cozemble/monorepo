@@ -1,11 +1,11 @@
 <script lang="ts">
-    import type {DataRecord, DataRecordPropertyPath} from '@cozemble/model-core'
-    import {dataRecordPathFns} from '@cozemble/model-api'
+    import type {DataRecord, DataRecordValuePath} from '@cozemble/model-core'
+    import {dataRecordValuePathFns} from '@cozemble/model-api'
 
-    export let recordPath: DataRecordPropertyPath
+    export let recordPath: DataRecordValuePath
     export let record: DataRecord
 
-    $: value = dataRecordPathFns.getValue(recordPath, record)
+    $: value = dataRecordValuePathFns.getValue(recordPath, record)
 </script>
 
 {#if value}

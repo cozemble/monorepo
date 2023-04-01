@@ -1,7 +1,7 @@
 import type {
   DataRecord,
   DataRecordId,
-  DataRecordPropertyPath,
+  DataRecordValuePath,
   DataRecordPathParentElement,
   ModelId,
 } from '@cozemble/model-core'
@@ -50,13 +50,13 @@ export function dataRecordDeletedEvent(
 export interface DataRecordEditAborted {
   _type: 'data.record.edit.aborted'
   record: DataRecord
-  path: DataRecordPropertyPath
+  path: DataRecordValuePath
 }
 
 export interface DataRecordValueChanged<T = any> {
   _type: 'data.record.value.changed'
   record: DataRecord
-  path: DataRecordPropertyPath
+  path: DataRecordValuePath
   oldValue: T | null
   newValue: T | null
   confirmMethod: 'Enter' | 'Tab' | null
@@ -79,7 +79,7 @@ export type DataRecordEditEvent =
 export type DataRecordControlEvent = DataRecordEditAborted
 
 export const dataRecordControlEvents = {
-  editAborted(record: DataRecord, path: DataRecordPropertyPath): DataRecordEditAborted {
+  editAborted(record: DataRecord, path: DataRecordValuePath): DataRecordEditAborted {
     return {
       _type: 'data.record.edit.aborted',
       record,
@@ -92,7 +92,7 @@ export const dataRecordEditEvents = {
   recordDeleted: dataRecordDeletedEvent,
   valueChanged<T>(
     record: DataRecord,
-    path: DataRecordPropertyPath,
+    path: DataRecordValuePath,
     oldValue: T | null,
     newValue: T | null,
     confirmMethod: 'Enter' | 'Tab' | null,

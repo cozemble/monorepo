@@ -1,5 +1,11 @@
 import { describe, expect, test } from 'vitest'
-import { dataRecordFns, dataRecordPathFns, modelFns, modelOptions, nestedModelFns } from '../../src'
+import {
+  dataRecordFns,
+  dataRecordValuePathFns,
+  modelFns,
+  modelOptions,
+  nestedModelFns,
+} from '../../src'
 import {
   registerStringProperty,
   stringPropertyFns,
@@ -16,7 +22,7 @@ describe('Given a model with a top level required string property', () => {
   test('validation fails if string is missing', () => {
     const record = dataRecordFns.newInstance(model, 'test-user')
     const errors = modelFns.validate([model], record)
-    const expected = new Map([[dataRecordPathFns.newInstance(requiredProperty), ['Required']]])
+    const expected = new Map([[dataRecordValuePathFns.newInstance(requiredProperty), ['Required']]])
     expect(errors).toEqual(expected)
   })
 
@@ -24,7 +30,7 @@ describe('Given a model with a top level required string property', () => {
     const record = dataRecordFns.random([model], model, { name: '' })
     const errors = modelFns.validate([model], record)
     expect(errors).toEqual(
-      new Map([[dataRecordPathFns.newInstance(requiredProperty), ['Required']]]),
+      new Map([[dataRecordValuePathFns.newInstance(requiredProperty), ['Required']]]),
     )
   })
 
@@ -52,7 +58,7 @@ describe('Given a model with a required string property in a has-one relationshi
     const record = dataRecordFns.newInstance(customerModel, 'test-user')
     const errors = modelFns.validate([addressModel, customerModel], record)
     const expected = new Map([
-      [dataRecordPathFns.newInstance(requiredPostcode, addressRelationship), ['Required']],
+      [dataRecordValuePathFns.newInstance(requiredPostcode, addressRelationship), ['Required']],
     ])
     expect(errors).toEqual(expected)
   })
@@ -78,9 +84,9 @@ describe('Given a model with a required string property in a has-many relationsh
     const errors = modelFns.validate([addressModel, customerModel], record)
     const expected = new Map([
       [
-        dataRecordPathFns.newInstance(
+        dataRecordValuePathFns.newInstance(
           requiredPostcode,
-          dataRecordPathFns.newNestedRecordArrayPathElement(addressRelationship, 0),
+          dataRecordValuePathFns.newNestedRecordArrayPathElement(addressRelationship, 0),
         ),
         ['Required'],
       ],

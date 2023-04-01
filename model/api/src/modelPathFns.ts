@@ -1,7 +1,7 @@
 import { arrays } from '@cozemble/lang-util'
 import type {
   DataRecord,
-  DataRecordPropertyPath,
+  DataRecordValuePath,
   Model,
   ModelPath,
   ModelPathElement,
@@ -15,12 +15,12 @@ import { valuesForModelPath, ValuesForModelPath } from './valuesForModelPath'
 
 export interface DataRecordPathAndValue<T = any> {
   _type: 'data.record.path.and.value'
-  path: DataRecordPropertyPath
+  path: DataRecordValuePath
   value: T | null
 }
 
 export function dataRecordRecordPathAndValue<T>(
-  path: DataRecordPropertyPath,
+  path: DataRecordValuePath,
   value: T | null,
 ): DataRecordPathAndValue<T> {
   return {

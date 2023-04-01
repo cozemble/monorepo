@@ -85,13 +85,18 @@ export const dataRecordFns = {
       values: {},
     }
     record = model.slots.reduce((record, slot) => {
-      if (slot._type === 'model.reference' || slot._type === 'inlined.model.reference') {
+      if (slot._type === 'inlined.model.reference') {
         return record
       }
       const givenValue = givenValues[slot.name.value]
       const hasGivenValue = givenValue !== undefined
-      const value = hasGivenValue ? givenValue : propertyDescriptors.mandatory(slot).randomValue()
-      return modelFns.setPropertyValue(model, slot, value, record)
+      if (slot._type === 'model.reference') {
+        record.values[slot.id.value] = givenValue
+        return record
+      } else {
+        const value = hasGivenValue ? givenValue : propertyDescriptors.mandatory(slot).randomValue()
+        return modelFns.setPropertyValue(model, slot, value, record)
+      }
     }, record)
     record = model.nestedModels.reduce((record, nestedModel) => {
       if (nestedModel.cardinality === 'one') {

@@ -7,7 +7,7 @@ export {
   ModelId,
   UserId,
   TimestampEpochMillis,
-  DataRecordPropertyPath,
+  DataRecordValuePath,
   DataRecordPathParentElement,
   PropertyType,
   propertyTypeFns,
@@ -50,6 +50,11 @@ export {
   modelReferenceNameFns,
   modelReferenceIdFns,
   modelReferenceFns,
+  modelPathElementFns,
+  LeafModelSlot,
+  ReferencedRecord,
+  ReferencedRecords,
+  referencedRecordsFns,
 } from './core'
 
 export { propertyDescriptors } from './propertyDescriptor'

@@ -12,9 +12,7 @@
     export let attachmentsManager: AttachmentsManager
     export let cancelButtonText = "Cancel"
 
-
     let stack: RecordEditContext[] = [recordEditContext]
-
 
     function visibleStackItem() {
         return stack[stack.length - 1]

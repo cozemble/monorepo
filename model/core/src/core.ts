@@ -150,13 +150,54 @@ export interface ModelReference {
   inverseName?: ModelReferenceName
 }
 
+export interface ReferencedRecord {
+  _type: 'referenced.record'
+  referencedModelId: ModelId
+  referencedRecordId: DataRecordId
+}
+
+export interface ReferencedRecords {
+  _type: 'referenced.records'
+  referencedRecords: ReferencedRecord[]
+}
+
+export const referencedRecordsFns = {
+  empty: (): ReferencedRecords => {
+    return {
+      _type: 'referenced.records',
+      referencedRecords: [],
+    }
+  },
+  addReference: (
+    referencedRecords: ReferencedRecords,
+    referencedModelId: ModelId,
+    referencedRecordId: DataRecordId,
+  ): ReferencedRecords => {
+    return {
+      _type: 'referenced.records',
+      referencedRecords: [
+        ...referencedRecords.referencedRecords,
+        {
+          _type: 'referenced.record',
+          referencedModelId,
+          referencedRecordId,
+        },
+      ],
+    }
+  },
+}
+
 export const modelReferenceFns = {
   newInstance: (
     referencedModels: ModelId[],
-    name: ModelReferenceName,
+    referenceName: ModelReferenceName | string,
     id = modelReferenceIdFns.newInstance(uuids.v4()),
     cardinality: Cardinality = 'one',
   ): ModelReference => {
+    const name =
+      typeof referenceName === 'string'
+        ? modelReferenceNameFns.newInstance(referenceName)
+        : referenceName
     return {
       _type: 'model.reference',
       id,
@@ -177,6 +218,29 @@ export const modelReferenceFns = {
       throw new Error('Cannot get one reference from many reference')
     }
     return reference.referencedModels[0] ?? null
+  },
+  dereferenceOne: (reference: ModelReference, record: DataRecord): DataRecordId | null => {
+    if (reference.cardinality !== 'one') {
+      throw new Error('Cannot get one reference from many reference')
+    }
+    const referenced = (record.values[reference.id.value] ?? null) as ReferencedRecords
+    if (referenced === null || referenced.referencedRecords.length === 0) {
+      return null
+    }
+    return referenced.referencedRecords[0].referencedRecordId
+  },
+  setReferences: (
+    reference: ModelReference,
+    record: DataRecord,
+    referencedRecords: ReferencedRecords,
+  ): DataRecord => {
+    return {
+      ...record,
+      values: {
+        ...record.values,
+        [reference.id.value]: referencedRecords,
+      },
+    }
   },
 }
 
@@ -216,6 +280,12 @@ export interface Model {
 }
 
 export type ModelPathElement = NestedModel | Property | ModelReference | InlinedModelReference
+
+export const modelPathElementFns = {
+  isLeafSlot: (modelSlot: ModelPathElement): boolean => {
+    return modelSlot._type === 'property' || modelSlot._type === 'model.reference'
+  },
+}
 
 export interface ModelPath<E extends ModelPathElement> {
   _type: 'model.path'
@@ -282,13 +352,14 @@ export function nestedRecordArrayPathElement(
 export type DataRecordPathParentElement =
   | NestedRecordArrayPathElement
   | NestedModel
-  | ModelReference
   | InlinedModelReference
 
-export interface DataRecordPropertyPath {
-  _type: 'data.record.property.path'
+export type LeafModelSlot = Property | ModelReference
+
+export interface DataRecordValuePath {
+  _type: 'data.record.value.path'
   parentElements: DataRecordPathParentElement[]
-  lastElement: Property
+  lastElement: LeafModelSlot
 }
 
 export interface DottedName extends TinyValue {

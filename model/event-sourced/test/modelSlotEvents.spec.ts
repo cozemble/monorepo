@@ -9,8 +9,8 @@ import {
 } from '@cozemble/model-core'
 import { modelFns, modelOptions, propertyFns } from '@cozemble/model-api'
 import { modelSlotEvents } from '../src'
-import { ModelReference } from '@cozemble/model-core/dist/esm'
-import { modelIdFns } from '@cozemble/model-api/dist/esm'
+import { ModelReference } from '@cozemble/model-core'
+import { modelIdFns } from '@cozemble/model-api'
 
 describe('given a model with a property', () => {
   let model: Model

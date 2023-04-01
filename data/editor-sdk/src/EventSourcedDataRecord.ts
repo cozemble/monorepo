@@ -1,6 +1,6 @@
 import type { DataRecord, Model, ModelId } from '@cozemble/model-core'
 import { DataRecordEditEvent, dataRecordEditEvents } from './dataRecordEditEvents'
-import { dataRecordFns, dataRecordPathFns, modelFns } from '@cozemble/model-api'
+import { dataRecordFns, dataRecordValuePathFns, modelFns } from '@cozemble/model-api'
 
 export interface EventSourcedDataRecord {
   _type: 'event.sourced.data.record'
@@ -11,10 +11,10 @@ export interface EventSourcedDataRecord {
 
 function applyEvent(models: Model[], event: DataRecordEditEvent, record: DataRecord): DataRecord {
   if (event._type === 'data.record.value.changed') {
-    return dataRecordPathFns.setValue(models, event.path, record, event.newValue)
+    return dataRecordValuePathFns.setValue(models, event.path, record, event.newValue)
   }
   if (event._type === 'data.record.has.many.item.added') {
-    return dataRecordPathFns.addHasManyItem(
+    return dataRecordValuePathFns.addHasManyItem(
       models,
       event.parentPath,
       event.nestedModel,

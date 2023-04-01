@@ -10,10 +10,8 @@
     export let model: Model
 
     onMount(async () => {
-        console.log(`onMount: ${model.name.value}`)
         try {
             const initialRecords = await loadRecords(tenantId, model.id.value)
-            console.log({initialRecords})
             records.set(initialRecords.records)
         } catch (e) {
             console.error(e)
@@ -31,7 +29,6 @@
     }
 
     onDestroy(() => {
-        console.log(`onDestroy: ${model.name.value}`)
         records.set([])
     })
 </script>

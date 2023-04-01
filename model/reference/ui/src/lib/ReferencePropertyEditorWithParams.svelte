@@ -1,17 +1,17 @@
 <script lang="ts">
-    import type {DataRecord, DataRecordPropertyPath} from '@cozemble/model-core'
+    import type {DataRecord, DataRecordValuePath} from '@cozemble/model-core'
     import {dataRecordControlEvents, dataRecordEditEvents, dataRecordEditor,} from '@cozemble/data-editor-sdk'
     import {onMount} from "svelte";
     import type {EditorParams} from "./editorHelper";
     import {makeSummaryView} from "./editorHelper";
-    import {dataRecordPathFns} from "@cozemble/model-api";
+    import {dataRecordValuePathFns} from "@cozemble/model-api";
     import type {ReferencedRecords} from "@cozemble/model-reference-core";
 
-    export let recordPath: DataRecordPropertyPath
+    export let recordPath: DataRecordValuePath
     export let record: DataRecord
     export let editorParams: EditorParams
 
-    let initialValue: ReferencedRecords | null = dataRecordPathFns.getValue(recordPath, record) ?? null
+    let initialValue: ReferencedRecords | null = dataRecordValuePathFns.getValue(recordPath, record) ?? null
 
     $:selectedRecordId = initialValue?.referencedRecords[0]?.referencedRecordId.value ?? null;
 

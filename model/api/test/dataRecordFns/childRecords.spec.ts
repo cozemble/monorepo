@@ -8,11 +8,7 @@ import {
   invoiceModels,
   lineItemModel,
 } from '../../src/invoiceModel'
-import {
-  dataRecordAndPathFns,
-  nestedRecordArrayPathElement,
-  type NestedModel,
-} from '@cozemble/model-core'
+import { dataRecordAndPathFns, nestedRecordArrayPathElement } from '@cozemble/model-core'
 import { registerStringProperty } from '@cozemble/model-string-core'
 
 registerStringProperty()

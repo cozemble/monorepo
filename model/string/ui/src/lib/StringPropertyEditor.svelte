@@ -1,14 +1,14 @@
 <script lang="ts">
-    import type {DataRecord, DataRecordPropertyPath} from '@cozemble/model-core'
+    import type {DataRecord, DataRecordValuePath} from '@cozemble/model-core'
     import {dataRecordControlEvents, dataRecordEditEvents, dataRecordEditor,} from '@cozemble/data-editor-sdk'
-    import {dataRecordPathFns} from '@cozemble/model-api'
+    import {dataRecordValuePathFns} from '@cozemble/model-api'
 
-    export let recordPath: DataRecordPropertyPath
+    export let recordPath: DataRecordValuePath
     export let record: DataRecord
 
     const dataRecordEditorClient = dataRecordEditor.getClient()
-    const initialValue = dataRecordPathFns.getValue(recordPath, record) ?? null
-    let editableValue = dataRecordPathFns.getValue(recordPath, record) ?? ''
+    const initialValue = dataRecordValuePathFns.getValue(recordPath, record) ?? null
+    let editableValue = dataRecordValuePathFns.getValue(recordPath, record) ?? ''
 
     let valueContainerDomElement: HTMLDivElement | null
 

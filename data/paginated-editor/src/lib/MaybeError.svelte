@@ -1,6 +1,6 @@
 <script lang="ts">
 import type {
-  DataRecordPropertyPath,
+  DataRecordValuePath,
   DataRecordPathParentElement,
   Property,
 } from '@cozemble/model-core'
@@ -8,7 +8,7 @@ import { getMyErrors } from './getMyErrors'
 
 export let property: Property
 export let parentPath: DataRecordPathParentElement[]
-export let errors: Map<DataRecordPropertyPath, string[]>
+export let errors: Map<DataRecordValuePath, string[]>
 export let showErrors: boolean
 
 $: myErrors = getMyErrors(errors, parentPath, property)

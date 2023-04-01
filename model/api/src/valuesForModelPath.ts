@@ -7,7 +7,7 @@ import type {
   Property,
 } from '@cozemble/model-core'
 import { propertyDescriptors } from '@cozemble/model-core'
-import { dataRecordPathFns } from './dataRecordPathFns'
+import { dataRecordValuePathFns } from './dataRecordValuePathFns'
 import { DataRecordPathAndValue, dataRecordRecordPathAndValue, modelPathFns } from './modelPathFns'
 import { modelFns } from './modelsFns'
 import { nestedModelFns } from './nestedModelFns'
@@ -63,7 +63,7 @@ function getValuesRecursive(
             record: childRecord,
             parentElements: [
               ...prp.parentElements,
-              dataRecordPathFns.newNestedRecordArrayPathElement(parentElement, index),
+              dataRecordValuePathFns.newNestedRecordArrayPathElement(parentElement, index),
             ],
           },
         ])
@@ -135,7 +135,7 @@ export function valuesForModelPath(
       .getValue(prp.property, prp.record)
     return [
       dataRecordRecordPathAndValue(
-        dataRecordPathFns.newInstance(prp.property, ...prp.parentElements),
+        dataRecordValuePathFns.newInstance(prp.property, ...prp.parentElements),
         value,
       ),
     ]
@@ -147,7 +147,7 @@ export function valuesForModelPath(
     }
     if (values.length === 0) {
       const model = modelFns.findById(models, record.modelId)
-      const dataRecordPath = dataRecordPathFns.fromDottedPath(
+      const dataRecordPath = dataRecordValuePathFns.fromDottedPath(
         models,
         model,
         modelPathFns.toDottedNamePath(path),

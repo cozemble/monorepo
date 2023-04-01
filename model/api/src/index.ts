@@ -10,7 +10,7 @@ import {
 export { modelFns, modelOptions } from './modelsFns'
 export { propertyFns, propertyOptions } from './propertyFns'
 export { dataRecordFns } from './dataRecordFns'
-export { dataRecordPathFns } from './dataRecordPathFns'
+export { dataRecordValuePathFns } from './dataRecordValuePathFns'
 export { modelIdFns } from './modelIdFns'
 export { nestedModelFns } from './nestedModelFns'
 export { modelPathFns } from './modelPathFns'
