@@ -33,7 +33,6 @@
     "@cozemble/model-core": "workspace:*",
     "@cozemble/model-editor-sdk": "workspace:*",
     "@cozemble/model-event-sourced": "workspace:*",
-    "@cozemble/sql-actions": "workspace:*",
     "@cozemble/ui-atoms": "workspace:*"
   }
 }
