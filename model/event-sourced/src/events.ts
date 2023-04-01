@@ -6,10 +6,15 @@ import type {
   ModelIdAndName,
   ModelName,
   PropertyId,
-  PropertyName,
 } from '@cozemble/model-core'
-import { modelEventDescriptors, modelEventFns, NestedModelName } from '@cozemble/model-core'
+import {
+  modelEventDescriptors,
+  modelEventFns,
+  ModelSlotName,
+  NestedModelName,
+} from '@cozemble/model-core'
 import { modelIdFns, nestedModelFns } from '@cozemble/model-api'
+import { ModelSlotId, PropertyName } from '@cozemble/model-core'
 
 export interface ModelRenamed extends ModelEvent {
   _type: 'model.renamed.event'
@@ -35,37 +40,40 @@ const modelRenamedDescriptor: ModelEventDescriptor<ModelRenamed> = {
   },
 }
 
-export interface PropertyRenamed extends ModelEvent {
-  _type: 'property.renamed.event'
-  propertyId: PropertyId
-  newPropertyName: PropertyName
+export interface SlotRenamed extends ModelEvent {
+  _type: 'slot.renamed.event'
+  modelSlotId: ModelSlotId
+  newName: ModelSlotName
 }
 
-function propertyRenamed(
+function slotRenamed(
   modelId: ModelId,
-  propertyId: PropertyId,
-  newPropertyName: PropertyName,
-): PropertyRenamed {
+  modelSlotId: ModelSlotId,
+  newName: ModelSlotName,
+): SlotRenamed {
   return {
-    _type: 'property.renamed.event',
+    _type: 'slot.renamed.event',
     ...modelEventFns.coreParts(modelId),
-    propertyId,
-    newPropertyName,
+    modelSlotId,
+    newName,
   }
 }
 
-const propertyRenamedDescriptor: ModelEventDescriptor<PropertyRenamed> = {
+const modelSlotRenamedDescriptor: ModelEventDescriptor<SlotRenamed> = {
   _type: 'model.event.descriptor',
-  modelEventType: 'property.renamed.event',
+  modelEventType: 'slot.renamed.event',
   applyEvent: (model, event) => {
     return {
       ...model,
       slots: model.slots.map((slot) => {
-        if (slot.id.value === event.propertyId.value && slot._type === 'property') {
-          return {
-            ...slot,
-            name: event.newPropertyName,
+        if (slot.id.value === event.modelSlotId.value) {
+          if (slot._type === 'property') {
+            return {
+              ...slot,
+              name: event.newName as PropertyName,
+            }
           }
+          throw new Error(`Cannot rename a model slot of type ${slot._type}`)
         } else {
           return slot
         }
@@ -170,13 +178,13 @@ const booleanPropertyChangeDescriptor: ModelEventDescriptor<BooleanPropertyChang
 }
 
 modelEventDescriptors.register(modelRenamedDescriptor)
-modelEventDescriptors.register(propertyRenamedDescriptor)
+modelEventDescriptors.register(modelSlotRenamedDescriptor)
 modelEventDescriptors.register(nestedModelAddedDescriptor)
 modelEventDescriptors.register(booleanPropertyChangeDescriptor)
 
 export const coreModelEvents = {
   modelRenamed,
-  propertyRenamed,
+  slotRenamed,
   nestedModelAdded,
   modelCreated,
   booleanPropertyChanged,

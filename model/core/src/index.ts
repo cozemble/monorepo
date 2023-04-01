@@ -44,6 +44,9 @@ export {
   NestedModelName,
   NestedModel,
   nestedModelNameFns,
+  ModelSlotId,
+  ModelSlotName,
+  modelSlotNameFns,
 } from './core'
 
 export { propertyDescriptors } from './propertyDescriptor'

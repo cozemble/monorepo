@@ -141,6 +141,22 @@ export interface InlinedModelReference {
 }
 
 export type ModelSlot = Property | ModelReference | InlinedModelReference
+export type ModelSlotId = PropertyId | ModelReferenceId | InlinedModelReferenceId
+export type ModelSlotName = PropertyName | ModelReferenceName | InlinedModelReferenceName
+
+export const modelSlotNameFns = {
+  newInstance: (modelSlotType: string, value: string): ModelSlotName => {
+    if (modelSlotType === 'property') {
+      return propertyNameFns.newInstance(value)
+    } else if (modelSlotType === 'model.reference') {
+      return { _type: 'model.reference.name', value }
+    }
+    if (modelSlotType === 'inlined.model.reference') {
+      return { _type: 'inlined.model.reference.name', value }
+    }
+    throw new Error(`Unknown model slot type: ${modelSlotType}`)
+  },
+}
 
 export interface Model {
   _type: 'model'

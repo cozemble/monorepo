@@ -26,6 +26,7 @@ import {
   singleCardinalityValuesForModelPathResponse,
 } from './valuesForModelPath'
 import { nestedModelFns } from './nestedModelFns'
+import { ModelSlot, ModelSlotId } from '@cozemble/model-core'
 
 export const modelOptions = {
   withProperty(p: Property | string): ModelOption {
@@ -91,6 +92,15 @@ export const modelFns = {
         (p) => p.id.value === propertyId.value && p._type === 'property',
       ) as Property,
       `Property not found: ${propertyId.value}`,
+    )
+  },
+  maybeSlotWithId(model: Model, slotId: ModelSlotId | null): ModelSlot | null {
+    if (slotId === null) {
+      return null
+    }
+    return mandatory(
+      model.slots.find((slot) => slot.id.value === slotId.value),
+      `Model slot not found: ${slotId.value}`,
     )
   },
   setPropertyValue(

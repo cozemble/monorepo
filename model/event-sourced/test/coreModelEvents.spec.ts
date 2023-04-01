@@ -25,7 +25,7 @@ test('has event that renames a property in a model model', () => {
     modelOptions.withProperty(propertyFns.newInstance('name')),
   )
   const nameProperty = modelFns.properties(customer)[0]
-  const event = coreModelEvents.propertyRenamed(
+  const event = coreModelEvents.slotRenamed(
     customer.id,
     nameProperty.id,
     propertyNameFns.newInstance('fullName'),

@@ -1,7 +1,7 @@
 export {
   coreModelEvents,
   ModelCreated,
-  PropertyRenamed,
+  SlotRenamed,
   NestedModelAdded,
   ModelRenamed,
   BooleanPropertyChanged,

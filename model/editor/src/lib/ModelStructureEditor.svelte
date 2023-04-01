@@ -1,20 +1,21 @@
 <script lang="ts">
-    import type {Property, PropertyId} from '@cozemble/model-core'
+    import type {ModelSlotId} from '@cozemble/model-core'
     import {modelIdAndNameFns, nestedModelNameFns, propertyDescriptors, propertyNameFns,} from '@cozemble/model-core'
-    import PropertyEditor from './PropertyEditor.svelte'
+    import ModelSlotEditor from './ModelSlotEditor.svelte'
     import AddNestedModelDialog from './AddNestedModelDialog.svelte'
     import type {ModelEditorHost} from './ModelEditorHost'
     import {modelFns, modelOptions} from '@cozemble/model-api'
     import type {EventSourcedModel} from '@cozemble/model-event-sourced'
     import {coreModelEvents} from '@cozemble/model-event-sourced'
+    import type {ModelSlot} from "@cozemble/model-core";
 
     export let host: ModelEditorHost
     export let allModels: EventSourcedModel[]
     export let eventSourced: EventSourcedModel
     $: allCoreModels = allModels.map((m) => m.model)
     $: model = eventSourced.model
-    let propertyIdBeingEdited: PropertyId | null = null
-    $: propertyBeingEdited = modelFns.maybePropertyWithId(model, propertyIdBeingEdited)
+    let slotIdBeingEdited: ModelSlotId | null = null
+    $: slotBeingEdited = modelFns.maybeSlotWithId(model, slotIdBeingEdited)
 
     function addProperty() {
         const propertyName = `Property ${model.slots.length + 1}`
@@ -26,12 +27,12 @@
         )
     }
 
-    function editProperty(p: Property) {
-        propertyIdBeingEdited = p.id
+    function editSlot(slot: ModelSlot) {
+        slotIdBeingEdited = slot.id
     }
 
-    function propertyEdited(_event: CustomEvent) {
-        propertyIdBeingEdited = null
+    function slotEdited(_event: CustomEvent) {
+        slotIdBeingEdited = null
     }
 
     let addingNestedModel = false
@@ -40,19 +41,19 @@
         addingNestedModel = true
     }
 
-    function onRelationshipAdded(event: CustomEvent) {
+    function onNestedModelAdded(event: CustomEvent) {
         const {cardinality, modelName, relationshipName} = event.detail
-        const relatedModel = modelFns.newInstance(
+        const nestdeModel = modelFns.newInstance(
             modelName,
             modelOptions.withParentModelId(model.id),
         )
         const parentModel = modelIdAndNameFns.newInstance(model.id, model.name)
         const childModel = modelIdAndNameFns.newInstance(
-            relatedModel.id,
-            relatedModel.name,
+            nestdeModel.id,
+            nestdeModel.name,
         )
 
-        host.modelAdded(relatedModel)
+        host.modelAdded(nestdeModel)
         host.modelChanged(
             model.id,
             coreModelEvents.nestedModelAdded(
@@ -68,16 +69,16 @@
 
 {#if addingNestedModel}
     <AddNestedModelDialog
-            on:relationshipAdded={onRelationshipAdded}
+            on:relationshipAdded={onNestedModelAdded}
             on:cancel={() => (addingNestedModel = false)}
             parentModel={model}/>
-{:else if propertyBeingEdited}
-    <PropertyEditor
-            property={propertyBeingEdited}
+{:else if slotBeingEdited}
+    <ModelSlotEditor
             modelChangeHandler={host}
             models={allCoreModels}
             {model}
-            on:save={propertyEdited}/>
+            modelSlot={slotBeingEdited}
+            on:save={slotEdited}/>
 {:else}
     <div data-model-name={model.name.value}>
         <table>
@@ -93,7 +94,7 @@
                 {#each model.slots as slot}
                     <td>
                         {#if slot._type === 'property'}
-                            <button on:click={() => editProperty(slot)}
+                            <button on:click={() => editSlot(slot)}
                                     class="btn btn-active btn-ghost edit-property"
                                     data-property-name={slot.name.value}>Edit
                             </button>
