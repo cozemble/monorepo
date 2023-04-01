@@ -4,30 +4,29 @@ import type {
   Model,
   ModelPath,
   ModelPathElement,
-  Property,
 } from '@cozemble/model-core'
-import { propertyDescriptors } from '@cozemble/model-core'
+import { LeafModelSlot, modelSlotFns } from '@cozemble/model-core'
 import { dataRecordValuePathFns } from './dataRecordValuePathFns'
 import { DataRecordPathAndValue, dataRecordRecordPathAndValue, modelPathFns } from './modelPathFns'
 import { modelFns } from './modelsFns'
 import { nestedModelFns } from './nestedModelFns'
 
-type PathRecordProperty = {
+type PathRecordLeafSlot = {
   parentElements: DataRecordPathParentElement[]
   record: DataRecord
-  property: Property | null
+  leafSlot: LeafModelSlot | null
   terminal: boolean
 }
 
 function getValuesRecursive(
   models: Model[],
-  property: Property,
+  leafSlot: LeafModelSlot,
   parentElements: ModelPathElement[],
-  acc: PathRecordProperty[],
-): PathRecordProperty[] {
+  acc: PathRecordLeafSlot[],
+): PathRecordLeafSlot[] {
   if (parentElements.length === 0) {
     return acc.map((prp) => {
-      return { ...prp, property, terminal: true }
+      return { ...prp, leafSlot, terminal: true }
     })
   }
   const [parentElement, ...rest] = parentElements
@@ -46,7 +45,7 @@ function getValuesRecursive(
       if (childRecord === null) {
         return [{ ...prp, property: null, terminal: true }]
       }
-      return getValuesRecursive(models, property, rest, [
+      return getValuesRecursive(models, leafSlot, rest, [
         { ...prp, record: childRecord, parentElements: [...prp.parentElements, parentElement] },
       ])
     })
@@ -57,7 +56,7 @@ function getValuesRecursive(
         return [{ ...prp, property: null, terminal: true }]
       }
       return childRecords.flatMap((childRecord, index) => {
-        return getValuesRecursive(models, property, rest, [
+        return getValuesRecursive(models, leafSlot, rest, [
           {
             ...prp,
             record: childRecord,
@@ -116,26 +115,24 @@ export const valuesForModelPathFns = {
 
 export function valuesForModelPath(
   models: Model[],
-  path: ModelPath<Property>,
+  path: ModelPath<LeafModelSlot>,
   record: DataRecord,
 ): ValuesForModelPath {
   const values = getValuesRecursive(models, path.lastElement, path.parentElements, [
     {
       parentElements: [],
       record,
-      property: null,
+      leafSlot: null,
       terminal: false,
     },
   ]).flatMap((prp) => {
-    if (prp.property === null) {
+    if (prp.leafSlot === null) {
       return []
     }
-    const value = propertyDescriptors
-      .mandatory(prp.property.propertyType)
-      .getValue(prp.property, prp.record)
+    const value = modelSlotFns.getValue(prp.leafSlot, prp.record)
     return [
       dataRecordRecordPathAndValue(
-        dataRecordValuePathFns.newInstance(prp.property, ...prp.parentElements),
+        dataRecordValuePathFns.newInstance(prp.leafSlot, ...prp.parentElements),
         value,
       ),
     ]

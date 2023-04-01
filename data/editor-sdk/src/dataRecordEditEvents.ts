@@ -1,8 +1,8 @@
 import type {
   DataRecord,
   DataRecordId,
-  DataRecordValuePath,
   DataRecordPathParentElement,
+  DataRecordValuePath,
   ModelId,
 } from '@cozemble/model-core'
 import { NestedModel } from '@cozemble/model-core'
@@ -53,6 +53,13 @@ export interface DataRecordEditAborted {
   path: DataRecordValuePath
 }
 
+export interface DataRecordEditMoveFocus {
+  _type: 'data.record.edit.move.focus'
+  record: DataRecord
+  path: DataRecordValuePath
+  direction: 'left' | 'right'
+}
+
 export interface DataRecordValueChanged<T = any> {
   _type: 'data.record.value.changed'
   record: DataRecord
@@ -76,7 +83,7 @@ export type DataRecordEditEvent =
   | DataRecordCreatedEvent
   | DataRecordDeletedEvent
 
-export type DataRecordControlEvent = DataRecordEditAborted
+export type DataRecordControlEvent = DataRecordEditAborted | DataRecordEditMoveFocus
 
 export const dataRecordControlEvents = {
   editAborted(record: DataRecord, path: DataRecordValuePath): DataRecordEditAborted {
@@ -84,6 +91,18 @@ export const dataRecordControlEvents = {
       _type: 'data.record.edit.aborted',
       record,
       path,
+    }
+  },
+  moveFocus(
+    record: DataRecord,
+    path: DataRecordValuePath,
+    direction: 'left' | 'right',
+  ): DataRecordEditMoveFocus {
+    return {
+      _type: 'data.record.edit.move.focus',
+      record,
+      path,
+      direction,
     }
   },
 }

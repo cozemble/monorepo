@@ -8,6 +8,7 @@ import {
   eventSourcedDataRecordFns,
 } from '@cozemble/data-editor-sdk'
 import { uuids } from '@cozemble/lang-util'
+import type { DataRecordControlEvent } from '@cozemble/data-editor-sdk/dist/esm'
 
 export interface RecordSaveSucceeded {
   _type: 'record.save.succeeded'
@@ -61,6 +62,14 @@ export class RecordEditContext {
     this._setRecord(eventSourcedDataRecordFns.addEvent(event, this.eventSourcedRecord))
     if (event._type === 'data.record.value.changed') {
       this.focus.update((f) => f.applyValueChangedToFocus(event))
+    }
+  }
+
+  handleDataRecordControlEvent(event: DataRecordControlEvent) {
+    if (event._type === 'data.record.edit.aborted') {
+      this.focus.update((f) => f.clearFocus())
+    } else if (event._type === 'data.record.edit.move.focus') {
+      this.focus.update((f) => f.moveFocus(event.direction))
     }
   }
 

@@ -12,6 +12,7 @@ import type {
 import { dottedPathFns } from '@cozemble/model-core'
 import { modelFns } from './modelsFns'
 import { valuesForModelPath, ValuesForModelPath } from './valuesForModelPath'
+import { LeafModelSlot } from '@cozemble/model-core/dist/esm'
 
 export interface DataRecordPathAndValue<T = any> {
   _type: 'data.record.path.and.value'
@@ -50,7 +51,11 @@ export const modelPathFns = {
   prefix<E extends ModelPathElement>(element: E, p: ModelPath<E>): ModelPath<E> {
     return { ...p, parentElements: [element, ...p.parentElements] }
   },
-  getValues(models: Model[], path: ModelPath<Property>, record: DataRecord): ValuesForModelPath {
+  getValues(
+    models: Model[],
+    path: ModelPath<LeafModelSlot>,
+    record: DataRecord,
+  ): ValuesForModelPath {
     return valuesForModelPath(models, path, record)
   },
   isPathToProperty<E extends ModelPathElement>(path: ModelPath<E>): boolean {

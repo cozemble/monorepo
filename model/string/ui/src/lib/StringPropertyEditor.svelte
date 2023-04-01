@@ -33,7 +33,7 @@
         }
     }
 
-    function handleEditFinished(terminatingKey: 'Enter' | 'Tab' | null = null) {
+    function handleEditFinished(terminatingKey: 'Enter' | 'Tab' | null = null, shiftKeyPressed = false) {
         if (valueContainerDomElement) {
             const newValue = valueContainerDomElement.innerText
             if (newValue !== editableValue) {
@@ -47,6 +47,10 @@
                         terminatingKey,
                     ),
                 )
+            } else if (terminatingKey === 'Tab') {
+                dataRecordEditorClient.dispatchControlEvent(
+                    dataRecordControlEvents.moveFocus(record, recordPath, shiftKeyPressed ? 'left' : 'right'),
+                )
             }
         }
     }
@@ -58,7 +62,7 @@
         if (event.key === 'Enter' || event.key === 'Tab') {
             event.preventDefault()
             event.stopPropagation()
-            handleEditFinished(event.key)
+            handleEditFinished(event.key, event.shiftKey)
         } else if (event.key === 'Escape') {
             event.preventDefault()
             event.stopPropagation()

@@ -14,7 +14,6 @@ import {
   modelNameFns,
   type ModelPath,
   type ModelPathElement,
-  ModelReference,
   ModelSlot,
   ModelSlotId,
   type NestedModel,

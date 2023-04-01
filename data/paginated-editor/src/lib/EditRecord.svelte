@@ -40,7 +40,7 @@
             recordEditContext.handleDataRecordEditEvent(event)
         },
         dispatchControlEvent(event: DataRecordControlEvent): void {
-            console.log({event})
+            recordEditContext.handleDataRecordControlEvent(event)
         },
         searchRecords(modelId: ModelId, search: string): Promise<DataRecord[]> {
             return recordSearcher.searchRecords(modelId, search)

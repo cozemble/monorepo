@@ -6,13 +6,13 @@ import {
 } from '@cozemble/model-api'
 import type {
   DataRecord,
-  DataRecordValuePath,
   DataRecordPathParentElement,
+  DataRecordValuePath,
   Model,
   ModelPath,
   Property,
 } from '@cozemble/model-core'
-import { dottedPathFns } from '@cozemble/model-core'
+import { dottedPathFns, type LeafModelSlot, modelPathElementFns } from '@cozemble/model-core'
 import type { DataRecordValueChanged } from '@cozemble/data-editor-sdk'
 
 export class DataRecordPathFocus {
@@ -38,31 +38,36 @@ export class DataRecordPathFocus {
     if (this.focus === null) {
       throw new Error('Cannot apply value changed to focus when focus is null')
     }
-    const focus = this.focus
-    const record = this.recordProvider()
-    const models = this.models
     if (event.confirmMethod === 'Tab') {
-      const model = modelFns.findById(models, record.modelId)
-      const allPaths = modelFns
-        .allPaths(models, model)
-        .filter((p) => p.lastElement._type === 'property') as ModelPath<Property>[]
-      const allValues = allPaths.flatMap((p) =>
-        valuesForModelPathFns.flatten(modelPathFns.getValues(models, p, record)),
-      )
-      const indexOfFocus = allValues.findIndex(
-        (v) =>
-          v.value && v.value.path && dataRecordValuePathFns.sameDottedPaths(v.value.path, focus),
-      )
-      console.log({ indexOfFocus })
-      if (indexOfFocus === -1) {
-        return this._newFocus(null)
-      }
-      const nextValue = allValues[indexOfFocus + 1]
-      return this._newFocus(nextValue ? nextValue.value.path : null)
+      return this.moveFocusByDelta(1)
     } else if (event.confirmMethod === 'Enter') {
       return this._newFocus(null)
     }
     return this
+  }
+
+  private moveFocusByDelta(delta: number): DataRecordPathFocus {
+    if (this.focus === null) {
+      return this
+    }
+    const focus = this.focus
+    const record = this.recordProvider()
+    const models = this.models
+    const model = modelFns.findById(models, record.modelId)
+    const allPaths = modelFns
+      .allPaths(models, model)
+      .filter((p) => modelPathElementFns.isLeafSlot(p.lastElement)) as ModelPath<LeafModelSlot>[]
+    const allValues = allPaths.flatMap((p) =>
+      valuesForModelPathFns.flatten(modelPathFns.getValues(models, p, record)),
+    )
+    const indexOfFocus = allValues.findIndex(
+      (v) => v.value && v.path && dataRecordValuePathFns.sameDottedPaths(v.path, focus),
+    )
+    if (indexOfFocus === -1) {
+      return this._newFocus(null)
+    }
+    const nextValue = allValues[indexOfFocus + delta]
+    return this._newFocus(nextValue ? nextValue.path : null)
   }
 
   focusFromDottedNamePath(dottedNamePath: string): DataRecordPathFocus {
@@ -77,6 +82,10 @@ export class DataRecordPathFocus {
 
   clearFocus(): DataRecordPathFocus {
     return this._newFocus(null)
+  }
+
+  moveFocus(direction: 'left' | 'right'): DataRecordPathFocus {
+    return this.moveFocusByDelta(direction === 'left' ? -1 : 1)
   }
 
   isPropertyFocussed(property: Property, parentPath: DataRecordPathParentElement[]): boolean {

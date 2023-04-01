@@ -7,6 +7,7 @@
     export let record: DataRecord
 
     $: viewer = slotViewerRegistry.get(property.propertyType)
+
 </script>
 
 {#if viewer}
