@@ -1,5 +1,5 @@
 <script lang="ts">
-    import PropertyView from './PropertyView.svelte'
+    import PropertyView from './SlotView.svelte'
     import {type CellFocus, isFocussedCell} from './CellFocus'
     import type {DataRecord, Property} from '@cozemble/model-core'
     import type {Writable} from 'svelte/store'

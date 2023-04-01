@@ -1,12 +1,12 @@
 <script lang="ts">
     import type {DataRecord, Property} from '@cozemble/model-core'
-    import {propertyViewerRegistry} from '@cozemble/model-assembled'
+    import {slotViewerRegistry} from '@cozemble/model-assembled'
     import {dataRecordPathFns} from '@cozemble/model-api'
 
     export let property: Property
     export let record: DataRecord
 
-    $: viewer = propertyViewerRegistry.get(property.propertyType)
+    $: viewer = slotViewerRegistry.get(property.propertyType)
 </script>
 
 {#if viewer}
@@ -15,5 +15,5 @@
             recordPath={dataRecordPathFns.newInstance(property)}
             {record}/>
 {:else}
-    <div>Unknown property type: {property.propertyType.value}</div>
+    <div>Unknown slot type: {property.propertyType.value}</div>
 {/if}

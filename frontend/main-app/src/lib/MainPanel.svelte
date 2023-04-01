@@ -3,8 +3,8 @@
     import {
         registerAllProperties,
         registerAllPropertyConfigurers,
-        registerAllPropertyEditors,
-        registerAllPropertyViewers
+        registerAllSlotEditors,
+        registerAllSlotViewers
     } from '@cozemble/model-assembled'
     import ModelsPanel from './models/ModelsPanel.svelte'
     import type {Session} from "./auth/cozauth";
@@ -17,8 +17,8 @@
     onMount(() => {
         registerAllProperties()
         registerAllPropertyConfigurers()
-        registerAllPropertyViewers()
-        registerAllPropertyEditors()
+        registerAllSlotViewers()
+        registerAllSlotEditors()
     })
 </script>
 

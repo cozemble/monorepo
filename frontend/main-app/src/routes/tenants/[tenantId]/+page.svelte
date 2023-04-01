@@ -5,8 +5,8 @@
     import {
         registerAllProperties,
         registerAllPropertyConfigurers,
-        registerAllPropertyEditors,
-        registerAllPropertyViewers
+        registerAllSlotEditors,
+        registerAllSlotViewers
     } from "@cozemble/model-assembled";
     import {page} from '$app/stores';
     import {tenantStore} from "$lib/tenant/tenantStore.js";
@@ -14,8 +14,8 @@
     onMount(() => {
         registerAllProperties()
         registerAllPropertyConfigurers()
-        registerAllPropertyViewers()
-        registerAllPropertyEditors()
+        registerAllSlotViewers()
+        registerAllSlotEditors()
     })
 
 </script>

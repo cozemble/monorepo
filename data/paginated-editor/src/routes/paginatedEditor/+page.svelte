@@ -10,8 +10,8 @@
     import {onMount, setContext} from 'svelte'
     import {
         registerAllProperties,
-        registerAllPropertyEditors,
-        registerAllPropertyViewers,
+        registerAllSlotEditors,
+        registerAllSlotViewers,
     } from '@cozemble/model-assembled'
     import {pageEditorLocalStorageKey} from './context'
     import {allModels, invoiceModel} from '../testModels'
@@ -30,8 +30,8 @@
 
     onMount(() => {
         registerAllProperties()
-        registerAllPropertyViewers()
-        registerAllPropertyEditors()
+        registerAllSlotViewers()
+        registerAllSlotEditors()
         const localStored = localStorage.getItem(pageEditorLocalStorageKey)
         if (localStored) {
             models = JSON.parse(localStored) as Model[]

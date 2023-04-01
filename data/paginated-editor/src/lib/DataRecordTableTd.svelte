@@ -2,8 +2,8 @@
     import type {DataRecordPathFocus} from './DataRecordPathFocus'
     import type {DataRecord, DataRecordPath, DataRecordPathElement, Property,} from '@cozemble/model-core'
     import type {Writable} from 'svelte/store'
-    import PropertyEdit from './PropertyEdit.svelte'
-    import PropertyView from './PropertyView.svelte'
+    import PropertyEdit from './SlotEdit.svelte'
+    import PropertyView from './SlotView.svelte'
     import MaybeError from './MaybeError.svelte'
     import {dataRecordPathFns} from '@cozemble/model-api'
 
