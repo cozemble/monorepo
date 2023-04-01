@@ -10,7 +10,6 @@ import type {
   DataRecordValuePath,
   Model,
   ModelPath,
-  Property,
 } from '@cozemble/model-core'
 import { dottedPathFns, type LeafModelSlot, modelPathElementFns } from '@cozemble/model-core'
 import type { DataRecordValueChanged } from '@cozemble/data-editor-sdk'
@@ -88,12 +87,12 @@ export class DataRecordPathFocus {
     return this.moveFocusByDelta(direction === 'left' ? -1 : 1)
   }
 
-  isPropertyFocussed(property: Property, parentPath: DataRecordPathParentElement[]): boolean {
+  isPropertyFocussed(slot: LeafModelSlot, parentPath: DataRecordPathParentElement[]): boolean {
     if (this.focus === null) {
       return false
     }
     const propertyPath = dataRecordValuePathFns.toDottedPath(
-      dataRecordValuePathFns.newInstance(property, ...parentPath),
+      dataRecordValuePathFns.newInstance(slot, ...parentPath),
     )
     const focusPath = dataRecordValuePathFns.toDottedPath(this.focus)
     return dottedPathFns.equals(propertyPath, focusPath)

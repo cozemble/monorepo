@@ -1,17 +1,14 @@
-import type {
-  DataRecordValuePath,
-  DataRecordPathParentElement,
-  Property,
-} from '@cozemble/model-core'
+import type { DataRecordPathParentElement, DataRecordValuePath } from '@cozemble/model-core'
 import { dottedPathFns } from '@cozemble/model-core'
 import { dataRecordValuePathFns } from '@cozemble/model-api'
+import type { LeafModelSlot } from '@cozemble/model-core'
 
 export function getMyErrors(
   errors: Map<DataRecordValuePath, string[]>,
   parentPath: DataRecordPathParentElement[],
-  property: Property,
+  slot: LeafModelSlot,
 ): string[] {
-  const path = dataRecordValuePathFns.newInstance(property, ...parentPath)
+  const path = dataRecordValuePathFns.newInstance(slot, ...parentPath)
   const dottedPath = dataRecordValuePathFns.toDottedPath(path)
   const entries = errors.entries()
   for (const entry of entries) {

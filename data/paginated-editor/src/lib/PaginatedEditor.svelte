@@ -113,11 +113,11 @@
         <tbody>
         {#each records as record, rowIndex}
             <tr data-row-index={rowIndex}>
-                {#each model.slots as slot, colIndex}
-                    {#if slot._type === "property"}
-                        <DataTd {focus} {rowIndex} {colIndex} {record} property={slot}/>
+                {#each model.slots as modelSlot, colIndex}
+                    {#if modelSlot._type === "property"}
+                        <DataTd {focus} {rowIndex} {colIndex} {record} {modelSlot}/>
                     {:else}
-                        <td>To do {slot._type}</td>
+                        <td>To do {modelSlot._type}</td>
                     {/if}
                 {/each}
                 <td>

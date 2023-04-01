@@ -1,16 +1,16 @@
 <script lang="ts">
-    import PropertyView from './SlotView.svelte'
+    import SlotView from './SlotView.svelte'
     import {type CellFocus, isFocussedCell} from './CellFocus'
-    import type {DataRecord, Property} from '@cozemble/model-core'
+    import type {DataRecord, LeafModelSlot} from '@cozemble/model-core'
     import type {Writable} from 'svelte/store'
 
     export let focus: Writable<CellFocus | null>
     export let rowIndex: number
     export let colIndex: number
     export let record: DataRecord
-    export let property: Property
+    export let modelSlot: LeafModelSlot
 </script>
 
 <td class:highlighted={isFocussedCell($focus, rowIndex, colIndex)} data-cell-index="{rowIndex}-{colIndex}">
-    <PropertyView {record} {property}/>
+    <SlotView {record} {modelSlot}/>
 </td>

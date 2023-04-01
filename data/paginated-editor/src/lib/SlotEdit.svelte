@@ -1,20 +1,20 @@
 <script lang="ts">
-    import type {DataRecord, DataRecordPathParentElement, Property,} from '@cozemble/model-core'
+    import type {DataRecord, DataRecordPathParentElement, LeafModelSlot} from '@cozemble/model-core'
     import {slotEditorRegistry} from '@cozemble/model-assembled'
     import {dataRecordValuePathFns} from '@cozemble/model-api'
 
-    export let property: Property
+    export let modelSlot: LeafModelSlot
     export let parentPath: DataRecordPathParentElement[]
     export let record: DataRecord
 
-    $: editor = slotEditorRegistry.forSlot(property)
+    $: editor = slotEditorRegistry.forSlot(modelSlot)
 </script>
 
 {#if editor}
     <svelte:component
             this={editor}
-            recordPath={dataRecordValuePathFns.newInstance(property, ...parentPath)}
+            recordPath={dataRecordValuePathFns.newInstance(modelSlot, ...parentPath)}
             {record}/>
 {:else}
-    <div>Unknown slot type: {property.propertyType.value}</div>
+    <div>Unknown slot type: {modelSlot._type}</div>
 {/if}

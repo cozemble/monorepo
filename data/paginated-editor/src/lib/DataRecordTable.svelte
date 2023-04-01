@@ -26,17 +26,17 @@
     </thead>
     <tbody>
     <tr>
-        {#each model.slots as slot}
-            {#if slot._type === 'property'}
+        {#each model.slots as modelSlot}
+            {#if modelSlot._type === 'property' || modelSlot._type === 'model.reference'}
                 <DataRecordTableTd
-                        property={slot}
+                        {modelSlot}
                         {record}
                         {parentPath}
                         {errors}
                         {focus}
                         {showErrors}/>
             {:else}
-                <td>To do {slot._type}</td>
+                <td>To do {modelSlot._type}</td>
             {/if}
         {/each}
     </tr>
