@@ -9,8 +9,9 @@
     import {dataRecordViewerHost, eventSourcedDataRecordFns} from '@cozemble/data-editor-sdk'
     import type {PaginatedEditorHost} from './PaginatedEditorHost'
     import {makeDataRecordViewer} from "./makeDataRecordViewer";
-    import {slotViewerRegistry} from "@cozemble/model-assembled";
+    import {slotEditorRegistry, slotViewerRegistry} from "@cozemble/model-assembled";
     import ModelReferenceViewer from "./modelReferences/ModelReferenceViewer.svelte";
+    import ModelReferenceEditor from "./modelReferences/ModelReferenceEditor.svelte";
 
     export let models: Model[]
     export let model: Model
@@ -82,6 +83,7 @@
     }
 
     slotViewerRegistry.register('model.reference', ModelReferenceViewer)
+    slotEditorRegistry.register('model.reference', ModelReferenceEditor)
 </script>
 
 {#each modelLevelErrors as error}

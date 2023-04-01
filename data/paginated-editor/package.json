@@ -36,6 +36,7 @@
     "@cozemble/lang-util": "workspace:*",
     "@cozemble/model-api": "workspace:*",
     "@cozemble/model-assembled": "workspace:*",
-    "@cozemble/model-core": "workspace:*"
+    "@cozemble/model-core": "workspace:*",
+    "@cozemble/model-to-json": "workspace:*"
   }
 }

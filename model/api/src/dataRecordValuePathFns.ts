@@ -6,7 +6,6 @@ import type {
   DottedPath,
   Model,
   ModelPathElement,
-  Property,
 } from '@cozemble/model-core'
 import {
   dottedPathFns,
@@ -16,13 +15,17 @@ import {
   NestedModel,
   NestedRecordArrayPathElement,
   propertyDescriptors,
+  ReferencedRecords,
+  referencedRecordsFns,
 } from '@cozemble/model-core'
 import { dataRecordFns } from './dataRecordFns'
 import { modelFns } from './modelsFns'
 import { nestedModelFns } from './nestedModelFns'
-import { ReferencedRecords, referencedRecordsFns } from '@cozemble/model-core'
 
-function modelElementsToDataRecordPath(lastElement: Property, parentElements: ModelPathElement[]) {
+function modelElementsToDataRecordPath(
+  lastElement: LeafModelSlot,
+  parentElements: ModelPathElement[],
+) {
   const parentRecordPathElements: DataRecordPathParentElement[] = parentElements.map((element) => {
     if (element._type === 'nested.model') {
       if (element.cardinality === 'one') {
@@ -57,10 +60,10 @@ function fromDottedNamePath(
 ): DataRecordValuePath {
   const elements = modelFns.elementsByName(models, model, dottedPathFns.split(dottedPath))
   const [parentElements, lastElement] = arrays.splitLast(elements)
-  if (lastElement._type !== 'property') {
-    throw new Error(`Last element of path must be a property: ${dottedPath.value}`)
+  if (lastElement._type === 'property' || lastElement._type === 'model.reference') {
+    return modelElementsToDataRecordPath(lastElement, parentElements)
   }
-  return modelElementsToDataRecordPath(lastElement, parentElements)
+  throw new Error(`Illegal last element of path: ${dottedPath.value}`)
 }
 
 function setLeafSlotValue<T>(path: DataRecordValuePath, record: DataRecord, t: T | null) {

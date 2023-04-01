@@ -1,21 +1,22 @@
 <script lang="ts">
     import type {DataRecord, DataRecordValuePath} from "@cozemble/model-core";
-    import {assembleEditorParams, type EditorParams} from "./editorHelper";
-    import {dataRecordViewer} from "@cozemble/data-editor-sdk";
+    import {dataRecordEditor} from "@cozemble/data-editor-sdk";
     import {onMount} from "svelte";
-    import ModelReferenceViewerInner from "./ModelReferenceViewerInner.svelte";
+    import type {EditorParams} from "./editorHelper";
+    import {assembleEditorParams} from "./editorHelper";
+    import ModelReferenceEditorInner from "./ModelReferenceEditorInner.svelte";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord
 
-    const dataRecordViewerClient = dataRecordViewer.getClient()
+    const dataRecordEditorClient = dataRecordEditor.getClient()
     let editorParams: EditorParams | null = null
     let error: string | null = null
 
 
     onMount(() => {
         try {
-            editorParams = assembleEditorParams(dataRecordViewerClient, recordPath)
+            editorParams = assembleEditorParams(dataRecordEditorClient, recordPath)
         } catch (e: any) {
             error = e.message
         }
@@ -23,7 +24,7 @@
 </script>
 
 {#if editorParams}
-    <ModelReferenceViewerInner {editorParams} {record} {recordPath}/>
+    <ModelReferenceEditorInner {editorParams} {record} {recordPath}/>
 {/if}
 
 

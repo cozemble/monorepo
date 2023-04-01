@@ -220,15 +220,11 @@ export const modelReferenceFns = {
     }
     return reference.referencedModels[0] ?? null
   },
-  dereferenceOne: (reference: ModelReference, record: DataRecord): DataRecordId | null => {
+  dereferenceOne: (reference: ModelReference, record: DataRecord): ReferencedRecords | null => {
     if (reference.cardinality !== 'one') {
       throw new Error('Cannot get one reference from many reference')
     }
-    const referenced = (record.values[reference.id.value] ?? null) as ReferencedRecords
-    if (referenced === null || referenced.referencedRecords.length === 0) {
-      return null
-    }
-    return referenced.referencedRecords[0].referencedRecordId
+    return (record.values[reference.id.value] ?? null) as ReferencedRecords
   },
   setReferences: (
     reference: ModelReference,

@@ -63,18 +63,19 @@ describe('given a model with a model.reference slot', () => {
 
   test('getValues returns the record reference when there is a referenced record', () => {
     const address = dataRecordFns.random(allModelsWithReferences, modelsWithReferences.addressModel)
+    const reference = referencedRecordsFns.addReference(
+      referencedRecordsFns.empty(),
+      modelsWithReferences.addressModel.id,
+      address.id,
+    )
     const customer = dataRecordFns.random(
       allModelsWithReferences,
       modelsWithReferences.customerModel,
       {
-        Address: referencedRecordsFns.addReference(
-          referencedRecordsFns.empty(),
-          modelsWithReferences.addressModel.id,
-          address.id,
-        ),
+        Address: reference,
       },
     )
-    expect(dataRecordValuePathFns.getValue(path, customer)).toEqual(address.id)
+    expect(dataRecordValuePathFns.getValue(path, customer)).toEqual(reference)
   })
 
   test('getValues returns the record reference when there is a referenced record', () => {
@@ -94,16 +95,17 @@ describe('given a model with a model.reference slot', () => {
         ),
       },
     )
+    const secondReference = referencedRecordsFns.addReference(
+      referencedRecordsFns.empty(),
+      modelsWithReferences.addressModel.id,
+      secondAddress.id,
+    )
     const mutated = dataRecordValuePathFns.setValue(
       allModelsWithReferences,
       path,
       customer,
-      referencedRecordsFns.addReference(
-        referencedRecordsFns.empty(),
-        modelsWithReferences.addressModel.id,
-        secondAddress.id,
-      ),
+      secondReference,
     )
-    expect(dataRecordValuePathFns.getValue(path, mutated)).toEqual(secondAddress.id)
+    expect(dataRecordValuePathFns.getValue(path, mutated)).toEqual(secondReference)
   })
 })
