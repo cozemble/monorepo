@@ -17,6 +17,7 @@ import {
   AttachmentPropertyEditor,
   AttachmentPropertyViewer,
 } from '@cozemble/model-attachment-ui'
+import { LeafModelSlot } from '@cozemble/model-core/dist/esm'
 
 export { propertyDescriptors } from '@cozemble/model-core'
 
@@ -39,12 +40,19 @@ function keyValue(slotKey: SlotKey) {
   return typeof slotKey === 'string' ? slotKey : slotKey.value
 }
 
+function keyForSlot(slot: LeafModelSlot): string {
+  if (slot._type === 'property') {
+    return slot.propertyType.value
+  }
+  return 'model.reference'
+}
+
 export const slotViewerRegistry = {
   register: (slotKey: SlotKey, component: any) => {
     slotViewerMap.set(keyValue(slotKey), component)
   },
-  get: (slotKey: SlotKey) => {
-    return slotViewerMap.get(keyValue(slotKey)) ?? null
+  forSlot: (slot: LeafModelSlot) => {
+    return slotViewerMap.get(keyForSlot(slot)) ?? null
   },
 }
 
@@ -52,8 +60,8 @@ export const slotEditorRegistry = {
   register: (slotKey: SlotKey, component: any) => {
     slotEditorMap.set(keyValue(slotKey), component)
   },
-  get: (slotKey: SlotKey) => {
-    return slotEditorMap.get(keyValue(slotKey)) ?? null
+  forSlot: (slot: LeafModelSlot) => {
+    return slotEditorMap.get(keyForSlot(slot)) ?? null
   },
 }
 

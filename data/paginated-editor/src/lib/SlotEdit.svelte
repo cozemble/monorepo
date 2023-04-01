@@ -7,7 +7,7 @@
     export let parentPath: DataRecordPathParentElement[]
     export let record: DataRecord
 
-    $: editor = slotEditorRegistry.get(property.propertyType)
+    $: editor = slotEditorRegistry.forSlot(property)
 </script>
 
 {#if editor}
