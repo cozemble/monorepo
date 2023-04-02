@@ -205,4 +205,15 @@ export const modelFns = {
   properties(model: Model): Property[] {
     return model.slots.filter((p) => p._type === 'property') as Property[]
   },
+  findInboundReferences(models: Model[], model: Model): Model[] {
+    return models.filter((m) => {
+      const paths = modelFns.allPaths(models, m)
+      return paths.some((p) => {
+        if (p.lastElement._type === 'model.reference') {
+          return p.lastElement.referencedModels.some((id) => id.value === model.id.value)
+        }
+        return false
+      })
+    })
+  },
 }
