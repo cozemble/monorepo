@@ -98,6 +98,16 @@ router.get('/:tenantId/model/:modelId/record/:recordId', (req: Request, res: Res
   })
 })
 
+router.get('/:tenantId/model/:modelId/referencing/:recordId', (req: Request, res: Response) => {
+  return authenticatedDatabaseRequest(req, res, async (client) => {
+    const result = await client.query(
+      'select * from get_records_that_reference(text2Ltree($1), $2, $3) as records;',
+      [req.params.tenantId, req.params.modelId, req.params.recordId],
+    )
+    return res.status(200).json(result.rows[0])
+  })
+})
+
 router.delete('/:tenantId/model/:modelId/record/:recordId', (req: Request, res: Response) => {
   return authenticatedDatabaseRequest(req, res, async (client) => {
     await client.query(

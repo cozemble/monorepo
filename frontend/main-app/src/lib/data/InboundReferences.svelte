@@ -22,8 +22,9 @@
     })
 </script>
 
-How {referencingModel.name.value} relates to {JSON.stringify(record)}
-
+<p>How {referencingModel.name.value} relates to {JSON.stringify(record)}</p>
+<br/>
+<p>{JSON.stringify(referencingRecords)}</p>
 {#if error}
     <ErrorMessage {error}/>
 {/if}
