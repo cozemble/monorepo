@@ -5,7 +5,7 @@
     import DataTd from './DataTd.svelte'
     import StackingRecordEditor from './StackingRecordEditor.svelte'
     import {RecordEditContext, type RecordSaveOutcome} from './RecordEditContext'
-    import type {EventSourcedDataRecord} from '@cozemble/data-editor-sdk'
+    import type {EventSourcedDataRecord, EventSourcedDataRecordOption} from '@cozemble/data-editor-sdk'
     import {dataRecordViewerHost, eventSourcedDataRecordFns} from '@cozemble/data-editor-sdk'
     import type {PaginatedEditorHost} from './PaginatedEditorHost'
     import {makeDataRecordViewer} from "./makeDataRecordViewer";
@@ -18,6 +18,7 @@
     export let records: DataRecord[]
     export let paginatedEditorHost: PaginatedEditorHost
     export let modelViews: ModelView[]
+    export let onNewRecord: EventSourcedDataRecordOption = (record) => record
 
     dataRecordViewerHost.setClient(makeDataRecordViewer(models, modelViews, paginatedEditorHost, recordEdited, onError))
 
@@ -96,7 +97,7 @@
             recordSearcher={paginatedEditorHost}
             attachmentsManager={paginatedEditorHost}
             {modelViews}
-            recordEditContext={new RecordEditContext( models, justSaveNewRecord,eventSourcedDataRecordFns.newInstance(models, model.id, 'test-user'), saveNewRecord, () => (doAddNewRecord = false), `Add new ${model.name.value}`, )}/>
+            recordEditContext={new RecordEditContext( models, justSaveNewRecord,onNewRecord(eventSourcedDataRecordFns.newInstance(models, model.id, 'test-user')), saveNewRecord, () => (doAddNewRecord = false), `Add new ${model.name.value}`, )}/>
 {:else if recordBeingEdited !== null}
     <StackingRecordEditor
             recordSearcher={paginatedEditorHost} {modelViews}

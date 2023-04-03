@@ -20,12 +20,12 @@
     import InboundReferences from "./InboundReferences.svelte";
 
     export let models: Model[]
-    export let openRecord: OpenRecordView
+    export let openRecord: OpenRecordView //a Customer record for example
     export let tenantId: string
     let record: DataRecord | null = null
     let error: string | null = null
     const model = modelFns.findById(models, openRecord.modelId)
-    const referencingModels: Model[] = modelFns.findInboundReferences(models, model)
+    const referencingModels: Model[] = modelFns.findInboundReferences(models, model) //the Booking model for example
     let tabShowing: string | ModelId = 'recordDetails'
 
     onMount(async () => {

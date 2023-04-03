@@ -186,6 +186,18 @@ export const referencedRecordsFns = {
       ],
     }
   },
+  oneReference(modelId: ModelId, recordId: DataRecordId): ReferencedRecords {
+    return {
+      _type: 'referenced.records',
+      referencedRecords: [
+        {
+          _type: 'referenced.record',
+          referencedModelId: modelId,
+          referencedRecordId: recordId,
+        },
+      ],
+    }
+  },
 }
 
 export const modelReferenceFns = {

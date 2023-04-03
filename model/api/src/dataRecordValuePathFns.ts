@@ -10,6 +10,7 @@ import type {
 import {
   dottedPathFns,
   LeafModelSlot,
+  ModelPath,
   modelPathElementFns,
   modelReferenceFns,
   NestedModel,
@@ -256,5 +257,20 @@ export const dataRecordValuePathFns = {
       throw new Error(`Invalid path: ${names.join('.')} - last element is not a leaf model slot`)
     }
     return dataRecordValuePathFns.newInstance(lastElement as LeafModelSlot, ...elements)
+  },
+  fromModelPath(modelPath: ModelPath<ModelPathElement>): DataRecordValuePath {
+    if (
+      modelPath.lastElement._type === 'model.reference' ||
+      modelPath.lastElement._type === 'property'
+    ) {
+      return modelPath.parentElements.reduce((acc, element) => {
+        if (element._type === 'nested.model' || element._type === 'inlined.model.reference') {
+          return { ...acc, parentElements: [...acc.parentElements, element] }
+        }
+        throw new Error(`Cannot convert model path to data record value path: ${element._type}`)
+      }, dataRecordValuePathFns.newInstance(modelPath.lastElement))
+    } else {
+      throw new Error(`Invalid model path: ${JSON.stringify(modelPath)}`)
+    }
   },
 }

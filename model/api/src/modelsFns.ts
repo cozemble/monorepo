@@ -216,4 +216,18 @@ export const modelFns = {
       })
     })
   },
+  allPathsReferencingModel(
+    models: Model[],
+    sourceModel: Model,
+    targetModelId: ModelId,
+  ): ModelPath<ModelPathElement>[] {
+    const allPaths = modelFns.allPaths(models, sourceModel)
+    return allPaths.filter((path) => {
+      const lastElement = path.lastElement
+      return (
+        lastElement._type === 'model.reference' &&
+        lastElement.referencedModels.some((m) => m.value === targetModelId.value)
+      )
+    })
+  },
 }
