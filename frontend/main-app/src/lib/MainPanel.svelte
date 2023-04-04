@@ -55,6 +55,7 @@
     <div class="drawer-side border">
         <label for="my-drawer-2" class="drawer-overlay"></label>
         <ul class="menu p-4 w-80 bg-base-100 text-base-content">
+            <h2 class="mb-2">Cozemble</h2>
             <!-- Sidebar content here -->
             <li on:click={showModels} class:active-nav-item={panelToShow === 'models'}>
                 <a>
