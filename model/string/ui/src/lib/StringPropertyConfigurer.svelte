@@ -50,7 +50,7 @@
 {/each}
 <button
         type="button"
-        class="add-validation-button"
+        class="btn btn-secondary add-validation-button"
         on:click|preventDefault={addRegexValidation}>Add regex validation
 </button>
 

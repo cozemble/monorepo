@@ -137,7 +137,7 @@
         </tbody>
     </table>
     <div class="actions">
-        <button type="button" class="btn add-record btn" on:click={beginAddNewRecord}>Add {model.name.value}</button>
+        <button type="button" class="btn add-record btn-primary" on:click={beginAddNewRecord}>Add {model.name.value}</button>
     </div>
 {/if}
 

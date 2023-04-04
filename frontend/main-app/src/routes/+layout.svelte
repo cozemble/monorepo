@@ -13,9 +13,9 @@
     })
 </script>
 
+<main>
+    <slot/>
+</main>
 {#if currentEndpoint !== 'prod'}
     <div>Using endpoint "{currentEndpoint}" - <a href="/cozconfig">Change</a></div>
 {/if}
-<main class="p-10">
-    <slot/>
-</main>

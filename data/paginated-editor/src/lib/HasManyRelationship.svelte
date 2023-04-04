@@ -85,7 +85,5 @@
     </tbody>
 </table>
 <div class="bottom-buttons btn-group">
-    <button type="button" on:click={addItem} class="btn btn-sm"
-    >Add {model.name.value}</button
-    >
+    <button type="button" on:click={addItem} class="btn">Add {model.name.value}</button>
 </div>

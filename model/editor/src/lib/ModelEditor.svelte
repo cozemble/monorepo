@@ -31,5 +31,5 @@
             {onNameChange}
             extraClass="model-name"/>
 
-    <ModelStructureEditor {eventSourced} {host} allModels={$allModels}/>
+    <ModelStructureEditor {eventSourced} {host} allModels={$allModels} on:editingSomething/>
 {/if}
