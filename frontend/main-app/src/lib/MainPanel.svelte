@@ -7,12 +7,10 @@
         registerAllSlotViewers
     } from '@cozemble/model-assembled'
     import ModelsPanel from './models/ModelsPanel.svelte'
-    import type {Session} from "./auth/cozauth";
     import DataPanel from "../lib/data/DataPanel.svelte";
     import PuzzlePieceIcon from "../lib/icons/PuzzlePieceIcon.svelte";
     import DatabaseIcon from "../lib/icons/DatabaseIcon.svelte";
 
-    export let session: Session
     export let tenantId: string
     let panelToShow: "models" | "data" = "models"
 

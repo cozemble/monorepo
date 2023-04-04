@@ -24,7 +24,7 @@
     <p>loading...</p>
 {:then session}
     {#if session && $tenantStore}
-        <MainPanel {session} tenantId={$page.params.tenantId}/>
+        <MainPanel tenantId={$page.params.tenantId}/>
     {:else }
         <h1>You need to login</h1>
     {/if}
