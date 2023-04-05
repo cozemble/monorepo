@@ -138,6 +138,8 @@ BEGIN
                     -- Create the JSONB object for the current path
                     current_path_value :=
                             jsonb_build_object(path, (record_obj -> 'values') #> string_to_array(path, '.'));
+                    -- Acquire an advisory lock based on the hash of the path and current_path_value
+                    PERFORM pg_advisory_xact_lock(abs(hashtext(path || current_path_value::text))::bigint);
 
                     SELECT EXISTS (SELECT 1
                                    FROM record
