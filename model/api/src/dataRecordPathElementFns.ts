@@ -4,9 +4,8 @@ import type {
   DottedPath,
   Model,
 } from '@cozemble/model-core'
-import { dottedPathFns } from '@cozemble/model-core'
+import { dottedPathFns, NestedModel, NestedRecordArrayPathElement } from '@cozemble/model-core'
 import { modelFns } from './modelsFns'
-import { NestedModel, NestedRecordArrayPathElement } from '@cozemble/model-core'
 
 export const dataRecordPathElementFns = {
   toDottedNamePath(elements: DataRecordPathParentElement[]): DottedPath {

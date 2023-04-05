@@ -85,4 +85,11 @@ export const modelPathFns = {
     ].join('.')
     return dottedPathFns.dottedNamePath(namePath)
   },
+  toDottedIdPath<E extends ModelPathElement>(path: ModelPath<E>): DottedPath {
+    const namePath = [
+      ...path.parentElements.map((element) => element.id.value),
+      path.lastElement.id.value,
+    ].join('.')
+    return dottedPathFns.dottedIdPath(namePath)
+  },
 }

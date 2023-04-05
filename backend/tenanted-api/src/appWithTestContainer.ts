@@ -31,23 +31,13 @@ async function createAppUser() {
   }
 }
 
-export async function appWithTestContainer(
-  jwtSigningKey = 'secret',
-  port = 3000,
-  pgDetails?: PgDetails,
-): Promise<http.Server> {
-  process.env.USE_MEMORY_STORAGE = 'Y'
-
+export async function withMigratedDatabase(pgDetails?: PgDetails): Promise<void> {
   const container = await new PostgreSqlContainer().start()
   process.env.PGHOST = pgDetails?.host ?? container.getHost()
   process.env.PGPORT = pgDetails?.port ?? container.getPort().toString()
   process.env.PGDATABASE = pgDetails?.database ?? container.getDatabase()
   process.env.PG_ADMIN_USER = pgDetails?.username ?? container.getUsername()
   process.env.PG_ADMIN_PASSWORD = pgDetails?.password ?? container.getPassword()
-  process.env.JWT_SIGNING_SECRET = jwtSigningKey
-  process.env.OAUTH_CALLBACK_ROOT = `http://localhost:${port}/api/v1/auth/callback`
-  process.env.GITHUB_CLIENT_ID = 'pretend-github-client-id'
-  process.env.GITHUB_CLIENT_SECRET = 'pretend-github-client-secret'
 
   if (!pgDetails) {
     console.log('Running migrations...')
@@ -65,6 +55,19 @@ export async function appWithTestContainer(
 
     console.log(`psql connect string = ${pgConnectString(container)}`)
   }
+}
+
+export async function appWithTestContainer(
+  jwtSigningKey = 'secret',
+  port = 3000,
+  pgDetails?: PgDetails,
+): Promise<http.Server> {
+  await withMigratedDatabase(pgDetails)
+  process.env.USE_MEMORY_STORAGE = 'Y'
+  process.env.JWT_SIGNING_SECRET = jwtSigningKey
+  process.env.OAUTH_CALLBACK_ROOT = `http://localhost:${port}/api/v1/auth/callback`
+  process.env.GITHUB_CLIENT_ID = 'pretend-github-client-id'
+  process.env.GITHUB_CLIENT_SECRET = 'pretend-github-client-secret'
   const app = expressApp()
   return app.listen(port, () => {
     console.log(`Listening on port ${port}`)
