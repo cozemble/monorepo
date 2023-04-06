@@ -39,3 +39,5 @@ export function refreshTokenKey(userPool: string) {
 }
 
 export { SavableRecords, SavableRecord, JsonPath, savableRecords } from './records'
+
+export { ErrorType, ConflictErrorType } from './errorsTypes'

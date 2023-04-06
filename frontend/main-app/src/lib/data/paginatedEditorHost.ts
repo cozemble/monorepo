@@ -21,6 +21,7 @@ import type { Writable } from 'svelte/store'
 
 export function makePaginatedEditorHost(
   tenantId: string,
+  models: Model[],
   model: Model,
   records: Writable<DataRecord[]>,
 ): PaginatedEditorHost {
@@ -29,7 +30,7 @@ export function makePaginatedEditorHost(
       openRecordViews.open(record.modelId, record.id, openNow)
     },
     async recordEdited(editedRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
-      const result = await saveRecord(tenantId, editedRecord)
+      const result = await saveRecord(tenantId, models, editedRecord)
       if (result._type === 'record.save.succeeded') {
         records.update((r) =>
           r.map((r) => (r.id.value === editedRecord.record.id.value ? editedRecord.record : r)),
@@ -39,7 +40,8 @@ export function makePaginatedEditorHost(
     },
 
     async saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
-      const result = await saveRecord(tenantId, newRecord)
+      const result = await saveRecord(tenantId, models, newRecord)
+      console.log({ result })
       if (
         result._type === 'record.save.succeeded' &&
         newRecord.record.modelId.value === model.id.value

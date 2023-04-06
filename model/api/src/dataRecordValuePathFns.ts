@@ -258,6 +258,28 @@ export const dataRecordValuePathFns = {
     }
     return dataRecordValuePathFns.newInstance(lastElement as LeafModelSlot, ...elements)
   },
+  fromIds(models: Model[], model: Model, ...ids: string[]) {
+    const [parentIds, leafSlotId] = arrays.splitLast(ids)
+    const elements: DataRecordPathParentElement[] = parentIds.map((id) => {
+      const element = modelFns.elementById(model, id)
+      if (element._type === 'property' || element._type === 'model.reference') {
+        throw new Error(`Invalid path: found a ${element._type} in the parent path`)
+      }
+      if (element._type === 'inlined.model.reference') {
+        throw new Error(`Invalid path: found an unknown element type: ${element._type}`)
+      }
+      if (element.cardinality === 'many') {
+        throw new Error(`Invalid path: found a has many relationship in the parent path`)
+      }
+      model = modelFns.findById(models, element.modelId)
+      return element
+    })
+    const lastElement = modelFns.elementById(model, leafSlotId)
+    if (!modelPathElementFns.isLeafSlot(lastElement)) {
+      throw new Error(`Invalid path: last element is not a leaf model slot`)
+    }
+    return dataRecordValuePathFns.newInstance(lastElement as LeafModelSlot, ...elements)
+  },
   fromModelPath(modelPath: ModelPath<ModelPathElement>): DataRecordValuePath {
     if (
       modelPath.lastElement._type === 'model.reference' ||

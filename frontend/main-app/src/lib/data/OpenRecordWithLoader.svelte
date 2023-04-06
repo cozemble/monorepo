@@ -33,7 +33,7 @@
     })
 
     async function onSaveRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
-        return saveRecord(tenantId, newRecord)
+        return saveRecord(tenantId, models,newRecord)
     }
 
     const recordSearcher: RecordSearcher = {
