@@ -1,11 +1,12 @@
 create table if not exists model
 (
-    id         text      not null,
-    tenant     ltree     not null,
-    name       text      not null,
-    definition jsonb     not null,
-    created_at timestamp not null default now(),
-    updated_at timestamp not null default now(),
+    id           text      not null,
+    tenant       ltree     not null,
+    name         text      not null,
+    definition   jsonb     not null,
+    unique_paths text[]    not null,
+    created_at   timestamp not null default now(),
+    updated_at   timestamp not null default now(),
     primary key (id, tenant)
 );
 

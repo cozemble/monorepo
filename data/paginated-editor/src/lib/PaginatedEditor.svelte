@@ -75,6 +75,7 @@
     ): Promise<RecordSaveOutcome> {
         modelLevelErrors = []
         const outcome = await justSaveNewRecord(newRecord)
+        console.log({outcome})
         if (outcome._type === 'record.save.succeeded') {
             doAddNewRecord = false
         } else {

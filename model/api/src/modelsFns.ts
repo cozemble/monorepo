@@ -230,4 +230,9 @@ export const modelFns = {
       )
     })
   },
+  pathsToUniqueProperties(models: Model[], model: Model): ModelPath<Property>[] {
+    return modelFns.allPaths(models, model).filter((path) => {
+      return path.lastElement._type === 'property' && path.lastElement.unique
+    }) as ModelPath<Property>[]
+  },
 }

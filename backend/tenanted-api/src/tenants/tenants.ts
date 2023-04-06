@@ -1,7 +1,9 @@
 import { Request, Response, Router } from 'express'
 import { withAdminPgClient } from '../infra/postgresPool'
 import { authenticatedDatabaseRequest } from '../infra/authenticatedDatabaseRequest'
-import { CreateTenant } from '@cozemble/backend-tenanted-api-types'
+import { BackendModel, CreateTenant, SavableRecords } from '@cozemble/backend-tenanted-api-types'
+import { Model } from '@cozemble/model-core'
+import { modelFns, modelPathFns } from '@cozemble/model-api'
 
 const router: Router = Router()
 
@@ -18,12 +20,38 @@ router.get('/:tenantId', (req: Request, res: Response) => {
   })
 })
 
+interface SavableModel extends BackendModel {
+  uniquePaths: string[]
+}
+
+function uniquePathsInModel(models: Model[], model: Model): string[] {
+  try {
+    const paths = modelFns.pathsToUniqueProperties(models, model)
+    return modelFns
+      .pathsToUniqueProperties(models, model)
+      .map((p) => modelPathFns.toDottedIdPath(p).value)
+  } catch (e) {
+    console.error('Error getting unique paths for model: ' + JSON.stringify(model))
+    console.error(e)
+    return []
+  }
+}
+
 router.put('/:tenantId/model', (req: Request, res: Response) => {
-  const models = Array.isArray(req.body) ? req.body : [req.body]
+  const models: BackendModel[] = Array.isArray(req.body) ? req.body : [req.body]
+  if (models.some((m) => m._type !== 'backend.model')) {
+    console.error('Body is not an instance of backend.model: ' + JSON.stringify(req.body))
+    return res.status(400).send()
+  }
+  const allModels = models.map((m) => m.model)
+  const savableModels = models.map((m) => {
+    const sm: SavableModel = { ...m, uniquePaths: uniquePathsInModel(allModels, m.model) }
+    return sm
+  })
   return authenticatedDatabaseRequest(req, res, async (client) => {
     const result = await client.query(
       'select * from put_tenant_info(text2ltree($1),$2) as tenant;',
-      [req.params.tenantId, JSON.stringify(models)],
+      [req.params.tenantId, JSON.stringify(savableModels)],
     )
     if (result.rows.length === 0 || result.rows[0].tenant === null) {
       return res.status(404).send()
@@ -60,20 +88,25 @@ router.post('/', (req: Request, res: Response) => {
 })
 
 router.put('/:tenantId/model/:modelId/record', (req: Request, res: Response) => {
-  if (!Array.isArray(req.body)) {
-    console.log('Bad request, expected body to be an array: ' + JSON.stringify(req.body))
+  if (req.body._type !== 'savable.records') {
+    console.log('Body is not an instance of savable.records: ' + JSON.stringify(req.body))
     return res.status(400).send()
   }
+  const records: SavableRecords = req.body
 
   return authenticatedDatabaseRequest(req, res, async (client) => {
     const result = await client.query(
       'select * from upsert_record(text2Ltree($1), $2) as records;',
-      [req.params.tenantId, JSON.stringify(req.body)],
+      [req.params.tenantId, JSON.stringify(records.records)],
     )
     if (result.rows.length === 0 || result.rows[0].records === null) {
+      console.info('No records returned from upsert_record: ' + JSON.stringify(result.rows))
       return res.status(400).send()
     }
-
+    console.log('Result from upsert_record: ' + JSON.stringify(result.rows[0].records))
+    if (result.rows[0].records._type === 'error.conflict') {
+      return res.status(409).json(result.rows[0].records)
+    }
     return res.status(200).json([])
   })
 })

@@ -35,7 +35,7 @@
             error = e.message
         }
     })
-    const paginatedEditorHost = makePaginatedEditorHost(tenantId, referencingModel, referencingRecords)
+    const paginatedEditorHost = makePaginatedEditorHost(tenantId,models, referencingModel, referencingRecords)
 </script>
 
 <div class="mt-2">

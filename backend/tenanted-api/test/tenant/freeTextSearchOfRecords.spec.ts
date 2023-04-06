@@ -1,10 +1,8 @@
 import { beforeAll, describe, expect, test } from 'vitest'
-import * as http from 'http'
 import { makeTenant, makeTenantMemberAccessToken, putModels, putRecords } from './testHelpers'
 import { uuids } from '@cozemble/lang-util'
-import { modelFns, modelOptions, propertyFns } from '@cozemble/model-api'
+import { dataRecordFns, modelFns, modelOptions, propertyFns } from '@cozemble/model-api'
 import { Model } from '@cozemble/model-core'
-import { dataRecordFns } from '@cozemble/model-api'
 import { registerStringProperty } from '@cozemble/model-string-core'
 import { appWithTestContainer } from '../../src/appWithTestContainer'
 

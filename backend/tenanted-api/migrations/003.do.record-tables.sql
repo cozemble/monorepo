@@ -21,7 +21,8 @@ alter table record
             on delete cascade;
 
 -- add a column called text to the record table
-ALTER TABLE record ADD COLUMN text text;
+ALTER TABLE record
+    ADD COLUMN text text;
 
 
 CREATE OR REPLACE FUNCTION get_records(
@@ -100,12 +101,19 @@ $$ LANGUAGE plpgsql
 ;
 
 CREATE OR REPLACE FUNCTION upsert_record(p_tenant LTREE, p_definition JSONB)
-    RETURNS VOID AS
+    RETURNS JSONB AS
 $$
 DECLARE
-    p_id       TEXT;
-    p_model_id TEXT;
-    record_obj JSONB;
+    p_id                  TEXT;
+    p_model_id            TEXT;
+    record_obj            JSONB;
+    unique_paths_arr      TEXT[];
+    path                  TEXT;
+    unique_value_exists   BOOLEAN;
+    current_path_value    JSONB;
+    conflicting_record_id TEXT;
+    inserted_count        INTEGER := 0;
+    updated_count         INTEGER := 0;
 BEGIN
     -- Loop through the p_definition array and insert or update each record
     FOR record_obj IN SELECT jsonb_array_elements(p_definition)
@@ -114,22 +122,76 @@ BEGIN
             p_id := (record_obj ->> 'id')::jsonb ->> 'value';
             p_model_id := (record_obj ->> 'modelId')::jsonb ->> 'value';
 
-            -- Update the record if it already exists
-            UPDATE record
-            SET definition = record_obj,
-                updated_at = NOW()
-            WHERE id = p_id
-              AND model_id = p_model_id
+            -- Retrieve unique_paths from the associated model
+            SELECT unique_paths
+            INTO unique_paths_arr
+            FROM model
+            WHERE id = p_model_id
               AND tenant = p_tenant;
 
-            -- If the record does not exist, insert a new one
-            IF NOT FOUND THEN
-                INSERT INTO record (id, tenant, model_id, definition)
-                VALUES (p_id, p_tenant, p_model_id, record_obj);
+            -- Initialize unique_value_exists to FALSE
+            unique_value_exists := FALSE;
+
+            -- Check each unique_path to see if it exists in another record
+            FOREACH path IN ARRAY unique_paths_arr
+                LOOP
+                    -- Create the JSONB object for the current path
+                    current_path_value :=
+                            jsonb_build_object(path, (record_obj -> 'values') #> string_to_array(path, '.'));
+                    -- Acquire an advisory lock based on the hash of the path and current_path_value
+                    PERFORM pg_advisory_xact_lock(abs(hashtext(path || current_path_value::text))::bigint);
+
+                    SELECT EXISTS (SELECT 1
+                                   FROM record
+                                   WHERE tenant = p_tenant
+                                     AND model_id = p_model_id
+                                     AND (definition -> 'values') @> current_path_value
+                                     AND id != p_id)
+                    INTO unique_value_exists;
+
+                    -- If a unique value is found, exit the loop
+                    IF unique_value_exists THEN
+                        SELECT id
+                        INTO conflicting_record_id
+                        FROM record
+                        WHERE tenant = p_tenant
+                          AND model_id = p_model_id
+                          AND (definition -> 'values') @> current_path_value
+                          AND id != p_id;
+                        EXIT;
+                    END IF;
+                END LOOP;
+
+            IF NOT unique_value_exists THEN
+                -- Update the record if it already exists
+                UPDATE record
+                SET definition = record_obj,
+                    updated_at = NOW()
+                WHERE id = p_id
+                  AND model_id = p_model_id
+                  AND tenant = p_tenant;
+
+                -- If the record does not exist, insert a new one
+                IF NOT FOUND THEN
+                    INSERT INTO record (id, tenant, model_id, definition)
+                    VALUES (p_id, p_tenant, p_model_id, record_obj);
+                    inserted_count := inserted_count + 1;
+                ELSE
+                    updated_count := updated_count + 1;
+                END IF;
+            ELSE
+                RETURN jsonb_build_object('_type', 'error.conflict', 'conflictingRecordId', conflicting_record_id,
+                                          'conflictingPath',
+                                          path);
             END IF;
         END LOOP;
+
+    RETURN jsonb_build_object('_type', 'success', 'insertedCount', inserted_count, 'updatedCount', updated_count);
 END;
 $$ LANGUAGE plpgsql;
-;
+
+
+
+
 
 

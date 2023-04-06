@@ -1,7 +1,7 @@
 import { uuids } from '@cozemble/lang-util'
-import { beforeAll, describe, expect, onTestFailed, test } from 'vitest'
+import { beforeAll, describe, expect, test } from 'vitest'
 import { appWithTestContainer } from '../../src/appWithTestContainer'
-import { BackendModel } from '@cozemble/backend-tenanted-api-types'
+import { BackendModel, savableRecords } from '@cozemble/backend-tenanted-api-types'
 import { dataRecordFns, modelFns } from '@cozemble/model-api'
 import { ModelEvent, modelEventIdFns, timestampEpochMillis } from '@cozemble/model-core'
 import {
@@ -118,13 +118,6 @@ describe('with a migrated database', () => {
   })
 
   test('can put models into a tenant', async () => {
-    // onTestFailed(async (error) => {
-    //   await withAdminPgClient(async (client) => {
-    //     const result = await client.query('select * from get_messages_since()')
-    //     console.error(result.rows)
-    //   })
-    // })
-
     const { tenantId, bearer } = await simulateNewUser(port, jwtSigningSecret)
 
     const model = modelFns.newInstance('Test model')
@@ -216,7 +209,7 @@ describe('with a migrated database', () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify([record]),
+        body: JSON.stringify(savableRecords([record])),
       },
     )
     await expect(putResponse.status).toBe(401)
@@ -240,7 +233,7 @@ describe('with a migrated database', () => {
           'Content-Type': 'application/json',
           Authorization: 'Bearer ' + bearer,
         },
-        body: JSON.stringify([record]),
+        body: JSON.stringify(savableRecords([record])),
       },
     )
     await expect(putResponse.status).toBe(200)
@@ -282,7 +275,7 @@ describe('with a migrated database', () => {
           'Content-Type': 'application/json',
           Authorization: 'Bearer ' + bearer,
         },
-        body: JSON.stringify([record]),
+        body: JSON.stringify(savableRecords([record])),
       },
     )
     await expect(putResponse.status).toBe(200)
@@ -322,7 +315,7 @@ describe('with a migrated database', () => {
           'Content-Type': 'application/json',
           Authorization: 'Bearer ' + bearer,
         },
-        body: JSON.stringify([record]),
+        body: JSON.stringify(savableRecords([record])),
       },
     )
     await expect(putResponse.status).toBe(200)

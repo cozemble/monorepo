@@ -22,7 +22,7 @@
         }, 500);
     }
 
-    const paginatedEditorHost = makePaginatedEditorHost(tenantId, model, records)
+    const paginatedEditorHost = makePaginatedEditorHost(tenantId, models,model, records)
 </script>
 
 <div class="search-panel">
