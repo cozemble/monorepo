@@ -5,9 +5,12 @@
     import type {EditorParams} from "./editorHelper";
     import {assembleEditorParams} from "./editorHelper";
     import ModelReferenceEditorInner from "./ModelReferenceEditorInner.svelte";
+    import type {SystemConfiguration} from "@cozemble/model-core";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord
+    export let systemConfiguration: SystemConfiguration
+
 
     const dataRecordEditorClient = dataRecordEditor.getClient()
     let editorParams: EditorParams | null = null
@@ -24,7 +27,7 @@
 </script>
 
 {#if editorParams}
-    <ModelReferenceEditorInner {editorParams} {record} {recordPath}/>
+    <ModelReferenceEditorInner {systemConfiguration} {editorParams} {record} {recordPath}/>
 {/if}
 
 

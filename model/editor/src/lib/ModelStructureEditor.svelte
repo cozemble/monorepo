@@ -8,10 +8,13 @@
     import type {EventSourcedModel} from '@cozemble/model-event-sourced'
     import {coreModelEvents} from '@cozemble/model-event-sourced'
     import {createEventDispatcher} from "svelte";
+    import type {SystemConfiguration} from "@cozemble/model-core";
 
     export let host: ModelEditorHost
     export let allModels: EventSourcedModel[]
     export let eventSourced: EventSourcedModel
+    export let systemConfiguration: SystemConfiguration
+
     $: allCoreModels = allModels.map((m) => m.model)
     $: model = eventSourced.model
     let slotIdBeingEdited: ModelSlotId | null = null
@@ -25,7 +28,7 @@
             model.id,
             propertyDescriptors
                 .getDefault()
-                .newProperty(model.id, propertyNameFns.newInstance(propertyName)),
+                .newProperty(systemConfiguration,model.id, propertyNameFns.newInstance(propertyName)),
         )
     }
 
@@ -80,6 +83,7 @@
             parentModel={model}/>
 {:else if slotBeingEdited}
     <ModelSlotEditor
+            {systemConfiguration}
             modelChangeHandler={host}
             models={allCoreModels}
             {model}

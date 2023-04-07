@@ -1,4 +1,5 @@
 import type { ModelId, PropertyDescriptor, PropertyId, PropertyName } from '@cozemble/model-core'
+import { SystemConfiguration } from '@cozemble/model-core'
 import { AttachmentProperty, attachmentPropertyType } from './attachmentProperty'
 import { newAttachmentPropertyModelEvent } from './events'
 
@@ -46,14 +47,18 @@ export const attachmentPropertyDescriptor: PropertyDescriptor<AttachmentProperty
     randomValue: (): AttachmentList => {
       return { _type: 'attachment.list', attachmentReferences: [] }
     },
-    validateValue: (property: AttachmentProperty, value: AttachmentList | null): string[] => {
+    validateValue: (
+      systemConfiguration: SystemConfiguration,
+      property: AttachmentProperty,
+      value: AttachmentList | null,
+    ): string[] => {
       const references = value?.attachmentReferences ?? []
       if (references.length === 0) {
         return ['Required']
       }
       return []
     },
-    setValue: (property, record, value) => {
+    setValue: (systemConfiguration: SystemConfiguration, property, record, value) => {
       return {
         ...record,
         values: {
@@ -62,9 +67,13 @@ export const attachmentPropertyDescriptor: PropertyDescriptor<AttachmentProperty
         },
       }
     },
-    getValue: (property, record) => {
+    getValue: (systemConfiguration: SystemConfiguration, property, record) => {
       return record.values[property.id.value] ?? null
     },
-    newProperty: (modelId: ModelId, propertyName: PropertyName, propertyId?: PropertyId) =>
-      newAttachmentPropertyModelEvent(modelId, propertyName, propertyId),
+    newProperty: (
+      systemConfiguration: SystemConfiguration,
+      modelId: ModelId,
+      propertyName: PropertyName,
+      propertyId?: PropertyId,
+    ) => newAttachmentPropertyModelEvent(modelId, propertyName, propertyId),
   }

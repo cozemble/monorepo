@@ -13,6 +13,7 @@
     export let pushContext: (context: RecordEditContext) => void
     export let popContext: () => void
 
+
     const models = recordEditContext.models
     const record = recordEditContext.record
     const errors = recordEditContext.errors
@@ -46,6 +47,7 @@
                 onNewItemSaved,
                 popContext,
                 `New ${model.name.value}`,
+                recordEditContext.systemConfiguration,
             ),
         )
     }
@@ -69,6 +71,7 @@
             {#each model.slots as modelSlot}
                 {#if modelSlot._type === 'property' || modelSlot._type === 'model.reference'}
                     <DataRecordTableTd
+                            systemConfiguration={recordEditContext.systemConfiguration}
                             {modelSlot}
                             {record}
                             {parentPath}

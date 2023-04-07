@@ -81,3 +81,12 @@ export {
   modelViewFns,
   NamingView,
 } from './views'
+
+export {
+  SlotSystemConfigurationDescriptor,
+  SystemConfiguration,
+  SlotConfiguration,
+  slotSystemConfigurationDescriptors,
+  slotConfigurationFns,
+  systemConfigurationFns,
+} from './systemConfiguration'

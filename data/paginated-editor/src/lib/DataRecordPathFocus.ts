@@ -10,6 +10,7 @@ import type {
   DataRecordValuePath,
   Model,
   ModelPath,
+  SystemConfiguration,
 } from '@cozemble/model-core'
 import { dottedPathFns, type LeafModelSlot, modelPathElementFns } from '@cozemble/model-core'
 import type { DataRecordValueChanged } from '@cozemble/data-editor-sdk'
@@ -18,6 +19,7 @@ export class DataRecordPathFocus {
   constructor(
     private readonly models: Model[],
     private readonly recordProvider: () => DataRecord,
+    private readonly systemConfiguration: SystemConfiguration,
     private readonly focus: DataRecordValuePath | null = null,
   ) {}
 
@@ -29,6 +31,7 @@ export class DataRecordPathFocus {
     return new DataRecordPathFocus(
       this.models,
       this.recordProvider,
+      this.systemConfiguration,
       dataRecordValuePathFns.newInstance(properties[0]),
     )
   }
@@ -57,7 +60,9 @@ export class DataRecordPathFocus {
       .allPaths(models, model)
       .filter((p) => modelPathElementFns.isLeafSlot(p.lastElement)) as ModelPath<LeafModelSlot>[]
     const allValues = allPaths.flatMap((p) =>
-      valuesForModelPathFns.flatten(modelPathFns.getValues(models, p, record)),
+      valuesForModelPathFns.flatten(
+        modelPathFns.getValues(this.systemConfiguration, models, p, record),
+      ),
     )
     const indexOfFocus = allValues.findIndex(
       (v) => v.value && v.path && dataRecordValuePathFns.sameDottedPaths(v.path, focus),
@@ -99,6 +104,11 @@ export class DataRecordPathFocus {
   }
 
   _newFocus(focus: DataRecordValuePath | null): DataRecordPathFocus {
-    return new DataRecordPathFocus(this.models, this.recordProvider, focus)
+    return new DataRecordPathFocus(
+      this.models,
+      this.recordProvider,
+      this.systemConfiguration,
+      focus,
+    )
   }
 }

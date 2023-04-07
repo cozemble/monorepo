@@ -5,15 +5,18 @@
     import {dataRecordViewer} from "@cozemble/data-editor-sdk";
     import {dereference} from "./dereference";
     import {renderReference} from "./renderReference";
+    import type {SystemConfiguration} from "@cozemble/model-core";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord
     export let editorParams: EditorParams
+    export let systemConfiguration: SystemConfiguration
+
     const dataRecordViewerClient = dataRecordViewer.getClient()
 
     let referencedRecord: DataRecord | null = null
 
-    $: referencedRecords = dataRecordValuePathFns.getValue(recordPath, record) as ReferencedRecords ?? null
+    $: referencedRecords = dataRecordValuePathFns.getValue(systemConfiguration,recordPath, record) as ReferencedRecords ?? null
     $: dereference(dataRecordViewerClient, editorParams.referencedModelId, referencedRecords, (record) => referencedRecord = record)
     $: htmlRender = renderReference(referencedRecord, editorParams)
 

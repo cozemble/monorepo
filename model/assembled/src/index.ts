@@ -5,12 +5,6 @@ import {
   PropertyViewer as StringPropertyViewer,
 } from '@cozemble/model-string-ui'
 import { registerStringProperty, stringPropertyType } from '@cozemble/model-string-core'
-import { referencePropertyType, registerReferenceProperty } from '@cozemble/model-reference-core'
-import {
-  ReferencePropertyConfigurer,
-  ReferencePropertyEditor,
-  ReferencePropertyViewer,
-} from '@cozemble/model-reference-ui'
 import { attachmentPropertyType, registerAttachmentProperty } from '@cozemble/model-attachment-core'
 import {
   AttachmentPropertyConfigurer,
@@ -67,24 +61,20 @@ export const slotEditorRegistry = {
 
 export function registerAllProperties() {
   registerStringProperty()
-  registerReferenceProperty()
   registerAttachmentProperty()
 }
 
 export function registerAllPropertyConfigurers() {
   propertyConfigurerRegistry.register(stringPropertyType, StringPropertyConfigurer)
-  propertyConfigurerRegistry.register(referencePropertyType, ReferencePropertyConfigurer)
   propertyConfigurerRegistry.register(attachmentPropertyType, AttachmentPropertyConfigurer)
 }
 
 export function registerAllSlotViewers() {
   slotViewerRegistry.register(stringPropertyType, StringPropertyViewer)
-  slotViewerRegistry.register(referencePropertyType, ReferencePropertyViewer)
   slotViewerRegistry.register(attachmentPropertyType, AttachmentPropertyViewer)
 }
 
 export function registerAllSlotEditors() {
   slotEditorRegistry.register(stringPropertyType, StringPropertyEditor)
-  slotEditorRegistry.register(referencePropertyType, ReferencePropertyEditor)
   slotEditorRegistry.register(attachmentPropertyType, AttachmentPropertyEditor)
 }

@@ -8,14 +8,19 @@ import {
   invoiceModels,
   lineItemModel,
 } from '../../src/invoiceModel'
-import { dataRecordAndPathFns, nestedRecordArrayPathElement } from '@cozemble/model-core'
+import {
+  dataRecordAndPathFns,
+  nestedRecordArrayPathElement,
+  systemConfigurationFns,
+} from '@cozemble/model-core'
 import { registerStringProperty } from '@cozemble/model-string-core'
 
 registerStringProperty()
+const systemConfig = systemConfigurationFns.empty()
 
 describe('model with one has one relationship', () => {
-  const address = dataRecordFns.random(invoiceModels, addressModel)
-  const customer = dataRecordFns.random(invoiceModels, customerModel)
+  const address = dataRecordFns.random(systemConfig, invoiceModels, addressModel)
+  const customer = dataRecordFns.random(systemConfig, invoiceModels, customerModel)
   const addressRelationship = customerModel.nestedModels[0]
 
   test('childRecords is empty if no record is there', () => {
@@ -31,9 +36,9 @@ describe('model with one has one relationship', () => {
 })
 
 describe('model with nested has one relationship', () => {
-  const address = dataRecordFns.random(invoiceModels, addressModel)
-  const customer = dataRecordFns.random(invoiceModels, customerModel)
-  const invoice = dataRecordFns.random(invoiceModels, invoiceModel)
+  const address = dataRecordFns.random(systemConfig, invoiceModels, addressModel)
+  const customer = dataRecordFns.random(systemConfig, invoiceModels, customerModel)
+  const invoice = dataRecordFns.random(systemConfig, invoiceModels, invoiceModel)
   const addressRelationship = customerModel.nestedModels[0]
   const customerRelationship = invoiceModel.nestedModels[0]
 
@@ -68,9 +73,9 @@ describe('model with nested has one relationship', () => {
 })
 
 describe('model with one has many relationship', () => {
-  const lineItem1 = dataRecordFns.random(invoiceModels, lineItemModel)
-  const lineItem2 = dataRecordFns.random(invoiceModels, lineItemModel)
-  const invoice = dataRecordFns.random(invoiceModels, invoiceModel)
+  const lineItem1 = dataRecordFns.random(systemConfig, invoiceModels, lineItemModel)
+  const lineItem2 = dataRecordFns.random(systemConfig, invoiceModels, lineItemModel)
+  const invoice = dataRecordFns.random(systemConfig, invoiceModels, invoiceModel)
 
   test('childRecords is empty if no record is there', () => {
     const childRecords = dataRecordFns.childRecords(invoiceModels, invoice)

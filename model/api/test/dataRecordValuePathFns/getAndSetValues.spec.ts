@@ -8,9 +8,10 @@ import {
 import { describe, expect, test } from 'vitest'
 import { registerStringProperty } from '@cozemble/model-string-core'
 import { allModelsWithReferences, modelsWithReferences } from '../../src/modelsWithReferences'
-import { referencedRecordsFns } from '@cozemble/model-core'
+import { referencedRecordsFns, systemConfigurationFns } from '@cozemble/model-core'
 
 registerStringProperty()
+const systemConfig = systemConfigurationFns.empty()
 
 describe('Given a model path to a has-many nested property', () => {
   const path = dataRecordValuePathFns.fromNames(
@@ -22,27 +23,29 @@ describe('Given a model path to a has-many nested property', () => {
 
   test('getValues returns null when there is no value relationship', () => {
     const invoice = dataRecordFns.newInstance(invoiceModel, 'mike')
-    expect(dataRecordValuePathFns.getValue(path, invoice)).toEqual(null)
+    expect(dataRecordValuePathFns.getValue(systemConfig, path, invoice)).toEqual(null)
   })
 
   test('getValues returns null when there is an empty array for the relationship', () => {
     const invoice = dataRecordFns.newInstance(invoiceModel, 'mike')
     invoice[invoiceLineItemsRelationship.id.value] = []
-    expect(dataRecordValuePathFns.getValue(path, invoice)).toEqual(null)
+    expect(dataRecordValuePathFns.getValue(systemConfig, path, invoice)).toEqual(null)
   })
 
   test('getValues returns null when the relationship value has nothing for the property', () => {
     const lineItem = dataRecordFns.newInstance(lineItemModel, 'mike')
     const invoice = dataRecordFns.newInstance(invoiceModel, 'mike')
     invoice.values[invoiceLineItemsRelationship.id.value] = [lineItem]
-    expect(dataRecordValuePathFns.getValue(path, invoice)).toEqual(null)
+    expect(dataRecordValuePathFns.getValue(systemConfig, path, invoice)).toEqual(null)
   })
 
   test('getValues returns the value for the relationship value when it is there', () => {
-    const lineItem = dataRecordFns.random(invoiceModels, lineItemModel, { Quantity: 'many' })
+    const lineItem = dataRecordFns.random(systemConfig, invoiceModels, lineItemModel, {
+      Quantity: 'many',
+    })
     const invoice = dataRecordFns.newInstance(invoiceModel, 'mike')
     invoice.values[invoiceLineItemsRelationship.id.value] = [lineItem]
-    expect(dataRecordValuePathFns.getValue(path, invoice)).toEqual('many')
+    expect(dataRecordValuePathFns.getValue(systemConfig, path, invoice)).toEqual('many')
   })
 })
 
@@ -55,36 +58,48 @@ describe('given a model with a model.reference slot', () => {
 
   test('getValues returns null when there is no value relationship', () => {
     const customer = dataRecordFns.random(
+      systemConfig,
       allModelsWithReferences,
       modelsWithReferences.customerModel,
     )
-    expect(dataRecordValuePathFns.getValue(path, customer)).toEqual(null)
+    expect(dataRecordValuePathFns.getValue(systemConfig, path, customer)).toEqual(null)
   })
 
   test('getValues returns the record reference when there is a referenced record', () => {
-    const address = dataRecordFns.random(allModelsWithReferences, modelsWithReferences.addressModel)
+    const address = dataRecordFns.random(
+      systemConfig,
+      allModelsWithReferences,
+      modelsWithReferences.addressModel,
+    )
     const reference = referencedRecordsFns.addReference(
       referencedRecordsFns.empty(),
       modelsWithReferences.addressModel.id,
       address.id,
     )
     const customer = dataRecordFns.random(
+      systemConfig,
       allModelsWithReferences,
       modelsWithReferences.customerModel,
       {
         Address: reference,
       },
     )
-    expect(dataRecordValuePathFns.getValue(path, customer)).toEqual(reference)
+    expect(dataRecordValuePathFns.getValue(systemConfig, path, customer)).toEqual(reference)
   })
 
   test('getValues returns the record reference when there is a referenced record', () => {
-    const address = dataRecordFns.random(allModelsWithReferences, modelsWithReferences.addressModel)
+    const address = dataRecordFns.random(
+      systemConfig,
+      allModelsWithReferences,
+      modelsWithReferences.addressModel,
+    )
     const secondAddress = dataRecordFns.random(
+      systemConfig,
       allModelsWithReferences,
       modelsWithReferences.addressModel,
     )
     const customer = dataRecordFns.random(
+      systemConfig,
       allModelsWithReferences,
       modelsWithReferences.customerModel,
       {
@@ -101,11 +116,12 @@ describe('given a model with a model.reference slot', () => {
       secondAddress.id,
     )
     const mutated = dataRecordValuePathFns.setValue(
+      systemConfig,
       allModelsWithReferences,
       path,
       customer,
       secondReference,
     )
-    expect(dataRecordValuePathFns.getValue(path, mutated)).toEqual(secondReference)
+    expect(dataRecordValuePathFns.getValue(systemConfig, path, mutated)).toEqual(secondReference)
   })
 })

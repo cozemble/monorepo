@@ -1,4 +1,5 @@
 import type { DataRecord, Model, ModelId } from '@cozemble/model-core'
+import { SystemConfiguration } from '@cozemble/model-core'
 import { DataRecordEditEvent, dataRecordEditEvents } from './dataRecordEditEvents'
 import { dataRecordFns, dataRecordValuePathFns, modelFns } from '@cozemble/model-api'
 import { Option } from '@cozemble/lang-util'
@@ -10,9 +11,20 @@ export interface EventSourcedDataRecord {
   events: DataRecordEditEvent[]
 }
 
-function applyEvent(models: Model[], event: DataRecordEditEvent, record: DataRecord): DataRecord {
+function applyEvent(
+  systemConfiguration: SystemConfiguration,
+  models: Model[],
+  event: DataRecordEditEvent,
+  record: DataRecord,
+): DataRecord {
   if (event._type === 'data.record.value.changed') {
-    return dataRecordValuePathFns.setValue(models, event.path, record, event.newValue)
+    return dataRecordValuePathFns.setValue(
+      systemConfiguration,
+      models,
+      event.path,
+      record,
+      event.newValue,
+    )
   }
   if (event._type === 'data.record.has.many.item.added') {
     return dataRecordValuePathFns.addHasManyItem(
@@ -47,10 +59,14 @@ export const eventSourcedDataRecordFns = {
       events: [],
     }
   },
-  addEvent(event: DataRecordEditEvent, record: EventSourcedDataRecord): EventSourcedDataRecord {
+  addEvent(
+    systemConfiguration: SystemConfiguration,
+    event: DataRecordEditEvent,
+    record: EventSourcedDataRecord,
+  ): EventSourcedDataRecord {
     return {
       ...record,
-      record: applyEvent(record.models, event, record.record),
+      record: applyEvent(systemConfiguration, record.models, event, record.record),
       events: [...record.events, event],
     }
   },

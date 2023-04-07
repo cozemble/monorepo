@@ -8,6 +8,7 @@
     import {getSummaryView} from "./views";
     import EditModelSummaryView from './EditModelSummaryView.svelte';
     import CreateModelSummaryView from './CreateModelSummaryView.svelte';
+    import {systemConfigurationStore} from "../settings/systemConfigurationStore";
 
     export let tenantId: string
     export let modelId: ModelId
@@ -55,7 +56,7 @@
 
 <div class="mt-3">
     {#if sectionToShow === 'model'}
-        <ModelEditor {allModels} {host} {modelId} on:editingSomething={editingSomething}/>
+        <ModelEditor systemConfiguration={$systemConfigurationStore} {allModels} {host} {modelId} on:editingSomething={editingSomething}/>
         <br/>
         {#if showModelSaveButtons}
             <button class="btn btn-primary" type="button" on:click={saveModelBeingEdited}>Save model</button>

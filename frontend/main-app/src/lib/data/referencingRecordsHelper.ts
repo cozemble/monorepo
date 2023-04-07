@@ -12,6 +12,7 @@ import type { EventSourcedDataRecordOption } from '@cozemble/data-editor-sdk'
 import { dataRecordEditEvents, eventSourcedDataRecordFns } from '@cozemble/data-editor-sdk'
 import { mandatory } from '@cozemble/lang-util'
 import { dataRecordValuePathFns } from '@cozemble/model-api'
+import type { SystemConfiguration } from '@cozemble/model-core'
 
 export async function referencingRecordsHelper(
   tenantId: string,
@@ -43,6 +44,7 @@ export async function referencingRecordsHelper(
 }
 
 export function makeOnNewRecord(
+  systemConfiguration: SystemConfiguration,
   pathsReferencingTargetModel: ModelPath<ModelPathElement>[],
   targetRecord: DataRecord,
 ): EventSourcedDataRecordOption {
@@ -66,6 +68,6 @@ export function makeOnNewRecord(
       reference,
       null,
     )
-    return eventSourcedDataRecordFns.addEvent(event, record)
+    return eventSourcedDataRecordFns.addEvent(systemConfiguration, event, record)
   }
 }

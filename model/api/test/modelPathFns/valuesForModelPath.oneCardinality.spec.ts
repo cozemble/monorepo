@@ -15,8 +15,10 @@ import {
 } from '../../src/valuesForModelPath'
 import { registerStringProperty } from '@cozemble/model-string-core'
 import { dataRecordRecordPathAndValue } from '../../src/modelPathFns'
+import { systemConfigurationFns } from '@cozemble/model-core'
 
 registerStringProperty()
+const systemConfig = systemConfigurationFns.empty()
 
 describe('given a path of invoice.single.anotherSingle.quantity', () => {
   const anotherSingleModel = modelFns.newInstance(
@@ -48,7 +50,7 @@ describe('given a path of invoice.single.anotherSingle.quantity', () => {
 
   test('given record {} return null', () => {
     const emptyRecord = dataRecordFns.newInstance(invoice, 'user1')
-    expect(valuesForModelPath(models, path, emptyRecord)).toEqual(
+    expect(valuesForModelPath(systemConfig, models, path, emptyRecord)).toEqual(
       singleCardinalityValuesForModelPathResponse(
         dataRecordRecordPathAndValue(
           dataRecordValuePathFns.newInstance(
@@ -66,7 +68,7 @@ describe('given a path of invoice.single.anotherSingle.quantity', () => {
     const single = dataRecordFns.newInstance(singleModel, 'user1')
     let record = dataRecordFns.newInstance(invoice, 'user1')
     record = nestedModelFns.setValue(models, record, singleRelationship, single)
-    expect(valuesForModelPath(models, path, record)).toEqual(
+    expect(valuesForModelPath(systemConfig, models, path, record)).toEqual(
       singleCardinalityValuesForModelPathResponse(
         dataRecordRecordPathAndValue(
           dataRecordValuePathFns.newInstance(
@@ -86,7 +88,7 @@ describe('given a path of invoice.single.anotherSingle.quantity', () => {
     single = nestedModelFns.setValue(models, single, anotherSingleRelationship, anotherSingle)
     let record = dataRecordFns.newInstance(invoice, 'user1')
     record = nestedModelFns.setValue(models, record, singleRelationship, single)
-    expect(valuesForModelPath(models, path, record)).toEqual(
+    expect(valuesForModelPath(systemConfig, models, path, record)).toEqual(
       singleCardinalityValuesForModelPathResponse(
         dataRecordRecordPathAndValue(
           dataRecordValuePathFns.newInstance(
@@ -104,12 +106,12 @@ describe('given a path of invoice.single.anotherSingle.quantity', () => {
     let anotherSingle = dataRecordFns.newInstance(anotherSingleModel, 'user1')
     anotherSingle = propertyDescriptors
       .mandatory(id.propertyType)
-      .setValue(anotherSingle, anotherSingle, '1')
+      .setValue(systemConfig, anotherSingle, anotherSingle, '1')
     let single = dataRecordFns.newInstance(singleModel, 'user1')
     single = nestedModelFns.setValue(models, single, anotherSingleRelationship, anotherSingle)
     let record = dataRecordFns.newInstance(invoice, 'user1')
     record = nestedModelFns.setValue(models, record, singleRelationship, single)
-    expect(valuesForModelPath(models, path, record)).toEqual(
+    expect(valuesForModelPath(systemConfig, models, path, record)).toEqual(
       singleCardinalityValuesForModelPathResponse(
         dataRecordRecordPathAndValue(
           dataRecordValuePathFns.newInstance(
@@ -125,15 +127,17 @@ describe('given a path of invoice.single.anotherSingle.quantity', () => {
 
   test('given record {single:{anotherSingle:{id:1, quantity:2}}}  return {2}', () => {
     let anotherSingle = dataRecordFns.newInstance(anotherSingleModel, 'user1')
-    anotherSingle = propertyDescriptors.mandatory(id.propertyType).setValue(id, anotherSingle, '1')
+    anotherSingle = propertyDescriptors
+      .mandatory(id.propertyType)
+      .setValue(systemConfig, id, anotherSingle, '1')
     anotherSingle = propertyDescriptors
       .mandatory(quantity.propertyType)
-      .setValue(quantity, anotherSingle, '2')
+      .setValue(systemConfig, quantity, anotherSingle, '2')
     let single = dataRecordFns.newInstance(singleModel, 'user1')
     single = nestedModelFns.setValue(models, single, anotherSingleRelationship, anotherSingle)
     let record = dataRecordFns.newInstance(invoice, 'user1')
     record = nestedModelFns.setValue(models, record, singleRelationship, single)
-    expect(valuesForModelPath(models, path, record)).toEqual(
+    expect(valuesForModelPath(systemConfig, models, path, record)).toEqual(
       singleCardinalityValuesForModelPathResponse(
         dataRecordRecordPathAndValue(
           dataRecordValuePathFns.newInstance(
@@ -151,12 +155,12 @@ describe('given a path of invoice.single.anotherSingle.quantity', () => {
     let anotherSingle = dataRecordFns.newInstance(anotherSingleModel, 'user1')
     anotherSingle = propertyDescriptors
       .mandatory(quantity.propertyType)
-      .setValue(quantity, anotherSingle, null)
+      .setValue(systemConfig, quantity, anotherSingle, null)
     let single = dataRecordFns.newInstance(singleModel, 'user1')
     single = nestedModelFns.setValue(models, single, anotherSingleRelationship, anotherSingle)
     let record = dataRecordFns.newInstance(invoice, 'user1')
     record = nestedModelFns.setValue(models, record, singleRelationship, single)
-    expect(valuesForModelPath(models, path, record)).toEqual(
+    expect(valuesForModelPath(systemConfig, models, path, record)).toEqual(
       singleCardinalityValuesForModelPathResponse(
         dataRecordRecordPathAndValue(
           dataRecordValuePathFns.newInstance(

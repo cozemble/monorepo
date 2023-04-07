@@ -18,6 +18,7 @@ import {
   ModelSlotId,
   type NestedModel,
   propertyDescriptors,
+  SystemConfiguration,
 } from '@cozemble/model-core'
 import { clock, mandatory, options, strings } from '@cozemble/lang-util'
 import { propertyFns } from './propertyFns'
@@ -51,6 +52,7 @@ export const modelOptions = {
 }
 
 function validateValues(
+  systemConfiguration: SystemConfiguration,
   path: ModelPath<Property>,
   value: SingleCardinalityValuesForModelPath | ManyCardinalityValuesForModelPath,
   errors: Map<DataRecordValuePath, string[]>,
@@ -58,13 +60,22 @@ function validateValues(
   if (value._type === 'single.cardinality.values.for.model.path.response') {
     const property = path.lastElement
     const propertyDescriptor = propertyDescriptors.mandatory(property)
-    const propertyErrors = propertyDescriptor.validateValue(property, value.value.value)
+    const propertyErrors = propertyDescriptor.validateValue(
+      systemConfiguration,
+      property,
+      value.value.value,
+    )
     if (propertyErrors.length > 0) {
       errors.set(value.value.path, propertyErrors)
     }
   } else {
     value.value.forEach((v) => {
-      validateValues(path, singleCardinalityValuesForModelPathResponse(v), errors)
+      validateValues(
+        systemConfiguration,
+        path,
+        singleCardinalityValuesForModelPathResponse(v),
+        errors,
+      )
     })
   }
 }
@@ -108,13 +119,16 @@ export const modelFns = {
     )
   },
   setPropertyValue(
+    systemConfiguration: SystemConfiguration,
     model: Model,
     property: Property,
     value: any | null,
     record: DataRecord,
   ): DataRecord {
     return {
-      ...propertyDescriptors.mandatory(property).setValue(property, record, value),
+      ...propertyDescriptors
+        .mandatory(property)
+        .setValue(systemConfiguration, property, record, value),
       updatedMillis: { _type: 'timestamp.epoch.millis', value: clock.now().getTime() },
     }
   },
@@ -191,14 +205,18 @@ export const modelFns = {
       return [...elements, element]
     }, [] as ModelPathElement[])
   },
-  validate(models: Model[], record: DataRecord): Map<DataRecordValuePath, string[]> {
+  validate(
+    systemConfiguration: SystemConfiguration,
+    models: Model[],
+    record: DataRecord,
+  ): Map<DataRecordValuePath, string[]> {
     const model = modelFns.findById(models, record.modelId)
     const pathsToProperties: ModelPath<Property>[] = modelFns
       .allPaths(models, model)
       .filter((p) => modelPathFns.isPathToProperty(p)) as ModelPath<Property>[]
     return pathsToProperties.reduce((errors, path) => {
-      const value = modelPathFns.getValues(models, path, record)
-      validateValues(path, value, errors)
+      const value = modelPathFns.getValues(systemConfiguration, models, path, record)
+      validateValues(systemConfiguration, path, value, errors)
       return errors
     }, new Map<DataRecordValuePath, string[]>())
   },

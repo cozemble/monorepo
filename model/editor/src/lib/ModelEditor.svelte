@@ -2,7 +2,7 @@
     import {EditableName} from '@cozemble/ui-atoms'
     import type {ModelEditorHost} from './ModelEditorHost'
     import ModelStructureEditor from './ModelStructureEditor.svelte'
-    import type {ModelId} from '@cozemble/model-core'
+    import type {ModelId, SystemConfiguration} from '@cozemble/model-core'
     import {modelNameFns} from '@cozemble/model-core'
     import type {EventSourcedModel} from '@cozemble/model-event-sourced'
     import {coreModelEvents} from '@cozemble/model-event-sourced'
@@ -12,6 +12,8 @@
     export let modelId: ModelId
     export let host: ModelEditorHost
     export let allModels: Writable<EventSourcedModel[]>
+    export let systemConfiguration: SystemConfiguration
+
 
     $: eventSourced = host.modelWithId($allModels, modelId)
 
@@ -34,5 +36,5 @@
             {onNameChange}
             extraClass="model-name"/>
 
-    <ModelStructureEditor {eventSourced} {host} allModels={$allModels} on:editingSomething/>
+    <ModelStructureEditor {systemConfiguration} {eventSourced} {host} allModels={$allModels} on:editingSomething/>
 {/if}

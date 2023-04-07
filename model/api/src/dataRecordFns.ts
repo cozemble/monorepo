@@ -6,11 +6,12 @@ import {
   dataRecordAndPathFns,
   dottedPathFns,
   type Model,
+  nestedRecordArrayPathElement,
   propertyDescriptors,
+  SystemConfiguration,
 } from '@cozemble/model-core'
 import { modelFns } from './modelsFns'
 import { dataRecordPathElementFns } from './dataRecordPathElementFns'
-import { nestedRecordArrayPathElement } from '@cozemble/model-core'
 
 function getChildRecord(
   models: Model[],
@@ -74,7 +75,12 @@ export const dataRecordFns = {
       return acc
     }, dataRecord)
   },
-  random: (models: Model[], model: Model, givenValues: { [key: string]: any } = {}): DataRecord => {
+  random: (
+    systemConfiguration: SystemConfiguration,
+    models: Model[],
+    model: Model,
+    givenValues: { [key: string]: any } = {},
+  ): DataRecord => {
     let record: DataRecord = {
       _type: 'data.record',
       id: { _type: 'data.record.id', value: uuids.v4() },
@@ -94,8 +100,10 @@ export const dataRecordFns = {
         record.values[slot.id.value] = givenValue
         return record
       } else {
-        const value = hasGivenValue ? givenValue : propertyDescriptors.mandatory(slot).randomValue()
-        return modelFns.setPropertyValue(model, slot, value, record)
+        const value = hasGivenValue
+          ? givenValue
+          : propertyDescriptors.mandatory(slot).randomValue(systemConfiguration)
+        return modelFns.setPropertyValue(systemConfiguration, model, slot, value, record)
       }
     }, record)
     record = model.nestedModels.reduce((record, nestedModel) => {
@@ -107,6 +115,7 @@ export const dataRecordFns = {
           } else {
             const relatedModel = modelFns.findById(models, nestedModel.modelId)
             record.values[nestedModel.id.value] = dataRecordFns.random(
+              systemConfiguration,
               models,
               relatedModel,
               givenValue,

@@ -1,6 +1,7 @@
 import { StringProperty, stringPropertyType } from './stringProperty'
 import type { ModelId, PropertyDescriptor, PropertyId, PropertyName } from '@cozemble/model-core'
 import { newStringPropertyModelEvent } from './events'
+import { SystemConfiguration } from '@cozemble/model-core'
 
 /**
  * This is the PropertyDescriptor for the StringProperty.  It binds the StringProperty that we defined in stringProperty.ts
@@ -40,7 +41,11 @@ export const stringPropertyDescriptor: PropertyDescriptor<StringProperty, string
   randomValue: (): string => {
     return (Math.random() + 1).toString(36).substring(2)
   },
-  validateValue: (property: StringProperty, value: string | null): string[] => {
+  validateValue: (
+    systemConfiguration: SystemConfiguration,
+    property: StringProperty,
+    value: string | null,
+  ): string[] => {
     if (
       (property.required && value === null) ||
       value === undefined ||
@@ -50,7 +55,7 @@ export const stringPropertyDescriptor: PropertyDescriptor<StringProperty, string
     }
     return []
   },
-  setValue: (property, record, value) => {
+  setValue: (systemConfiguration: SystemConfiguration, property, record, value) => {
     return {
       ...record,
       values: {
@@ -59,11 +64,15 @@ export const stringPropertyDescriptor: PropertyDescriptor<StringProperty, string
       },
     }
   },
-  getValue: (property, record) => {
+  getValue: (systemConfiguration: SystemConfiguration, property, record) => {
     return record.values[property.id.value] ?? null
   },
-  newProperty: (modelId: ModelId, propertyName: PropertyName, propertyId?: PropertyId) =>
-    newStringPropertyModelEvent(modelId, propertyName, propertyId),
+  newProperty: (
+    systemConfiguration: SystemConfiguration,
+    modelId: ModelId,
+    propertyName: PropertyName,
+    propertyId?: PropertyId,
+  ) => newStringPropertyModelEvent(modelId, propertyName, propertyId),
 }
 
 function validateProperty(property: StringProperty): Map<string, string> {

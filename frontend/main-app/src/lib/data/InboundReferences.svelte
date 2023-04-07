@@ -9,6 +9,7 @@
     import {type Writable, writable} from "svelte/store";
     import {makePaginatedEditorHost} from "./paginatedEditorHost";
     import type {EventSourcedDataRecordOption} from "@cozemble/data-editor-sdk";
+    import {systemConfigurationStore} from "../settings/systemConfigurationStore";
 
     export let tenantId: string
     export let models: Model[]
@@ -28,7 +29,7 @@
                 error = `Expected exactly one path referencing model ${targetModel.name.value} from model ${referencingModel.name.value}, found ${pathsReferencingTargetModel.length}`
                 return
             }
-            onNewRecordAssignReference = makeOnNewRecord(pathsReferencingTargetModel, record)
+            onNewRecordAssignReference = makeOnNewRecord($systemConfigurationStore,pathsReferencingTargetModel, record)
             const loaded = await referencingRecordsHelper(tenantId, record.id, referencingModel.id)
             referencingRecords.set(loaded)
         } catch (e: any) {
@@ -39,7 +40,7 @@
 </script>
 
 <div class="mt-2">
-    <PaginatedEditor {models}
+    <PaginatedEditor {models} systemConfiguration={$systemConfigurationStore}
                      model={referencingModel}
                      modelViews={$modelViews}
                      records={$referencingRecords}

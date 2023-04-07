@@ -4,6 +4,7 @@
     import type {Writable} from 'svelte/store'
     import {dataRecordTableClicked} from './dataRecordTableClicked'
     import DataRecordTableTd from './DataRecordTableTd.svelte'
+    import type {SystemConfiguration} from "@cozemble/model-core";
 
     export let model: Model
     export let record: DataRecord
@@ -11,6 +12,8 @@
     export let errors: Map<DataRecordValuePath, string[]>
     export let focus: Writable<DataRecordPathFocus>
     export let showErrors: boolean
+    export let systemConfiguration: SystemConfiguration
+
 </script>
 
 <table
@@ -29,6 +32,7 @@
         {#each model.slots as modelSlot}
             {#if modelSlot._type === 'property' || modelSlot._type === 'model.reference'}
                 <DataRecordTableTd
+                        {systemConfiguration}
                         {modelSlot}
                         {record}
                         {parentPath}

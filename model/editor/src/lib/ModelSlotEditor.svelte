@@ -17,11 +17,14 @@
     import PropertyEditor from "./PropertyEditor.svelte";
     import {validateSlot} from "./validateSlot";
     import ModelReferenceEditor from "./ModelReferenceEditor.svelte";
+    import type {SystemConfiguration} from "@cozemble/model-core";
 
     export let modelChangeHandler: ModelChangeHandler
     export let model: Model
     export let models: Model[]
     export let modelSlot: ModelSlot
+    export let systemConfiguration: SystemConfiguration
+
 
     const formSectionErrorState = writable(emptyFormErrorState())
     editorHost.setErrorState(formSectionErrorState)
@@ -44,7 +47,7 @@
             const propertyId = propertyIdFns.newInstance(modelSlot.id.value)
             modelChangeHandler.modelChanged(
                 model.id,
-                propertyDescriptor.newProperty(model.id, propertyName, propertyId),
+                propertyDescriptor.newProperty(systemConfiguration,model.id, propertyName, propertyId),
             )
         } else {
             alert('Dont know how to handle model slot type ' + target.value)

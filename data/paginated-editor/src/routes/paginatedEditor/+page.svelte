@@ -20,6 +20,7 @@
     import type {PaginatedEditorHost, RecordDeleteOutcome, RecordEditContext, RecordSaveOutcome,} from '../../lib'
     import {recordSaveSucceeded} from '../../lib'
     import EditEventInspector from './EditEventInspector.svelte'
+    import {systemConfigurationFns} from "@cozemble/model-core";
 
     export const ssr = false
 
@@ -27,6 +28,7 @@
     let model: Model | null = null
     let records: DataRecord[] = []
     let editContexts: RecordEditContext[] = []
+    const systemConfiguration = systemConfigurationFns.empty()
 
     onMount(() => {
         registerAllProperties()
@@ -111,7 +113,7 @@
 <div class="bg-base-100 rounded-lg">
 
     {#if model}
-        <PaginatedEditor {models} {model} {records} modelViews={[]} paginatedEditorHost={noOpEditorHost}/>
+        <PaginatedEditor {systemConfiguration} {models} {model} {records} modelViews={[]} paginatedEditorHost={noOpEditorHost}/>
     {/if}
 
     <EditEventInspector {editContexts}/>

@@ -5,6 +5,7 @@
     import {createEventDispatcher} from "svelte";
     import {modelViews} from "../models/tenantEntityStore";
     import {makePaginatedEditorHost} from "./paginatedEditorHost";
+    import {systemConfigurationStore} from "../settings/systemConfigurationStore";
 
     export let models: Model[]
     export let model: Model
@@ -31,7 +32,7 @@
            bind:value={searchText}/>
 </div>
 <div class="mt-2">
-    <PaginatedEditor {models} {model} modelViews={$modelViews} records={$records} {paginatedEditorHost}/>
+    <PaginatedEditor systemConfiguration={$systemConfigurationStore} {models} {model} modelViews={$modelViews} records={$records} {paginatedEditorHost}/>
 </div>
 <style>
     .search-panel {

@@ -1,7 +1,7 @@
-import { beforeAll, describe, expect, test, onTestFailed } from 'vitest'
+import { beforeAll, describe, expect, onTestFailed, test } from 'vitest'
 import { appWithTestContainer } from '../../src/appWithTestContainer'
 import { makeTenant, makeTenantMemberAccessToken, putModels, putRecord } from './testHelpers'
-import { Model } from '@cozemble/model-core'
+import { Model, systemConfigurationFns } from '@cozemble/model-core'
 import { uuids } from '@cozemble/lang-util'
 import { dataRecordFns, modelFns, modelOptions, propertyFns } from '@cozemble/model-api'
 import { savableRecords } from '@cozemble/backend-tenanted-api-types'
@@ -12,6 +12,7 @@ const jwtSigningSecret = 'secret'
 const port = 3011
 
 registerStringProperty()
+const systemConfig = systemConfigurationFns.empty()
 
 describe('with a migrated database', () => {
   let bearer: string
@@ -47,11 +48,11 @@ describe('with a migrated database', () => {
       })
     })
 
-    const firstRecord = dataRecordFns.random([customerModel], customerModel, {
+    const firstRecord = dataRecordFns.random(systemConfig, [customerModel], customerModel, {
       Phone: '1234567890',
       Email: 'one@email.com',
     })
-    const secondRecord = dataRecordFns.random([customerModel], customerModel, {
+    const secondRecord = dataRecordFns.random(systemConfig, [customerModel], customerModel, {
       Phone: '1234567890',
       Email: 'two@email.com',
     })

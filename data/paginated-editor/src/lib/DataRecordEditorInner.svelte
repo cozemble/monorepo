@@ -18,7 +18,7 @@
     export let popContext: () => void
 </script>
 
-<DataRecordTable record={$record} {model} {focus} {parentPath} errors={$errors} showErrors={$showErrors}/>
+<DataRecordTable systemConfiguration={recordEditContext.systemConfiguration} record={$record} {model} {focus} {parentPath} errors={$errors} showErrors={$showErrors}/>
 
 {#each model.nestedModels as nestedModel}
     {@const relatedModel = modelFns.findById(models, nestedModel.modelId)}

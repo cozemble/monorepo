@@ -12,6 +12,7 @@
     import {slotEditorRegistry, slotViewerRegistry} from "@cozemble/model-assembled";
     import ModelReferenceViewer from "./modelReferences/ModelReferenceViewer.svelte";
     import ModelReferenceEditor from "./modelReferences/ModelReferenceEditor.svelte";
+    import type {SystemConfiguration} from "@cozemble/model-core";
 
     export let models: Model[]
     export let model: Model
@@ -19,8 +20,9 @@
     export let paginatedEditorHost: PaginatedEditorHost
     export let modelViews: ModelView[]
     export let onNewRecord: EventSourcedDataRecordOption = (record) => record
+    export let systemConfiguration: SystemConfiguration
 
-    dataRecordViewerHost.setClient(makeDataRecordViewer(models, modelViews, paginatedEditorHost, recordEdited, onError))
+    dataRecordViewerHost.setClient(makeDataRecordViewer(systemConfiguration,models, modelViews, paginatedEditorHost, recordEdited, onError))
 
     let focus: Writable<CellFocus | null> = writable(null)
     let doAddNewRecord = false
@@ -98,12 +100,12 @@
             recordSearcher={paginatedEditorHost}
             attachmentsManager={paginatedEditorHost}
             {modelViews}
-            recordEditContext={new RecordEditContext( models, justSaveNewRecord,onNewRecord(eventSourcedDataRecordFns.newInstance(models, model.id, 'test-user')), saveNewRecord, () => (doAddNewRecord = false), `Add new ${model.name.value}`, )}/>
+            recordEditContext={new RecordEditContext( models, justSaveNewRecord,onNewRecord(eventSourcedDataRecordFns.newInstance(models, model.id, 'test-user')), saveNewRecord, () => (doAddNewRecord = false), `Add new ${model.name.value}`,systemConfiguration )}/>
 {:else if recordBeingEdited !== null}
     <StackingRecordEditor
             recordSearcher={paginatedEditorHost} {modelViews}
             attachmentsManager={paginatedEditorHost}
-            recordEditContext={new RecordEditContext( models, justSaveNewRecord,eventSourcedDataRecordFns.fromRecord(models, recordBeingEdited), recordEdited, () => (recordBeingEdited = null), `Edit ${model.name.value}`, )}/>
+            recordEditContext={new RecordEditContext( models, justSaveNewRecord,eventSourcedDataRecordFns.fromRecord(models, recordBeingEdited), recordEdited, () => (recordBeingEdited = null), `Edit ${model.name.value}`, systemConfiguration)}/>
 {:else}
     <table class="table">
         <thead>
@@ -119,7 +121,7 @@
             <tr data-row-index={rowIndex}>
                 {#each model.slots as modelSlot, colIndex}
                     {#if modelSlot._type === 'property' || modelSlot._type === 'model.reference'}
-                        <DataTd {focus} {rowIndex} {colIndex} {record} {modelSlot}/>
+                        <DataTd {systemConfiguration} {focus} {rowIndex} {colIndex} {record} {modelSlot}/>
                     {:else}
                         <td>To do: {modelSlot._type}</td>
                     {/if}

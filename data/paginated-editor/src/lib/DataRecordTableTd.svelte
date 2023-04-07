@@ -11,6 +11,7 @@
     import SlotView from './SlotView.svelte'
     import MaybeError from './MaybeError.svelte'
     import {dataRecordValuePathFns} from '@cozemble/model-api'
+    import type {SystemConfiguration} from "@cozemble/model-core";
 
     export let modelSlot: LeafModelSlot
     export let record: DataRecord
@@ -18,6 +19,8 @@
     export let errors: Map<DataRecordValuePath, string[]>
     export let showErrors: boolean
     export let focus: Writable<DataRecordPathFocus>
+    export let systemConfiguration: SystemConfiguration
+
 
     function dataRecordPathAsString(slot: LeafModelSlot) {
         return dataRecordValuePathFns.toDottedPath(
@@ -33,7 +36,7 @@
     {#if focussed}
         <SlotEdit {parentPath} {modelSlot} {record}/>
     {:else}
-        <SlotView {modelSlot} {record}/>
+        <SlotView {systemConfiguration} {modelSlot} {record}/>
     {/if}
     <MaybeError {parentPath} {modelSlot} {errors} {showErrors}/>
 </td>

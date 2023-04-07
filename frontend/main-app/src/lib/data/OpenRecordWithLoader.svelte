@@ -18,6 +18,7 @@
     } from "./attachments";
     import {modelFns} from "@cozemble/model-api";
     import InboundReferences from "./InboundReferences.svelte";
+    import {systemConfigurationStore} from "../settings/systemConfigurationStore";
 
     export let models: Model[]
     export let openRecord: OpenRecordView //a Customer record for example
@@ -68,7 +69,7 @@
         openRecordViews.close(openRecord.recordId)
     }
 
-    dataRecordViewerHost.setClient(makeDataRecordViewer(models, $modelViews, recordSearcher, attachmentsManager, onSaveRecord, onError))
+    dataRecordViewerHost.setClient(makeDataRecordViewer($systemConfigurationStore,models, $modelViews, recordSearcher, attachmentsManager, onSaveRecord, onError))
 
     function onError(e: Error) {
         error = e.message
@@ -100,7 +101,7 @@
     {#if tabShowing === 'recordDetails'}
         {#if record}
             <StackingRecordEditor {recordSearcher} modelViews={$modelViews} {attachmentsManager}
-                                  recordEditContext={new RecordEditContext( models, onSaveRecord,eventSourcedDataRecordFns.fromRecord(models, record), onSaveRecord, closeView, `` )}
+                                  recordEditContext={new RecordEditContext( models, onSaveRecord,eventSourcedDataRecordFns.fromRecord(models, record), onSaveRecord, closeView, `` ,$systemConfigurationStore)}
                                   cancelButtonText="Close"/>
         {/if}
     {:else}

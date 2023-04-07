@@ -5,11 +5,13 @@ import { dataRecordFns, modelFns, modelOptions, propertyFns } from '@cozemble/mo
 import { Model } from '@cozemble/model-core'
 import { registerStringProperty } from '@cozemble/model-string-core'
 import { appWithTestContainer } from '../../src/appWithTestContainer'
+import { systemConfigurationFns } from '@cozemble/model-core'
 
 const jwtSigningSecret = 'secret'
 const port = 3003
 
 registerStringProperty()
+const systemConfig = systemConfigurationFns.empty()
 
 describe('with customer records', () => {
   let bearer: string
@@ -32,24 +34,24 @@ describe('with customer records', () => {
       )
       await putModels(port, tenantId, [customerModel], bearer)
       const records = [
-        dataRecordFns.random([customerModel], customerModel, {
+        dataRecordFns.random(systemConfig, [customerModel], customerModel, {
           'First Name': 'John',
           'Last Name': 'Smith',
         }),
 
-        dataRecordFns.random([customerModel], customerModel, {
+        dataRecordFns.random(systemConfig, [customerModel], customerModel, {
           'First Name': 'Jane',
           'Last Name': 'Smith',
         }),
-        dataRecordFns.random([customerModel], customerModel, {
+        dataRecordFns.random(systemConfig, [customerModel], customerModel, {
           'First Name': 'John',
           'Last Name': 'Doe',
         }),
-        dataRecordFns.random([customerModel], customerModel, {
+        dataRecordFns.random(systemConfig, [customerModel], customerModel, {
           'First Name': 'Jane',
           'Last Name': 'Doe',
         }),
-        dataRecordFns.random([customerModel], customerModel, {
+        dataRecordFns.random(systemConfig, [customerModel], customerModel, {
           'First Name': 'Janet',
           'Last Name': 'Norman',
         }),

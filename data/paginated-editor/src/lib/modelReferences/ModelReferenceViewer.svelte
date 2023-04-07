@@ -4,9 +4,12 @@
     import {dataRecordViewer} from "@cozemble/data-editor-sdk";
     import {onMount} from "svelte";
     import ModelReferenceViewerInner from "./ModelReferenceViewerInner.svelte";
+    import type {SystemConfiguration} from "@cozemble/model-core";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord
+    export let systemConfiguration: SystemConfiguration
+
 
     const dataRecordViewerClient = dataRecordViewer.getClient()
     let editorParams: EditorParams | null = null
@@ -23,7 +26,7 @@
 </script>
 
 {#if editorParams}
-    <ModelReferenceViewerInner {editorParams} {record} {recordPath}/>
+    <ModelReferenceViewerInner {systemConfiguration} {editorParams} {record} {recordPath}/>
 {/if}
 
 

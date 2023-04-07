@@ -10,6 +10,7 @@ import {
   propertyTypeFns,
 } from './core'
 import { ModelEvent } from './events'
+import { SystemConfiguration } from './systemConfiguration'
 
 /**
  * This is the interface that all property descriptors must implement, and is the means of adding properties
@@ -33,7 +34,7 @@ import { ModelEvent } from './events'
  * The validateProperty function is used to validate the configuration of the property itself, as it is being added to a model.  This is distinct from validation
  * of a piece of data that is to be stored against this property.  For example, a string property might have a regex validation that you can configure when defining
  * a string property for a model.  But the regex has to be properly formed, so this function is where you validate that.  This function is basically saying
- * "has the user configured the property corectly?".
+ * "has the user configured the property correctly?".
  *
  * The randomValue function is used to generate a random data value for this property.  This is used when generating random data for a model.
  *
@@ -50,16 +51,30 @@ export interface PropertyDescriptor<P = any, V = any> {
   name: DottedName
   isRequireable: boolean
   isUniqueable: boolean
-  newProperty: (modelId: ModelId, propertyName: PropertyName, propertyId?: PropertyId) => ModelEvent
+  newProperty: (
+    systemConfiguration: SystemConfiguration,
+    modelId: ModelId,
+    propertyName: PropertyName,
+    propertyId?: PropertyId,
+  ) => ModelEvent
 
   validateProperty(property: P): Map<string, string>
 
-  randomValue: () => V
-  validateValue: (property: P, value: V | null) => string[]
+  randomValue: (systemConfiguration: SystemConfiguration) => V
+  validateValue: (
+    systemConfiguration: SystemConfiguration,
+    property: P,
+    value: V | null,
+  ) => string[]
 
-  setValue(property: P, record: DataRecord, value: V | null): DataRecord
+  setValue(
+    systemConfiguration: SystemConfiguration,
+    property: P,
+    record: DataRecord,
+    value: V | null,
+  ): DataRecord
 
-  getValue(property: P, record: DataRecord): V | null
+  getValue(systemConfiguration: SystemConfiguration, property: P, record: DataRecord): V | null
 }
 
 const registeredProperties: PropertyDescriptor[] = []

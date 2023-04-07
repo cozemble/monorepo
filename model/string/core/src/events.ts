@@ -9,7 +9,7 @@ import {
   propertyIdFns,
   type PropertyName,
 } from '@cozemble/model-core'
-import { emptyProperty, stringPropertyType } from './stringProperty'
+import { emptyProperty } from './stringProperty'
 
 /** Step 1. Define an event type to represent the creation of a new string property.
  *  It needs to contain in it all that is needed to create a new string property.
@@ -99,18 +99,15 @@ const stringMultilineChangeDescriptor: ModelEventDescriptor<StringMultilineChang
   _type: 'model.event.descriptor',
   modelEventType: 'string.property.multiline.event',
   applyEvent: (model, event) => {
-    console.log({ model, event })
     return {
       ...model,
       slots: model.slots.map((property) => {
         if (property.id.value === event.propertyId.value && property._type === 'property') {
-          console.log('multiline changed')
           return {
             ...property,
             multiline: event.newValue,
           }
         } else {
-          console.log('not multiline changed')
           return property
         }
       }),

@@ -5,7 +5,7 @@ import type {
   ModelPath,
   ModelPathElement,
 } from '@cozemble/model-core'
-import { LeafModelSlot, modelSlotFns } from '@cozemble/model-core'
+import { LeafModelSlot, modelSlotFns, SystemConfiguration } from '@cozemble/model-core'
 import { dataRecordValuePathFns } from './dataRecordValuePathFns'
 import { DataRecordPathAndValue, dataRecordRecordPathAndValue, modelPathFns } from './modelPathFns'
 import { modelFns } from './modelsFns'
@@ -114,6 +114,7 @@ export const valuesForModelPathFns = {
 }
 
 export function valuesForModelPath(
+  systemConfiguration: SystemConfiguration,
   models: Model[],
   path: ModelPath<LeafModelSlot>,
   record: DataRecord,
@@ -129,7 +130,7 @@ export function valuesForModelPath(
     if (prp.leafSlot === null) {
       return []
     }
-    const value = modelSlotFns.getValue(prp.leafSlot, prp.record)
+    const value = modelSlotFns.getValue(systemConfiguration, prp.leafSlot, prp.record)
     return [
       dataRecordRecordPathAndValue(
         dataRecordValuePathFns.newInstance(prp.leafSlot, ...prp.parentElements),

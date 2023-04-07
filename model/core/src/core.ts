@@ -1,5 +1,6 @@
 import { clock, type Option, uuids } from '@cozemble/lang-util'
 import { propertyDescriptors } from './propertyDescriptor'
+import { SystemConfiguration } from './systemConfiguration'
 
 interface TinyValue<T = string> {
   value: T
@@ -266,9 +267,15 @@ export type ModelSlotId = PropertyId | ModelReferenceId | InlinedModelReferenceI
 export type ModelSlotName = PropertyName | ModelReferenceName | InlinedModelReferenceName
 
 export const modelSlotFns = {
-  getValue: (slot: ModelSlot, record: DataRecord): any => {
+  getValue: (
+    systemConfiguration: SystemConfiguration,
+    slot: ModelSlot,
+    record: DataRecord,
+  ): any => {
     if (slot._type === 'property') {
-      return propertyDescriptors.mandatory(slot.propertyType).getValue(slot, record)
+      return propertyDescriptors
+        .mandatory(slot.propertyType)
+        .getValue(systemConfiguration, slot, record)
     }
     if (slot._type === 'model.reference') {
       return modelReferenceFns.dereferenceOne(slot, record)

@@ -4,12 +4,15 @@
     import {dataRecordControlEvents, dataRecordEditEvents, dataRecordEditor} from "@cozemble/data-editor-sdk";
     import {onMount} from "svelte";
     import {type EditorParams, makeSummaryView} from "./editorHelper";
+    import type {SystemConfiguration} from "@cozemble/model-core";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord
     export let editorParams: EditorParams
+    export let systemConfiguration: SystemConfiguration
 
-    let initialValue: ReferencedRecords | null = dataRecordValuePathFns.getValue(recordPath, record) ?? null
+
+    let initialValue: ReferencedRecords | null = dataRecordValuePathFns.getValue(systemConfiguration,recordPath, record) ?? null
 
     $:selectedRecordId = initialValue?.referencedRecords[0]?.referencedRecordId.value ?? null;
 

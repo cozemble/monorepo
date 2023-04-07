@@ -3,7 +3,12 @@ import { beforeAll, describe, expect, test } from 'vitest'
 import { appWithTestContainer } from '../../src/appWithTestContainer'
 import { BackendModel, savableRecords } from '@cozemble/backend-tenanted-api-types'
 import { dataRecordFns, modelFns } from '@cozemble/model-api'
-import { ModelEvent, modelEventIdFns, timestampEpochMillis } from '@cozemble/model-core'
+import {
+  ModelEvent,
+  modelEventIdFns,
+  systemConfigurationFns,
+  timestampEpochMillis,
+} from '@cozemble/model-core'
 import {
   makeTenant,
   makeTenantMemberAccessToken,
@@ -14,6 +19,7 @@ import {
 
 const jwtSigningSecret = 'secret'
 const port = 3002
+const systemConfig = systemConfigurationFns.empty()
 
 describe('with a migrated database', () => {
   beforeAll(async () => {
@@ -200,7 +206,7 @@ describe('with a migrated database', () => {
       [modelFns.newInstance('Customer')],
       bearer,
     )
-    const record = dataRecordFns.random([customerModel], customerModel)
+    const record = dataRecordFns.random(systemConfig, [customerModel], customerModel)
 
     const putResponse = await fetch(
       `http://localhost:3002/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record`,
@@ -223,7 +229,7 @@ describe('with a migrated database', () => {
       [modelFns.newInstance('Customer')],
       bearer,
     )
-    const record = dataRecordFns.random([customerModel], customerModel)
+    const record = dataRecordFns.random(systemConfig, [customerModel], customerModel)
 
     const putResponse = await fetch(
       `http://localhost:3002/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record`,
@@ -265,7 +271,7 @@ describe('with a migrated database', () => {
       [modelFns.newInstance('Customer')],
       bearer,
     )
-    const record = dataRecordFns.random([customerModel], customerModel)
+    const record = dataRecordFns.random(systemConfig, [customerModel], customerModel)
 
     const putResponse = await fetch(
       `http://localhost:3002/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record`,
@@ -301,7 +307,7 @@ describe('with a migrated database', () => {
       [modelFns.newInstance('Customer')],
       bearer,
     )
-    const record = dataRecordFns.random([customerModel], customerModel)
+    const record = dataRecordFns.random(systemConfig, [customerModel], customerModel)
     record.values = {
       ...record.values,
       'string-array': ['a', 'b', 'c'],
@@ -329,7 +335,7 @@ describe('with a migrated database', () => {
       [modelFns.newInstance('Customer')],
       bearer,
     )
-    const record = dataRecordFns.random([customerModel], customerModel)
+    const record = dataRecordFns.random(systemConfig, [customerModel], customerModel)
     await putRecord(port, tenantId, customerModel, bearer, record)
 
     const deleteResponse = await fetch(
@@ -352,7 +358,7 @@ describe('with a migrated database', () => {
       [modelFns.newInstance('Customer')],
       bearer,
     )
-    const record = dataRecordFns.random([customerModel], customerModel)
+    const record = dataRecordFns.random(systemConfig, [customerModel], customerModel)
     await putRecord(port, tenantId, customerModel, bearer, record)
 
     const deleteResponse = await fetch(
@@ -372,7 +378,7 @@ describe('with a migrated database', () => {
       [modelFns.newInstance('Customer')],
       bearer,
     )
-    const record = dataRecordFns.random([customerModel], customerModel)
+    const record = dataRecordFns.random(systemConfig, [customerModel], customerModel)
 
     const putResponse = await fetch(
       `http://localhost:3002/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record`,

@@ -8,11 +8,13 @@
     import {eventSourcedModelFns} from "@cozemble/model-event-sourced";
     import {events, eventTypes} from './toSql'
     import {modelFns} from "@cozemble/model-api";
+    import {systemConfigurationFns} from "@cozemble/model-core";
 
     let mounted = false
     let firstModel: EventSourcedModel | null = null
     let eventIndexToShow: number | null = null
     let modelIndexToShow: number | null = null
+    const systemConfiguration = systemConfigurationFns.empty()
     onMount(() => {
         registerAllProperties()
         registerAllPropertyConfigurers()
@@ -43,7 +45,7 @@
 
 <button class="btn" on:click={addModel}>Add a random model</button>
 {#if mounted && firstModel}
-    <ModelEditor modelId={firstModel.model.id} {allModels} {host}/>
+    <ModelEditor {systemConfiguration} modelId={firstModel.model.id} {allModels} {host}/>
 {/if}
 <hr/>
 <br/>

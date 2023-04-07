@@ -5,13 +5,16 @@
     import ShowAttachmentThumbs from "./ShowAttachmentThumbs.svelte";
     import {dataRecordViewer} from "@cozemble/data-editor-sdk";
     import {dataRecordEditEvents} from "@cozemble/data-editor-sdk";
+    import type {SystemConfiguration} from "@cozemble/model-core";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord
+    export let systemConfiguration: SystemConfiguration
+
 
     const viewClient = dataRecordViewer.getClient()
 
-    $: attachmentList = dataRecordValuePathFns.getValue(recordPath, record) as AttachmentList ?? ({
+    $: attachmentList = dataRecordValuePathFns.getValue(systemConfiguration,recordPath, record) as AttachmentList ?? ({
         _type: 'attachment.list',
         attachmentReferences: []
     })

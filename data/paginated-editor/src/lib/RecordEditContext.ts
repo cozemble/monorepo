@@ -1,14 +1,20 @@
-import type { DataRecord, DataRecordValuePath, Model, ModelId } from '@cozemble/model-core'
+import type {
+  DataRecord,
+  DataRecordValuePath,
+  Model,
+  ModelId,
+  SystemConfiguration,
+} from '@cozemble/model-core'
 import { DataRecordPathFocus } from './DataRecordPathFocus'
 import { writable, type Writable } from 'svelte/store'
 import { modelFns } from '@cozemble/model-api'
+import type { DataRecordControlEvent } from '@cozemble/data-editor-sdk'
 import {
   type DataRecordEditEvent,
   type EventSourcedDataRecord,
   eventSourcedDataRecordFns,
 } from '@cozemble/data-editor-sdk'
 import { uuids } from '@cozemble/lang-util'
-import type { DataRecordControlEvent } from '@cozemble/data-editor-sdk'
 
 export interface RecordSaveSucceeded {
   _type: 'record.save.succeeded'
@@ -44,11 +50,16 @@ export class RecordEditContext {
     public onSave: RecordSaveFunction,
     public onCancel: () => void,
     public title: string,
+    public systemConfiguration: SystemConfiguration,
     public _errors: Map<DataRecordValuePath, string[]> = new Map(),
     public errors: Writable<Map<DataRecordValuePath, string[]>> = writable(_errors),
     public model = modelFns.findById(models, eventSourcedRecord.record.modelId),
     public focus = writable(
-      new DataRecordPathFocus(models, () => eventSourcedRecord.record).setInitial(model),
+      new DataRecordPathFocus(
+        models,
+        () => eventSourcedRecord.record,
+        systemConfiguration,
+      ).setInitial(model),
     ),
     public record = writable(eventSourcedRecord.record),
     public child: RecordEditContext | null = null,
@@ -59,7 +70,9 @@ export class RecordEditContext {
   }
 
   handleDataRecordEditEvent(event: DataRecordEditEvent) {
-    this._setRecord(eventSourcedDataRecordFns.addEvent(event, this.eventSourcedRecord))
+    this._setRecord(
+      eventSourcedDataRecordFns.addEvent(this.systemConfiguration, event, this.eventSourcedRecord),
+    )
     if (event._type === 'data.record.value.changed') {
       this.focus.update((f) => f.applyValueChangedToFocus(event))
     }
@@ -96,7 +109,11 @@ export class RecordEditContext {
   private _setRecord(record: EventSourcedDataRecord) {
     this.eventSourcedRecord = record
     this.record.set(record.record)
-    this._errors = modelFns.validate(this.models, this.eventSourcedRecord.record)
+    this._errors = modelFns.validate(
+      this.systemConfiguration,
+      this.models,
+      this.eventSourcedRecord.record,
+    )
     this.errors.set(this._errors)
   }
 }
@@ -119,5 +136,6 @@ export function createDependentRecordContext(
     onSave,
     onCancel,
     `New ${dependentModel.name.value}`,
+    currentContext.systemConfiguration,
   )
 }

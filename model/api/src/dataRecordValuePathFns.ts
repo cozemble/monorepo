@@ -18,6 +18,7 @@ import {
   propertyDescriptors,
   ReferencedRecords,
   referencedRecordsFns,
+  SystemConfiguration,
 } from '@cozemble/model-core'
 import { dataRecordFns } from './dataRecordFns'
 import { modelFns } from './modelsFns'
@@ -67,9 +68,16 @@ function fromDottedNamePath(
   throw new Error(`Illegal last element of path: ${dottedPath.value}`)
 }
 
-function setLeafSlotValue<T>(path: DataRecordValuePath, record: DataRecord, t: T | null) {
+function setLeafSlotValue<T>(
+  systemConfiguration: SystemConfiguration,
+  path: DataRecordValuePath,
+  record: DataRecord,
+  t: T | null,
+) {
   if (path.lastElement._type === 'property') {
-    return propertyDescriptors.mandatory(path.lastElement).setValue(path.lastElement, record, t)
+    return propertyDescriptors
+      .mandatory(path.lastElement)
+      .setValue(systemConfiguration, path.lastElement, record, t)
   }
   if (t === null) {
     return modelReferenceFns.setReferences(path.lastElement, record, referencedRecordsFns.empty())
@@ -88,13 +96,19 @@ export const dataRecordValuePathFns = {
       lastElement,
     }
   },
-  getValue<T>(path: DataRecordValuePath, record: DataRecord): T | null {
+  getValue<T>(
+    systemConfiguration: SystemConfiguration,
+    path: DataRecordValuePath,
+    record: DataRecord,
+  ): T | null {
     if (record === null || record === undefined) {
       return null
     }
     if (path.parentElements.length === 0) {
       if (path.lastElement._type === 'property') {
-        return propertyDescriptors.mandatory(path.lastElement).getValue(path.lastElement, record)
+        return propertyDescriptors
+          .mandatory(path.lastElement)
+          .getValue(systemConfiguration, path.lastElement, record)
       }
       return modelReferenceFns.dereferenceOne(path.lastElement, record) as T
     }
@@ -110,16 +124,17 @@ export const dataRecordValuePathFns = {
       }
     }, record)
     const reducedPath = dataRecordValuePathFns.newInstance(path.lastElement)
-    return dataRecordValuePathFns.getValue(reducedPath, deref)
+    return dataRecordValuePathFns.getValue(systemConfiguration, reducedPath, deref)
   },
   setValue<T>(
+    systemConfiguration: SystemConfiguration,
     models: Model[],
     path: DataRecordValuePath,
     initialRecord: DataRecord,
     t: T | null,
   ): DataRecord {
     if (path.parentElements.length === 0) {
-      return setLeafSlotValue(path, initialRecord, t)
+      return setLeafSlotValue(systemConfiguration, path, initialRecord, t)
     }
     path.parentElements.reduce((record, parentElement, index) => {
       if (parentElement._type === 'nested.model') {
@@ -130,7 +145,7 @@ export const dataRecordValuePathFns = {
             nestedRecord = dataRecordFns.newInstance(nestedModel, record.createdBy.value)
           }
           if (index === path.parentElements.length - 1) {
-            nestedRecord = setLeafSlotValue(path, nestedRecord, t)
+            nestedRecord = setLeafSlotValue(systemConfiguration, path, nestedRecord, t)
           }
           record.values[parentElement.id.value] = nestedRecord
           return nestedRecord

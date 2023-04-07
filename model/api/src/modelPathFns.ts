@@ -8,7 +8,7 @@ import type {
   ModelPath,
   ModelPathElement,
 } from '@cozemble/model-core'
-import { dottedPathFns, LeafModelSlot } from '@cozemble/model-core'
+import { dottedPathFns, LeafModelSlot, SystemConfiguration } from '@cozemble/model-core'
 import { modelFns } from './modelsFns'
 import { valuesForModelPath, ValuesForModelPath } from './valuesForModelPath'
 
@@ -50,11 +50,12 @@ export const modelPathFns = {
     return { ...p, parentElements: [element, ...p.parentElements] }
   },
   getValues(
+    systemConfiguration: SystemConfiguration,
     models: Model[],
     path: ModelPath<LeafModelSlot>,
     record: DataRecord,
   ): ValuesForModelPath {
-    return valuesForModelPath(models, path, record)
+    return valuesForModelPath(systemConfiguration, models, path, record)
   },
   isPathToProperty<E extends ModelPathElement>(path: ModelPath<E>): boolean {
     return path.lastElement._type === 'property'

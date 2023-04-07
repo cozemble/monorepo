@@ -5,11 +5,13 @@ import { uuids } from '@cozemble/lang-util'
 import { DataRecord, Model, modelReferenceFns, referencedRecordsFns } from '@cozemble/model-core'
 import { dataRecordFns, modelFns, modelOptions, propertyFns } from '@cozemble/model-api'
 import { registerStringProperty } from '@cozemble/model-string-core'
+import { systemConfigurationFns } from '@cozemble/model-core'
 
 const jwtSigningSecret = 'secret'
 const port = 3010
 
 registerStringProperty()
+const systemConfig = systemConfigurationFns.empty()
 
 describe('Given a Customer with a Booking', () => {
   let bearer: string
@@ -37,27 +39,27 @@ describe('Given a Customer with a Booking', () => {
       const models = [customerModel, bookingModel]
       await putModels(port, tenantId, models, bearer)
       customerRecords = [
-        dataRecordFns.random(models, customerModel, {
+        dataRecordFns.random(systemConfig, models, customerModel, {
           'First Name': 'John',
           'Last Name': 'Smith',
         }),
 
-        dataRecordFns.random(models, customerModel, {
+        dataRecordFns.random(systemConfig, models, customerModel, {
           'First Name': 'Jane',
           'Last Name': 'Smith',
         }),
-        dataRecordFns.random(models, customerModel),
+        dataRecordFns.random(systemConfig, models, customerModel),
       ]
       await putRecords(port, tenantId, customerModel, bearer, customerRecords)
       bookingRecords = [
-        dataRecordFns.random(models, bookingModel, {
+        dataRecordFns.random(systemConfig, models, bookingModel, {
           Customer: referencedRecordsFns.addReference(
             referencedRecordsFns.empty(),
             customerModel.id,
             customerRecords[0].id,
           ),
         }),
-        dataRecordFns.random(models, bookingModel, {
+        dataRecordFns.random(systemConfig, models, bookingModel, {
           Customer: referencedRecordsFns.addReference(
             referencedRecordsFns.empty(),
             customerModel.id,
@@ -73,7 +75,7 @@ describe('Given a Customer with a Booking', () => {
   }, 1000 * 90)
 
   test('returns no booking records for customer with no booking', async () => {
-    const customerWithNoBooking = dataRecordFns.random([customerModel], customerModel)
+    const customerWithNoBooking = dataRecordFns.random(systemConfig, [customerModel], customerModel)
 
     const response = await fetch(
       `http://localhost:${port}/api/v1/tenant/${tenantId}/model/${bookingModel.id.value}/referencing/${customerWithNoBooking.id.value}`,

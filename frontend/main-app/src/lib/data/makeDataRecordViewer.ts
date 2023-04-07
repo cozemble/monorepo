@@ -10,8 +10,10 @@ import type {
   RecordSaveOutcome,
   RecordSearcher,
 } from '@cozemble/data-paginated-editor'
+import type { SystemConfiguration } from '@cozemble/model-core'
 
 export function makeDataRecordViewer(
+  systemConfiguration: SystemConfiguration,
   models: Model[],
   modelViews: ModelView[],
   recordSearcher: RecordSearcher,
@@ -22,7 +24,7 @@ export function makeDataRecordViewer(
   function dispatchEditEvent(event: DataRecordEditEvent): void {
     if (event._type === 'data.record.value.changed') {
       let eventSourced = eventSourcedDataRecordFns.fromRecord(models, event.record)
-      eventSourced = eventSourcedDataRecordFns.addEvent(event, eventSourced)
+      eventSourced = eventSourcedDataRecordFns.addEvent(systemConfiguration, event, eventSourced)
       onEditedRecord(eventSourced).catch(onError)
     } else {
       throw new Error('Not implemented: ' + event._type)

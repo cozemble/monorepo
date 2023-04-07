@@ -4,11 +4,12 @@ import type {
   DataRecordViewerClient,
   EventSourcedDataRecord,
 } from '@cozemble/data-editor-sdk'
-import type { Model, ModelView } from '@cozemble/model-core'
-import type { RecordSaveOutcome } from './RecordEditContext'
 import { eventSourcedDataRecordFns } from '@cozemble/data-editor-sdk'
+import type { Model, ModelView, SystemConfiguration } from '@cozemble/model-core'
+import type { RecordSaveOutcome } from './RecordEditContext'
 
 export function makeDataRecordViewer(
+  systemConfiguration: SystemConfiguration,
   models: Model[],
   modelViews: ModelView[],
   paginatedEditorHost: PaginatedEditorHost,
@@ -18,7 +19,7 @@ export function makeDataRecordViewer(
   function dispatchEditEvent(event: DataRecordEditEvent): void {
     if (event._type === 'data.record.value.changed') {
       let eventSourced = eventSourcedDataRecordFns.fromRecord(models, event.record)
-      eventSourced = eventSourcedDataRecordFns.addEvent(event, eventSourced)
+      eventSourced = eventSourcedDataRecordFns.addEvent(systemConfiguration, event, eventSourced)
       onEditedRecord(eventSourced).catch(onError)
     } else {
       throw new Error('Not implemented: ' + event._type)

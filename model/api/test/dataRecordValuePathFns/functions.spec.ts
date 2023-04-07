@@ -4,14 +4,20 @@ import {
   dataRecordValuePathFns,
   modelFns,
   modelOptions,
-  propertyFns,
   nestedModelFns,
+  propertyFns,
 } from '../../src'
 import { registerStringProperty } from '@cozemble/model-string-core'
-import { dottedPathFns, type NestedModel, type Property } from '@cozemble/model-core'
+import {
+  dottedPathFns,
+  type NestedModel,
+  type Property,
+  systemConfigurationFns,
+} from '@cozemble/model-core'
 import { addressModel, customerModel, invoiceModel, invoiceModels } from '../../src/invoiceModel'
 
 registerStringProperty()
+const systemConfig = systemConfigurationFns.empty()
 
 describe('Given a model with a top level property', () => {
   const customer = modelFns.newInstance(
@@ -23,7 +29,7 @@ describe('Given a model with a top level property', () => {
 
   test('setValue can set the value of that property', () => {
     let record = dataRecordFns.newInstance(customer, 'user1')
-    record = dataRecordValuePathFns.setValue([customer], path, record, 'John')
+    record = dataRecordValuePathFns.setValue(systemConfig, [customer], path, record, 'John')
     expect(record.values[firstName.id.value]).toEqual('John')
   })
 
@@ -57,7 +63,7 @@ describe('Given a model nested property', () => {
 
   test('setValue can set the value of that property', () => {
     let record = dataRecordFns.newInstance(customer, 'user1')
-    record = dataRecordValuePathFns.setValue(models, path, record, 'Main Street')
+    record = dataRecordValuePathFns.setValue(systemConfig, models, path, record, 'Main Street')
     const addressRecord = record.values[addressRelationship.id.value]
     expect(addressRecord).toBeDefined()
     expect(addressRecord.values[street.id.value]).toEqual('Main Street')

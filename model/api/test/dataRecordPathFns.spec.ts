@@ -8,9 +8,10 @@ import {
   nestedModelFns,
 } from '../src'
 import { registerStringProperty } from '@cozemble/model-string-core'
-import type { NestedModel } from '@cozemble/model-core'
+import { systemConfigurationFns } from '@cozemble/model-core'
 
 registerStringProperty()
+const systemConfig = systemConfigurationFns.empty()
 
 describe('given a model with root property', () => {
   const customer = modelFns.newInstance(
@@ -21,24 +22,42 @@ describe('given a model with root property', () => {
 
   test('getValue returns null when the record is null or undefined', () => {
     expect(
-      dataRecordValuePathFns.getValue(dataRecordValuePathFns.newInstance(property), null),
+      dataRecordValuePathFns.getValue(
+        systemConfig,
+        dataRecordValuePathFns.newInstance(property),
+        null,
+      ),
     ).toBeNull()
     expect(
-      dataRecordValuePathFns.getValue(dataRecordValuePathFns.newInstance(property), undefined),
+      dataRecordValuePathFns.getValue(
+        systemConfig,
+        dataRecordValuePathFns.newInstance(property),
+        undefined,
+      ),
     ).toBeNull()
   })
 
   test('getValue returns null when the value is empty', () => {
     const record = dataRecordFns.newInstance(customer, 'test-user')
     expect(
-      dataRecordValuePathFns.getValue(dataRecordValuePathFns.newInstance(property), record),
+      dataRecordValuePathFns.getValue(
+        systemConfig,
+        dataRecordValuePathFns.newInstance(property),
+        record,
+      ),
     ).toBeNull()
   })
 
   test('getValue returns the value when it is there', () => {
-    const record = dataRecordFns.random([customer], customer, { 'First name': 'John' })
+    const record = dataRecordFns.random(systemConfig, [customer], customer, {
+      'First name': 'John',
+    })
     expect(
-      dataRecordValuePathFns.getValue(dataRecordValuePathFns.newInstance(property), record),
+      dataRecordValuePathFns.getValue(
+        systemConfig,
+        dataRecordValuePathFns.newInstance(property),
+        record,
+      ),
     ).toBe('John')
   })
 })
@@ -60,6 +79,7 @@ describe('given a model with root property in a has-one relationship', () => {
     const record = dataRecordFns.newInstance(customer, 'test-user')
     expect(
       dataRecordValuePathFns.getValue(
+        systemConfig,
         dataRecordValuePathFns.newInstance(property, relationship),
         record,
       ),
@@ -72,6 +92,7 @@ describe('given a model with root property in a has-one relationship', () => {
     record.values[relationship.id.value] = addressRecord
     expect(
       dataRecordValuePathFns.getValue(
+        systemConfig,
         dataRecordValuePathFns.newInstance(property, relationship),
         record,
       ),
@@ -79,11 +100,14 @@ describe('given a model with root property in a has-one relationship', () => {
   })
 
   test('getValue returns the value when the entire data chain is populated', () => {
-    const addressRecord = dataRecordFns.random(models, address, { 'Post code': '12345' })
+    const addressRecord = dataRecordFns.random(systemConfig, models, address, {
+      'Post code': '12345',
+    })
     const record = dataRecordFns.newInstance(customer, 'test-user')
     record.values[relationship.id.value] = addressRecord
     expect(
       dataRecordValuePathFns.getValue(
+        systemConfig,
         dataRecordValuePathFns.newInstance(property, relationship),
         record,
       ),
