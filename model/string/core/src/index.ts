@@ -12,7 +12,11 @@ export {
 
 export { stringPropertyDescriptor } from './stringPropertyDescriptor'
 
-export { newStringPropertyModelEvent, NewStringPropertyModelEvent } from './events'
+export {
+  newStringPropertyModelEvent,
+  NewStringPropertyModelEvent,
+  stringMultilineChanged,
+} from './events'
 export { stringPropertyOptions } from './stringPropertyOptions'
 
 /**

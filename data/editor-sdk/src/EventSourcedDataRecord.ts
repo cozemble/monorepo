@@ -1,6 +1,7 @@
 import type { DataRecord, Model, ModelId } from '@cozemble/model-core'
 import { DataRecordEditEvent, dataRecordEditEvents } from './dataRecordEditEvents'
 import { dataRecordFns, dataRecordValuePathFns, modelFns } from '@cozemble/model-api'
+import { Option } from '@cozemble/lang-util'
 
 export interface EventSourcedDataRecord {
   _type: 'event.sourced.data.record'
@@ -24,6 +25,8 @@ function applyEvent(models: Model[], event: DataRecordEditEvent, record: DataRec
   }
   return record
 }
+
+export type EventSourcedDataRecordOption = Option<EventSourcedDataRecord>
 
 export const eventSourcedDataRecordFns = {
   newInstance(models: Model[], modelId: ModelId, creatorId: string): EventSourcedDataRecord {
@@ -50,5 +53,11 @@ export const eventSourcedDataRecordFns = {
       record: applyEvent(record.models, event, record.record),
       events: [...record.events, event],
     }
+  },
+  applyOptions(
+    record: EventSourcedDataRecord,
+    ...options: EventSourcedDataRecordOption[]
+  ): EventSourcedDataRecord {
+    return options.reduce((r, o) => o(r), record)
   },
 }

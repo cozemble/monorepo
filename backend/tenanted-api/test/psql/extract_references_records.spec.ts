@@ -18,7 +18,7 @@ describe('with an empty database, extract_referenced_records:', () => {
   test('can handle an empty object', async () => {
     await withAdminPgClient(async (client) => {
       const result = await client.query('SELECT * FROM extract_referenced_records($1);', [{}])
-      expect(result.rows[0].extract_referenced_records).toBeNull()
+      expect(result.rows[0].extract_referenced_records).toEqual([])
     })
   })
 
@@ -27,7 +27,7 @@ describe('with an empty database, extract_referenced_records:', () => {
       const result = await client.query('SELECT * FROM extract_referenced_records($1);', [
         { a: { b: {} } },
       ])
-      expect(result.rows[0].extract_referenced_records).toBeNull()
+      expect(result.rows[0].extract_referenced_records).toEqual([])
     })
   })
 
@@ -36,7 +36,7 @@ describe('with an empty database, extract_referenced_records:', () => {
       const result = await client.query('SELECT * FROM extract_referenced_records($1);', [
         { a: { b: [{}, {}] } },
       ])
-      expect(result.rows[0].extract_referenced_records).toBeNull()
+      expect(result.rows[0].extract_referenced_records).toEqual([])
     })
   })
 

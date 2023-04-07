@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type {ModelSlotId} from '@cozemble/model-core'
+    import type {ModelSlot, ModelSlotId} from '@cozemble/model-core'
     import {modelIdAndNameFns, nestedModelNameFns, propertyDescriptors, propertyNameFns,} from '@cozemble/model-core'
     import ModelSlotEditor from './ModelSlotEditor.svelte'
     import AddNestedModelDialog from './AddNestedModelDialog.svelte'
@@ -7,7 +7,7 @@
     import {modelFns, modelOptions} from '@cozemble/model-api'
     import type {EventSourcedModel} from '@cozemble/model-event-sourced'
     import {coreModelEvents} from '@cozemble/model-event-sourced'
-    import type {ModelSlot} from "@cozemble/model-core";
+    import {createEventDispatcher} from "svelte";
 
     export let host: ModelEditorHost
     export let allModels: EventSourcedModel[]
@@ -16,6 +16,8 @@
     $: model = eventSourced.model
     let slotIdBeingEdited: ModelSlotId | null = null
     $: slotBeingEdited = modelFns.maybeSlotWithId(model, slotIdBeingEdited)
+
+    const dispatch = createEventDispatcher()
 
     function addProperty() {
         const propertyName = `Property ${model.slots.length + 1}`
@@ -29,16 +31,19 @@
 
     function editSlot(slot: ModelSlot) {
         slotIdBeingEdited = slot.id
+        dispatch("editingSomething", true)
     }
 
     function slotEdited(_event: CustomEvent) {
         slotIdBeingEdited = null
+        dispatch("editingSomething", false)
     }
 
     let addingNestedModel = false
 
     function addNestedModel() {
         addingNestedModel = true
+        dispatch("editingSomething", true)
     }
 
     function onNestedModelAdded(event: CustomEvent) {
@@ -64,6 +69,7 @@
             ),
         )
         addingNestedModel = false
+        dispatch("editingSomething", false)
     }
 </script>
 

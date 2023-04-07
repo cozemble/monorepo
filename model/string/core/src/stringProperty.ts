@@ -27,6 +27,7 @@ export const stringPropertyType = propertyTypeFns.newInstance('string.property')
 export interface StringProperty extends Property {
   propertyType: { _type: 'property.type'; value: 'string.property' }
   validations: RegexValidation[]
+  multiline: boolean
 }
 
 /**
@@ -60,6 +61,7 @@ export function emptyProperty(name: string): StringProperty {
     required: false,
     unique: false,
     validations: [],
+    multiline: false,
   }
 }
 

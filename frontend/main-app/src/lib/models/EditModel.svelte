@@ -12,6 +12,7 @@
     export let tenantId: string
     export let modelId: ModelId
     const dispatch = createEventDispatcher()
+    let showModelSaveButtons = true
 
     async function saveModelBeingEdited() {
         await putAllModels(tenantId, $allModels)
@@ -33,6 +34,11 @@
     afterUpdate(() => {
         console.log({summaryView, entities: $tenantEntities})
     })
+
+    function editingSomething(event: CustomEvent) {
+        const editingSomething = event.detail
+        showModelSaveButtons = !editingSomething
+    }
 </script>
 
 
@@ -49,10 +55,12 @@
 
 <div class="mt-3">
     {#if sectionToShow === 'model'}
-        <ModelEditor {allModels} {host} {modelId}/>
+        <ModelEditor {allModels} {host} {modelId} on:editingSomething={editingSomething}/>
         <br/>
-        <button class="btn" type="button" on:click={saveModelBeingEdited}>Save model</button>
-        <button class="btn" type="button" on:click={() => dispatch('finished')}>Cancel</button>
+        {#if showModelSaveButtons}
+            <button class="btn btn-primary" type="button" on:click={saveModelBeingEdited}>Save model</button>
+            <button class="btn" type="button" on:click={() => dispatch('finished')}>Cancel</button>
+        {/if}
     {/if}
     {#if sectionToShow === 'appearance'}
         <h4>Summary card HTML</h4>

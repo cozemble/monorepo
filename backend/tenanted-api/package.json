@@ -19,7 +19,7 @@
     "bounce:db": "node dist/cjs/devDb.js",
     "compile": "npx tsc -p tsconfig-cjs.json",
     "server": "NODE_ENV=development node dist/cjs/index.js",
-    "dev:db": "nodemon -x \"npm run build-run-db\""
+    "clean:postgres": "./scripts/run-clean-postgres.sh && npm run db:migrate-local"
   },
   "devDependencies": {
     "@types/child-process-promise": "^2.2.2",

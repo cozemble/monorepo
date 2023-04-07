@@ -3,6 +3,7 @@ import { DataRecord, Model } from '@cozemble/model-core'
 import { uuids } from '@cozemble/lang-util'
 import { BackendModel } from '@cozemble/backend-tenanted-api-types'
 import jwt from 'jsonwebtoken'
+import { savableRecords } from '@cozemble/backend-tenanted-api-types'
 
 async function postTenant(port: number, id: string, name = 'Test Tenant', ownerId = uuids.v4()) {
   return await fetch(`http://localhost:${port}/api/v1/tenant`, {
@@ -82,7 +83,7 @@ export async function putRecords(
         'Content-Type': 'application/json',
         Authorization: 'Bearer ' + bearer,
       },
-      body: JSON.stringify(records),
+      body: JSON.stringify(savableRecords(records)),
     },
   )
   await expect(putResponse.status).toBe(200)

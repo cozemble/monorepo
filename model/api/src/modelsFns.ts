@@ -205,4 +205,34 @@ export const modelFns = {
   properties(model: Model): Property[] {
     return model.slots.filter((p) => p._type === 'property') as Property[]
   },
+  findInboundReferences(models: Model[], model: Model): Model[] {
+    return models.filter((m) => {
+      const paths = modelFns.allPaths(models, m)
+      return paths.some((p) => {
+        if (p.lastElement._type === 'model.reference') {
+          return p.lastElement.referencedModels.some((id) => id.value === model.id.value)
+        }
+        return false
+      })
+    })
+  },
+  allPathsReferencingModel(
+    models: Model[],
+    sourceModel: Model,
+    targetModelId: ModelId,
+  ): ModelPath<ModelPathElement>[] {
+    const allPaths = modelFns.allPaths(models, sourceModel)
+    return allPaths.filter((path) => {
+      const lastElement = path.lastElement
+      return (
+        lastElement._type === 'model.reference' &&
+        lastElement.referencedModels.some((m) => m.value === targetModelId.value)
+      )
+    })
+  },
+  pathsToUniqueProperties(models: Model[], model: Model): ModelPath<Property>[] {
+    return modelFns.allPaths(models, model).filter((path) => {
+      return path.lastElement._type === 'property' && path.lastElement.unique
+    }) as ModelPath<Property>[]
+  },
 }

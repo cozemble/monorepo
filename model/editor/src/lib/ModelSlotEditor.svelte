@@ -86,13 +86,13 @@
 
 
 <form>
-    <label class="label">Property Name</label><br/>
+    <label class="label">Property Name</label>
     <input
             value={modelSlot.name.value}
             class="property-name input input-bordered"
             on:change={slotNameChanged}/>
-    <br/>
-    <label class="label">Property Type</label><br/>
+
+    <label class="label">Property Type</label>
     <select on:change={slotTypeChanged} class="property-type input input-bordered">
         <option value="">----</option>
         {#each propertyDescriptors.list() as propertyDescriptor}
@@ -124,5 +124,5 @@
         type="submit"
         on:click|preventDefault={saveClicked}
         disabled={errors.size > 0}
-        class="btn save-property">Save Property
+        class="btn save-property btn-primary">Save Property
 </button>

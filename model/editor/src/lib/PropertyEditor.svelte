@@ -2,7 +2,7 @@
     import type {Model, Property} from '@cozemble/model-core'
     import {propertyDescriptors,} from '@cozemble/model-core'
     import {propertyConfigurerRegistry} from '@cozemble/model-assembled'
-    import type {ModelChangeHandler} from '$lib/ModelEditorHost'
+    import type {ModelChangeHandler} from './ModelEditorHost'
     import {coreModelEvents} from '@cozemble/model-event-sourced'
 
     export let modelChangeHandler: ModelChangeHandler
@@ -12,6 +12,7 @@
 
 
     function onModelChangedEvent(event: CustomEvent) {
+        console.log({event})
         modelChangeHandler.modelChanged(model.id, event.detail)
     }
 
@@ -33,7 +34,6 @@
 </script>
 
 {#if propertyDescriptor?.isRequireable}
-    <br/>
     <label class="label">
         <input
                 type="checkbox"
@@ -48,7 +48,6 @@
 {/if}
 
 {#if propertyDescriptor?.isUniqueable}
-    <br/>
     <label class="label">
         <input
                 type="checkbox"
@@ -61,6 +60,11 @@
 {/if}
 
 {#if configurer}
-    <br/>
     <svelte:component this={configurer} {model} {property} on:modelChanged={onModelChangedEvent}/>
 {/if}
+
+<style>
+    label {
+        display: block;
+    }
+</style>

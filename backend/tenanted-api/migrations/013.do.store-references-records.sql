@@ -2,17 +2,11 @@ CREATE OR REPLACE FUNCTION extract_referenced_records(json_data JSONB)
     RETURNS TEXT[] AS
 $$
 DECLARE
-    refs         TEXT[];
+    refs         TEXT[] := '{}';
     current_data JSONB;
     queue        JSONB[] := ARRAY [json_data];
     key          TEXT;
 BEGIN
-    -- Create a temporary table to store extracted references
-    CREATE TEMP TABLE IF NOT EXISTS temp_refs
-    (
-        ref TEXT
-    ) ON COMMIT DROP;
-
     WHILE array_length(queue, 1) > 0
         LOOP
             current_data := queue[1];
@@ -20,7 +14,7 @@ BEGIN
 
             IF jsonb_typeof(current_data) = 'object' THEN
                 IF jsonb_typeof(current_data -> 'referencedRecordId' -> 'value') = 'string' THEN
-                    INSERT INTO temp_refs (ref) VALUES (current_data -> 'referencedRecordId' ->> 'value');
+                    refs := array_append(refs, (current_data -> 'referencedRecordId' ->> 'value'));
                 END IF;
 
                 FOR key IN SELECT jsonb_object_keys(current_data)
@@ -35,9 +29,8 @@ BEGIN
             END IF;
         END LOOP;
 
-    -- Get the unique references from the temporary table and return as an array
-    SELECT ARRAY_AGG(DISTINCT ref) INTO refs FROM temp_refs;
-
+    -- Remove duplicates from the array and return
+    SELECT ARRAY(SELECT DISTINCT unnest(refs)) INTO refs;
     RETURN refs;
 END;
 $$ LANGUAGE plpgsql;

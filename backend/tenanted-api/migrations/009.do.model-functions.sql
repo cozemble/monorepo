@@ -10,6 +10,7 @@ DECLARE
     event_definition   json;
     i                  int;
     j                  int;
+    unique_paths_var       text[];
 BEGIN
 
     -- Loop over the models and insert them
@@ -19,6 +20,7 @@ BEGIN
                 -- Get the model object from the JSON array
                 model_and_events := models_and_events -> i;
                 model_info := model_and_events -> 'model';
+                unique_paths_var := ARRAY(SELECT json_array_elements_text(model_and_events -> 'uniquePaths'));
 
                 -- Get the model ID from the model object
                 model_id_var := model_info -> 'id' ->> 'value';
@@ -26,12 +28,12 @@ BEGIN
                 -- Check if the model exists
                 IF EXISTS(SELECT 1 FROM model WHERE id = model_id_var) THEN
                     -- Update the model
-                    UPDATE model SET name = model_info -> 'name' ->> 'value', definition = model_info, updated_at = NOW() WHERE id = model_id_var;
+                    UPDATE model SET name = model_info -> 'name' ->> 'value', definition = model_info, unique_paths = unique_paths_var, updated_at = NOW() WHERE id = model_id_var;
                 ELSE
                     -- Insert the model
-                    INSERT INTO model (id, name, definition, tenant)
+                    INSERT INTO model (id, name, definition, tenant, unique_paths)
                     VALUES (model_id_var, model_info -> 'name' ->> 'value', model_info,
-                            tenant_id_var::ltree);
+                            tenant_id_var::ltree, unique_paths_var);
                 END IF;
                 delete from model_event me where me.model_id = model_id_var;
 

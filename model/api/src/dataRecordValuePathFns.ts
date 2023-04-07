@@ -10,6 +10,7 @@ import type {
 import {
   dottedPathFns,
   LeafModelSlot,
+  ModelPath,
   modelPathElementFns,
   modelReferenceFns,
   NestedModel,
@@ -256,5 +257,42 @@ export const dataRecordValuePathFns = {
       throw new Error(`Invalid path: ${names.join('.')} - last element is not a leaf model slot`)
     }
     return dataRecordValuePathFns.newInstance(lastElement as LeafModelSlot, ...elements)
+  },
+  fromIds(models: Model[], model: Model, ...ids: string[]) {
+    const [parentIds, leafSlotId] = arrays.splitLast(ids)
+    const elements: DataRecordPathParentElement[] = parentIds.map((id) => {
+      const element = modelFns.elementById(model, id)
+      if (element._type === 'property' || element._type === 'model.reference') {
+        throw new Error(`Invalid path: found a ${element._type} in the parent path`)
+      }
+      if (element._type === 'inlined.model.reference') {
+        throw new Error(`Invalid path: found an unknown element type: ${element._type}`)
+      }
+      if (element.cardinality === 'many') {
+        throw new Error(`Invalid path: found a has many relationship in the parent path`)
+      }
+      model = modelFns.findById(models, element.modelId)
+      return element
+    })
+    const lastElement = modelFns.elementById(model, leafSlotId)
+    if (!modelPathElementFns.isLeafSlot(lastElement)) {
+      throw new Error(`Invalid path: last element is not a leaf model slot`)
+    }
+    return dataRecordValuePathFns.newInstance(lastElement as LeafModelSlot, ...elements)
+  },
+  fromModelPath(modelPath: ModelPath<ModelPathElement>): DataRecordValuePath {
+    if (
+      modelPath.lastElement._type === 'model.reference' ||
+      modelPath.lastElement._type === 'property'
+    ) {
+      return modelPath.parentElements.reduce((acc, element) => {
+        if (element._type === 'nested.model' || element._type === 'inlined.model.reference') {
+          return { ...acc, parentElements: [...acc.parentElements, element] }
+        }
+        throw new Error(`Cannot convert model path to data record value path: ${element._type}`)
+      }, dataRecordValuePathFns.newInstance(modelPath.lastElement))
+    } else {
+      throw new Error(`Invalid model path: ${JSON.stringify(modelPath)}`)
+    }
   },
 }
