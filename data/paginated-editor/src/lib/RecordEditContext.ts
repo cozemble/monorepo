@@ -76,7 +76,6 @@ export class RecordEditContext {
   async attemptSave() {
     if (this._errors.size === 0) {
       const saveOutcome = await this.onSave(this.eventSourcedRecord)
-      console.log({ saveOutcome })
       if (saveOutcome._type === 'record.save.failed') {
         this.errors.set(saveOutcome.dataErrors)
         this.showErrors.set(true)
