@@ -1,9 +1,13 @@
 import { uuids } from '@cozemble/lang-util'
-import type { ModelId, ModelView, ModelViewId } from '@cozemble/model-core'
+import type { ModelId, ModelView, ModelViewId, SystemConfiguration } from '@cozemble/model-core'
 import type { Writable } from 'svelte/store'
 import { derived, writable } from 'svelte/store'
 import { cozauth } from '../auth/cozauth'
 import { config } from '../config'
+import {
+  slotSystemConfigurationDescriptors,
+  systemConfigurationFns,
+} from '@cozemble/model-core/dist/esm'
 
 export interface TenantEntity {
   _type: string
@@ -16,6 +20,30 @@ export const modelViews = derived(
   tenantEntities,
   (entities) => entities.filter((e) => e._type === 'model.view') as ModelView[],
 )
+
+export function getSystemConfiguration(entities: TenantEntity[]): SystemConfiguration {
+  return ensureDefaultSystemConfiguration(
+    (entities.find((e) => e._type === 'system.configuration') as SystemConfiguration) ??
+      systemConfigurationFns.empty(),
+  )
+}
+
+function ensureDefaultSystemConfiguration(
+  systemConfiguration: SystemConfiguration,
+): SystemConfiguration {
+  const slots = slotSystemConfigurationDescriptors.list()
+  for (const slot of slots) {
+    const defaultValues = slot.defaultValues()
+    if (!systemConfiguration.slotConfiguration[slot.slotType]) {
+      systemConfiguration.slotConfiguration[slot.slotType] = {
+        _type: 'slot.configuration',
+        slotType: slot.slotType,
+        configuration: defaultValues,
+      }
+    }
+  }
+  return systemConfiguration
+}
 
 async function saveEntities(tenantId: string, entities: TenantEntity[]) {
   const accessToken = await cozauth.getAccessToken(cozauth.getTenantRoot(tenantId))

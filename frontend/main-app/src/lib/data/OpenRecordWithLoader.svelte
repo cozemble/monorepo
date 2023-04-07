@@ -6,7 +6,7 @@
     import {findRecordById, loadRecords} from "./loadRecords";
     import type {AttachmentsManager, RecordSaveOutcome, RecordSearcher} from "@cozemble/data-paginated-editor";
     import {RecordEditContext, StackingRecordEditor} from "@cozemble/data-paginated-editor";
-    import {modelViews} from "../models/tenantEntityStore";
+    import {getSystemConfiguration, modelViews, tenantEntities} from "../models/tenantEntityStore";
     import {saveRecord} from "./recordBackendHelper";
     import type {AttachmentIdAndFileName, EventSourcedDataRecord, UploadedAttachment} from "@cozemble/data-editor-sdk";
     import {dataRecordViewerHost, eventSourcedDataRecordFns} from "@cozemble/data-editor-sdk";
@@ -18,7 +18,6 @@
     } from "./attachments";
     import {modelFns} from "@cozemble/model-api";
     import InboundReferences from "./InboundReferences.svelte";
-    import {systemConfigurationStore} from "../settings/systemConfigurationStore";
 
     export let models: Model[]
     export let openRecord: OpenRecordView //a Customer record for example
@@ -69,7 +68,7 @@
         openRecordViews.close(openRecord.recordId)
     }
 
-    dataRecordViewerHost.setClient(makeDataRecordViewer($systemConfigurationStore,models, $modelViews, recordSearcher, attachmentsManager, onSaveRecord, onError))
+    dataRecordViewerHost.setClient(makeDataRecordViewer(getSystemConfiguration($tenantEntities),models, $modelViews, recordSearcher, attachmentsManager, onSaveRecord, onError))
 
     function onError(e: Error) {
         error = e.message
@@ -101,7 +100,7 @@
     {#if tabShowing === 'recordDetails'}
         {#if record}
             <StackingRecordEditor {recordSearcher} modelViews={$modelViews} {attachmentsManager}
-                                  recordEditContext={new RecordEditContext( models, onSaveRecord,eventSourcedDataRecordFns.fromRecord(models, record), onSaveRecord, closeView, `` ,$systemConfigurationStore)}
+                                  recordEditContext={new RecordEditContext( models, onSaveRecord,eventSourcedDataRecordFns.fromRecord(models, record), onSaveRecord, closeView, `` ,getSystemConfiguration($tenantEntities))}
                                   cancelButtonText="Close"/>
         {/if}
     {:else}

@@ -3,9 +3,8 @@
     import {PaginatedEditor} from "@cozemble/data-paginated-editor";
     import type {Writable} from "svelte/store";
     import {createEventDispatcher} from "svelte";
-    import {modelViews} from "../models/tenantEntityStore";
+    import {getSystemConfiguration, modelViews, tenantEntities} from "../models/tenantEntityStore";
     import {makePaginatedEditorHost} from "./paginatedEditorHost";
-    import {systemConfigurationStore} from "../settings/systemConfigurationStore";
 
     export let models: Model[]
     export let model: Model
@@ -32,7 +31,7 @@
            bind:value={searchText}/>
 </div>
 <div class="mt-2">
-    <PaginatedEditor systemConfiguration={$systemConfigurationStore} {models} {model} modelViews={$modelViews} records={$records} {paginatedEditorHost}/>
+    <PaginatedEditor systemConfiguration={getSystemConfiguration($tenantEntities)} {models} {model} modelViews={$modelViews} records={$records} {paginatedEditorHost}/>
 </div>
 <style>
     .search-panel {

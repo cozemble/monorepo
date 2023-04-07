@@ -1,5 +1,5 @@
 import type { SlotSystemConfigurationDescriptor } from '@cozemble/model-core'
-import { slotSystemConfigurationDescriptors } from '@cozemble/model-core/dist/esm'
+import { slotSystemConfigurationDescriptors } from '@cozemble/model-core'
 import DateSystemConfigurationComponent from './DateSystemConfigurationComponent.svelte'
 
 export { default as PropertyConfigurer } from './DatePropertyConfigurer.svelte'
@@ -9,7 +9,7 @@ export { default as PropertyEditor } from './DatePropertyEditor.svelte'
 export const datePropertySystemConfigurationDescriptor: SlotSystemConfigurationDescriptor = {
   _type: 'slot.system.configuration.descriptor',
   slotType: 'date.property',
-  defaultValues: async () => {
+  defaultValues: () => {
     return {
       dateFormat: 'yyyy-MM-dd',
       timezone: 'UTC',

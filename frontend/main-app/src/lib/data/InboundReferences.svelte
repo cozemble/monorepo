@@ -4,12 +4,11 @@
     import {onMount} from "svelte";
     import {makeOnNewRecord, referencingRecordsHelper} from "./referencingRecordsHelper";
     import ErrorMessage from "../util/ErrorMessage.svelte";
-    import {modelViews} from "../models/tenantEntityStore";
+    import {getSystemConfiguration, modelViews, tenantEntities} from "../models/tenantEntityStore";
     import {PaginatedEditor} from "@cozemble/data-paginated-editor";
     import {type Writable, writable} from "svelte/store";
     import {makePaginatedEditorHost} from "./paginatedEditorHost";
     import type {EventSourcedDataRecordOption} from "@cozemble/data-editor-sdk";
-    import {systemConfigurationStore} from "../settings/systemConfigurationStore";
 
     export let tenantId: string
     export let models: Model[]
@@ -29,7 +28,7 @@
                 error = `Expected exactly one path referencing model ${targetModel.name.value} from model ${referencingModel.name.value}, found ${pathsReferencingTargetModel.length}`
                 return
             }
-            onNewRecordAssignReference = makeOnNewRecord($systemConfigurationStore,pathsReferencingTargetModel, record)
+            onNewRecordAssignReference = makeOnNewRecord(getSystemConfiguration($tenantEntities),pathsReferencingTargetModel, record)
             const loaded = await referencingRecordsHelper(tenantId, record.id, referencingModel.id)
             referencingRecords.set(loaded)
         } catch (e: any) {
@@ -40,7 +39,7 @@
 </script>
 
 <div class="mt-2">
-    <PaginatedEditor {models} systemConfiguration={$systemConfigurationStore}
+    <PaginatedEditor {models} systemConfiguration={getSystemConfiguration($tenantEntities)}
                      model={referencingModel}
                      modelViews={$modelViews}
                      records={$referencingRecords}

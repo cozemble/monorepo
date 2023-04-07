@@ -16,7 +16,7 @@ import {
   SlotConfiguration,
   SystemConfiguration,
 } from '@cozemble/model-core'
-import { propertyDescriptors } from '@cozemble/model-core/dist/esm'
+import { propertyDescriptors } from '@cozemble/model-core'
 
 export const datePropertyType = propertyTypeFns.newInstance('date.property')
 

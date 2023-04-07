@@ -16,6 +16,8 @@ export const slotConfigurationFns = {
 
 export interface SystemConfiguration {
   _type: 'system.configuration'
+  id: { value: string }
+  name: { value: string }
   slotConfiguration: { [slotType: string]: SlotConfiguration }
 }
 
@@ -23,6 +25,8 @@ export const systemConfigurationFns = {
   empty: (): SystemConfiguration => {
     return {
       _type: 'system.configuration',
+      id: { value: 'system.configuration' },
+      name: { value: 'system.configuration' },
       slotConfiguration: {},
     }
   },
@@ -31,7 +35,7 @@ export const systemConfigurationFns = {
 export interface SlotSystemConfigurationDescriptor<T = any> {
   _type: 'slot.system.configuration.descriptor'
   slotType: string
-  defaultValues: () => Promise<T>
+  defaultValues: () => T
   validateValue: (v: T) => Promise<Map<string, string[]>>
   editorComponent: () => Promise<any>
 }
@@ -44,11 +48,16 @@ const slotSystemConfigurationDescriptorRegistry = new Map<
 export const slotSystemConfigurationDescriptors = {
   register: function (descriptor: SlotSystemConfigurationDescriptor) {
     slotSystemConfigurationDescriptorRegistry.set(descriptor.slotType, descriptor)
+    console.log('Registered slot system configuration descriptor', descriptor)
   },
   get: function (slotType: string): SlotSystemConfigurationDescriptor | null {
     return slotSystemConfigurationDescriptorRegistry.get(slotType) ?? null
   },
   list: function (): SlotSystemConfigurationDescriptor[] {
+    console.log(
+      'Listing slot system configuration descriptors',
+      slotSystemConfigurationDescriptorRegistry,
+    )
     return Array.from(slotSystemConfigurationDescriptorRegistry.values())
   },
 }

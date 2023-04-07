@@ -3,12 +3,12 @@
 
     import {ModelEditor} from "@cozemble/model-editor";
     import type {ModelId, ModelViewId} from "@cozemble/model-core";
-    import {afterUpdate, createEventDispatcher} from "svelte";
+    import {createEventDispatcher} from "svelte";
     import {putEditedSummaryView, putNewSummaryView, tenantEntities} from "./tenantEntityStore";
     import {getSummaryView} from "./views";
     import EditModelSummaryView from './EditModelSummaryView.svelte';
     import CreateModelSummaryView from './CreateModelSummaryView.svelte';
-    import {systemConfigurationStore} from "../settings/systemConfigurationStore";
+    import {getSystemConfiguration} from "../models/tenantEntityStore";
 
     export let tenantId: string
     export let modelId: ModelId
@@ -32,10 +32,6 @@
         await putEditedSummaryView(tenantId, modelId, viewId, template)
     }
 
-    afterUpdate(() => {
-        console.log({summaryView, entities: $tenantEntities})
-    })
-
     function editingSomething(event: CustomEvent) {
         const editingSomething = event.detail
         showModelSaveButtons = !editingSomething
@@ -56,7 +52,8 @@
 
 <div class="mt-3">
     {#if sectionToShow === 'model'}
-        <ModelEditor systemConfiguration={$systemConfigurationStore} {allModels} {host} {modelId} on:editingSomething={editingSomething}/>
+        <ModelEditor systemConfiguration={getSystemConfiguration($tenantEntities)} {allModels} {host} {modelId}
+                     on:editingSomething={editingSomething}/>
         <br/>
         {#if showModelSaveButtons}
             <button class="btn btn-primary" type="button" on:click={saveModelBeingEdited}>Save model</button>

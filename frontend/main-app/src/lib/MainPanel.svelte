@@ -44,23 +44,15 @@
         <!-- Page content here -->
         <div class="tabs ml-2">
             <div>
-                <div class="panel-container" class:visible={panelToShow === 'models'}>
+                <div class="panel-container visible">
                     <div class="inner-panel-container">
-                        <ModelsPanel {tenantId}/>
-                    </div>
-                </div>
-            </div>
-            <div>
-                <div class="panel-container" class:visible={panelToShow === 'data'}>
-                    <div class="inner-panel-container">
-                        <DataPanel {tenantId}/>
-                    </div>
-                </div>
-            </div>
-            <div>
-                <div class="panel-container" class:visible={panelToShow === 'settings'}>
-                    <div class="inner-panel-container">
-                        <SettingsPanel {tenantId}/>
+                        {#if panelToShow === 'models'}
+                            <ModelsPanel {tenantId}/>
+                        {:else if panelToShow === 'data'}
+                            <DataPanel {tenantId}/>
+                        {:else if panelToShow === 'settings'}
+                            <SettingsPanel {tenantId}/>
+                        {/if}
                     </div>
                 </div>
             </div>
