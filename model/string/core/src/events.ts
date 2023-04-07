@@ -9,7 +9,7 @@ import {
   propertyIdFns,
   type PropertyName,
 } from '@cozemble/model-core'
-import { emptyProperty } from './stringProperty'
+import { emptyProperty, stringPropertyType } from './stringProperty'
 
 /** Step 1. Define an event type to represent the creation of a new string property.
  *  It needs to contain in it all that is needed to create a new string property.
@@ -76,9 +76,52 @@ export const newStringPropertyModelEventDescriptor: ModelEventDescriptor = {
   },
 }
 
+export interface StringMultilineChanged extends ModelEvent {
+  _type: 'string.property.multiline.event'
+  propertyId: PropertyId
+  newValue: boolean
+}
+
+export function stringMultilineChanged(
+  modelId: ModelId,
+  propertyId: PropertyId,
+  newValue: boolean,
+): StringMultilineChanged {
+  return {
+    _type: 'string.property.multiline.event',
+    ...modelEventFns.coreParts(modelId),
+    propertyId,
+    newValue,
+  }
+}
+
+const stringMultilineChangeDescriptor: ModelEventDescriptor<StringMultilineChanged> = {
+  _type: 'model.event.descriptor',
+  modelEventType: 'string.property.multiline.event',
+  applyEvent: (model, event) => {
+    console.log({ model, event })
+    return {
+      ...model,
+      slots: model.slots.map((property) => {
+        if (property.id.value === event.propertyId.value && property._type === 'property') {
+          console.log('multiline changed')
+          return {
+            ...property,
+            multiline: event.newValue,
+          }
+        } else {
+          console.log('not multiline changed')
+          return property
+        }
+      }),
+    }
+  },
+}
+
 /**
  * Step 4. Create a function to register the event descriptor with the cozemble runtime.
  */
 export function registerModelEvents() {
   modelEventDescriptors.register(newStringPropertyModelEventDescriptor)
+  modelEventDescriptors.register(stringMultilineChangeDescriptor)
 }

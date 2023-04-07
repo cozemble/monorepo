@@ -7,6 +7,7 @@
     import type {EventSourcedModel} from '@cozemble/model-event-sourced'
     import {coreModelEvents} from '@cozemble/model-event-sourced'
     import type {Writable} from 'svelte/store'
+    import {afterUpdate} from 'svelte'
 
     export let modelId: ModelId
     export let host: ModelEditorHost
@@ -23,6 +24,8 @@
             ),
         )
     }
+
+    afterUpdate(() => console.log({eventSourced}))
 </script>
 
 {#if eventSourced}

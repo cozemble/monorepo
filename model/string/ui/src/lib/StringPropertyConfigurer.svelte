@@ -1,12 +1,16 @@
 <script lang="ts">
     import type {StringProperty} from '@cozemble/model-string-core'
-    import {stringPropertyDescriptor} from '@cozemble/model-string-core'
+    import {stringMultilineChanged, stringPropertyDescriptor} from '@cozemble/model-string-core'
     import {editorClient} from '@cozemble/model-editor-sdk'
-    import MaybeErrorMessage from '$lib/MaybeErrorMessage.svelte'
+    import MaybeErrorMessage from './MaybeErrorMessage.svelte'
+    import type {Model} from "@cozemble/model-core";
+    import {createEventDispatcher} from "svelte";
 
+    export let model: Model
     export let property: StringProperty
 
     const formSectionErrorState = editorClient.getErrorState()
+    const dispatch = createEventDispatcher()
 
     $: errors = stringPropertyDescriptor.validateProperty(property)
 
@@ -20,7 +24,23 @@
     function deleteValidation(index: number) {
         property.validations = property.validations.filter((_, i) => i !== index)
     }
+
+    function multilineChanged(event: Event) {
+        const target = event.target as HTMLInputElement
+        dispatch('modelChanged', stringMultilineChanged(model.id, property.id, target.checked))
+    }
 </script>
+
+<label class="label">
+    <input
+            type="checkbox"
+            name="checkbox"
+            value="text"
+            checked={property.multiline}
+            class="required-toggle"
+            on:change={multilineChanged}/>
+    Multiple Lines
+</label>
 
 {#each property.validations as _validation, index}
     <div class="validation-container">
@@ -55,6 +75,10 @@
 </button>
 
 <style>
+    label {
+        display: block;
+    }
+
     .add-validation-button {
         margin-top: 10px;
     }
