@@ -6,6 +6,7 @@ packages:
   - 'lang/*'
   - 'model/*'
   - 'model/string/*'
+  - 'model/date/*'
   - 'model/attachment/*'
   - 'scripts/*'
   - 'sql/*'

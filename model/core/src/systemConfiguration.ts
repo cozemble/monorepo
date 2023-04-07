@@ -48,4 +48,7 @@ export const slotSystemConfigurationDescriptors = {
   get: function (slotType: string): SlotSystemConfigurationDescriptor | null {
     return slotSystemConfigurationDescriptorRegistry.get(slotType) ?? null
   },
+  list: function (): SlotSystemConfigurationDescriptor[] {
+    return Array.from(slotSystemConfigurationDescriptorRegistry.values())
+  },
 }

@@ -4,7 +4,8 @@
         registerAllProperties,
         registerAllPropertyConfigurers,
         registerAllSlotEditors,
-        registerAllSlotViewers
+        registerAllSlotViewers,
+        registerAllSystemConfigurations
     } from '@cozemble/model-assembled'
     import ModelsPanel from './models/ModelsPanel.svelte'
     import DataPanel from "../lib/data/DataPanel.svelte";
@@ -21,6 +22,7 @@
         registerAllPropertyConfigurers()
         registerAllSlotViewers()
         registerAllSlotEditors()
+        registerAllSystemConfigurations()
     })
 
     function showModels() {

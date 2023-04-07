@@ -431,6 +431,8 @@ importers:
       '@cozemble/model-attachment-core': workspace:*
       '@cozemble/model-attachment-ui': workspace:*
       '@cozemble/model-core': workspace:*
+      '@cozemble/model-date-core': workspace:*
+      '@cozemble/model-date-ui': workspace:*
       '@cozemble/model-string-core': workspace:*
       '@cozemble/model-string-ui': workspace:*
       typescript: ^5.0.2
@@ -439,6 +441,8 @@ importers:
       '@cozemble/model-attachment-core': link:../attachment/core
       '@cozemble/model-attachment-ui': link:../attachment/ui
       '@cozemble/model-core': link:../core
+      '@cozemble/model-date-core': link:../date/core
+      '@cozemble/model-date-ui': link:../date/ui
       '@cozemble/model-string-core': link:../string/core
       '@cozemble/model-string-ui': link:../string/ui
     devDependencies:
@@ -504,6 +508,52 @@ importers:
       '@cozemble/lang-util': link:../../lang/util
     devDependencies:
       typescript: 5.0.2
+
+  model/date/core:
+    specifiers:
+      '@cozemble/lang-util': workspace:*
+      '@cozemble/model-core': workspace:*
+      typescript: ^5.0.2
+      vite: 4.1.4
+      vitest: ^0.26.2
+    dependencies:
+      '@cozemble/lang-util': link:../../../lang/util
+      '@cozemble/model-core': link:../../core
+    devDependencies:
+      typescript: 5.0.2
+      vite: 4.1.4
+      vitest: 0.26.3
+
+  model/date/ui:
+    specifiers:
+      '@cozemble/data-editor-sdk': workspace:*
+      '@cozemble/model-api': workspace:*
+      '@cozemble/model-core': workspace:*
+      '@cozemble/model-date-core': workspace:*
+      '@cozemble/model-editor-sdk': workspace:*
+      '@sveltejs/adapter-auto': ^1.0.0
+      '@sveltejs/kit': ^1.0.0
+      '@sveltejs/package': ^1.0.0
+      svelte: ^3.54.0
+      svelte-check: ^2.9.2
+      tslib: ^2.4.1
+      typescript: ^5.0.2
+      vite: 4.1.4
+    dependencies:
+      '@cozemble/data-editor-sdk': link:../../../data/editor-sdk
+      '@cozemble/model-api': link:../../api
+      '@cozemble/model-core': link:../../core
+      '@cozemble/model-date-core': link:../core
+      '@cozemble/model-editor-sdk': link:../../editor-sdk
+    devDependencies:
+      '@sveltejs/adapter-auto': 1.0.3_@sveltejs+kit@1.11.0
+      '@sveltejs/kit': 1.11.0_svelte@3.56.0+vite@4.1.4
+      '@sveltejs/package': 1.0.2_2sicejs5pp65ytzskiuvcrduim
+      svelte: 3.56.0
+      svelte-check: 2.10.3_svelte@3.56.0
+      tslib: 2.5.0
+      typescript: 5.0.2
+      vite: 4.1.4
 
   model/editor:
     specifiers:

@@ -3,6 +3,7 @@ import {
   Model,
   ModelEvent,
   ModelEventDescriptor,
+  modelEventDescriptors,
   modelEventFns,
   ModelId,
   type Property,
@@ -13,10 +14,9 @@ import {
   propertyNameFns,
   propertyTypeFns,
   SlotConfiguration,
-  SlotSystemConfigurationDescriptor,
   SystemConfiguration,
 } from '@cozemble/model-core'
-import { modelEventDescriptors } from '@cozemble/model-core'
+import { propertyDescriptors } from '@cozemble/model-core/dist/esm'
 
 export const datePropertyType = propertyTypeFns.newInstance('date.property')
 
@@ -42,6 +42,15 @@ export interface DatePropertyConfiguration {
   timezone: string
 }
 
+export const datePropertyConfigurationFns = {
+  defaultValue: (): DatePropertyConfiguration => {
+    return {
+      dateFormat: 'yyyy-MM-dd',
+      timezone: 'UTC',
+    }
+  },
+}
+
 export interface DatePropertySystemConfiguration
   extends SlotConfiguration<DatePropertyConfiguration> {
   _type: 'slot.configuration'
@@ -49,28 +58,10 @@ export interface DatePropertySystemConfiguration
   configuration: DatePropertyConfiguration
 }
 
-export const datePropertySystemConfigurationDescriptor: SlotSystemConfigurationDescriptor = {
-  _type: 'slot.system.configuration.descriptor',
-  slotType: 'date.property',
-  defaultValues: async () => {
-    return {
-      dateFormat: 'yyyy-MM-dd',
-      timezone: 'UTC',
-    }
-  },
-  editorComponent: async () => {
-    return {}
-    // return import('./DatePropertySystemConfigurationEditor.svelte')
-  },
-  validateValue: async (_value) => {
-    return new Map()
-  },
-}
-
 function formatDate(systemConfiguration: SystemConfiguration, date: Date): string {
   const config: DatePropertyConfiguration =
     systemConfiguration.slotConfiguration['date.property']?.configuration ??
-    datePropertySystemConfigurationDescriptor.defaultValues()
+    datePropertyConfigurationFns.defaultValue()
   const yyyy = String(date.getFullYear())
   const mm = String(date.getMonth() + 1).padStart(2, '0') // Months are 0-based, so we need to add 1 and pad with 0 if needed
   const dd = String(date.getDate()).padStart(2, '0') // Pad the day with 0 if needed
@@ -170,4 +161,9 @@ export const newDatePropertyModelEventDescriptor: ModelEventDescriptor = {
 
 export function registerModelEvents() {
   modelEventDescriptors.register(newDatePropertyModelEventDescriptor)
+}
+
+export function registerDateProperty() {
+  propertyDescriptors.register(datePropertyDescriptor)
+  registerModelEvents()
 }

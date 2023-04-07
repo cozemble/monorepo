@@ -1,17 +1,24 @@
 import type { PropertyType } from '@cozemble/model-core'
+import { LeafModelSlot } from '@cozemble/model-core'
 import {
   PropertyConfigurer as StringPropertyConfigurer,
   PropertyEditor as StringPropertyEditor,
   PropertyViewer as StringPropertyViewer,
 } from '@cozemble/model-string-ui'
+import {
+  PropertyConfigurer as DatePropertyConfigurer,
+  PropertyEditor as DatePropertyEditor,
+  PropertyViewer as DatePropertyViewer,
+} from '@cozemble/model-date-ui'
 import { registerStringProperty, stringPropertyType } from '@cozemble/model-string-core'
+import { datePropertyType, registerDateProperty } from '@cozemble/model-date-core'
 import { attachmentPropertyType, registerAttachmentProperty } from '@cozemble/model-attachment-core'
 import {
   AttachmentPropertyConfigurer,
   AttachmentPropertyEditor,
   AttachmentPropertyViewer,
 } from '@cozemble/model-attachment-ui'
-import { LeafModelSlot } from '@cozemble/model-core'
+import { registerDateSystemConfiguration } from '@cozemble/model-date-ui'
 
 export { propertyDescriptors } from '@cozemble/model-core'
 
@@ -61,20 +68,28 @@ export const slotEditorRegistry = {
 
 export function registerAllProperties() {
   registerStringProperty()
+  registerDateProperty()
   registerAttachmentProperty()
 }
 
 export function registerAllPropertyConfigurers() {
   propertyConfigurerRegistry.register(stringPropertyType, StringPropertyConfigurer)
+  propertyConfigurerRegistry.register(datePropertyType, DatePropertyConfigurer)
   propertyConfigurerRegistry.register(attachmentPropertyType, AttachmentPropertyConfigurer)
 }
 
 export function registerAllSlotViewers() {
   slotViewerRegistry.register(stringPropertyType, StringPropertyViewer)
+  slotViewerRegistry.register(datePropertyType, DatePropertyViewer)
   slotViewerRegistry.register(attachmentPropertyType, AttachmentPropertyViewer)
 }
 
 export function registerAllSlotEditors() {
   slotEditorRegistry.register(stringPropertyType, StringPropertyEditor)
+  slotEditorRegistry.register(datePropertyType, DatePropertyEditor)
   slotEditorRegistry.register(attachmentPropertyType, AttachmentPropertyEditor)
+}
+
+export function registerAllSystemConfigurations() {
+  registerDateSystemConfiguration()
 }

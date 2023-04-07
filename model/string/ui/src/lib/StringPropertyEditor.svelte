@@ -43,7 +43,6 @@
             const newValue = valueContainerDomElement.innerText
             if (newValue !== editableValue) {
                 editableValue = newValue
-                console.log({newValue})
                 dataRecordEditorClient.dispatchEditEvent(
                     dataRecordEditEvents.valueChanged(
                         record,

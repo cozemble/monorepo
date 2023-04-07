@@ -1,9 +1,5 @@
 import { propertyDescriptors } from '@cozemble/model-core'
 import { registerModelEvents } from './events'
-import {
-  datePropertyDescriptor,
-  registerModelEvents as registedDateModelEvents,
-} from './dateProperty'
 import { stringPropertyDescriptor } from './stringPropertyDescriptor'
 
 export {
@@ -33,7 +29,5 @@ export { stringPropertyOptions } from './stringPropertyOptions'
 export function registerStringProperty() {
   propertyDescriptors.register(stringPropertyDescriptor)
   propertyDescriptors.setDefault(stringPropertyDescriptor)
-  propertyDescriptors.register(datePropertyDescriptor)
   registerModelEvents()
-  registedDateModelEvents()
 }
