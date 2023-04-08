@@ -17,11 +17,11 @@ import {
   SlotConfiguration,
   SystemConfiguration,
 } from '@cozemble/model-core'
-import { parse } from 'date-fns'
-import { format, utcToZonedTime } from 'date-fns-tz'
+import { format, parse } from 'date-fns'
 
 const iso8601DateFormat = 'yyyy-MM-dd'
 const defaultDateFormat = 'yyyy-MM-dd'
+const html5InputDateFormat = 'yyyy-MM-dd'
 export const datePropertyType = propertyTypeFns.newInstance('date.property')
 
 export interface DateProperty extends Property {
@@ -73,15 +73,14 @@ function systemConfigurationDateFormat(systemConfiguration: SystemConfiguration)
   )
 }
 
-function asIso8601DateString(
+function html5InputAsIsoDate(
   systemConfiguration: SystemConfiguration,
   value: string | null,
 ): string | null {
   if (value === null) {
     return null
   }
-  const date = parse(value, systemConfigurationDateFormat(systemConfiguration), new Date(0))
-  return format(date, iso8601DateFormat)
+  return format(parse(value, html5InputDateFormat, new Date(0)), iso8601DateFormat)
 }
 
 export const datePropertyDescriptor: PropertyDescriptor<DateProperty, string> = {
@@ -116,8 +115,7 @@ export const datePropertyDescriptor: PropertyDescriptor<DateProperty, string> = 
     record: DataRecord,
     value: string | null,
   ) => {
-    const persistedValue = asIso8601DateString(systemConfiguration, value)
-    console.log(`Persisting ${value} as ${persistedValue}`)
+    const persistedValue = html5InputAsIsoDate(systemConfiguration, value)
     return {
       ...record,
       values: {
@@ -132,10 +130,7 @@ export const datePropertyDescriptor: PropertyDescriptor<DateProperty, string> = 
       return null
     }
     const parsed = parse(maybeValue, iso8601DateFormat, new Date(0))
-    console.log(`Retrieved ${maybeValue} as ${parsed}`)
-    const result = format(parsed, systemConfigurationDateFormat(systemConfiguration))
-    console.log(`Formatted ${parsed} as ${result}`)
-    return result
+    return format(parsed, systemConfigurationDateFormat(systemConfiguration))
   },
   newProperty: (
     systemConfiguration: SystemConfiguration,

@@ -19,7 +19,6 @@
   "dependencies": {
     "@cozemble/lang-util": "workspace:*",
     "@cozemble/model-core": "workspace:*",
-    "date-fns": "^2.29.3",
-    "date-fns-tz": "^2.0.0"
+    "date-fns": "^2.29.3"
   }
 }
