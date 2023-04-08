@@ -1,5 +1,5 @@
 <script lang="ts">
-    export let error: string
+    export let error: string | null
     let visible = true
 
     function dismiss() {
@@ -7,7 +7,7 @@
     }
 </script>
 
-{#if visible}
+{#if error && visible}
     <div class="alert alert-error shadow-lg">
         <div>
             <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none"

@@ -34,7 +34,7 @@
 
 <td class:focussed data-record-path={dataRecordPathAsString(modelSlot)}>
     {#if focussed}
-        <SlotEdit {parentPath} {modelSlot} {record}/>
+        <SlotEdit {systemConfiguration} {parentPath} {modelSlot} {record}/>
     {:else}
         <SlotView {systemConfiguration} {modelSlot} {record}/>
     {/if}

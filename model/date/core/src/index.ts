@@ -8,6 +8,7 @@ import {
   ModelId,
   type Property,
   PropertyDescriptor,
+  propertyDescriptors,
   PropertyId,
   propertyIdFns,
   PropertyName,
@@ -16,8 +17,11 @@ import {
   SlotConfiguration,
   SystemConfiguration,
 } from '@cozemble/model-core'
-import { propertyDescriptors } from '@cozemble/model-core'
+import { parse } from 'date-fns'
+import { format, utcToZonedTime } from 'date-fns-tz'
 
+const iso8601DateFormat = 'yyyy-MM-dd'
+const defaultDateFormat = 'yyyy-MM-dd'
 export const datePropertyType = propertyTypeFns.newInstance('date.property')
 
 export interface DateProperty extends Property {
@@ -45,7 +49,7 @@ export interface DatePropertyConfiguration {
 export const datePropertyConfigurationFns = {
   defaultValue: (): DatePropertyConfiguration => {
     return {
-      dateFormat: 'yyyy-MM-dd',
+      dateFormat: defaultDateFormat,
       timezone: 'UTC',
     }
   },
@@ -59,14 +63,25 @@ export interface DatePropertySystemConfiguration
 }
 
 function formatDate(systemConfiguration: SystemConfiguration, date: Date): string {
-  const config: DatePropertyConfiguration =
-    systemConfiguration.slotConfiguration['date.property']?.configuration ??
-    datePropertyConfigurationFns.defaultValue()
-  const yyyy = String(date.getFullYear())
-  const mm = String(date.getMonth() + 1).padStart(2, '0') // Months are 0-based, so we need to add 1 and pad with 0 if needed
-  const dd = String(date.getDate()).padStart(2, '0') // Pad the day with 0 if needed
+  return format(date, systemConfigurationDateFormat(systemConfiguration))
+}
 
-  return config.dateFormat.replace('yyyy', yyyy).replace('MM', mm).replace('dd', dd)
+function systemConfigurationDateFormat(systemConfiguration: SystemConfiguration): string {
+  return (
+    systemConfiguration.slotConfiguration['date.property']?.configuration?.dateFormat ??
+    defaultDateFormat
+  )
+}
+
+function asIso8601DateString(
+  systemConfiguration: SystemConfiguration,
+  value: string | null,
+): string | null {
+  if (value === null) {
+    return null
+  }
+  const date = parse(value, systemConfigurationDateFormat(systemConfiguration), new Date(0))
+  return format(date, iso8601DateFormat)
 }
 
 export const datePropertyDescriptor: PropertyDescriptor<DateProperty, string> = {
@@ -101,16 +116,26 @@ export const datePropertyDescriptor: PropertyDescriptor<DateProperty, string> = 
     record: DataRecord,
     value: string | null,
   ) => {
+    const persistedValue = asIso8601DateString(systemConfiguration, value)
+    console.log(`Persisting ${value} as ${persistedValue}`)
     return {
       ...record,
       values: {
         ...record.values,
-        [property.id.value]: value,
+        [property.id.value]: persistedValue,
       },
     }
   },
   getValue: (systemConfiguration: SystemConfiguration, property: Property, record: DataRecord) => {
-    return record.values[property.id.value] ?? null
+    const maybeValue = record.values[property.id.value] ?? null
+    if (maybeValue === null) {
+      return null
+    }
+    const parsed = parse(maybeValue, iso8601DateFormat, new Date(0))
+    console.log(`Retrieved ${maybeValue} as ${parsed}`)
+    const result = format(parsed, systemConfigurationDateFormat(systemConfiguration))
+    console.log(`Formatted ${parsed} as ${result}`)
+    return result
   },
   newProperty: (
     systemConfiguration: SystemConfiguration,

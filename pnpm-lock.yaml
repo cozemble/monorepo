@@ -513,12 +513,16 @@ importers:
     specifiers:
       '@cozemble/lang-util': workspace:*
       '@cozemble/model-core': workspace:*
+      date-fns: ^2.29.3
+      date-fns-tz: ^2.0.0
       typescript: ^5.0.2
       vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
       '@cozemble/lang-util': link:../../../lang/util
       '@cozemble/model-core': link:../../core
+      date-fns: 2.29.3
+      date-fns-tz: 2.0.0_date-fns@2.29.3
     devDependencies:
       typescript: 5.0.2
       vite: 4.1.4
@@ -2821,6 +2825,19 @@ packages:
     dependencies:
       assert-plus: 1.0.0
     dev: true
+
+  /date-fns-tz/2.0.0_date-fns@2.29.3:
+    resolution: {integrity: sha512-OAtcLdB9vxSXTWHdT8b398ARImVwQMyjfYGkKD2zaGpHseG2UPHbHjXELReErZFxWdSLph3c2zOaaTyHfOhERQ==}
+    peerDependencies:
+      date-fns: '>=2.0.0'
+    dependencies:
+      date-fns: 2.29.3
+    dev: false
+
+  /date-fns/2.29.3:
+    resolution: {integrity: sha512-dDCnyH2WnnKusqvZZ6+jA1O51Ibt8ZMRNkDZdyAyK4YfbDwa/cEmuztzG5pk6hqlp9aSBPYcjOlktquahGwGeA==}
+    engines: {node: '>=0.11'}
+    dev: false
 
   /dayjs/1.11.7:
     resolution: {integrity: sha512-+Yw9U6YO5TQohxLcIkrXBeY73WP3ejHWVvx8XCk3gxvQDCTEmS48ZrSZCKciI7Bhl/uCMyxYtE9UqRILmFphkQ==}

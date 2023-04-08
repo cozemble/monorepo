@@ -28,6 +28,21 @@ export function getSystemConfiguration(entities: TenantEntity[]): SystemConfigur
   )
 }
 
+export async function saveSystemConfiguration(
+  tenantId: string,
+  systemConfiguration: SystemConfiguration,
+) {
+  await saveEntities(tenantId, [systemConfiguration])
+  tenantEntities.update((entities) => {
+    return entities.map((entity) => {
+      if (entity._type === 'system.configuration') {
+        return systemConfiguration
+      }
+      return entity
+    })
+  })
+}
+
 function ensureDefaultSystemConfiguration(
   systemConfiguration: SystemConfiguration,
 ): SystemConfiguration {
