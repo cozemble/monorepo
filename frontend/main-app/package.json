@@ -34,6 +34,8 @@
     "@cozemble/model-core": "workspace:*",
     "@cozemble/model-editor": "workspace:*",
     "@cozemble/model-event-sourced": "workspace:*",
+    "@cozemble/data-filters": "workspace:*",
+    "@cozemble/backend-filtering-core": "workspace:*",
     "@tailwindcss/typography": "^0.5.9",
     "axios": "^1.2.3",
     "daisyui": "^2.47.0"

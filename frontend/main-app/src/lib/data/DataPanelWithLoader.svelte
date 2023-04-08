@@ -2,7 +2,7 @@
     import type {Model} from "@cozemble/model-core";
     import {loadRecords} from "./loadRecords";
     import {records} from "./recordsStore";
-    import {onMount, onDestroy} from "svelte";
+    import {onDestroy, onMount} from "svelte";
     import DataPanelInner from "./DataPanelInner.svelte";
 
     export let tenantId: string
@@ -28,9 +28,7 @@
         }
     }
 
-    onDestroy(() => {
-        records.set([])
-    })
+    onDestroy(() => records.set([]))
 </script>
 
 <DataPanelInner {models} {model} {tenantId} {records} on:searchTextChanged={searchTextChanged}/>

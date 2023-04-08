@@ -24,6 +24,19 @@ importers:
       prettier-plugin-svelte: 2.9.0_prettier@2.8.4
       turbo: 1.8.8
 
+  backend/filtering-core:
+    specifiers:
+      '@cozemble/data-filters': 'workspace:* '
+      typescript: ^5.0.2
+      vite: 4.1.4
+      vitest: ^0.26.2
+    dependencies:
+      '@cozemble/data-filters': link:../../data/filters
+    devDependencies:
+      typescript: 5.0.2
+      vite: 4.1.4
+      vitest: 0.26.3
+
   backend/gcp-infra:
     specifiers:
       '@pulumi/gcp': ^6.0.0
@@ -233,6 +246,19 @@ importers:
       svelte-check: 2.10.3_svelte@3.56.0
       typescript: 5.0.2
 
+  data/filters:
+    specifiers:
+      '@cozemble/lang-util': workspace:*
+      typescript: ^5.0.2
+      vite: 4.1.4
+      vitest: ^0.26.2
+    dependencies:
+      '@cozemble/lang-util': link:../../lang/util
+    devDependencies:
+      typescript: 5.0.2
+      vite: 4.1.4
+      vitest: 0.26.3
+
   data/paginated-editor:
     specifiers:
       '@cozemble/data-editor-sdk': workspace:*
@@ -320,8 +346,10 @@ importers:
 
   frontend/main-app:
     specifiers:
+      '@cozemble/backend-filtering-core': workspace:*
       '@cozemble/backend-tenanted-api-types': workspace:*
       '@cozemble/data-editor-sdk': workspace:*
+      '@cozemble/data-filters': workspace:*
       '@cozemble/data-paginated-editor': workspace:*
       '@cozemble/lang-util': workspace:*
       '@cozemble/model-api': workspace:*
@@ -344,8 +372,10 @@ importers:
       typescript: ^5.0.2
       vite: 4.1.4
     dependencies:
+      '@cozemble/backend-filtering-core': link:../../backend/filtering-core
       '@cozemble/backend-tenanted-api-types': link:../../backend/tenanted-api-types
       '@cozemble/data-editor-sdk': link:../../data/editor-sdk
+      '@cozemble/data-filters': link:../../data/filters
       '@cozemble/data-paginated-editor': link:../../data/paginated-editor
       '@cozemble/lang-util': link:../../lang/util
       '@cozemble/model-api': link:../../model/api
@@ -514,7 +544,6 @@ importers:
       '@cozemble/lang-util': workspace:*
       '@cozemble/model-core': workspace:*
       date-fns: ^2.29.3
-      date-fns-tz: ^2.0.0
       typescript: ^5.0.2
       vite: 4.1.4
       vitest: ^0.26.2
@@ -522,7 +551,6 @@ importers:
       '@cozemble/lang-util': link:../../../lang/util
       '@cozemble/model-core': link:../../core
       date-fns: 2.29.3
-      date-fns-tz: 2.0.0_date-fns@2.29.3
     devDependencies:
       typescript: 5.0.2
       vite: 4.1.4
@@ -2825,14 +2853,6 @@ packages:
     dependencies:
       assert-plus: 1.0.0
     dev: true
-
-  /date-fns-tz/2.0.0_date-fns@2.29.3:
-    resolution: {integrity: sha512-OAtcLdB9vxSXTWHdT8b398ARImVwQMyjfYGkKD2zaGpHseG2UPHbHjXELReErZFxWdSLph3c2zOaaTyHfOhERQ==}
-    peerDependencies:
-      date-fns: '>=2.0.0'
-    dependencies:
-      date-fns: 2.29.3
-    dev: false
 
   /date-fns/2.29.3:
     resolution: {integrity: sha512-dDCnyH2WnnKusqvZZ6+jA1O51Ibt8ZMRNkDZdyAyK4YfbDwa/cEmuztzG5pk6hqlp9aSBPYcjOlktquahGwGeA==}

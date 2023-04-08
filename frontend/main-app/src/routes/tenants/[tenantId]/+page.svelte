@@ -9,13 +9,15 @@
         registerAllSlotViewers
     } from "@cozemble/model-assembled";
     import {page} from '$app/stores';
-    import {tenantStore} from "$lib/tenant/tenantStore.js";
+    import {tenantStore} from "../../../lib/tenant/tenantStore";
+    import {tempRegisterDateFilters} from "./temp";
 
     onMount(() => {
         registerAllProperties()
         registerAllPropertyConfigurers()
         registerAllSlotViewers()
         registerAllSlotEditors()
+        tempRegisterDateFilters()
     })
 
 </script>

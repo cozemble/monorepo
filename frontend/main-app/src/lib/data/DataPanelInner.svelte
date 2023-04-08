@@ -5,6 +5,8 @@
     import {createEventDispatcher} from "svelte";
     import {getSystemConfiguration, modelViews, tenantEntities} from "../models/tenantEntityStore";
     import {makePaginatedEditorHost} from "./paginatedEditorHost";
+    import ShowFilterButton from "./filtering/ShowFilterButton.svelte";
+    import FilterConfigurer from "./filtering/FilterConfigurer.svelte";
 
     export let models: Model[]
     export let model: Model
@@ -22,16 +24,29 @@
         }, 500);
     }
 
-    const paginatedEditorHost = makePaginatedEditorHost(tenantId, models,model, records)
+    const paginatedEditorHost = makePaginatedEditorHost(tenantId, models, model, records)
+
+    let showFilters = false
+
+    function onShowFilters(event: CustomEvent<boolean>) {
+        showFilters = event.detail
+    }
 </script>
 
 <div class="search-panel">
+    <ShowFilterButton {models} {model} on:showFilters={onShowFilters}/>
     <input type="text" class="input input-bordered" placeholder={`Search ${model.name.value}`}
            on:keyup={searchTextChanged}
            bind:value={searchText}/>
+    {#if showFilters}
+        <div class="mt-2">
+        <FilterConfigurer {models} {model} on:showFilters={onShowFilters}/>
+        </div>
+    {/if}
 </div>
 <div class="mt-2">
-    <PaginatedEditor systemConfiguration={getSystemConfiguration($tenantEntities)} {models} {model} modelViews={$modelViews} records={$records} {paginatedEditorHost}/>
+    <PaginatedEditor systemConfiguration={getSystemConfiguration($tenantEntities)} {models} {model}
+                     modelViews={$modelViews} records={$records} {paginatedEditorHost}/>
 </div>
 <style>
     .search-panel {
