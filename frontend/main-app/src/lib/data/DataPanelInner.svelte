@@ -7,7 +7,7 @@
     import {makePaginatedEditorHost} from "./paginatedEditorHost";
     import ShowFilterButton from "./filtering/ShowFilterButton.svelte";
     import FilterConfigurer from "./filtering/FilterConfigurer.svelte";
-    import {filterGroupListFns} from "@cozemble/data-filters";
+    import {type FilterAction, filterGroupListFns, partiallyAppliedFilterGroupListReducer} from "@cozemble/data-filters";
 
     export let models: Model[]
     export let model: Model
@@ -20,6 +20,12 @@
     let rootFilter = filterGroupListFns.empty()
     let debounceTimeout: any
     let showFilters = false
+
+    const reducer = partiallyAppliedFilterGroupListReducer([])
+
+    function filterActionHandler(action: FilterAction) {
+        rootFilter = reducer(action, rootFilter)
+    }
 
     function searchTextChanged() {
         clearTimeout(debounceTimeout)
@@ -40,7 +46,7 @@
            bind:value={searchText}/>
     {#if showFilters}
         <div class="mt-2">
-            <FilterConfigurer {models} {model} on:showFilters={onShowFilters}/>
+            <FilterConfigurer {models} {model} {rootFilter} {filterActionHandler} on:showFilters={onShowFilters}/>
         </div>
     {/if}
 </div>
