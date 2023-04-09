@@ -20,6 +20,7 @@ export const modelViews = derived(
   tenantEntities,
   (entities) => entities.filter((e) => e._type === 'model.view') as ModelView[],
 )
+export const systemConfiguration = derived(tenantEntities, getSystemConfiguration)
 
 export function getSystemConfiguration(entities: TenantEntity[]): SystemConfiguration {
   return ensureDefaultSystemConfiguration(

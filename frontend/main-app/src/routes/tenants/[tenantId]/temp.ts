@@ -9,6 +9,7 @@ import {
   onOrBeforeFilterOperator,
 } from '@cozemble/data-filters-core'
 import FilterValueProviderUsingPropertyEditor from '../../../lib/data/filtering/FilterValueProviderUsingPropertyEditor.svelte'
+import { systemConfiguration } from '../../../lib/models/tenantEntityStore'
 
 export function tempRegisterDateFilters() {
   const key = { value: 'date.property' }
@@ -24,6 +25,6 @@ export function tempRegisterDateFilters() {
 
   filterValueProviders.register(key, {
     component: FilterValueProviderUsingPropertyEditor,
-    props: { propertyType: key },
+    props: { propertyType: key, systemConfiguration },
   })
 }

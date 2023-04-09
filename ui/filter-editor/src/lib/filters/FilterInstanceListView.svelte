@@ -42,7 +42,7 @@
 </script>
 
 {#each list.filters as filter, filterIndex}
-    <div class="mt-2 flex  flex-row">
+    <div class="mt-2 flex force-flex flex-row">
         {#if filterIndex === 1}
             <ConjunctionView conjunction={list.conjunction} classes="mr-2"
                              on:conjunctionChanged={(event) => conjunctionChanged(event)}/>
@@ -94,3 +94,9 @@
         {/if}
     </div>
 {/if}
+
+<style>
+    .force-flex {
+        display: flex;
+    }
+</style>

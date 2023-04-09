@@ -33,5 +33,5 @@
     }
 </script>
 
-<input type="date" value={editableValue} on:change={dateChanged}/>
+<input class="input input-bordered" type="date" value={editableValue} on:change={dateChanged}/>
 
