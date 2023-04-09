@@ -28,7 +28,12 @@
         }
     }
 
+    async function filtersChanged(event: CustomEvent) {
+        const filters = event.detail
+        console.log({filters})
+    }
+
     onDestroy(() => records.set([]))
 </script>
 
-<DataPanelInner {models} {model} {tenantId} {records} on:searchTextChanged={searchTextChanged}/>
+<DataPanelInner {models} {model} {tenantId} {records} on:searchTextChanged={searchTextChanged} on:filtersChanged={filtersChanged}/>

@@ -31,6 +31,9 @@
 
     function filterActionHandler(action: FilterAction) {
         rootFilter = reducer(action, rootFilter)
+        if (filterGroupListFns.allFiltersAreFullySpecified(rootFilter)) {
+            dispatch("filtersChanged", rootFilter)
+        }
     }
 
     function searchTextChanged() {

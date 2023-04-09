@@ -2,8 +2,11 @@ import type {
   DataRecord,
   DataRecordValuePath,
   Model,
+  ModelId,
   ModelPath,
   ModelPathElement,
+  ModelView,
+  Property,
 } from '@cozemble/model-core'
 import {
   propertyDescriptors,
@@ -26,7 +29,6 @@ import {
   eventSourcedDataRecordFns,
   type UploadedAttachment,
 } from '@cozemble/data-editor-sdk'
-import type { ModelId, ModelView, Property } from '@cozemble/model-core'
 
 export function getFilterablePaths(models: Model[], model: Model): ModelPath<ModelPathElement>[] {
   return modelFns.allPaths(models, model).filter((path) => {
@@ -105,12 +107,7 @@ export function createModelAndRecordForFiltering(
         event,
         eventSourcedRecord,
       )
-      const value = propertyDescriptor.getValue(
-        systemConfiguration,
-        property,
-        eventSourcedRecord.record,
-      )
-      onValueProvided(value)
+      onValueProvided(eventSourcedRecord.record.values[property.id.value])
     },
 
     searchRecords(modelId: ModelId, search: string): Promise<DataRecord[]> {
