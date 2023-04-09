@@ -219,7 +219,7 @@ export type Conjunction = 'and' | 'or'
 
 export type FilterGroupContents = FilterInstanceList | FilterGroupList
 
-export function emptyFilterInstanceList(filters: FilterInstance[] = []): FilterInstanceList {
+function emptyFilterInstanceList(filters: FilterInstance[] = []): FilterInstanceList {
   return {
     _type: 'filter.instance.list',
     id: uuids.v4(),
@@ -241,7 +241,7 @@ export interface FilterGroupList {
   groups: FilterGroup[]
 }
 
-export function rootFilterGroupList(contents = emptyFilterInstanceList()): FilterGroupList {
+function emptyFilterGroupList(contents = emptyFilterInstanceList()): FilterGroupList {
   return {
     _type: 'filter.group.list',
     id: uuids.v4(),
@@ -280,17 +280,25 @@ function allFiltersAreFullySpecified(list: FilterGroupList): boolean {
 }
 
 function withFilterInstance(instance: FilterInstance): FilterGroupList {
-  return rootFilterGroupList(filterInstanceLists.withFilterInstance(instance))
+  return emptyFilterGroupList(filterInstanceListFns.withFilterInstance(instance))
 }
 
-export const filterGroupLists = {
+export const filterGroupListFns = {
+  empty: emptyFilterGroupList,
   flatten: flattenFilterGroupList,
   fullySpecifiedFilterInstances,
   allFiltersAreFullySpecified,
   withFilterInstance,
+  hasFilterInstances: function (list: FilterGroupList): boolean {
+    return flattenFilterGroupList(list).length > 0
+  },
+  filterInstanceCount: function (list: FilterGroupList): number {
+    return flattenFilterGroupList(list).length
+  },
 }
 
-export const filterInstanceLists = {
+export const filterInstanceListFns = {
+  empty: emptyFilterInstanceList,
   withFilterInstance: function (instance: FilterInstance): FilterInstanceList {
     return emptyFilterInstanceList([instance])
   },

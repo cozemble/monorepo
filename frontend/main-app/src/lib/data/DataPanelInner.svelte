@@ -7,6 +7,7 @@
     import {makePaginatedEditorHost} from "./paginatedEditorHost";
     import ShowFilterButton from "./filtering/ShowFilterButton.svelte";
     import FilterConfigurer from "./filtering/FilterConfigurer.svelte";
+    import {filterGroupListFns} from "@cozemble/data-filters";
 
     export let models: Model[]
     export let model: Model
@@ -14,19 +15,18 @@
     export let records: Writable<DataRecord[]>
 
     const dispatch = createEventDispatcher()
+    const paginatedEditorHost = makePaginatedEditorHost(tenantId, models, model, records)
     let searchText = ""
+    let rootFilter = filterGroupListFns.empty()
     let debounceTimeout: any
+    let showFilters = false
 
     function searchTextChanged() {
-        clearTimeout(debounceTimeout);
+        clearTimeout(debounceTimeout)
         debounceTimeout = setTimeout(() => {
             dispatch("searchTextChanged", searchText)
-        }, 500);
+        }, 500)
     }
-
-    const paginatedEditorHost = makePaginatedEditorHost(tenantId, models, model, records)
-
-    let showFilters = false
 
     function onShowFilters(event: CustomEvent<boolean>) {
         showFilters = event.detail
@@ -34,13 +34,13 @@
 </script>
 
 <div class="search-panel">
-    <ShowFilterButton {models} {model} on:showFilters={onShowFilters}/>
+    <ShowFilterButton {models} {model} {rootFilter} on:showFilters={onShowFilters}/>
     <input type="text" class="input input-bordered" placeholder={`Search ${model.name.value}`}
            on:keyup={searchTextChanged}
            bind:value={searchText}/>
     {#if showFilters}
         <div class="mt-2">
-        <FilterConfigurer {models} {model} on:showFilters={onShowFilters}/>
+            <FilterConfigurer {models} {model} on:showFilters={onShowFilters}/>
         </div>
     {/if}
 </div>

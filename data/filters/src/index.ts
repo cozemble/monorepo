@@ -3,7 +3,7 @@ export { filterActions, FilterAction, FilterActionHandler } from './actions'
 export {
   FilterGroupList,
   FilterGroup,
-  filterGroupLists,
+  filterGroupListFns,
   FilterInstanceList,
   LhsOption,
   lhsOption,
@@ -17,8 +17,6 @@ export {
   Conjunction,
   dateFilterType,
   linkFilterType,
-  emptyFilterInstanceList,
-  rootFilterGroupList,
   SelectableRhsOption,
   UserSuppliedRhsOption,
   selectableRhsOption,
