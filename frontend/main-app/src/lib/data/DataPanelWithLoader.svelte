@@ -4,6 +4,7 @@
     import {records} from "./recordsStore";
     import {onDestroy, onMount} from "svelte";
     import DataPanelInner from "./DataPanelInner.svelte";
+    import {toFilledFilterInstanceGroup} from "./filtering/filtering";
 
     export let tenantId: string
     export let models: Model[]
@@ -30,7 +31,8 @@
 
     async function filtersChanged(event: CustomEvent) {
         const filters = event.detail
-        console.log({filters})
+        const filledFilters = toFilledFilterInstanceGroup(filters)
+        console.log({filters, filledFilters})
     }
 
     onDestroy(() => records.set([]))

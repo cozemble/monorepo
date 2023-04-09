@@ -18,7 +18,7 @@ import { dataRecordFns, dataRecordValuePathFns, modelFns, modelPathFns } from '@
 import { filterOperations } from '@cozemble/data-filters-config'
 import type { FilterDataType, LhsOption } from '@cozemble/data-filters-core'
 import { lhsOption, userSuppliedRhsOption } from '@cozemble/data-filters-core'
-import { mandatory, uuids } from '@cozemble/lang-util'
+import { mandatory } from '@cozemble/lang-util'
 import { eventSourcedModelFns } from '@cozemble/model-event-sourced'
 import { slotEditorRegistry } from '@cozemble/model-assembled'
 import type { DataRecordEditorClient } from '@cozemble/data-editor-sdk'
@@ -29,6 +29,11 @@ import {
   eventSourcedDataRecordFns,
   type UploadedAttachment,
 } from '@cozemble/data-editor-sdk'
+import type {
+  FilterGroupList,
+  FilterInstanceList,
+  FilterOperator,
+} from '@cozemble/data-filters-core/dist/esm'
 
 export function getFilterablePaths(models: Model[], model: Model): ModelPath<ModelPathElement>[] {
   return modelFns.allPaths(models, model).filter((path) => {
@@ -47,7 +52,7 @@ export function getFilterLhsOptionsForModel(models: Model[], model: Model): LhsO
       if (filterOperation !== null) {
         return [
           lhsOption(
-            uuids.v4(),
+            modelPathFns.toDottedIdPath(path).value,
             modelPathFns.toDottedNamePath(path).value,
             lastElement.propertyType,
             filterOperation,
@@ -139,4 +144,57 @@ export function createModelAndRecordForFiltering(
   }
 
   return { model: model.model, record, recordPath, editorComponent, editorClient }
+}
+
+export interface FilledFilterInstance {
+  _type: 'filled.filter.instance'
+  dottedIdLhs: string
+  rhsValue: any
+  operation: FilterOperator
+}
+
+export interface FilledFilterInstanceGroup {
+  _type: 'filled.filter.instance.group'
+  conjunction: 'and' | 'or'
+  instances: FilledFilterInstance[]
+}
+
+export function toFilledFilterInstanceGroup(fgl: FilterGroupList): FilledFilterInstanceGroup {
+  if (fgl.groups.length !== 1) {
+    throw new Error('Only one group is supported')
+  }
+  const firstGroup = fgl.groups[0]
+  if (firstGroup.contents._type !== 'filter.instance.list') {
+    throw new Error('Only filter.instance.list is supported')
+  }
+  const filterInstances: FilterInstanceList = firstGroup.contents
+  return {
+    _type: 'filled.filter.instance.group',
+    conjunction: firstGroup.contents.conjunction,
+    instances: filterInstances.filters.map((filter) => {
+      if (filter.selectedLhsOption === null) {
+        throw new Error('No selected lhs option')
+      }
+      if (filter.selectedOperatorOption === null) {
+        throw new Error('No selected operator option')
+      }
+      let rhsValue = null
+      if (filter.selectedOperatorOption.requiresRhs) {
+        if (filter.rhsValue === null) {
+          throw new Error('No rhs value')
+        }
+        if (filter.rhsValue._type === 'user.supplied.rhs.option.with.value') {
+          rhsValue = filter.rhsValue.value.value
+        } else {
+          throw new Error('Only user.supplied.rhs.option.with.value is supported')
+        }
+      }
+      return {
+        _type: 'filled.filter.instance',
+        dottedIdLhs: filter.selectedLhsOption.id,
+        rhsValue,
+        operation: filter.selectedOperatorOption,
+      }
+    }),
+  }
 }
