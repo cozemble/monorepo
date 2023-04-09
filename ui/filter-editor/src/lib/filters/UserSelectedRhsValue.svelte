@@ -1,17 +1,24 @@
 <script lang="ts">
-    import type {FilterActionHandler, FilterInstance} from "@cozemble/data-filters";
-    import FilterRhsDateConfigurer from "./FilterRhsDateConfigurer.svelte";
-    import FilterRhsStringConfigurer from "./FilterRhsStringConfigurer.svelte";
+    import type {FilterActionHandler, FilterInstance} from "@cozemble/data-filters-core";
+    import {filterValueProviders} from "@cozemble/data-filters-config";
 
     export let filter: FilterInstance
     export let filterActionHandler: FilterActionHandler
 
+    function getValueProviderComponent(filter: FilterInstance) {
+        if (filter.selectedLhsOption === null) {
+            return null
+        }
+        return filterValueProviders.get(filter.selectedLhsOption.dataType)
+    }
+
+    $: valueProviderComponent = getValueProviderComponent(filter)
 </script>
 
-{#if filter.selectedLhsOption?.dataType?._type === "date"}
-    <FilterRhsDateConfigurer {filter} {filterActionHandler}/>
-{:else if filter.selectedLhsOption?.dataType?._type === "string"}
-    <FilterRhsStringConfigurer {filter} {filterActionHandler}/>
+{#if valueProviderComponent}
+    <svelte:component this={valueProviderComponent.component} {...valueProviderComponent.props} {filter} {filterActionHandler}/>
 {:else}
-    Don't know how to handle filter of type {filter.selectedLhsOption?.dataType?._type}
+    <div class="text-center text-muted">No value provider registered for
+        '{filter.selectedLhsOption?.dataType?.value ?? "undefined"}'
+    </div>
 {/if}

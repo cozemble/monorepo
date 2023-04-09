@@ -1,18 +1,19 @@
 import type {
-  FilterInstance,
   FilterGroup,
   FilterGroupList,
+  FilterInstance,
   FilterInstanceList,
   LhsOption,
-} from '@cozemble/data-filters'
-import { lhsOption } from '@cozemble/data-filters'
-import { dateFilterType } from '@cozemble/data-filters'
-import { userSuppliedRhsOption } from '@cozemble/data-filters'
-import { selectableRhsOption } from '@cozemble/data-filters'
-import { userSuppliedRhsOptionWithValue } from '@cozemble/data-filters'
-import { realWorldRhsOption } from '@cozemble/data-filters'
-import { idAndLabel } from '@cozemble/data-filters'
-import { filterOperatorFns } from '@cozemble/data-filters'
+} from '@cozemble/data-filters-core'
+import {
+  filterOperatorFns,
+  idAndLabel,
+  lhsOption,
+  realWorldRhsOption,
+  selectableRhsOption,
+  userSuppliedRhsOption,
+  userSuppliedRhsOptionWithValue,
+} from '@cozemble/data-filters-core'
 import { uuids } from '@cozemble/lang-util'
 
 const equalsOperator = filterOperatorFns.newInstance('equals', 'equals')
@@ -32,22 +33,22 @@ const stringOperators = [
   isNullOperator,
 ]
 
-const date1LhsOption = lhsOption('date#1', 'Date 1', dateFilterType(), dateOperators, [
+const date1LhsOption = lhsOption('date#1', 'Date 1', { value: 'date' }, dateOperators, [
   userSuppliedRhsOption(),
 ])
-const date2LhsOption = lhsOption('date#2', 'Date 2', dateFilterType(), dateOperators, [
+const date2LhsOption = lhsOption('date#2', 'Date 2', { value: 'date' }, dateOperators, [
   realWorldRhsOption(),
   userSuppliedRhsOption(),
   selectableRhsOption([idAndLabel('from', 'From Date'), idAndLabel('to', 'To Date')]),
 ])
-const date3LhsOption = lhsOption('date#3', 'Date 3', dateFilterType(), dateOperators, [
+const date3LhsOption = lhsOption('date#3', 'Date 3', { value: 'date' }, dateOperators, [
   userSuppliedRhsOption(),
 ])
-const ownerLhsOption = lhsOption('owner#4', 'Owner', { _type: 'string' }, stringOperators, [
+const ownerLhsOption = lhsOption('owner#4', 'Owner', { value: 'string' }, stringOperators, [
   userSuppliedRhsOption(),
   selectableRhsOption([idAndLabel('firstName', 'First name'), idAndLabel('lastName', 'Last name')]),
 ])
-const nameLhsOption = lhsOption('name#5', 'Name', { _type: 'string' }, stringOperators, [
+const nameLhsOption = lhsOption('name#5', 'Name', { value: 'string' }, stringOperators, [
   userSuppliedRhsOption(),
 ])
 

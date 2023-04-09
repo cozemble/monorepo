@@ -2,8 +2,8 @@
     import type {Model} from "@cozemble/model-core";
     import {createEventDispatcher} from "svelte";
     import {getFilterablePaths} from "./filtering";
-    import type {FilterGroupList} from "@cozemble/data-filters";
-    import {filterGroupListFns} from "@cozemble/data-filters";
+    import type {FilterGroupList} from "@cozemble/data-filters-core";
+    import {filterGroupListFns} from "@cozemble/data-filters-core";
 
     export let model: Model
     export let models: Model[]

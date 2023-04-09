@@ -10,13 +10,11 @@ export {
   filterInstance,
   FilterGroupContents,
   FilterInstance,
-  filterInstances,
-  FilterDataType,
+  filterInstanceFns,
   FilterOperator,
   filterOperatorFns,
   Conjunction,
-  dateFilterType,
-  linkFilterType,
+  FilterDataType,
   SelectableRhsOption,
   UserSuppliedRhsOption,
   selectableRhsOption,
@@ -31,7 +29,6 @@ export {
   selectableRhsOptionWithSelection,
   RealWorldRhsOption,
   realWorldRhsOption,
-  stringFilterType,
 } from './types'
 
 export {

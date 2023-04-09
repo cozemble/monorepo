@@ -1,7 +1,7 @@
 <script lang="ts">
     import FilterManagement from "../../lib/filters/FilterManagement.svelte";
     import {rootGroupList, sampleLhsOptions} from "../instances/+server";
-    import {type FilterAction, partiallyAppliedFilterGroupListReducer} from "@cozemble/data-filters";
+    import {type FilterAction, partiallyAppliedFilterGroupListReducer} from "@cozemble/data-filters-core";
 
     let groupList = rootGroupList
 

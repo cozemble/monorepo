@@ -1,4 +1,4 @@
-import type { LhsOption } from '@cozemble/data-filters'
+import type { LhsOption } from '@cozemble/data-filters-core'
 
 export function onlyUserSelectedRhsValues(lhsOption: LhsOption): boolean {
   return (

@@ -27,6 +27,6 @@ export function applyTemplate(template: string, data: Data): string {
       }
     }
 
-    return value === undefined ? 'undefined' : value
+    return value === undefined ? '' : value
   })
 }

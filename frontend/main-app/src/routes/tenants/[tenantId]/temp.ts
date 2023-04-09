@@ -1,4 +1,4 @@
-import { filterOperations } from '@cozemble/backend-filtering-core'
+import { filterOperations, filterValueProviders } from '@cozemble/data-filters-config'
 import {
   afterFilterOperator,
   beforeFilterOperator,
@@ -7,10 +7,12 @@ import {
   isNullFilterOperator,
   onOrAfterFilterOperator,
   onOrBeforeFilterOperator,
-} from '@cozemble/data-filters'
+} from '@cozemble/data-filters-core'
+import FilterValueProviderUsingPropertyEditor from '../../../lib/data/filtering/FilterValueProviderUsingPropertyEditor.svelte'
 
 export function tempRegisterDateFilters() {
-  filterOperations.register('date.property', [
+  const key = { value: 'date.property' }
+  filterOperations.register(key, [
     equalsFilterOperator,
     afterFilterOperator,
     onOrAfterFilterOperator,
@@ -19,4 +21,9 @@ export function tempRegisterDateFilters() {
     isNullFilterOperator,
     isNotNullFilterOperator,
   ])
+
+  filterValueProviders.register(key, {
+    component: FilterValueProviderUsingPropertyEditor,
+    props: { propertyType: key },
+  })
 }

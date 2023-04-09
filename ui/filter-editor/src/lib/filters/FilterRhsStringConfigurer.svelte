@@ -1,13 +1,13 @@
 <script lang="ts">
-    import type {FilterInstance} from "@cozemble/data-filters";
-    import type {FilterActionHandler} from "@cozemble/data-filters";
-    import {filterActions} from "@cozemble/data-filters";
-    import {filterInstances} from "@cozemble/data-filters";
+    import type {FilterInstance} from "@cozemble/data-filters-core";
+    import type {FilterActionHandler} from "@cozemble/data-filters-core";
+    import {filterActions} from "@cozemble/data-filters-core";
+    import {filterInstanceFns} from "@cozemble/data-filters-core";
 
     export let filter: FilterInstance
     export let filterActionHandler: FilterActionHandler
 
-    let initialValue = filterInstances.getRhsValue(filter, {}) ?? ""
+    let initialValue = filterInstanceFns.getRhsValue(filter, {}) ?? ""
 
     function blurred(event:Event) {
         const target = event.target as HTMLInputElement

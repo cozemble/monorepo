@@ -1,8 +1,8 @@
 <script lang="ts">
-    import type {FilterGroup} from "@cozemble/data-filters";
+    import type {FilterGroup} from "@cozemble/data-filters-core";
     import FilterGroupListView from "./FilterGroupListView.svelte";
     import FilterInstanceListView from "./FilterInstanceListView.svelte";
-    import type {FilterActionHandler} from "@cozemble/data-filters";
+    import type {FilterActionHandler} from "@cozemble/data-filters-core";
 
     export let group: FilterGroup
     export let filterActionHandler: FilterActionHandler

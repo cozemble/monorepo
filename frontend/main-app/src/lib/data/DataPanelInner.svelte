@@ -7,7 +7,12 @@
     import {makePaginatedEditorHost} from "./paginatedEditorHost";
     import ShowFilterButton from "./filtering/ShowFilterButton.svelte";
     import FilterConfigurer from "./filtering/FilterConfigurer.svelte";
-    import {type FilterAction, filterGroupListFns, partiallyAppliedFilterGroupListReducer} from "@cozemble/data-filters";
+    import {
+        type FilterAction,
+        filterGroupListFns,
+        partiallyAppliedFilterGroupListReducer
+    } from "@cozemble/data-filters-core";
+    import {getFilterLhsOptionsForModel} from "./filtering/filtering";
 
     export let models: Model[]
     export let model: Model
@@ -20,8 +25,9 @@
     let rootFilter = filterGroupListFns.empty()
     let debounceTimeout: any
     let showFilters = false
+    const filterLhsOptions = getFilterLhsOptionsForModel(models, model)
 
-    const reducer = partiallyAppliedFilterGroupListReducer([])
+    const reducer = partiallyAppliedFilterGroupListReducer(filterLhsOptions)
 
     function filterActionHandler(action: FilterAction) {
         rootFilter = reducer(action, rootFilter)

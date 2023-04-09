@@ -1,6 +1,6 @@
 <script lang="ts">
-    import type {FilterActionHandler, FilterGroup, FilterGroupList} from "@cozemble/data-filters";
-    import {filterActions} from "@cozemble/data-filters";
+    import type {FilterActionHandler, FilterGroup, FilterGroupList} from "@cozemble/data-filters-core";
+    import {filterActions} from "@cozemble/data-filters-core";
     import FilterGroupView from "./FilterGroupView.svelte";
     import ConjunctionView from "./ConjunctionView.svelte";
 

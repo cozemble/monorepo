@@ -1,14 +1,12 @@
 <script lang="ts">
-    import type {FilterInstance, FilterInstanceList} from "@cozemble/data-filters";
+    import type {FilterInstance, FilterInstanceList} from "@cozemble/data-filters-core";
     import ConjunctionView from "./ConjunctionView.svelte";
-    import type {FilterActionHandler} from "@cozemble/data-filters";
-    import {filterActions} from "@cozemble/data-filters";
+    import type {FilterActionHandler} from "@cozemble/data-filters-core";
+    import {filterActions} from "@cozemble/data-filters-core";
     import FilterRhsConfigurer from "./FilterRhsConfigurer.svelte";
-    import type {SelectChangeEvent} from "./types";
     import UserSelectedRhsValue from "./UserSelectedRhsValue.svelte";
-    import {filterInstances} from "@cozemble/data-filters";
+    import {filterInstanceFns} from "@cozemble/data-filters-core";
     import {onlyUserSelectedRhsValues} from "./onlyUserSelectedRhsValues";
-    import {TrashIcon} from "@cozemble/ui-atoms";
 
     export let list: FilterInstanceList
     export let filterActionHandler: FilterActionHandler
@@ -44,7 +42,7 @@
 </script>
 
 {#each list.filters as filter, filterIndex}
-    <div class="mt-2 flex content-center">
+    <div class="mt-2 flex  flex-row">
         {#if filterIndex === 1}
             <ConjunctionView conjunction={list.conjunction} classes="mr-2"
                              on:conjunctionChanged={(event) => conjunctionChanged(event)}/>
@@ -74,14 +72,14 @@
                     <FilterRhsConfigurer {filter} {filterActionHandler}/>
                 </div>
             {/if}
-            {#if filterInstances.userSuppliedRhsSelected(filter) && !onlyUserSelectedRhsValues(filter.selectedLhsOption)}
+            {#if filterInstanceFns.userSuppliedRhsSelected(filter) && !onlyUserSelectedRhsValues(filter.selectedLhsOption)}
                     <div class="ml-2">
                         <UserSelectedRhsValue {filter} {filterActionHandler}/>
                     </div>
             {/if}
         {/if}
         <div class="ml-2 self-center">
-            <button class="btn btn-ghost btn-active btn-xs" title="Delete this {filterAlias}">Delete</button>
+            <button class="btn btn-ghost btn-active btn-xs" title="Delete this {filterAlias}" on:click={() => deleteFilter(filter)}>Delete</button>
         </div>
     </div>
 {/each}

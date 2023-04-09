@@ -1,45 +1,14 @@
 import { objects, StringKeyedObject, uuids } from '@cozemble/lang-util'
 
-interface StringFilterType {
-  _type: 'string'
+export interface FilterDataType {
+  value: string
 }
-
-interface NumberFilterType {
-  _type: 'number'
-}
-
-interface DateFilterType {
-  _type: 'date'
-  includeTime: boolean
-}
-
-interface LinkFilterType {
-  _type: 'link'
-}
-
-export function linkFilterType(): LinkFilterType {
-  return { _type: 'link' }
-}
-
-export function dateFilterType(includeTime = false): DateFilterType {
-  return { _type: 'date', includeTime }
-}
-
-export function stringFilterType(): StringFilterType {
-  return { _type: 'string' }
-}
-
-export type FilterDataType = StringFilterType | NumberFilterType | DateFilterType | LinkFilterType
 
 export interface FilterOperator {
   _type: 'filter.operator'
   id: string
   label: string
   requiresRhs: boolean
-}
-
-function filterOperator(id: string, label: string, requiresRhs = true): FilterOperator {
-  return { _type: 'filter.operator', id, label, requiresRhs }
 }
 
 export const filterOperatorFns = {
@@ -170,13 +139,16 @@ function fullySpecified(
     selectedOperatorOption,
     rhsValue,
   }
-  if (!filterInstances.isFullySpecified(instance)) {
+  if (!filterInstanceFns.isFullySpecified(instance)) {
     throw new Error('not fully specified')
   }
   return instance
 }
 
-export const filterInstances = {
+export const filterInstanceFns = {
+  newInstance: function (lhsOptions: LhsOption[]): FilterInstance {
+    return filterInstance(lhsOptions)
+  },
   getRhsValue: function (instance: FilterInstance, context: StringKeyedObject): any | null {
     if (instance.rhsValue === null) {
       return null
@@ -269,13 +241,13 @@ function flattenFilterGroupList(list: FilterGroupList): FilterInstance[] {
 
 function fullySpecifiedFilterInstances(list: FilterGroupList): FilterInstance[] {
   return flattenFilterGroupList(list).filter((instance) =>
-    filterInstances.isFullySpecified(instance),
+    filterInstanceFns.isFullySpecified(instance),
   )
 }
 
 function allFiltersAreFullySpecified(list: FilterGroupList): boolean {
   return flattenFilterGroupList(list).every((instance) =>
-    filterInstances.isFullySpecified(instance),
+    filterInstanceFns.isFullySpecified(instance),
   )
 }
 
@@ -294,6 +266,9 @@ export const filterGroupListFns = {
   },
   filterInstanceCount: function (list: FilterGroupList): number {
     return flattenFilterGroupList(list).length
+  },
+  isEmpty: function (list: FilterGroupList): boolean {
+    return !filterGroupListFns.hasFilterInstances(list)
   },
 }
 

@@ -1,15 +1,15 @@
 <script lang="ts">
-    import type {FilterInstance} from "@cozemble/data-filters";
-    import type {FilterActionHandler} from "@cozemble/data-filters";
-    import {filterActions} from "@cozemble/data-filters";
-    import {filterInstances} from "@cozemble/data-filters";
+    import type {FilterInstance} from "@cozemble/data-filters-core";
+    import type {FilterActionHandler} from "@cozemble/data-filters-core";
+    import {filterActions} from "@cozemble/data-filters-core";
+    import {filterInstanceFns} from "@cozemble/data-filters-core";
     import {uuids} from "@cozemble/lang-util";
 
     export let filter: FilterInstance
     export let filterActionHandler: FilterActionHandler
     const id = uuids.v4()
 
-    let initialDate = filterInstances.getRhsValue(filter, {}) ?? null
+    let initialDate = filterInstanceFns.getRhsValue(filter, {}) ?? null
 
     function dateSelected(event:Event) {
         const target = event.target as HTMLInputElement

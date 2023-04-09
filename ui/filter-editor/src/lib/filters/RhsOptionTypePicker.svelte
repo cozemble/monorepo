@@ -1,9 +1,8 @@
 <script lang="ts">
-    import type {FilterInstance} from "@cozemble/data-filters";
-    import type {FilterActionHandler} from "@cozemble/data-filters";
+    import type {FilterInstance} from "@cozemble/data-filters-core";
+    import type {FilterActionHandler} from "@cozemble/data-filters-core";
     import {isSelectedRhsOption, rhsOptionsAsSelectOptions} from "./rhsOptionsAsSelectOptions";
-    import type {SelectChangeEvent} from "./types";
-    import {filterActions} from "@cozemble/data-filters";
+    import {filterActions} from "@cozemble/data-filters-core";
     import {mandatory} from "@cozemble/lang-util";
 
     export let filter: FilterInstance

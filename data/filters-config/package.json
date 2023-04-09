@@ -1,5 +1,5 @@
 {
-  "name": "@cozemble/data-filters",
+  "name": "@cozemble/data-filters-config",
   "version": "1.0.0",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -17,6 +17,6 @@
     "vitest": "^0.26.2"
   },
   "dependencies": {
-    "@cozemble/lang-util": "workspace:*"
+    "@cozemble/data-filters-core": "workspace:* "
   }
 }

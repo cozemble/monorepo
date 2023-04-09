@@ -1,7 +1,8 @@
 <script lang="ts">
     import {getFilterablePaths} from "./filtering";
     import type {Model} from "@cozemble/model-core";
-    import type {FilterActionHandler, FilterGroupList} from "@cozemble/data-filters";
+    import {FilterManagement} from "@cozemble/ui-filter-editor";
+    import type {FilterActionHandler, FilterGroupList} from "@cozemble/data-filters-core";
 
     export let model: Model
     export let models: Model[]
@@ -11,4 +12,4 @@
     const filterablePaths = getFilterablePaths(models, model)
 </script>
 
-<button class="btn btn-ghost btn-active">Add filter</button>
+<FilterManagement rootGroupList={rootFilter} {filterActionHandler} allowGroups={false}/>

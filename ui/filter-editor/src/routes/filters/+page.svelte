@@ -1,6 +1,6 @@
 <script lang="ts">
-    import type {FilterAction} from "@cozemble/data-filters";
-    import {partiallyAppliedFilterGroupListReducer} from "@cozemble/data-filters";
+    import type {FilterAction} from "@cozemble/data-filters-core";
+    import {partiallyAppliedFilterGroupListReducer} from "@cozemble/data-filters-core";
     import FilterManagement from "../../lib/filters/FilterManagement.svelte";
     import {rootGroupList, sampleLhsOptions} from "../instances/+server";
 

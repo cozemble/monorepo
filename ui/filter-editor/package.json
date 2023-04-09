@@ -31,7 +31,8 @@
   "type": "module",
   "dependencies": {
     "@cozemble/lang-util": "workspace:*",
-    "@cozemble/data-filters": "workspace:*",
+    "@cozemble/data-filters-core": "workspace:*",
+    "@cozemble/data-filters-config": "workspace:*",
     "@cozemble/ui-atoms": "workspace:*",
     "@tailwindcss/typography": "^0.5.9"
   }

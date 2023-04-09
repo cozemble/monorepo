@@ -1,5 +1,5 @@
-import type { FilterInstance, IdAndLabel, LhsOption } from '@cozemble/data-filters'
-import { idAndLabel } from '@cozemble/data-filters'
+import type { FilterInstance, IdAndLabel, LhsOption } from '@cozemble/data-filters-core'
+import { idAndLabel } from '@cozemble/data-filters-core'
 import type { IdLabelAndValue } from '@cozemble/lang-util'
 
 export type RhsOptionType = IdAndLabel | IdLabelAndValue
