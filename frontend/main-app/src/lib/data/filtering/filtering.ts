@@ -29,11 +29,8 @@ import {
   eventSourcedDataRecordFns,
   type UploadedAttachment,
 } from '@cozemble/data-editor-sdk'
-import type {
-  FilterGroupList,
-  FilterInstanceList,
-  FilterOperator,
-} from '@cozemble/data-filters-core/dist/esm'
+import type { FilterGroupList, FilterInstanceList } from '@cozemble/data-filters-core'
+import type { FilledFilterInstanceGroup } from '@cozemble/backend-tenanted-api-types'
 
 export function getFilterablePaths(models: Model[], model: Model): ModelPath<ModelPathElement>[] {
   return modelFns.allPaths(models, model).filter((path) => {
@@ -144,19 +141,6 @@ export function createModelAndRecordForFiltering(
   }
 
   return { model: model.model, record, recordPath, editorComponent, editorClient }
-}
-
-export interface FilledFilterInstance {
-  _type: 'filled.filter.instance'
-  dottedIdLhs: string
-  rhsValue: any
-  operation: FilterOperator
-}
-
-export interface FilledFilterInstanceGroup {
-  _type: 'filled.filter.instance.group'
-  conjunction: 'and' | 'or'
-  instances: FilledFilterInstance[]
 }
 
 export function toFilledFilterInstanceGroup(fgl: FilterGroupList): FilledFilterInstanceGroup {

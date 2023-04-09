@@ -205,11 +205,13 @@ importers:
 
   backend/tenanted-api-types:
     specifiers:
+      '@cozemble/data-filters-core': workspace:*
       '@cozemble/model-core': workspace:*
       typescript: ^5.0.2
       vite: 4.1.4
       vitest: ^0.26.2
     dependencies:
+      '@cozemble/data-filters-core': link:../../data/filters-core
       '@cozemble/model-core': link:../../model/core
     devDependencies:
       typescript: 5.0.2

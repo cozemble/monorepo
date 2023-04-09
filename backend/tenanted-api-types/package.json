@@ -17,6 +17,7 @@
     "vitest": "^0.26.2"
   },
   "dependencies": {
-    "@cozemble/model-core": "workspace:*"
+    "@cozemble/model-core": "workspace:*",
+    "@cozemble/data-filters-core": "workspace:*"
   }
 }
