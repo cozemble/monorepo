@@ -1,7 +1,11 @@
 import { uuids } from '@cozemble/lang-util'
 import { beforeAll, describe, expect, test } from 'vitest'
 import { appWithTestContainer } from '../../src/appWithTestContainer'
-import { BackendModel, savableRecords } from '@cozemble/backend-tenanted-api-types'
+import {
+  BackendModel,
+  filterRequestPayloadFns,
+  savableRecords,
+} from '@cozemble/backend-tenanted-api-types'
 import { dataRecordFns, modelFns } from '@cozemble/model-api'
 import {
   ModelEvent,
@@ -166,6 +170,13 @@ describe('with a migrated database', () => {
 
     const getResponse = await fetch(
       `http://localhost:3002/api/v1/tenant/${tenantId}/model/x/record`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(filterRequestPayloadFns.newInstance(null, null)),
+      },
     )
     expect(getResponse.status).toBe(401)
   })
@@ -182,9 +193,12 @@ describe('with a migrated database', () => {
     const getResponse = await fetch(
       `http://localhost:3002/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record`,
       {
+        method: 'POST',
         headers: {
+          'Content-Type': 'application/json',
           Authorization: 'Bearer ' + bearer,
         },
+        body: JSON.stringify(filterRequestPayloadFns.newInstance(null, null)),
       },
     )
     expect(getResponse.status).toBe(200)
@@ -247,9 +261,12 @@ describe('with a migrated database', () => {
     const getResponse = await fetch(
       `http://localhost:3002/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record`,
       {
+        method: 'POST',
         headers: {
+          'Content-Type': 'application/json',
           Authorization: 'Bearer ' + bearer,
         },
+        body: JSON.stringify(filterRequestPayloadFns.newInstance(null, null)),
       },
     )
     expect(getResponse.status).toBe(200)

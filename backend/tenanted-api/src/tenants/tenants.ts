@@ -114,16 +114,6 @@ router.put('/:tenantId/model/:modelId/record', (req: Request, res: Response) => 
   })
 })
 
-router.get('/:tenantId/model/:modelId/record', (req: Request, res: Response) => {
-  return authenticatedDatabaseRequest(req, res, async (client) => {
-    const result = await client.query(
-      'select * from get_records(text2Ltree($1), $2, $3, $4) as records;',
-      [req.params.tenantId, req.params.modelId, req.query.q, JSON.stringify({})],
-    )
-    return res.status(200).json(result.rows[0].records)
-  })
-})
-
 router.post('/:tenantId/model/:modelId/record', (req: Request, res: Response) => {
   if (req.body._type !== 'filter.request.payload') {
     console.error('Body is not an instance of filter.request.payload: ' + JSON.stringify(req.body))
