@@ -7,7 +7,7 @@
 
 </script>
 {#if $modelBeingEdited}
-    <EditModel modelId={$modelBeingEdited.modelId} {tenantId} on:finished={() => modelBeingEdited.set(null)}/>
+    <EditModel modelId={$modelBeingEdited.modelId} {tenantId} editImmediately={$modelBeingEdited.context === 'create'} on:finished={() => modelBeingEdited.set(null)}/>
 {:else}
     {#if $allModels.length === 0}
         <p>Everything in cozemble is based on models. Click the button below to create your first one.</p>

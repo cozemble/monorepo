@@ -12,6 +12,8 @@
 
     export let tenantId: string
     export let modelId: ModelId
+    export let editImmediately = false
+
     const dispatch = createEventDispatcher()
     let showModelSaveButtons = true
 
@@ -53,6 +55,7 @@
 <div class="mt-3">
     {#if sectionToShow === 'model'}
         <ModelEditor systemConfiguration={getSystemConfiguration($tenantEntities)} {allModels} {host} {modelId}
+                     {editImmediately}
                      on:editingSomething={editingSomething}/>
         <br/>
         {#if showModelSaveButtons}

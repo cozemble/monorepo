@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {EditableName} from '@cozemble/ui-atoms'
+    import {EditableName, PencilIcon} from '@cozemble/ui-atoms'
     import type {ModelEditorHost} from './ModelEditorHost'
     import ModelStructureEditor from './ModelStructureEditor.svelte'
     import type {ModelId, SystemConfiguration} from '@cozemble/model-core'
@@ -7,13 +7,12 @@
     import type {EventSourcedModel} from '@cozemble/model-event-sourced'
     import {coreModelEvents} from '@cozemble/model-event-sourced'
     import type {Writable} from 'svelte/store'
-    import {afterUpdate} from 'svelte'
 
     export let modelId: ModelId
     export let host: ModelEditorHost
     export let allModels: Writable<EventSourcedModel[]>
     export let systemConfiguration: SystemConfiguration
-
+    export let editImmediately = false
 
     $: eventSourced = host.modelWithId($allModels, modelId)
 
@@ -27,14 +26,31 @@
         )
     }
 
-    afterUpdate(() => console.log({eventSourced}))
 </script>
 
 {#if eventSourced}
-    <EditableName
-            nameable={{ name: eventSourced.model.name.value }}
-            {onNameChange}
-            extraClass="model-name"/>
+    <div class="flex">
+        <EditableName
+                nameable={{ name: eventSourced.model.name.value }}
+                {onNameChange} {editImmediately}
+                extraClass="model-name"/>
+        <div class="icon-container">
+            <PencilIcon/>
+        </div>
+    </div>
 
     <ModelStructureEditor {systemConfiguration} {eventSourced} {host} allModels={$allModels} on:editingSomething/>
 {/if}
+
+<style>
+    .flex {
+        display: flex;
+        align-items: center;
+        flex-direction: row;
+    }
+
+    .icon-container {
+        margin-left: 0.5em;
+        width: 1em;
+    }
+</style>
