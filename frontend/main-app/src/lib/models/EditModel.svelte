@@ -4,11 +4,10 @@
     import {ModelEditor} from "@cozemble/model-editor";
     import type {ModelId, ModelViewId} from "@cozemble/model-core";
     import {createEventDispatcher} from "svelte";
-    import {putEditedSummaryView, putNewSummaryView, tenantEntities} from "./tenantEntityStore";
+    import {putEditedSummaryView, putNewSummaryView, systemConfiguration, tenantEntities} from "./tenantEntityStore";
     import {getSummaryView} from "./views";
     import EditModelSummaryView from './EditModelSummaryView.svelte';
     import CreateModelSummaryView from './CreateModelSummaryView.svelte';
-    import {getSystemConfiguration} from "../models/tenantEntityStore";
 
     export let tenantId: string
     export let modelId: ModelId
@@ -54,7 +53,7 @@
 
 <div class="mt-3">
     {#if sectionToShow === 'model'}
-        <ModelEditor systemConfiguration={getSystemConfiguration($tenantEntities)} {allModels} {host} {modelId}
+        <ModelEditor systemConfiguration={$systemConfiguration} {allModels} {host} {modelId}
                      {editImmediately}
                      on:editingSomething={editingSomething}/>
         <br/>

@@ -3,7 +3,7 @@
     import {PaginatedEditor} from "@cozemble/data-paginated-editor";
     import type {Writable} from "svelte/store";
     import {createEventDispatcher} from "svelte";
-    import {getSystemConfiguration, modelViews, tenantEntities} from "../models/tenantEntityStore";
+    import {modelViews, systemConfiguration} from "../models/tenantEntityStore";
     import {makePaginatedEditorHost} from "./paginatedEditorHost";
     import ShowFilterButton from "./filtering/ShowFilterButton.svelte";
     import FilterConfigurer from "./filtering/FilterConfigurer.svelte";
@@ -60,7 +60,7 @@
     {/if}
 </div>
 <div class="mt-2">
-    <PaginatedEditor systemConfiguration={getSystemConfiguration($tenantEntities)} {models} {model}
+    <PaginatedEditor systemConfiguration={$systemConfiguration} {models} {model}
                      modelViews={$modelViews} records={$records} {paginatedEditorHost}/>
 </div>
 <style>

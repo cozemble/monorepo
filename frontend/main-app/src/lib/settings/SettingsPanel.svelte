@@ -1,16 +1,16 @@
 <script lang="ts">
     import {slotSystemConfigurationDescriptors} from "@cozemble/model-core";
-    import {getSystemConfiguration, saveSystemConfiguration, tenantEntities} from "../models/tenantEntityStore";
+    import {saveSystemConfiguration, systemConfiguration} from "../models/tenantEntityStore";
     import {writable} from "svelte/store";
     import ErrorMessage from "../util/ErrorMessage.svelte";
 
     export let tenantId: string;
     let error: string | null = null
 
-    const systemConfiguration = writable(getSystemConfiguration($tenantEntities))
+    const writableSystemConfiguration = writable($systemConfiguration)
 
     async function save() {
-        await saveSystemConfiguration(tenantId, $systemConfiguration).catch(e => error = e.message)
+        await saveSystemConfiguration(tenantId, $writableSystemConfiguration).catch(e => error = e.message)
     }
 
 </script>
@@ -18,7 +18,7 @@
     {#await slot.editorComponent()}
     {:then component}
         <svelte:component this={component} {tenantId}
-                          {systemConfiguration}/>
+                          systemConfiguration={writableSystemConfiguration}/>
     {/await}
 {/each}
 

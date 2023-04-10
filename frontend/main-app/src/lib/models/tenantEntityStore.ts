@@ -19,7 +19,7 @@ export const modelViews = derived(
 )
 export const systemConfiguration = derived(tenantEntities, getSystemConfiguration)
 
-export function getSystemConfiguration(entities: TenantEntity[]): SystemConfiguration {
+function getSystemConfiguration(entities: TenantEntity[]): SystemConfiguration {
   return ensureDefaultSystemConfiguration(
     (entities.find((e) => e._type === 'system.configuration') as SystemConfiguration) ??
       systemConfigurationFns.empty(),

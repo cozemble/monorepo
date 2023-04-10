@@ -4,7 +4,7 @@
     import {onMount} from "svelte";
     import {makeOnNewRecord, referencingRecordsHelper} from "./referencingRecordsHelper";
     import ErrorMessage from "../util/ErrorMessage.svelte";
-    import {getSystemConfiguration, modelViews, tenantEntities} from "../models/tenantEntityStore";
+    import {modelViews, systemConfiguration} from "../models/tenantEntityStore";
     import {PaginatedEditor} from "@cozemble/data-paginated-editor";
     import {type Writable, writable} from "svelte/store";
     import {makePaginatedEditorHost} from "./paginatedEditorHost";
@@ -28,18 +28,18 @@
                 error = `Expected exactly one path referencing model ${targetModel.name.value} from model ${referencingModel.name.value}, found ${pathsReferencingTargetModel.length}`
                 return
             }
-            onNewRecordAssignReference = makeOnNewRecord(getSystemConfiguration($tenantEntities),pathsReferencingTargetModel, record)
+            onNewRecordAssignReference = makeOnNewRecord($systemConfiguration, pathsReferencingTargetModel, record)
             const loaded = await referencingRecordsHelper(tenantId, record.id, referencingModel.id)
             referencingRecords.set(loaded)
         } catch (e: any) {
             error = e.message
         }
     })
-    const paginatedEditorHost = makePaginatedEditorHost(tenantId,models, referencingModel, referencingRecords)
+    const paginatedEditorHost = makePaginatedEditorHost(tenantId, models, referencingModel, referencingRecords)
 </script>
 
 <div class="mt-2">
-    <PaginatedEditor {models} systemConfiguration={getSystemConfiguration($tenantEntities)}
+    <PaginatedEditor {models} systemConfiguration={$systemConfiguration}
                      model={referencingModel}
                      modelViews={$modelViews}
                      records={$referencingRecords}

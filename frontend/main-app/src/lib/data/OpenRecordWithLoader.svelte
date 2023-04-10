@@ -6,7 +6,7 @@
     import {findRecordById, loadRecords} from "./loadRecords";
     import type {AttachmentsManager, RecordSaveOutcome, RecordSearcher} from "@cozemble/data-paginated-editor";
     import {RecordEditContext, StackingRecordEditor} from "@cozemble/data-paginated-editor";
-    import {getSystemConfiguration, modelViews, tenantEntities} from "../models/tenantEntityStore";
+    import {modelViews, systemConfiguration} from "../models/tenantEntityStore";
     import {saveRecord} from "./recordBackendHelper";
     import type {AttachmentIdAndFileName, EventSourcedDataRecord, UploadedAttachment} from "@cozemble/data-editor-sdk";
     import {dataRecordViewerHost, eventSourcedDataRecordFns} from "@cozemble/data-editor-sdk";
@@ -33,7 +33,7 @@
     })
 
     async function onSaveRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
-        return saveRecord(tenantId, models,newRecord)
+        return saveRecord(tenantId, models, newRecord)
     }
 
     const recordSearcher: RecordSearcher = {
@@ -68,7 +68,7 @@
         openRecordViews.close(openRecord.recordId)
     }
 
-    dataRecordViewerHost.setClient(makeDataRecordViewer(getSystemConfiguration($tenantEntities),models, $modelViews, recordSearcher, attachmentsManager, onSaveRecord, onError))
+    dataRecordViewerHost.setClient(makeDataRecordViewer($systemConfiguration, models, $modelViews, recordSearcher, attachmentsManager, onSaveRecord, onError))
 
     function onError(e: Error) {
         error = e.message
@@ -100,7 +100,7 @@
     {#if tabShowing === 'recordDetails'}
         {#if record}
             <StackingRecordEditor {recordSearcher} modelViews={$modelViews} {attachmentsManager}
-                                  recordEditContext={new RecordEditContext( models, onSaveRecord,eventSourcedDataRecordFns.fromRecord(models, record), onSaveRecord, closeView, `` ,getSystemConfiguration($tenantEntities))}
+                                  recordEditContext={new RecordEditContext( models, onSaveRecord,eventSourcedDataRecordFns.fromRecord(models, record), onSaveRecord, closeView, `` ,$systemConfiguration)}
                                   cancelButtonText="Close"/>
         {/if}
     {:else}
