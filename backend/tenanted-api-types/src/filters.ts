@@ -1,9 +1,16 @@
 import { FilterOperator } from '@cozemble/data-filters-core'
 
+export interface Value {
+  _type: 'value'
+  value: any
+}
+
+export type RhsValue = Value
+
 export interface FilledFilterInstance {
   _type: 'filled.filter.instance'
   dottedIdLhs: string
-  rhsValue: any
+  rhsValue: RhsValue | null
   operation: FilterOperator
 }
 

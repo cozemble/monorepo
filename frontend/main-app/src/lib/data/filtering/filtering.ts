@@ -16,7 +16,12 @@ import {
 } from '@cozemble/model-core'
 import { dataRecordFns, dataRecordValuePathFns, modelFns, modelPathFns } from '@cozemble/model-api'
 import { filterOperations } from '@cozemble/data-filters-config'
-import type { FilterDataType, LhsOption } from '@cozemble/data-filters-core'
+import type {
+  FilterDataType,
+  FilterGroupList,
+  FilterInstanceList,
+  LhsOption,
+} from '@cozemble/data-filters-core'
 import { lhsOption, userSuppliedRhsOption } from '@cozemble/data-filters-core'
 import { mandatory } from '@cozemble/lang-util'
 import { eventSourcedModelFns } from '@cozemble/model-event-sourced'
@@ -29,8 +34,7 @@ import {
   eventSourcedDataRecordFns,
   type UploadedAttachment,
 } from '@cozemble/data-editor-sdk'
-import type { FilterGroupList, FilterInstanceList } from '@cozemble/data-filters-core'
-import type { FilledFilterInstanceGroup } from '@cozemble/backend-tenanted-api-types'
+import type { FilledFilterInstanceGroup, RhsValue } from '@cozemble/backend-tenanted-api-types'
 
 export function getFilterablePaths(models: Model[], model: Model): ModelPath<ModelPathElement>[] {
   return modelFns.allPaths(models, model).filter((path) => {
@@ -162,13 +166,13 @@ export function toFilledFilterInstanceGroup(fgl: FilterGroupList): FilledFilterI
       if (filter.selectedOperatorOption === null) {
         throw new Error('No selected operator option')
       }
-      let rhsValue = null
+      let rhsValue: RhsValue | null = null
       if (filter.selectedOperatorOption.requiresRhs) {
         if (filter.rhsValue === null) {
           throw new Error('No rhs value')
         }
         if (filter.rhsValue._type === 'user.supplied.rhs.option.with.value') {
-          rhsValue = filter.rhsValue.value.value
+          rhsValue = { _type: 'value', value: filter.rhsValue.value.value }
         } else {
           throw new Error('Only user.supplied.rhs.option.with.value is supported')
         }

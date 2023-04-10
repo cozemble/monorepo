@@ -42,4 +42,4 @@ export { SavableRecords, SavableRecord, JsonPath, savableRecords } from './recor
 
 export { ErrorType, ConflictErrorType } from './errorsTypes'
 
-export { FilledFilterInstanceGroup, FilledFilterInstance } from './filters'
+export { FilledFilterInstanceGroup, FilledFilterInstance, Value, RhsValue } from './filters'
