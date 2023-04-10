@@ -33,6 +33,13 @@ export interface FilterRequestPayload {
 }
 
 export const filledFilterInstanceGroupFns = {
+  empty(): FilledFilterInstanceGroup {
+    return {
+      _type: 'filled.filter.instance.group',
+      conjunction: 'and',
+      instances: [],
+    }
+  },
   where: (lhs: string, operation: FilterOperator, rhs: any): FilledFilterInstanceGroup => ({
     _type: 'filled.filter.instance.group',
     conjunction: 'and',

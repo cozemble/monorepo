@@ -1,15 +1,20 @@
-import type { DataRecordId, ModelId } from '@cozemble/model-core'
+import type { DataRecord, DataRecordId, ModelId } from '@cozemble/model-core'
 import { cozauth } from '../auth/cozauth'
 import { fetchRecords } from './fetchRecords'
-import type { DataRecord } from '@cozemble/model-core'
 import { config } from '../config'
+import { filledFilterInstanceGroupFns } from '@cozemble/backend-tenanted-api-types/dist/esm'
 
-export async function loadRecords(tenantId: string, modelId: string, search: string | null = null) {
+export async function loadRecords(
+  tenantId: string,
+  modelId: string,
+  search: string | null = null,
+  filters = filledFilterInstanceGroupFns.empty(),
+) {
   const accessToken = await cozauth.getAccessToken(cozauth.getTenantRoot(tenantId))
   if (!accessToken) {
     throw new Error('Failed to get accessToken')
   }
-  const recordsResponse = await fetchRecords(tenantId, modelId, accessToken, search)
+  const recordsResponse = await fetchRecords(tenantId, modelId, accessToken, search, filters)
   if (!recordsResponse.ok) {
     throw new Error(`Failed to fetch records`)
   }

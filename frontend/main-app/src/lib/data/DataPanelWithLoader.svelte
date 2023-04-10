@@ -5,10 +5,13 @@
     import {onDestroy, onMount} from "svelte";
     import DataPanelInner from "./DataPanelInner.svelte";
     import {toFilledFilterInstanceGroup} from "./filtering/filtering";
+    import {filledFilterInstanceGroupFns} from "@cozemble/backend-tenanted-api-types";
 
     export let tenantId: string
     export let models: Model[]
     export let model: Model
+    let searchText: string | null = null
+    let filters = filledFilterInstanceGroupFns.empty()
 
     onMount(async () => {
         try {
@@ -20,9 +23,9 @@
     })
 
     async function searchTextChanged(event: CustomEvent) {
-        const searchText = event.detail
+        searchText = event.detail
         try {
-            const loaded = await loadRecords(tenantId, model.id.value, searchText)
+            const loaded = await loadRecords(tenantId, model.id.value, searchText, filters)
             records.set(loaded.records)
         } catch (e) {
             console.error(e)
@@ -30,12 +33,18 @@
     }
 
     async function filtersChanged(event: CustomEvent) {
-        const filters = event.detail
-        const filledFilters = toFilledFilterInstanceGroup(filters)
-        console.log({filters, filledFilters})
+        const editedFilters = event.detail
+        filters = toFilledFilterInstanceGroup(editedFilters)
+        try {
+            const loaded = await loadRecords(tenantId, model.id.value, searchText, filters)
+            records.set(loaded.records)
+        } catch (e) {
+            console.error(e)
+        }
     }
 
     onDestroy(() => records.set([]))
 </script>
 
-<DataPanelInner {models} {model} {tenantId} {records} on:searchTextChanged={searchTextChanged} on:filtersChanged={filtersChanged}/>
+<DataPanelInner {models} {model} {tenantId} {records} on:searchTextChanged={searchTextChanged}
+                on:filtersChanged={filtersChanged}/>
