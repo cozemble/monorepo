@@ -24,17 +24,17 @@ export interface AttachmentIdAndFileName {
 }
 
 export interface DataRecordEditorClient {
-  createNewRecord(modelId: ModelId): Promise<DataRecord | null>
-
   dispatchControlEvent(event: DataRecordControlEvent): void
 
   dispatchEditEvent(event: DataRecordEditEvent): void
 
+  createNewRecord(modelId: ModelId): Promise<DataRecord | null>
+
   searchRecords(modelId: ModelId, search: string): Promise<DataRecord[]>
 
-  getModelViews(modelId: ModelId): ModelView[]
-
   getModels(): Model[]
+
+  getModelViews(modelId: ModelId): ModelView[]
 
   uploadAttachments(
     files: File[],

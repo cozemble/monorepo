@@ -1,12 +1,10 @@
 <script lang="ts">
-    import type {DataRecord, DataRecordValuePath} from '@cozemble/model-core'
-    import {dataRecordEditor} from "@cozemble/data-editor-sdk";
+    import type {DataRecord, DataRecordValuePath, SystemConfiguration} from '@cozemble/model-core'
+    import {dataRecordEditEvents, dataRecordEditor} from "@cozemble/data-editor-sdk";
     import type {AttachmentList, AttachmentReference} from "@cozemble/model-attachment-core";
     import {dataRecordValuePathFns} from "@cozemble/model-api";
-    import {dataRecordEditEvents} from "@cozemble/data-editor-sdk";
     import AttachmentView from "./AttachmentView.svelte";
     import AttachmentsRibbon from "./AttachmentsRibbon.svelte";
-    import type {SystemConfiguration} from "@cozemble/model-core";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord
@@ -17,10 +15,9 @@
     let uploading = false
     let selectedAttachments: AttachmentReference[] = []
 
-
     const dataRecordEditorClient = dataRecordEditor.getClient()
 
-    let attachments = dataRecordValuePathFns.getValue(systemConfiguration,recordPath, record) as AttachmentList ?? ({
+    let attachments = dataRecordValuePathFns.getValue(systemConfiguration, recordPath, record) as AttachmentList ?? ({
         _type: 'attachment.list',
         attachmentReferences: []
     })
@@ -32,7 +29,6 @@
             selectedAttachments = [...selectedAttachments, attachment]
         }
     }
-
 
     function uploadProgressUpdate(percentage: number) {
         console.log("Upload progress:", percentage)
@@ -64,7 +60,6 @@
                 ...attachments,
                 attachmentReferences: [...attachments.attachmentReferences, ...newAttachmentRefs]
             }
-            console.log({files: fileList, uploaded, newAttachments})
             dataRecordEditorClient.dispatchEditEvent(
                 dataRecordEditEvents.valueChanged(
                     record,
