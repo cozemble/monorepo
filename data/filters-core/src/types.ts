@@ -4,16 +4,60 @@ export interface FilterDataType {
   value: string
 }
 
+export interface PostgresComparatorTemplate {
+  _type: 'postgres.comparator.template'
+  template: string
+}
+
+export type LiteralPostgresComparatorValue =
+  | '='
+  | '<'
+  | '<='
+  | '>'
+  | '>='
+  | '!='
+  | '<>'
+  | 'is null'
+  | 'is not null'
+
+export interface LiteralPostgresComparator {
+  _type: 'literal.postgres.comparator'
+  value: LiteralPostgresComparatorValue
+}
+
+export function literalPostgresComparator(
+  value: LiteralPostgresComparatorValue,
+): LiteralPostgresComparator {
+  return { _type: 'literal.postgres.comparator', value }
+}
+
+export const postgresComparatorTemplateFns = {
+  newInstance: (template: string): PostgresComparatorTemplate => {
+    return { _type: 'postgres.comparator.template', template }
+  },
+  fillValue: (template: PostgresComparatorTemplate, value: string): string => {
+    return template.template.replace('{{value}}', value)
+  },
+}
+
+export type PostgresComparator = LiteralPostgresComparator | PostgresComparatorTemplate
+
 export interface FilterOperator {
   _type: 'filter.operator'
   id: string
   label: string
+  postgresComparator: PostgresComparator
   requiresRhs: boolean
 }
 
 export const filterOperatorFns = {
-  newInstance: (id: string, label: string, requiresRhs = true): FilterOperator => {
-    return { _type: 'filter.operator', id, label, requiresRhs }
+  newInstance: (
+    id: string,
+    label: string,
+    postgresComparator: PostgresComparator,
+    requiresRhs = true,
+  ): FilterOperator => {
+    return { _type: 'filter.operator', id, label, postgresComparator, requiresRhs }
   },
 }
 

@@ -2,38 +2,55 @@ CREATE OR REPLACE FUNCTION get_records(
     given_tenant_id LTREE,
     given_model_id TEXT,
     given_q TEXT DEFAULT NULL,
+    given_conditions JSONB DEFAULT '{}'::jsonb,
     given_limit INTEGER DEFAULT 10,
     given_offset INTEGER DEFAULT 0
 )
     RETURNS JSONB AS
 $$
 DECLARE
-    records     JSONB[];
-    query_count INTEGER;
-    total_count INTEGER;
-    query_pages INTEGER;
-    total_pages INTEGER;
+    records      JSONB[];
+    query_count  INTEGER;
+    total_count  INTEGER;
+    query_pages  INTEGER;
+    total_pages  INTEGER;
+    where_clause TEXT := '';
+    key          TEXT;
+    value        TEXT;
+    query_str    TEXT;
 BEGIN
-    SELECT ARRAY(
-                   SELECT DISTINCT ON (o.id) o.definition
-                   FROM record o
-                            LEFT JOIN record c ON c.id = ANY (o.record_references) AND c.tenant = o.tenant
-                   WHERE o.model_id = given_model_id
-                     AND o.tenant = given_tenant_id
-                     AND (given_q IS NULL OR o.text ILIKE ('%' || given_q || '%') OR
-                          c.text ILIKE ('%' || given_q || '%'))
-                   ORDER BY o.id, o.created_at DESC
-                   LIMIT given_limit OFFSET given_offset
-               )
-    INTO records;
+    FOR key, value IN (SELECT * FROM jsonb_each_text(given_conditions))
+        LOOP
+            where_clause := where_clause || ' AND o.definition->''values''' || key || ' ' || value;
+        END LOOP;
 
-    SELECT COUNT(DISTINCT o.id) AS query_count
-    INTO query_count
-    FROM record o
-             LEFT JOIN record c ON c.id = ANY (o.record_references) AND c.tenant = o.tenant
-    WHERE o.model_id = given_model_id
-      AND o.tenant = given_tenant_id
-      AND (given_q IS NULL OR o.text ILIKE ('%' || given_q || '%') OR c.text ILIKE ('%' || given_q || '%'));
+    query_str := FORMAT('
+        SELECT ARRAY(
+            SELECT DISTINCT ON (o.id) o.definition
+            FROM record o
+            LEFT JOIN record c ON c.id = ANY (o.record_references) AND c.tenant = o.tenant
+            WHERE o.model_id = %L
+                AND o.tenant = %L'
+                            || where_clause || ' ' ||
+                        'AND (COALESCE(%L, '''') = '''' OR o.text ILIKE (''%%'' || %L || ''%%'') OR
+                        c.text ILIKE (''%%'' || %L || ''%%''))
+                    ORDER BY o.id, o.created_at DESC
+                    LIMIT %s OFFSET %s)',
+                        given_model_id, given_tenant_id, given_q, given_q, given_q, given_limit, given_offset
+        );
+
+    EXECUTE query_str INTO records;
+
+    EXECUTE FORMAT('
+        SELECT COUNT(DISTINCT o.id) AS query_count
+        FROM record o
+        LEFT JOIN record c ON c.id = ANY (o.record_references) AND c.tenant = o.tenant
+        WHERE o.model_id = %L
+            AND o.tenant = %L'
+                       || where_clause || ' ' ||
+                   'AND (COALESCE(%L, '''') = '''' OR o.text ILIKE (''%%'' || %L || ''%%'') OR c.text ILIKE (''%%'' || %L || ''%%''))',
+                   given_model_id, given_tenant_id, given_q, given_q, given_q
+        ) INTO query_count;
 
     SELECT COUNT(*) AS tc
     INTO total_count
@@ -54,4 +71,4 @@ BEGIN
             'records', records
         );
 END;
-$$ LANGUAGE plpgsql
+$$ LANGUAGE plpgsql;

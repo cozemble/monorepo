@@ -127,6 +127,7 @@ importers:
   backend/tenanted-api:
     specifiers:
       '@cozemble/backend-tenanted-api-types': workspace:*
+      '@cozemble/data-filters-core': workspace:*
       '@cozemble/lang-util': workspace:*
       '@cozemble/model-api': workspace:*
       '@cozemble/model-core': workspace:*
@@ -165,6 +166,7 @@ importers:
       vitest: ^0.26.2
     dependencies:
       '@cozemble/backend-tenanted-api-types': link:../tenanted-api-types
+      '@cozemble/data-filters-core': link:../../data/filters-core
       '@cozemble/lang-util': link:../../lang/util
       '@cozemble/model-api': link:../../model/api
       '@cozemble/model-core': link:../../model/core

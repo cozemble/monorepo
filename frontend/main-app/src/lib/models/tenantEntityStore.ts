@@ -4,10 +4,7 @@ import type { Writable } from 'svelte/store'
 import { derived, writable } from 'svelte/store'
 import { cozauth } from '../auth/cozauth'
 import { config } from '../config'
-import {
-  slotSystemConfigurationDescriptors,
-  systemConfigurationFns,
-} from '@cozemble/model-core/dist/esm'
+import { slotSystemConfigurationDescriptors, systemConfigurationFns } from '@cozemble/model-core'
 
 export interface TenantEntity {
   _type: string

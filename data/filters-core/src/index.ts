@@ -29,6 +29,7 @@ export {
   selectableRhsOptionWithSelection,
   RealWorldRhsOption,
   realWorldRhsOption,
+  postgresComparatorTemplateFns,
 } from './types'
 
 export {
@@ -45,6 +46,6 @@ export {
   onOrAfterFilterOperator,
   dateOperators,
   stringOperators,
-  _ilikeFilterOperator,
   isNotNullFilterOperator,
+  containsFilterOperator,
 } from './operators'

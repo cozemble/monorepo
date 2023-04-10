@@ -1,9 +1,15 @@
 import { Request, Response, Router } from 'express'
 import { withAdminPgClient } from '../infra/postgresPool'
 import { authenticatedDatabaseRequest } from '../infra/authenticatedDatabaseRequest'
-import { BackendModel, CreateTenant, SavableRecords } from '@cozemble/backend-tenanted-api-types'
+import {
+  BackendModel,
+  CreateTenant,
+  FilterRequestPayload,
+  SavableRecords,
+} from '@cozemble/backend-tenanted-api-types'
 import { Model } from '@cozemble/model-core'
 import { modelFns, modelPathFns } from '@cozemble/model-api'
+import { formattedFilters } from './formattedFilters'
 
 const router: Router = Router()
 
@@ -26,7 +32,6 @@ interface SavableModel extends BackendModel {
 
 function uniquePathsInModel(models: Model[], model: Model): string[] {
   try {
-    const paths = modelFns.pathsToUniqueProperties(models, model)
     return modelFns
       .pathsToUniqueProperties(models, model)
       .map((p) => modelPathFns.toDottedIdPath(p).value)
@@ -89,7 +94,7 @@ router.post('/', (req: Request, res: Response) => {
 
 router.put('/:tenantId/model/:modelId/record', (req: Request, res: Response) => {
   if (req.body._type !== 'savable.records') {
-    console.log('Body is not an instance of savable.records: ' + JSON.stringify(req.body))
+    console.error('Body is not an instance of savable.records: ' + JSON.stringify(req.body))
     return res.status(400).send()
   }
   const records: SavableRecords = req.body
@@ -100,10 +105,8 @@ router.put('/:tenantId/model/:modelId/record', (req: Request, res: Response) => 
       [req.params.tenantId, JSON.stringify(records.records)],
     )
     if (result.rows.length === 0 || result.rows[0].records === null) {
-      console.info('No records returned from upsert_record: ' + JSON.stringify(result.rows))
       return res.status(400).send()
     }
-    console.log('Result from upsert_record: ' + JSON.stringify(result.rows[0].records))
     if (result.rows[0].records._type === 'error.conflict') {
       return res.status(409).json(result.rows[0].records)
     }
@@ -114,8 +117,24 @@ router.put('/:tenantId/model/:modelId/record', (req: Request, res: Response) => 
 router.get('/:tenantId/model/:modelId/record', (req: Request, res: Response) => {
   return authenticatedDatabaseRequest(req, res, async (client) => {
     const result = await client.query(
-      'select * from get_records(text2Ltree($1), $2, $3) as records;',
-      [req.params.tenantId, req.params.modelId, req.query.q],
+      'select * from get_records(text2Ltree($1), $2, $3, $4) as records;',
+      [req.params.tenantId, req.params.modelId, req.query.q, JSON.stringify({})],
+    )
+    return res.status(200).json(result.rows[0].records)
+  })
+})
+
+router.post('/:tenantId/model/:modelId/record', (req: Request, res: Response) => {
+  if (req.body._type !== 'filter.request.payload') {
+    console.error('Body is not an instance of filter.request.payload: ' + JSON.stringify(req.body))
+    return res.status(400).send()
+  }
+  const filter: FilterRequestPayload = req.body
+  const preppedFilters = filter.filter === null ? {} : formattedFilters(filter.filter)
+  return authenticatedDatabaseRequest(req, res, async (client) => {
+    const result = await client.query(
+      'select * from get_records(text2Ltree($1), $2, $3, $4) as records;',
+      [req.params.tenantId, req.params.modelId, filter.query, JSON.stringify(preppedFilters)],
     )
     return res.status(200).json(result.rows[0].records)
   })

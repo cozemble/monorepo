@@ -6,8 +6,12 @@ import type {
   LhsOption,
 } from '@cozemble/data-filters-core'
 import {
-  filterOperatorFns,
+  afterFilterOperator,
+  beforeFilterOperator,
+  containsFilterOperator,
+  equalsFilterOperator,
   idAndLabel,
+  isNullFilterOperator,
   lhsOption,
   realWorldRhsOption,
   selectableRhsOption,
@@ -16,22 +20,13 @@ import {
 } from '@cozemble/data-filters-core'
 import { uuids } from '@cozemble/lang-util'
 
-const equalsOperator = filterOperatorFns.newInstance('equals', 'equals')
-const beforeOperator = filterOperatorFns.newInstance('before', 'is before')
-const containsOperator = filterOperatorFns.newInstance('contains', 'contains')
-const isNullOperator = filterOperatorFns.newInstance('is null', 'is null', false)
 const dateOperators = [
-  equalsOperator,
-  beforeOperator,
-  filterOperatorFns.newInstance('after', '>'),
-  isNullOperator,
+  equalsFilterOperator,
+  beforeFilterOperator,
+  afterFilterOperator,
+  isNullFilterOperator,
 ]
-const stringOperators = [
-  equalsOperator,
-  containsOperator,
-  filterOperatorFns.newInstance('like', 'like'),
-  isNullOperator,
-]
+const stringOperators = [equalsFilterOperator, containsFilterOperator, isNullFilterOperator]
 
 const date1LhsOption = lhsOption('date#1', 'Date 1', { value: 'date' }, dateOperators, [
   userSuppliedRhsOption(),
@@ -69,7 +64,7 @@ export const date1EqualsToday: FilterInstance = {
   lhsOptions,
   rhsValue: userSuppliedRhsOptionWithValue(new Date()),
   selectedLhsOption: date1LhsOption,
-  selectedOperatorOption: equalsOperator,
+  selectedOperatorOption: equalsFilterOperator,
 }
 
 export const date2BeforeToday: FilterInstance = {
@@ -78,7 +73,7 @@ export const date2BeforeToday: FilterInstance = {
   lhsOptions,
   rhsValue: userSuppliedRhsOptionWithValue(new Date()),
   selectedLhsOption: date2LhsOption,
-  selectedOperatorOption: beforeOperator,
+  selectedOperatorOption: beforeFilterOperator,
 }
 
 export const date3InNull: FilterInstance = {
@@ -87,7 +82,7 @@ export const date3InNull: FilterInstance = {
   lhsOptions,
   rhsValue: null,
   selectedLhsOption: date3LhsOption,
-  selectedOperatorOption: isNullOperator,
+  selectedOperatorOption: isNullFilterOperator,
 }
 
 export const ownerContainsMike: FilterInstance = {
@@ -96,7 +91,7 @@ export const ownerContainsMike: FilterInstance = {
   lhsOptions,
   rhsValue: userSuppliedRhsOptionWithValue('Mike'),
   selectedLhsOption: ownerLhsOption,
-  selectedOperatorOption: containsOperator,
+  selectedOperatorOption: containsFilterOperator,
 }
 
 export const nameEqualsFred: FilterInstance = {
@@ -105,7 +100,7 @@ export const nameEqualsFred: FilterInstance = {
   lhsOptions,
   rhsValue: userSuppliedRhsOptionWithValue('Fred'),
   selectedLhsOption: nameLhsOption,
-  selectedOperatorOption: equalsOperator,
+  selectedOperatorOption: equalsFilterOperator,
 }
 
 export const group1List: FilterInstanceList = {

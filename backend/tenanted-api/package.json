@@ -49,6 +49,7 @@
     "@cozemble/model-core": "workspace:*",
     "@cozemble/model-event-sourced": "workspace:*",
     "@cozemble/model-string-core": "workspace:*",
+    "@cozemble/data-filters-core": "workspace:*",
     "@google-cloud/storage": "^6.9.4",
     "child-process-promise": "^2.2.1",
     "client-oauth2": "^4.3.3",
