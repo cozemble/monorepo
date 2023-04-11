@@ -2,8 +2,10 @@
 
     import type {ModelView, ModelViewId} from "@cozemble/model-core";
     import CreateModelSummaryView from "./CreateModelSummaryView.svelte";
+    import type {ModelId} from "@cozemble/model-core";
 
     export let summaryView: ModelView
+    export let modelId: ModelId
     export let saveHandler: (viewId: ModelViewId, template: string) => Promise<void>
 
     async function onSave(template: string) {
@@ -12,7 +14,7 @@
 </script>
 
 {#if summaryView.view._type === "summary.view"}
-    <CreateModelSummaryView template={summaryView.view.view.template} saveHandler={onSave}/>
+    <CreateModelSummaryView {modelId} template={summaryView.view.view.template} saveHandler={onSave}/>
 {:else}
     <p>Not a summary view</p>
 {/if}

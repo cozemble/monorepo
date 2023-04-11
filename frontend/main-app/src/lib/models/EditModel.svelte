@@ -65,9 +65,9 @@
     {#if sectionToShow === 'appearance'}
         <h4>Summary card HTML</h4>
         {#if summaryView}
-            <EditModelSummaryView {summaryView} saveHandler={summaryViewEdited}/>
+            <EditModelSummaryView {modelId} {summaryView} saveHandler={summaryViewEdited}/>
         {:else}
-            <CreateModelSummaryView saveHandler={summaryViewCreated}/>
+            <CreateModelSummaryView {modelId} saveHandler={summaryViewCreated}/>
         {/if}
     {/if}
 </div>
