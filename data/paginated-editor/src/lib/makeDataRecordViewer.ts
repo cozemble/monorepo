@@ -32,5 +32,6 @@ export function makeDataRecordViewer(
     recordById: paginatedEditorHost.recordById,
     getAttachmentViewUrls: paginatedEditorHost.getAttachmentViewUrls,
     dispatchEditEvent,
+    instructUser: paginatedEditorHost.instructUser,
   }
 }

@@ -4,13 +4,12 @@ import type {
   EventSourcedDataRecord,
 } from '@cozemble/data-editor-sdk'
 import { eventSourcedDataRecordFns } from '@cozemble/data-editor-sdk'
-import type { Model, ModelView } from '@cozemble/model-core'
+import type { Model, ModelView, SystemConfiguration } from '@cozemble/model-core'
 import type {
   AttachmentsManager,
   RecordSaveOutcome,
   RecordSearcher,
 } from '@cozemble/data-paginated-editor'
-import type { SystemConfiguration } from '@cozemble/model-core'
 
 export function makeDataRecordViewer(
   systemConfiguration: SystemConfiguration,
@@ -37,5 +36,8 @@ export function makeDataRecordViewer(
     recordById: recordSearcher.recordById,
     getAttachmentViewUrls: attachmentsManager.getAttachmentViewUrls,
     dispatchEditEvent,
+    instructUser: (userInstruction) => {
+      throw new Error('Not implemented')
+    },
   }
 }

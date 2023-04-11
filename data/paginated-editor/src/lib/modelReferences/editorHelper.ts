@@ -4,15 +4,17 @@ import type {
   Model,
   ModelHtmlTemplate,
   ModelId,
+  ModelReference,
 } from '@cozemble/model-core'
+import { modelReferenceFns } from '@cozemble/model-core'
 import type { DataRecordEditorClient, DataRecordViewerClient } from '@cozemble/data-editor-sdk'
+import { type UserInstruction, userInstructionFns } from '@cozemble/data-editor-sdk'
 import { applyTemplate, modelToJson } from '@cozemble/model-to-json'
 import { modelFns } from '@cozemble/model-api'
 import { strings } from '@cozemble/lang-util'
-import type { ModelReference } from '@cozemble/model-core'
-import { modelReferenceFns } from '@cozemble/model-core'
 
 export interface EditorParams {
+  _type: 'editor.params'
   modelReference: ModelReference
   referencedModel: Model
   referencedModelId: ModelId
@@ -23,7 +25,7 @@ export interface EditorParams {
 export function assembleEditorParams(
   client: DataRecordEditorClient | DataRecordViewerClient,
   recordPath: DataRecordValuePath,
-): EditorParams {
+): EditorParams | UserInstruction {
   const modelReference = recordPath.lastElement as ModelReference
   if (modelReference._type !== 'model.reference') {
     throw new Error('Expected a model reference')
@@ -41,7 +43,10 @@ export function assembleEditorParams(
     throw new Error('No referenced model')
   }
   if (!summaryView) {
-    throw new Error('No summary view for model ' + referencedModel.name.value)
+    return userInstructionFns.setupSummaryView(
+      'No summary view configured for model ' + referencedModel.name.value,
+      referencedModel.name,
+    )
   }
   if (summaryView.view._type !== 'summary.view') {
     throw new Error('Expected a summary view, got ' + summaryView.view._type + '')
@@ -50,6 +55,7 @@ export function assembleEditorParams(
     throw new Error('Expected a model html template, got ' + summaryView.view.view._type + '')
   }
   return {
+    _type: 'editor.params',
     modelReference,
     referencedModelId,
     referencedModel,

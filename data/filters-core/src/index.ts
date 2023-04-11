@@ -48,4 +48,5 @@ export {
   stringOperators,
   isNotNullFilterOperator,
   containsFilterOperator,
+  startsWithFilterOperator,
 } from './operators'

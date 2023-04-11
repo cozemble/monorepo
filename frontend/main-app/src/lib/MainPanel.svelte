@@ -13,6 +13,7 @@
     import DatabaseIcon from "../lib/icons/DatabaseIcon.svelte";
     import Cog6ToothIcon from "./icons/Cog6ToothIcon.svelte";
     import SettingsPanel from "./settings/SettingsPanel.svelte";
+    import UserInstructionNotices from "./userInstruction/UserInstructionNotices.svelte";
 
     export let tenantId: string
     let panelToShow: "models" | "data" | "settings" = "models"
@@ -37,10 +38,12 @@
         panelToShow = "settings"
     }
 </script>
-
 <div class="drawer drawer-mobile">
     <input id="my-drawer-2" type="checkbox" class="drawer-toggle"/>
     <div class="drawer-content">
+        <div class="floating-div bg-accent">
+            <UserInstructionNotices />
+        </div>
         <!-- Page content here -->
         <div class="tabs ml-2">
             <div>
@@ -82,6 +85,11 @@
 
 
 <style>
+
+    .floating-div {
+        position: absolute;
+        z-index: 100;
+    }
 
     .panel-container {
         display: none;

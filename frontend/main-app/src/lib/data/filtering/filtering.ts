@@ -142,6 +142,10 @@ export function createModelAndRecordForFiltering(
     getAttachmentViewUrls(attachments: AttachmentIdAndFileName[]): Promise<string[]> {
       throw new Error('Method not implemented')
     },
+
+    instructUser() {
+      throw new Error('Method not implemented')
+    },
   }
 
   return { model: model.model, record, recordPath, editorComponent, editorClient }

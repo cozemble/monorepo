@@ -2,10 +2,7 @@ import { expect, test } from 'vitest'
 import { formattedFilters } from '../../src/tenants/formattedFilters'
 import { filledFilterInstanceGroupFns } from '@cozemble/backend-tenanted-api-types'
 import { afterFilterOperator } from '@cozemble/data-filters-core'
-import {
-  containsFilterOperator,
-  startsWithFilterOperator,
-} from '@cozemble/data-filters-core/dist/esm/operators'
+import { containsFilterOperator, startsWithFilterOperator } from '@cozemble/data-filters-core'
 
 test('can format the equals operator', () => {
   const formatted = formattedFilters(filledFilterInstanceGroupFns.whereLhsEqRhs('c', 'd'))

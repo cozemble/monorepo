@@ -1,6 +1,6 @@
 <script lang="ts">
     // import global css for tailwind and daisyui
-    import '$lib/styles/global.css'
+    import '../lib/styles/global.css'
     import {browser} from '$app/environment';
     import {onMount} from 'svelte';
 

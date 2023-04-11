@@ -17,7 +17,14 @@ export {
 } from './EventSourcedDataRecord'
 export { dataRecordEditorHost, AttachmentIdAndFileName } from './dataRecordEditorHost'
 export { dataRecordEditor } from './dataRecordEditorHost'
-export { DataRecordEditorClient, Size, UploadedAttachment } from './dataRecordEditorHost'
+export {
+  DataRecordEditorClient,
+  Size,
+  UploadedAttachment,
+  userInstructionFns,
+  UserInstruction,
+  SetupSummaryViewUserInstruction,
+} from './dataRecordEditorHost'
 
 export {
   dataRecordViewerHost,

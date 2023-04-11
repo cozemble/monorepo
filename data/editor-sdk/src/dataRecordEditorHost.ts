@@ -1,5 +1,5 @@
 import { mandatory } from '@cozemble/lang-util'
-import { DataRecord, Model, ModelId, ModelView } from '@cozemble/model-core'
+import { DataRecord, Model, ModelId, ModelName, ModelView } from '@cozemble/model-core'
 import { DataRecordControlEvent, DataRecordEditEvent } from './dataRecordEditEvents'
 import { getContext, setContext } from 'svelte'
 
@@ -23,6 +23,30 @@ export interface AttachmentIdAndFileName {
   fileName: string
 }
 
+export interface SetupSummaryViewUserInstruction {
+  _type: 'setup.summary.view.user.instruction'
+  modelName: ModelName
+}
+
+export interface UserInstruction {
+  _type: 'user.instruction'
+  userContextMessage: string
+  detail: SetupSummaryViewUserInstruction
+}
+
+export const userInstructionFns = {
+  setupSummaryView: (userContextMessage: string, modelName: ModelName): UserInstruction => {
+    return {
+      _type: 'user.instruction',
+      userContextMessage,
+      detail: {
+        _type: 'setup.summary.view.user.instruction',
+        modelName,
+      },
+    }
+  },
+}
+
 export interface DataRecordEditorClient {
   dispatchControlEvent(event: DataRecordControlEvent): void
 
@@ -44,6 +68,8 @@ export interface DataRecordEditorClient {
   deleteAttachments(attachmentIds: string[]): Promise<void>
 
   getAttachmentViewUrls(attachments: AttachmentIdAndFileName[]): Promise<string[]>
+
+  instructUser(userInstruction: UserInstruction): void
 }
 
 export const dataRecordEditor = {

@@ -10,6 +10,7 @@
     import type {RecordCreator} from "./RecordCreator";
     import type {AttachmentsManager} from "./AttachmentsManager";
     import type {AttachmentIdAndFileName} from "@cozemble/data-editor-sdk";
+    import type {UserInstruction} from "@cozemble/data-editor-sdk";
 
     export let recordEditContext: RecordEditContext
     export let recordSearcher: RecordSearcher
@@ -63,7 +64,11 @@
 
         getAttachmentViewUrls(attachmentIds: AttachmentIdAndFileName[]): Promise<string[]> {
             return attachmentsManager.getAttachmentViewUrls(attachmentIds)
-        }
+        },
+
+        instructUser(userInstruction: UserInstruction): void {
+            throw new Error("Not implemented")
+        },
     }
 
     dataRecordEditorHost.setClient(dataRecordEditorClient)

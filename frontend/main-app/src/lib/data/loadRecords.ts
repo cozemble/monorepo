@@ -2,7 +2,7 @@ import type { DataRecord, DataRecordId, ModelId } from '@cozemble/model-core'
 import { cozauth } from '../auth/cozauth'
 import { fetchRecords } from './fetchRecords'
 import { config } from '../config'
-import { filledFilterInstanceGroupFns } from '@cozemble/backend-tenanted-api-types/dist/esm'
+import { filledFilterInstanceGroupFns } from '@cozemble/backend-tenanted-api-types'
 
 export async function loadRecords(
   tenantId: string,

@@ -18,6 +18,8 @@ import type {
   UploadedAttachment,
 } from '@cozemble/data-editor-sdk'
 import type { Writable } from 'svelte/store'
+import type { UserInstruction } from '@cozemble/data-editor-sdk'
+import { userInstructionStoreFns } from '../userInstruction/userInstructionStore'
 
 export function makePaginatedEditorHost(
   tenantId: string,
@@ -41,7 +43,6 @@ export function makePaginatedEditorHost(
 
     async saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
       const result = await saveRecord(tenantId, models, newRecord)
-      console.log({ result })
       if (
         result._type === 'record.save.succeeded' &&
         newRecord.record.modelId.value === model.id.value
@@ -85,6 +86,9 @@ export function makePaginatedEditorHost(
 
     async getAttachmentViewUrls(attachments: AttachmentIdAndFileName[]): Promise<string[]> {
       return getAttachmentViewUrlsFn(tenantId, attachments)
+    },
+    instructUser(userInstruction: UserInstruction): void {
+      userInstructionStoreFns.add(userInstruction)
     },
   }
   return paginatedEditorHost

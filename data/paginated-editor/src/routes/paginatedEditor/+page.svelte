@@ -105,6 +105,9 @@
 
         async getAttachmentViewUrls(_attachmentIds: AttachmentIdAndFileName[]): Promise<string[]> {
             throw new Error('Not implemented')
+        },
+        instructUser() {
+            throw new Error('Not implemented')
         }
     }
 
