@@ -46,34 +46,34 @@
     }
 </script>
 
-<label for="minAttachments">Min Attachments</label>
-<br/>
-<input class="input input-bordered " type="number" id="minAttachments" value={minAttachments}
-       min="0" on:blur={minChanged}/>
+<!--<label for="minAttachments">Min Attachments</label>-->
+<!--<br/>-->
+<!--<input class="input input-bordered " type="number" id="minAttachments" value={minAttachments}-->
+<!--       min="0" on:blur={minChanged}/>-->
 
-<MaybeErrorMessage
-        showErrors={$formSectionErrorState.showErrors}
-        {errors}
-        key="minAttachments"/>
+<!--<MaybeErrorMessage-->
+<!--        showErrors={$formSectionErrorState.showErrors}-->
+<!--        {errors}-->
+<!--        key="minAttachments"/>-->
 
-<br/>
-<label for="maxAttachments">Min Attachments</label>
-<br/>
-<input class="input input-bordered " type="number" id="maxAttachments" value={maxAttachments}
-       min="-1" on:blur={maxChanged}/>
+<!--<br/>-->
+<!--<label for="maxAttachments">Min Attachments</label>-->
+<!--<br/>-->
+<!--<input class="input input-bordered " type="number" id="maxAttachments" value={maxAttachments}-->
+<!--       min="-1" on:blur={maxChanged}/>-->
 
-<MaybeErrorMessage
-        showErrors={$formSectionErrorState.showErrors}
-        {errors}
-        key="maxAttachments"/>
+<!--<MaybeErrorMessage-->
+<!--        showErrors={$formSectionErrorState.showErrors}-->
+<!--        {errors}-->
+<!--        key="maxAttachments"/>-->
 
-<br/>
-<label for="accept">Accept</label>
-<br/>
-<input class="input input-bordered " type="text" id="accept" value={accept}
-       min="-1" on:blur={acceptChanged}/>
+<!--<br/>-->
+<!--<label for="accept">Accept</label>-->
+<!--<br/>-->
+<!--<input class="input input-bordered " type="text" id="accept" value={accept}-->
+<!--       min="-1" on:blur={acceptChanged}/>-->
 
-<MaybeErrorMessage
-        showErrors={$formSectionErrorState.showErrors}
-        {errors}
-        key="accept"/>
+<!--<MaybeErrorMessage-->
+<!--        showErrors={$formSectionErrorState.showErrors}-->
+<!--        {errors}-->
+<!--        key="accept"/>-->

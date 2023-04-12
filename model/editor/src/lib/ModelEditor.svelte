@@ -39,7 +39,9 @@
         </div>
     </div>
 
-    <ModelStructureEditor {systemConfiguration} {eventSourced} {host} allModels={$allModels} on:editingSomething/>
+    <div class="mt-2">
+        <ModelStructureEditor {systemConfiguration} {eventSourced} {host} allModels={$allModels} on:editingSomething/>
+    </div>
 {/if}
 
 <style>
