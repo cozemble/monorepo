@@ -1,7 +1,7 @@
 describe('model editor', () => {
   it('permits configuration of a string property', () => {
     cy.visit('http://localhost:5173/modelEditor')
-    cy.get('.model-name').click()
+    cy.get('div.model-name').click()
     cy.get('input.model-name').type('{selectall}Customer{enter}')
     cy.contains('Add property').click()
     cy.get('.edit-property[data-property-name="Property 1"]').click()
@@ -16,7 +16,7 @@ describe('model editor', () => {
 
   it('permits addition of multiple properties', () => {
     cy.visit('http://localhost:5173/modelEditor')
-    cy.get('.model-name').click()
+    cy.get('div.model-name').click()
     cy.get('input.model-name').type('{selectall}Customer{enter}')
 
     cy.contains('Add property').click()
