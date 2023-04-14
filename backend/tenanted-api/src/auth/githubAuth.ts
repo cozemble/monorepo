@@ -51,12 +51,14 @@ export const githubAuth = (env: string): ClientOAuth2 => {
     process.env.GITHUB_CLIENT_SECRET,
     `No GITHUB_CLIENT_SECRET env var set`,
   )
+  console.log(`Redirect uri: ${authRoot}/${env}/api/v1/auth/callback`)
   console.log(
-    `Creating github auth client with client id ${clientId} and secret starting with ${clientSecret.substring(
+    `xxxCreating github auth client with client id ${clientId} and secret starting with ${clientSecret.substring(
       0,
       4,
     )}`,
   )
+
   return new ClientOAuth2({
     clientId,
     clientSecret,
