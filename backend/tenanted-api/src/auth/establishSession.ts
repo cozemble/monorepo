@@ -5,7 +5,7 @@ import { mandatoryEnv } from '../infra/loadEnv'
 import { db, User } from './db'
 import { GithubUser } from './githubAuth'
 
-export async function newSessionTokens(pg: PoolClient, user: User, userPool: string) {
+export async function newSessionTokens(pg: PoolClient, env: string, user: User, userPool: string) {
   const payload = {
     iss: 'https://cozemble.com',
     tenants: user.tenants.map((t) => t.tenant_id),
@@ -19,20 +19,25 @@ export async function newSessionTokens(pg: PoolClient, user: User, userPool: str
 
   const accessToken = jwt.sign(payload, jwtSigningSecret, {})
   const refreshToken = uuids.v4()
-  await db.refreshTokens.insertRefreshToken(pg, userPool, user, refreshToken)
+  await db.refreshTokens.insertRefreshToken(pg, env, userPool, user, refreshToken)
   return [accessToken, refreshToken]
 }
 
-async function createNewUser(pg: PoolClient, userPool: string, user: GithubUser) {
-  const insertedUser = await db.users.registerUser(pg, userPool, user.email, '')
-  return newSessionTokens(pg, insertedUser, userPool)
+async function createNewUser(pg: PoolClient, env: string, userPool: string, user: GithubUser) {
+  const insertedUser = await db.users.registerUser(pg, env, userPool, user.email, '')
+  return newSessionTokens(pg, env, insertedUser, userPool)
 }
 
-export async function establishSession(pg: PoolClient, userPool: string, githubUser: GithubUser) {
+export async function establishSession(
+  pg: PoolClient,
+  env: string,
+  userPool: string,
+  githubUser: GithubUser,
+) {
   return await db.inTxn(pg, async () => {
-    const foundUser = await db.users.getUserByEmail(pg, userPool, githubUser.email)
+    const foundUser = await db.users.getUserByEmail(pg, env, userPool, githubUser.email)
     return foundUser
-      ? newSessionTokens(pg, foundUser, userPool)
-      : createNewUser(pg, userPool, githubUser)
+      ? newSessionTokens(pg, env, foundUser, userPool)
+      : createNewUser(pg, env, userPool, githubUser)
   })
 }

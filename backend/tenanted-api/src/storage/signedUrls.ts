@@ -6,18 +6,19 @@ import { withAccessToken } from '../infra/jwt'
 export function makeSignedUrlsRoute(storageProvider: StorageProvider) {
   const router: Router = Router()
 
-  router.post('/urls/:tenantId/:attachmentId/:fileName', canAccessTenant, (req, res) => {
+  router.post('/urls/:env/:tenantId/:attachmentId/:fileName', canAccessTenant, (req, res) => {
     return withAccessToken(req, res, async (claim) => {
+      const env = (req.params.env as string) ?? null
       const tenantId = (req.params.tenantId as string) ?? null
       const attachmentId = (req.params.attachmentId as string) ?? null
       const fileName = (req.params.fileName as string) ?? null
-      if (!tenantId || !attachmentId || !fileName) {
+      if (!tenantId || !attachmentId || !fileName || !env) {
         return res.status(400).json({
-          message: 'Missing tenantId, attachmentId or fileName',
+          message: 'Missing env, tenantId, attachmentId or fileName',
         })
       }
 
-      const url = await storageProvider.createSignedUrl(tenantId, attachmentId, fileName)
+      const url = await storageProvider.createSignedUrl(env, tenantId, attachmentId, fileName)
       return res.status(201).json({ url })
     })
   })

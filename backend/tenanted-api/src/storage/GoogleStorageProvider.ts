@@ -2,6 +2,16 @@ import { Storage } from '@google-cloud/storage'
 import path from 'path'
 import { StorageProvider } from './StorageProvider'
 
+function makeFilePath(
+  env: string,
+  tenantId: string,
+  directoryType: 'file' | 'thumbnails',
+  fileId: string,
+  fileExtension: string,
+): string {
+  return `env/${env}/tenant/${tenantId}/${directoryType}/${fileId}${fileExtension}`
+}
+
 export class GoogleStorageProvider implements StorageProvider {
   private storage: Storage
   private readonly bucketName: string
@@ -12,13 +22,14 @@ export class GoogleStorageProvider implements StorageProvider {
   }
 
   async storeFile(
+    env: string,
     tenantId: string,
     fileId: string,
     file: Express.Multer.File,
   ): Promise<{ storageProvider: string; storageDetails: any }> {
     const bucket = this.storage.bucket(this.bucketName)
     const fileExtension = path.extname(file.originalname)
-    const filePath = `tenant/${tenantId}/file/${fileId}${fileExtension}`
+    const filePath = makeFilePath(env, tenantId, 'file', fileId, fileExtension)
     const gcsFile = bucket.file(filePath)
 
     await gcsFile.save(file.buffer, {
@@ -35,13 +46,16 @@ export class GoogleStorageProvider implements StorageProvider {
   }
 
   async storeThumbnail(
+    env: string,
     tenantId: string,
     fileId: string,
     thumbnailBuffer: Buffer,
     contentType: string,
   ): Promise<string | null> {
     const bucket = this.storage.bucket(this.bucketName)
-    const thumbnailPath = `tenant/${tenantId}/thumbnails/${fileId}.png`
+
+    const thumbnailPath = makeFilePath(env, tenantId, 'thumbnails', fileId, 'png')
+
     const thumbnailFile = bucket.file(thumbnailPath)
 
     await thumbnailFile.save(thumbnailBuffer, {
@@ -57,10 +71,15 @@ export class GoogleStorageProvider implements StorageProvider {
     return `https://storage.googleapis.com/${this.bucketName}/${thumbnailPath}`
   }
 
-  async createSignedUrl(tenantId: string, attachmentId: string, fileName: string): Promise<string> {
+  async createSignedUrl(
+    env: string,
+    tenantId: string,
+    attachmentId: string,
+    fileName: string,
+  ): Promise<string> {
     const bucket = this.storage.bucket(this.bucketName)
     const fileExtension = path.extname(fileName)
-    const filePath = `tenant/${tenantId}/file/${attachmentId}${fileExtension}`
+    const filePath = makeFilePath(env, tenantId, 'file', attachmentId, fileExtension)
 
     const gcsFile = bucket.file(filePath)
 

@@ -4,9 +4,10 @@ import { uuids } from '@cozemble/lang-util'
 import { BackendModel } from '@cozemble/backend-tenanted-api-types'
 import jwt from 'jsonwebtoken'
 import { savableRecords } from '@cozemble/backend-tenanted-api-types'
+import { testEnv } from '../helper'
 
 async function postTenant(port: number, id: string, name = 'Test Tenant', ownerId = uuids.v4()) {
-  return await fetch(`http://localhost:${port}/api/v1/tenant`, {
+  return await fetch(`http://localhost:${port}/api/v1/tenant/${testEnv}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -46,14 +47,17 @@ export async function putModels(
     model: m,
     events: [],
   }))
-  const putResponse = await fetch(`http://localhost:${port}/api/v1/tenant/${tenantId}/model`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + accessToken,
+  const putResponse = await fetch(
+    `http://localhost:${port}/api/v1/tenant/${testEnv}/${tenantId}/model`,
+    {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + accessToken,
+      },
+      body: JSON.stringify(backendModels),
     },
-    body: JSON.stringify(backendModels),
-  })
+  )
   expect(putResponse.status).toBe(200)
   return models
 }
@@ -76,7 +80,7 @@ export async function putRecords(
   records: DataRecord[],
 ) {
   const putResponse = await fetch(
-    `http://localhost:${port}/api/v1/tenant/${tenantId}/model/${model.id.value}/record`,
+    `http://localhost:${port}/api/v1/tenant/${testEnv}/${tenantId}/model/${model.id.value}/record`,
     {
       method: 'PUT',
       headers: {

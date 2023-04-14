@@ -20,6 +20,7 @@ import {
   putRecord,
   simulateNewUser,
 } from './testHelpers'
+import { testEnv } from '../helper'
 
 const jwtSigningSecret = 'secret'
 const port = 3002
@@ -36,7 +37,7 @@ describe('with a migrated database', () => {
   }, 1000 * 90)
 
   test('anyone can create a tenant', async () => {
-    const response = await fetch('http://localhost:3002/api/v1/tenant', {
+    const response = await fetch(`http://localhost:3002/api/v1/tenant/${testEnv}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -59,7 +60,9 @@ describe('with a migrated database', () => {
   test("can't get a tenant without credentials", async () => {
     const tenantId = uuids.v4().replace(/-/g, '')
     await makeTenant(port, tenantId, 'Tenant 2')
-    const getTenantResponse = await fetch('http://localhost:3002/api/v1/tenant/' + tenantId)
+    const getTenantResponse = await fetch(
+      `http://localhost:3002/api/v1/tenant/${testEnv}/${tenantId}`,
+    )
     expect(getTenantResponse.status).toBe(401)
   })
 
@@ -67,21 +70,27 @@ describe('with a migrated database', () => {
     const { bearer } = await simulateNewUser(port, jwtSigningSecret)
     const otherTenantId = `root.tenants.${uuids.v4()}`.replace(/-/g, '')
 
-    const getTenantResponse = await fetch('http://localhost:3002/api/v1/tenant/' + otherTenantId, {
-      headers: {
-        Authorization: 'Bearer ' + bearer,
+    const getTenantResponse = await fetch(
+      `http://localhost:3002/api/v1/tenant/${testEnv}/${otherTenantId}`,
+      {
+        headers: {
+          Authorization: 'Bearer ' + bearer,
+        },
       },
-    })
+    )
     expect(getTenantResponse.status).toBe(404)
   })
 
   test('can get a tenant if authenticated as a tenant member', async () => {
     const { tenantId, bearer } = await simulateNewUser(port, jwtSigningSecret)
-    const getTenantResponse = await fetch('http://localhost:3002/api/v1/tenant/' + tenantId, {
-      headers: {
-        Authorization: 'Bearer ' + bearer,
+    const getTenantResponse = await fetch(
+      `http://localhost:3002/api/v1/tenant/${testEnv}/${tenantId}`,
+      {
+        headers: {
+          Authorization: 'Bearer ' + bearer,
+        },
       },
-    })
+    )
     expect(getTenantResponse.status).toBe(200)
     const tenant = await getTenantResponse.json()
     expect(tenant.id).toBe(tenantId)
@@ -93,7 +102,7 @@ describe('with a migrated database', () => {
 
   test("can't get a tenant that doesn't exist", async () => {
     const { bearer } = await simulateNewUser(port, jwtSigningSecret)
-    const getTenantResponse = await fetch('http://localhost:3002/api/v1/tenant/xx', {
+    const getTenantResponse = await fetch(`http://localhost:3002/api/v1/tenant/${testEnv}/xx`, {
       headers: {
         Authorization: 'Bearer ' + bearer,
       },
@@ -116,14 +125,17 @@ describe('with a migrated database', () => {
       model,
       events: [],
     }
-    const putResponse = await fetch(`http://localhost:3002/api/v1/tenant/${otherTenantId}/model`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + bearer,
+    const putResponse = await fetch(
+      `http://localhost:3002/api/v1/tenant/${testEnv}/${otherTenantId}/model`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + bearer,
+        },
+        body: JSON.stringify(backendModel),
       },
-      body: JSON.stringify(backendModel),
-    })
+    )
     expect(putResponse.status).toBe(403)
   })
 
@@ -143,21 +155,27 @@ describe('with a migrated database', () => {
       model,
       events: [modelEvent],
     }
-    const putResponse = await fetch(`http://localhost:3002/api/v1/tenant/${tenantId}/model`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + bearer,
+    const putResponse = await fetch(
+      `http://localhost:3002/api/v1/tenant/${testEnv}/${tenantId}/model`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + bearer,
+        },
+        body: JSON.stringify(backendModel),
       },
-      body: JSON.stringify(backendModel),
-    })
+    )
     expect(putResponse.status).toBe(200)
 
-    const getTenantResponse = await fetch('http://localhost:3002/api/v1/tenant/' + tenantId, {
-      headers: {
-        Authorization: 'Bearer ' + bearer,
+    const getTenantResponse = await fetch(
+      `http://localhost:3002/api/v1/tenant/${testEnv}/${tenantId}`,
+      {
+        headers: {
+          Authorization: 'Bearer ' + bearer,
+        },
       },
-    })
+    )
     expect(getTenantResponse.status).toBe(200)
     const tenantJson = await getTenantResponse.json()
     expect(tenantJson.models).toEqual([model])
@@ -169,7 +187,7 @@ describe('with a migrated database', () => {
     await makeTenant(port, tenantId)
 
     const getResponse = await fetch(
-      `http://localhost:3002/api/v1/tenant/${tenantId}/model/x/record`,
+      `http://localhost:3002/api/v1/tenant/${testEnv}/${tenantId}/model/x/record`,
       {
         method: 'POST',
         headers: {
@@ -191,7 +209,7 @@ describe('with a migrated database', () => {
     )
 
     const getResponse = await fetch(
-      `http://localhost:3002/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record`,
+      `http://localhost:3002/api/v1/tenant/${testEnv}/${tenantId}/model/${customerModel.id.value}/record`,
       {
         method: 'POST',
         headers: {
@@ -223,7 +241,7 @@ describe('with a migrated database', () => {
     const record = dataRecordFns.random(systemConfig, [customerModel], customerModel)
 
     const putResponse = await fetch(
-      `http://localhost:3002/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record`,
+      `http://localhost:3002/api/v1/tenant/${testEnv}/${tenantId}/model/${customerModel.id.value}/record`,
       {
         method: 'PUT',
         headers: {
@@ -246,7 +264,7 @@ describe('with a migrated database', () => {
     const record = dataRecordFns.random(systemConfig, [customerModel], customerModel)
 
     const putResponse = await fetch(
-      `http://localhost:3002/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record`,
+      `http://localhost:3002/api/v1/tenant/${testEnv}/${tenantId}/model/${customerModel.id.value}/record`,
       {
         method: 'PUT',
         headers: {
@@ -259,7 +277,7 @@ describe('with a migrated database', () => {
     await expect(putResponse.status).toBe(200)
 
     const getResponse = await fetch(
-      `http://localhost:3002/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record`,
+      `http://localhost:3002/api/v1/tenant/${testEnv}/${tenantId}/model/${customerModel.id.value}/record`,
       {
         method: 'POST',
         headers: {
@@ -291,7 +309,7 @@ describe('with a migrated database', () => {
     const record = dataRecordFns.random(systemConfig, [customerModel], customerModel)
 
     const putResponse = await fetch(
-      `http://localhost:3002/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record`,
+      `http://localhost:3002/api/v1/tenant/${testEnv}/${tenantId}/model/${customerModel.id.value}/record`,
       {
         method: 'PUT',
         headers: {
@@ -304,7 +322,7 @@ describe('with a migrated database', () => {
     await expect(putResponse.status).toBe(200)
 
     const getResponse = await fetch(
-      `http://localhost:3002/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record/${record.id.value}`,
+      `http://localhost:3002/api/v1/tenant/${testEnv}/${tenantId}/model/${customerModel.id.value}/record/${record.id.value}`,
       {
         headers: {
           Authorization: 'Bearer ' + bearer,
@@ -331,7 +349,7 @@ describe('with a migrated database', () => {
     }
 
     const putResponse = await fetch(
-      `http://localhost:3002/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record`,
+      `http://localhost:3002/api/v1/tenant/${testEnv}/${tenantId}/model/${customerModel.id.value}/record`,
       {
         method: 'PUT',
         headers: {
@@ -356,7 +374,7 @@ describe('with a migrated database', () => {
     await putRecord(port, tenantId, customerModel, bearer, record)
 
     const deleteResponse = await fetch(
-      `http://localhost:3002/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record/${record.id.value}`,
+      `http://localhost:3002/api/v1/tenant/${testEnv}/${tenantId}/model/${customerModel.id.value}/record/${record.id.value}`,
       {
         method: 'DELETE',
         headers: {
@@ -379,7 +397,7 @@ describe('with a migrated database', () => {
     await putRecord(port, tenantId, customerModel, bearer, record)
 
     const deleteResponse = await fetch(
-      `http://localhost:3002/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record/${record.id.value}`,
+      `http://localhost:3002/api/v1/tenant/${testEnv}/${tenantId}/model/${customerModel.id.value}/record/${record.id.value}`,
       {
         method: 'DELETE',
       },
@@ -398,7 +416,7 @@ describe('with a migrated database', () => {
     const record = dataRecordFns.random(systemConfig, [customerModel], customerModel)
 
     const putResponse = await fetch(
-      `http://localhost:3002/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record`,
+      `http://localhost:3002/api/v1/tenant/${testEnv}/${tenantId}/model/${customerModel.id.value}/record`,
       {
         method: 'PUT',
         headers: {

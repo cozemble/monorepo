@@ -9,6 +9,7 @@ import {
   filledFilterInstanceGroupFns,
   filterRequestPayloadFns,
 } from '@cozemble/backend-tenanted-api-types'
+import { testEnv } from '../helper'
 
 const jwtSigningSecret = 'secret'
 const port = 3003
@@ -76,7 +77,7 @@ describe('with customer records', () => {
 
   test("can't find records where property equals", async () => {
     const response = await fetch(
-      `http://localhost:${port}/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record`,
+      `http://localhost:${port}/api/v1/tenant/${testEnv}/${tenantId}/model/${customerModel.id.value}/record`,
       {
         method: 'POST',
         headers: {
@@ -100,7 +101,7 @@ describe('with customer records', () => {
 
   test("can't find records where property is greater than", async () => {
     const response = await fetch(
-      `http://localhost:${port}/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record`,
+      `http://localhost:${port}/api/v1/tenant/${testEnv}/${tenantId}/model/${customerModel.id.value}/record`,
       {
         method: 'POST',
         headers: {
@@ -127,7 +128,7 @@ describe('with customer records', () => {
 
   test('can find all records', async () => {
     const response = await fetch(
-      `http://localhost:${port}/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record`,
+      `http://localhost:${port}/api/v1/tenant/${testEnv}/${tenantId}/model/${customerModel.id.value}/record`,
       {
         method: 'POST',
         headers: {
@@ -146,7 +147,7 @@ describe('with customer records', () => {
 
   test('can search for all Janes', async () => {
     const response = await fetch(
-      `http://localhost:${port}/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record`,
+      `http://localhost:${port}/api/v1/tenant/${testEnv}/${tenantId}/model/${customerModel.id.value}/record`,
       {
         method: 'POST',
         headers: {
@@ -165,7 +166,7 @@ describe('with customer records', () => {
 
   test('search is case insensitive', async () => {
     const response = await fetch(
-      `http://localhost:${port}/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record`,
+      `http://localhost:${port}/api/v1/tenant/${testEnv}/${tenantId}/model/${customerModel.id.value}/record`,
       {
         method: 'POST',
         headers: {
@@ -184,7 +185,7 @@ describe('with customer records', () => {
 
   test('can search for the one Janet', async () => {
     const response = await fetch(
-      `http://localhost:${port}/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record`,
+      `http://localhost:${port}/api/v1/tenant/${testEnv}/${tenantId}/model/${customerModel.id.value}/record`,
       {
         method: 'POST',
         headers: {
@@ -203,7 +204,7 @@ describe('with customer records', () => {
 
   test('can search for all that start with Jan', async () => {
     const response = await fetch(
-      `http://localhost:${port}/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record`,
+      `http://localhost:${port}/api/v1/tenant/${testEnv}/${tenantId}/model/${customerModel.id.value}/record`,
       {
         method: 'POST',
         headers: {

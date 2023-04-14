@@ -7,6 +7,7 @@ import { dataRecordFns, modelFns, modelOptions, propertyFns } from '@cozemble/mo
 import { savableRecords } from '@cozemble/backend-tenanted-api-types'
 import { registerStringProperty, stringPropertyOptions } from '@cozemble/model-string-core'
 import { withAdminPgClient } from '../../src/infra/postgresPool'
+import { testEnv } from '../helper'
 
 const jwtSigningSecret = 'secret'
 const port = 3011
@@ -58,7 +59,7 @@ describe('with a migrated database', () => {
     })
     await putRecord(port, tenantId, customerModel, bearer, firstRecord)
     const putResponse = await fetch(
-      `http://localhost:${port}/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record`,
+      `http://localhost:${port}/api/v1/tenant/${testEnv}/${tenantId}/model/${customerModel.id.value}/record`,
       {
         method: 'PUT',
         headers: {
