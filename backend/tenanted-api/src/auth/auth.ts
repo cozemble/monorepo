@@ -4,14 +4,15 @@ import { fetchGithubUserDetails } from './githubUserDetails'
 import { withAdminPgClient } from '../infra/postgresPool'
 import { newSessionTokens } from './establishSession'
 import { db } from './db'
+import { mandatory } from '@cozemble/lang-util'
 
 const router: Router = Router()
 
-router.get('/:env/login', (req: Request, res: Response) => {
+router.get('/login', (req: Request, res: Response) => {
   try {
     const provider = req.query.provider
     const userPool = req.query.userPool
-    const env = req.params.env
+    const env = mandatory(req.env, `No env in request`)
     const cozembleRoot = req.query.cozembleRoot as string
     if (!provider || !userPool) {
       return res.status(400).send('Missing provider or userPool')
@@ -44,13 +45,13 @@ router.get('/:env/login', (req: Request, res: Response) => {
   }
 })
 
-router.get('/:env/callback', async (req: Request, res: Response) => {
+router.get('/callback', async (req: Request, res: Response) => {
   try {
     const state = req.query.state
     if (!state) {
       return res.status(400).send(`No state provided in callback url`)
     }
-    const env = req.params.env
+    const env = mandatory(req.env, `No env in request`)
     const token = await githubAuth(env).code.getToken(req.originalUrl)
     const signinState = fromUrlFriendly<SignInState>(state as string)
     if (signinState._type !== 'cozauth.signin.state') {
@@ -95,14 +96,14 @@ router.get('/:env/callback', async (req: Request, res: Response) => {
   }
 })
 
-router.post('/:env/token', async (req: Request, res: Response) => {
+router.post('/token', async (req: Request, res: Response) => {
   try {
     const authorizationToken = req.body.authorizationToken
     const givenRefreshToken = req.body.refreshToken
     if (!authorizationToken && !givenRefreshToken) {
       return res.status(400).send(`No token provided`)
     }
-    const env = req.params.env
+    const env = mandatory(req.env, `No env in request`)
     return await withAdminPgClient(async (client) => {
       const user = authorizationToken
         ? await db.authTokens.tradeAuthTokenForUser(client, env, authorizationToken)

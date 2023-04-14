@@ -7,7 +7,7 @@ import { savableRecords } from '@cozemble/backend-tenanted-api-types'
 import { testEnv } from '../helper'
 
 async function postTenant(port: number, id: string, name = 'Test Tenant', ownerId = uuids.v4()) {
-  return await fetch(`http://localhost:${port}/api/v1/tenant/${testEnv}`, {
+  return await fetch(`http://localhost:${port}/${testEnv}/api/v1/tenant`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -48,7 +48,7 @@ export async function putModels(
     events: [],
   }))
   const putResponse = await fetch(
-    `http://localhost:${port}/api/v1/tenant/${testEnv}/${tenantId}/model`,
+    `http://localhost:${port}/${testEnv}/api/v1/tenant/${tenantId}/model`,
     {
       method: 'PUT',
       headers: {
@@ -80,7 +80,7 @@ export async function putRecords(
   records: DataRecord[],
 ) {
   const putResponse = await fetch(
-    `http://localhost:${port}/api/v1/tenant/${testEnv}/${tenantId}/model/${model.id.value}/record`,
+    `http://localhost:${port}/${testEnv}/api/v1/tenant/${tenantId}/model/${model.id.value}/record`,
     {
       method: 'PUT',
       headers: {

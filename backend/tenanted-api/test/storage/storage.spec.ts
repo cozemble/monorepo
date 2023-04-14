@@ -30,7 +30,7 @@ describe('with an empty database, extract_referenced_records:', () => {
 
   test('401 if no authorization', async () => {
     const response = await fetch(
-      `http://localhost:${port}/api/v1/storage/files/${testEnv}/${tenantId}`,
+      `http://localhost:${port}/${testEnv}/api/v1/storage/files/${tenantId}`,
       {
         method: 'POST',
       },
@@ -40,7 +40,7 @@ describe('with an empty database, extract_referenced_records:', () => {
 
   test('bad request if no files are posted', async () => {
     const response = await fetch(
-      `http://localhost:${port}/api/v1/storage/files/${testEnv}/${tenantId}`,
+      `http://localhost:${port}/${testEnv}/api/v1/storage/files/${tenantId}`,
       {
         method: 'POST',
         headers: {
@@ -65,7 +65,7 @@ describe('with an empty database, extract_referenced_records:', () => {
     formData.append('file', fs.createReadStream(__dirname + '/one.png'))
 
     const response = await axiosInstance.post(
-      `http://localhost:${port}/api/v1/storage/files/${testEnv}/${tenantId}`,
+      `http://localhost:${port}/${testEnv}/api/v1/storage/files/${tenantId}`,
       formData,
       {
         headers: { ...formData.getHeaders(), Authorization: `Bearer ${anotherBearer}` },
@@ -91,7 +91,7 @@ describe('with an empty database, extract_referenced_records:', () => {
     const fileId = json[0].fileId
 
     const fetched = await axiosInstance.get(
-      `http://localhost:${port}/api/v1/storage/files/${testEnv}/${tenantId}/${fileId}`,
+      `http://localhost:${port}/${testEnv}/api/v1/storage/files/${tenantId}/${fileId}`,
       {
         headers: { Authorization: `Bearer ${bearer}`, Accept: 'application/json' },
       },
@@ -115,7 +115,7 @@ describe('with an empty database, extract_referenced_records:', () => {
     const fileName = postResponse[0].originalName
 
     const signedUrlResponse = await axiosInstance.post(
-      `http://localhost:${port}/api/v1/storage/urls/${testEnv}/${tenantId}/${fileId}/${encodeURIComponent(
+      `http://localhost:${port}/${testEnv}/api/v1/storage/urls/${tenantId}/${fileId}/${encodeURIComponent(
         fileName,
       )}`,
       null,
@@ -134,7 +134,7 @@ describe('with an empty database, extract_referenced_records:', () => {
     formData.append('file', fs.createReadStream(__dirname + '/blank-document.pdf'))
 
     const response = await axiosInstance.post(
-      `http://localhost:${port}/api/v1/storage/files/${testEnv}/${tenantId}`,
+      `http://localhost:${port}/${testEnv}/api/v1/storage/files/${tenantId}`,
       formData,
       {
         headers: { ...formData.getHeaders(), Authorization: `Bearer ${bearer}` },
@@ -157,7 +157,7 @@ describe('with an empty database, extract_referenced_records:', () => {
     formData.append('file', fs.createReadStream(__dirname + '/two.png'))
 
     const response = await axiosInstance.post(
-      `http://localhost:${port}/api/v1/storage/files/${testEnv}/${tenantId}`,
+      `http://localhost:${port}/${testEnv}/api/v1/storage/files/${tenantId}`,
       formData,
       {
         headers: { ...formData.getHeaders(), Authorization: `Bearer ${bearer}` },
@@ -191,7 +191,7 @@ async function postFile(tenantId: string, bearer: string, fileName = 'one.png') 
   formData.append('file', fs.createReadStream(__dirname + `/${fileName}`))
 
   const response = await axiosInstance.post(
-    `http://localhost:${port}/api/v1/storage/files/${testEnv}/${tenantId}`,
+    `http://localhost:${port}/${testEnv}/api/v1/storage/files/${tenantId}`,
     formData,
     {
       headers: { ...formData.getHeaders(), Authorization: `Bearer ${bearer}` },

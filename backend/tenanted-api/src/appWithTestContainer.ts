@@ -3,6 +3,7 @@ import { PostgreSqlContainer, StartedPostgreSqlContainer } from 'testcontainers'
 import { expressApp } from './expressApp'
 import * as http from 'http'
 import { closePgPool, withAdminPgClient } from './infra/postgresPool'
+import { testEnv } from '../test/helper'
 
 function pgConnectString(container: StartedPostgreSqlContainer) {
   return `postgres://${container.getUsername()}:${container.getPassword()}@${container.getHost()}:${container.getPort()}/${container.getDatabase()}`
@@ -65,7 +66,7 @@ export async function appWithTestContainer(
   await withMigratedDatabase(pgDetails)
   process.env.USE_MEMORY_STORAGE = 'Y'
   process.env.JWT_SIGNING_SECRET = jwtSigningKey
-  process.env.OAUTH_CALLBACK_ROOT = `http://localhost:${port}/api/v1/auth/callback`
+  process.env.OAUTH_CALLBACK_ROOT = `http://localhost:${port}/${testEnv}/api/v1/auth/callback`
   process.env.GITHUB_CLIENT_ID = 'pretend-github-client-id'
   process.env.GITHUB_CLIENT_SECRET = 'pretend-github-client-secret'
   const app = expressApp()

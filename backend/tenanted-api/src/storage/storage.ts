@@ -7,6 +7,7 @@ import { uuids } from '@cozemble/lang-util'
 import { getFileObject } from './getFileObject'
 import { StorageProvider } from './StorageProvider'
 import sharp from 'sharp'
+import { mandatory } from '@cozemble/lang-util'
 
 const thumbnailWidth = 100
 
@@ -113,14 +114,14 @@ const upload = multer({ storage: multer.memoryStorage() })
 export function makeStorageRoute(storageProvider: StorageProvider) {
   const router: Router = Router()
 
-  router.post('/files/:env/:tenantId', canAccessTenant, upload.array('file'), (req, res) => {
+  router.post('/files/:tenantId', canAccessTenant, upload.array('file'), (req, res) => {
     return authenticatedDatabaseRequest(req, res, async (client) => {
       if (!req.files) {
         return res.status(400).json({
           message: 'No files uploaded',
         })
       }
-      const env = (req.params.env as string) ?? null
+      const env = mandatory(req.env, `No env in request`)
       const tenantId = (req.params.tenantId as string) ?? null
       if (!tenantId || !env) {
         return res.status(400).json({
@@ -132,7 +133,7 @@ export function makeStorageRoute(storageProvider: StorageProvider) {
     })
   })
 
-  router.get('/files/:env/:tenantId/:fileId', canAccessTenant, (req, res) => {
+  router.get('/files/:tenantId/:fileId', canAccessTenant, (req, res) => {
     return authenticatedDatabaseRequest(req, res, async (client) => {
       const object = await getFileObject(req, res, client)
       if (object !== null) {

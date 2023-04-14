@@ -26,7 +26,7 @@ describe('with an empty database', () => {
 
     // PUT request to insert/update entities
     const putResponse = await fetch(
-      `http://localhost:${port}/api/v1/tenant/${testEnv}/${tenantId}/entity`,
+      `http://localhost:${port}/${testEnv}/api/v1/tenant/${tenantId}/entity`,
       {
         method: 'PUT',
         headers: {
@@ -40,7 +40,7 @@ describe('with an empty database', () => {
 
     // GET request to fetch entities
     const getResponse = await fetch(
-      `http://localhost:${port}/api/v1/tenant/${testEnv}/${tenantId}/entity`,
+      `http://localhost:${port}/${testEnv}/api/v1/tenant/${tenantId}/entity`,
       {
         method: 'GET',
         headers: {
@@ -68,7 +68,7 @@ describe('with an empty database', () => {
 
     // PUT request to insert/update entities
     const putResponse = await fetch(
-      `http://localhost:${port}/api/v1/tenant/${testEnv}/${tenantId}/entity`,
+      `http://localhost:${port}/${testEnv}/api/v1/tenant/${tenantId}/entity`,
       {
         method: 'PUT',
         headers: {
@@ -85,7 +85,7 @@ describe('with an empty database', () => {
 
     // GET request to fetch entities with the second user's credentials
     const getResponse = await fetch(
-      `http://localhost:${port}/api/v1/tenant/${testEnv}/${tenantId}/entity`,
+      `http://localhost:${port}/${testEnv}/api/v1/tenant/${tenantId}/entity`,
       {
         method: 'GET',
         headers: {

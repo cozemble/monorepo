@@ -2,13 +2,14 @@ import { Router } from 'express'
 import { canAccessTenant } from '../infra/middleware'
 import { StorageProvider } from './StorageProvider'
 import { withAccessToken } from '../infra/jwt'
+import { mandatory } from '@cozemble/lang-util'
 
 export function makeSignedUrlsRoute(storageProvider: StorageProvider) {
   const router: Router = Router()
 
-  router.post('/urls/:env/:tenantId/:attachmentId/:fileName', canAccessTenant, (req, res) => {
+  router.post('/urls/:tenantId/:attachmentId/:fileName', canAccessTenant, (req, res) => {
     return withAccessToken(req, res, async (claim) => {
-      const env = (req.params.env as string) ?? null
+      const env = mandatory(req.env, `No env in request`)
       const tenantId = (req.params.tenantId as string) ?? null
       const attachmentId = (req.params.attachmentId as string) ?? null
       const fileName = (req.params.fileName as string) ?? null

@@ -24,7 +24,7 @@ describe('with a running backend', () => {
   test('returns user json if refresh code exists, has not been used and has not expired', async () => {
     const refreshToken = await makeLegitRefreshToken()
 
-    const response = await fetch(`http://localhost:3006/api/v1/auth/${testEnv}/token`, {
+    const response = await fetch(`http://localhost:3006/${testEnv}/api/v1/auth/token`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refreshToken }),
@@ -37,13 +37,13 @@ describe('with a running backend', () => {
   test('second use of refresh token is 401', async () => {
     const refreshToken = await makeLegitRefreshToken()
 
-    const firstResponse = await fetch(`http://localhost:3006/api/v1/auth/${testEnv}/token`, {
+    const firstResponse = await fetch(`http://localhost:3006/${testEnv}/api/v1/auth/token`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refreshToken }),
     })
     expect(firstResponse.status).toBe(200)
-    const secondResponse = await fetch(`http://localhost:3006/api/v1/auth/${testEnv}/token`, {
+    const secondResponse = await fetch(`http://localhost:3006/${testEnv}/api/v1/auth/token`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refreshToken }),
@@ -52,7 +52,7 @@ describe('with a running backend', () => {
   })
 
   test('401 if authorization code does not exist', async () => {
-    const response = await fetch(`http://localhost:3006/api/v1/auth/${testEnv}/token`, {
+    const response = await fetch(`http://localhost:3006/${testEnv}/api/v1/auth/token`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refreshToken: '123' }),

@@ -59,7 +59,7 @@ describe('with a migrated database', () => {
     })
     await putRecord(port, tenantId, customerModel, bearer, firstRecord)
     const putResponse = await fetch(
-      `http://localhost:${port}/api/v1/tenant/${testEnv}/${tenantId}/model/${customerModel.id.value}/record`,
+      `http://localhost:${port}/${testEnv}/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record`,
       {
         method: 'PUT',
         headers: {

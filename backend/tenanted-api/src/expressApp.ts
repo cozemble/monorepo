@@ -18,6 +18,14 @@ function makeStorageProvider(): StorageProvider {
   }
 }
 
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace Express {
+    interface Request {
+      env?: string
+    }
+  }
+}
 export function expressApp(): Express {
   const app: Express = express()
 
@@ -37,7 +45,13 @@ export function expressApp(): Express {
   routes.use('/storage', makeStorageRoute(makeStorageProvider()))
   routes.use('/storage', makeSignedUrlsRoute(makeStorageProvider()))
 
-  app.use('/api/v1/', [], routes)
-
+  app.use(
+    '/:env/api/v1/',
+    (req, res, next) => {
+      req.env = req.params.env
+      next()
+    },
+    routes,
+  )
   return app
 }

@@ -62,7 +62,7 @@ export const githubAuth = (env: string): ClientOAuth2 => {
     clientSecret,
     accessTokenUri: 'https://github.com/login/oauth/access_token',
     authorizationUri: 'https://github.com/login/oauth/authorize',
-    redirectUri: `${authRoot}/api/v1/auth/${env}/callback`,
+    redirectUri: `${authRoot}/${env}/api/v1/auth/callback`,
     scopes: ['user:email'],
   })
 }

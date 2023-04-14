@@ -10,14 +10,15 @@ import {
 import { Model } from '@cozemble/model-core'
 import { modelFns, modelPathFns } from '@cozemble/model-api'
 import { formattedFilters } from './formattedFilters'
+import { mandatory } from '@cozemble/lang-util'
 
 const router: Router = Router()
 
-router.get('/:env/:tenantId', (req: Request, res: Response) => {
+router.get('/:tenantId', (req: Request, res: Response) => {
   return authenticatedDatabaseRequest(req, res, async (client) => {
     const result = await client.query(
       'select * from get_tenant_info($1,text2Ltree($2)) as tenant;',
-      [req.params.env, req.params.tenantId],
+      [mandatory(req.env, `No env in request`), req.params.tenantId],
     )
     if (result.rows.length === 0 || result.rows[0].tenant === null) {
       return res.status(404).send()
@@ -43,7 +44,7 @@ function uniquePathsInModel(models: Model[], model: Model): string[] {
   }
 }
 
-router.put('/:env/:tenantId/model', (req: Request, res: Response) => {
+router.put('/:tenantId/model', (req: Request, res: Response) => {
   const models: BackendModel[] = Array.isArray(req.body) ? req.body : [req.body]
   if (models.some((m) => m._type !== 'backend.model')) {
     console.error('Body is not an instance of backend.model: ' + JSON.stringify(req.body))
@@ -57,7 +58,7 @@ router.put('/:env/:tenantId/model', (req: Request, res: Response) => {
   return authenticatedDatabaseRequest(req, res, async (client) => {
     const result = await client.query(
       'select * from put_tenant_info($1,text2ltree($2),$3) as tenant;',
-      [req.params.env, req.params.tenantId, JSON.stringify(savableModels)],
+      [mandatory(req.env, `No env in request`), req.params.tenantId, JSON.stringify(savableModels)],
     )
     if (result.rows.length === 0 || result.rows[0].tenant === null) {
       return res.status(404).send()
@@ -66,7 +67,8 @@ router.put('/:env/:tenantId/model', (req: Request, res: Response) => {
   })
 })
 
-router.post('/:env', (req: Request, res: Response) => {
+router.post('/', (req: Request, res: Response) => {
+  console.log({ envParam: req.params.envParam })
   return withAdminPgClient(async (client) => {
     const body = req.body as CreateTenant
     if (body._type !== 'create.tenant') {
@@ -75,7 +77,7 @@ router.post('/:env', (req: Request, res: Response) => {
     const result = await client.query(
       'select * from post_tenant($1,text2Ltree($2),$3, text2Ltree($4), $5, $6, $7) as tenant;',
       [
-        req.params.env,
+        mandatory(req.env, `No env in request`),
         body.id,
         body.name,
         body.owner.userPool,
@@ -94,7 +96,7 @@ router.post('/:env', (req: Request, res: Response) => {
   })
 })
 
-router.put('/:env/:tenantId/model/:modelId/record', (req: Request, res: Response) => {
+router.put('/:tenantId/model/:modelId/record', (req: Request, res: Response) => {
   if (req.body._type !== 'savable.records') {
     console.error('Body is not an instance of savable.records: ' + JSON.stringify(req.body))
     return res.status(400).send()
@@ -104,7 +106,11 @@ router.put('/:env/:tenantId/model/:modelId/record', (req: Request, res: Response
   return authenticatedDatabaseRequest(req, res, async (client) => {
     const result = await client.query(
       'select * from upsert_record($1,text2Ltree($2), $3) as records;',
-      [req.params.env, req.params.tenantId, JSON.stringify(records.records)],
+      [
+        mandatory(req.env, `No env in request`),
+        req.params.tenantId,
+        JSON.stringify(records.records),
+      ],
     )
     if (result.rows.length === 0 || result.rows[0].records === null) {
       return res.status(400).send()
@@ -116,7 +122,7 @@ router.put('/:env/:tenantId/model/:modelId/record', (req: Request, res: Response
   })
 })
 
-router.post('/:env/:tenantId/model/:modelId/record', (req: Request, res: Response) => {
+router.post('/:tenantId/model/:modelId/record', (req: Request, res: Response) => {
   if (req.body._type !== 'filter.request.payload') {
     console.error('Body is not an instance of filter.request.payload: ' + JSON.stringify(req.body))
     return res.status(400).send()
@@ -127,7 +133,7 @@ router.post('/:env/:tenantId/model/:modelId/record', (req: Request, res: Respons
     const result = await client.query(
       'select * from get_records($1,text2Ltree($2), $3, $4, $5) as records;',
       [
-        req.params.env,
+        mandatory(req.env, `No env in request`),
         req.params.tenantId,
         req.params.modelId,
         filter.query,
@@ -138,45 +144,57 @@ router.post('/:env/:tenantId/model/:modelId/record', (req: Request, res: Respons
   })
 })
 
-router.get('/:env/:tenantId/model/:modelId/record/:recordId', (req: Request, res: Response) => {
+router.get('/:tenantId/model/:modelId/record/:recordId', (req: Request, res: Response) => {
   return authenticatedDatabaseRequest(req, res, async (client) => {
     const result = await client.query(
       'select * from get_record($1,text2Ltree($2), $3, $4) as record;',
-      [req.params.env, req.params.tenantId, req.params.modelId, req.params.recordId],
+      [
+        mandatory(req.env, `No env in request`),
+        req.params.tenantId,
+        req.params.modelId,
+        req.params.recordId,
+      ],
     )
     return res.status(200).json(result.rows[0].record)
   })
 })
 
-router.get(
-  '/:env/:tenantId/model/:modelId/referencing/:recordId',
-  (req: Request, res: Response) => {
-    return authenticatedDatabaseRequest(req, res, async (client) => {
-      const result = await client.query(
-        'select * from get_records_that_reference($1,text2Ltree($2), $3, $4) as records;',
-        [req.params.env, req.params.tenantId, req.params.modelId, req.params.recordId],
-      )
-      return res.status(200).json(result.rows[0])
-    })
-  },
-)
+router.get('/:tenantId/model/:modelId/referencing/:recordId', (req: Request, res: Response) => {
+  return authenticatedDatabaseRequest(req, res, async (client) => {
+    const result = await client.query(
+      'select * from get_records_that_reference($1,text2Ltree($2), $3, $4) as records;',
+      [
+        mandatory(req.env, `No env in request`),
+        req.params.tenantId,
+        req.params.modelId,
+        req.params.recordId,
+      ],
+    )
+    return res.status(200).json(result.rows[0])
+  })
+})
 
-router.delete('/:env/:tenantId/model/:modelId/record/:recordId', (req: Request, res: Response) => {
+router.delete('/:tenantId/model/:modelId/record/:recordId', (req: Request, res: Response) => {
   return authenticatedDatabaseRequest(req, res, async (client) => {
     await client.query(
       'delete from record where env = $1 and tenant = text2Ltree($2) and model_id = $3 and id = $4;',
-      [req.params.env, req.params.tenantId, req.params.modelId, req.params.recordId],
+      [
+        mandatory(req.env, `No env in request`),
+        req.params.tenantId,
+        req.params.modelId,
+        req.params.recordId,
+      ],
     )
     return res.status(204).send()
   })
 })
 
-router.put('/:env/:tenantId/entity', (req: Request, res: Response) => {
+router.put('/:tenantId/entity', (req: Request, res: Response) => {
   const entities = Array.isArray(req.body) ? req.body : [req.body]
   return authenticatedDatabaseRequest(req, res, async (client) => {
     const result = await client.query(
       'select * from upsert_tenant_entity_from_jsonb_array($1,$2::ltree, $3::jsonb[]);',
-      [req.params.env, req.params.tenantId, entities],
+      [mandatory(req.env, `No env in request`), req.params.tenantId, entities],
     )
     if (result.rows.length === 0 || result.rows[0].tenant === null) {
       return res.status(404).send()
@@ -185,11 +203,11 @@ router.put('/:env/:tenantId/entity', (req: Request, res: Response) => {
   })
 })
 
-router.get('/:env/:tenantId/entity', (req: Request, res: Response) => {
+router.get('/:tenantId/entity', (req: Request, res: Response) => {
   return authenticatedDatabaseRequest(req, res, async (client) => {
     const result = await client.query(
       'select * from get_tenant_entities_definitions($1,$2::ltree);',
-      [req.params.env, req.params.tenantId],
+      [mandatory(req.env, `No env in request`), req.params.tenantId],
     )
 
     if (result.rows.length === 0 || result.rows[0].get_tenant_entities_definitions === null) {

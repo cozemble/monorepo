@@ -79,7 +79,7 @@ describe('Given a Customer with a Booking', () => {
     const customerWithNoBooking = dataRecordFns.random(systemConfig, [customerModel], customerModel)
 
     const response = await fetch(
-      `http://localhost:${port}/api/v1/tenant/${testEnv}/${tenantId}/model/${bookingModel.id.value}/referencing/${customerWithNoBooking.id.value}`,
+      `http://localhost:${port}/${testEnv}/api/v1/tenant/${tenantId}/model/${bookingModel.id.value}/referencing/${customerWithNoBooking.id.value}`,
       {
         headers: {
           Authorization: 'Bearer ' + bearer,
@@ -95,7 +95,7 @@ describe('Given a Customer with a Booking', () => {
     const customerWithBooking = customerRecords[0]
     console.log({ customerWithBooking })
     const response = await fetch(
-      `http://localhost:${port}/api/v1/tenant/${testEnv}/${tenantId}/model/${bookingModel.id.value}/referencing/${customerWithBooking.id.value}`,
+      `http://localhost:${port}/${testEnv}/api/v1/tenant/${tenantId}/model/${bookingModel.id.value}/referencing/${customerWithBooking.id.value}`,
       {
         headers: {
           Authorization: 'Bearer ' + bearer,
