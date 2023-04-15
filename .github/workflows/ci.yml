@@ -44,6 +44,15 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Cache Cypress binary
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache
+          key: ${{ runner.os }}-cypress-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-cypress-        
+
       - name: Versions
         run: npx turbo --version
 
@@ -56,15 +65,6 @@ jobs:
 #
       - name: Model editor cypress tests
         run: cd model/editor && ./scripts/run-cypress.sh
-
-      - name: Cache Cypress binary
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cache
-          key: ${{ runner.os }}-cypress-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-cypress-
 
       - name: Paginated data editor cypress tests
         run: cd data/paginated-editor && ./scripts/run-cypress.sh
