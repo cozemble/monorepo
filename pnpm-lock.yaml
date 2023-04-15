@@ -286,6 +286,7 @@ importers:
       tslib: ^2.4.1
       typescript: ^5.0.2
       vite: 4.1.4
+      wait-on: ^7.0.1
     dependencies:
       '@cozemble/data-editor-sdk': link:../editor-sdk
       '@cozemble/lang-util': link:../../lang/util
@@ -309,6 +310,7 @@ importers:
       tslib: 2.5.0
       typescript: 5.0.2
       vite: 4.1.4
+      wait-on: 7.0.1
 
   frontend/data-editor:
     specifiers:
