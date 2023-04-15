@@ -12,7 +12,8 @@ npm run dev &
 # Wait for the Svelte app to be ready
 npx wait-on http://localhost:5173
 
-$(npm bin)/cypress install cypress --force
+set -x
+./node_modules/.bin/cypress install cypress --force
 # Run the tests
 npx cypress run
 TEST_EXIT_CODE=$?
