@@ -47,7 +47,9 @@ jobs:
       - name: Cache Cypress binary
         uses: actions/cache@v2
         with:
-          path: ~/.cache
+          path: |
+            ~/.cache
+            ~/.cache/Cypress
           key: ${{ runner.os }}-cypress-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-cypress-
