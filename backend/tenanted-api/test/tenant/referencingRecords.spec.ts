@@ -6,6 +6,7 @@ import { DataRecord, Model, modelReferenceFns, referencedRecordsFns } from '@coz
 import { dataRecordFns, modelFns, modelOptions, propertyFns } from '@cozemble/model-api'
 import { registerStringProperty } from '@cozemble/model-string-core'
 import { systemConfigurationFns } from '@cozemble/model-core'
+import { testEnv } from '../helper'
 
 const jwtSigningSecret = 'secret'
 const port = 3010
@@ -78,7 +79,7 @@ describe('Given a Customer with a Booking', () => {
     const customerWithNoBooking = dataRecordFns.random(systemConfig, [customerModel], customerModel)
 
     const response = await fetch(
-      `http://localhost:${port}/api/v1/tenant/${tenantId}/model/${bookingModel.id.value}/referencing/${customerWithNoBooking.id.value}`,
+      `http://localhost:${port}/${testEnv}/api/v1/tenant/${tenantId}/model/${bookingModel.id.value}/referencing/${customerWithNoBooking.id.value}`,
       {
         headers: {
           Authorization: 'Bearer ' + bearer,
@@ -94,7 +95,7 @@ describe('Given a Customer with a Booking', () => {
     const customerWithBooking = customerRecords[0]
     console.log({ customerWithBooking })
     const response = await fetch(
-      `http://localhost:${port}/api/v1/tenant/${tenantId}/model/${bookingModel.id.value}/referencing/${customerWithBooking.id.value}`,
+      `http://localhost:${port}/${testEnv}/api/v1/tenant/${tenantId}/model/${bookingModel.id.value}/referencing/${customerWithBooking.id.value}`,
       {
         headers: {
           Authorization: 'Bearer ' + bearer,

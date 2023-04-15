@@ -14,18 +14,21 @@ export interface GithubUser {
 
 export interface SignInState {
   _type: 'cozauth.signin.state'
+  env: string
   userPool: string
   provider: 'github'
   cozembleRoot: string
 }
 
 export function signInState(
+  env: string,
   userPool: string,
   provider: 'github',
   cozembleRoot: string,
 ): SignInState {
   return {
     _type: 'cozauth.signin.state',
+    env,
     userPool,
     provider,
     cozembleRoot,
@@ -40,7 +43,7 @@ export function fromUrlFriendly<T>(str: string): T {
   return JSON.parse(atob(str))
 }
 
-export const githubAuth = (): ClientOAuth2 => {
+export const githubAuth = (env: string): ClientOAuth2 => {
   const authRoot = mandatory(process.env.OAUTH_CALLBACK_ROOT, `No OAUTH_CALLBACK_ROOT env var set`)
 
   const clientId = mandatory(process.env.GITHUB_CLIENT_ID, `No GITHUB_CLIENT_ID env var set`)
@@ -48,18 +51,20 @@ export const githubAuth = (): ClientOAuth2 => {
     process.env.GITHUB_CLIENT_SECRET,
     `No GITHUB_CLIENT_SECRET env var set`,
   )
+  console.log(`Redirect uri: ${authRoot}/${env}/api/v1/auth/callback`)
   console.log(
-    `Creating github auth client with client id ${clientId} and secret starting with ${clientSecret.substring(
+    `xxxCreating github auth client with client id ${clientId} and secret starting with ${clientSecret.substring(
       0,
       4,
     )}`,
   )
+
   return new ClientOAuth2({
     clientId,
     clientSecret,
     accessTokenUri: 'https://github.com/login/oauth/access_token',
     authorizationUri: 'https://github.com/login/oauth/authorize',
-    redirectUri: `${authRoot}/api/v1/auth/callback`,
+    redirectUri: `${authRoot}/${env}/api/v1/auth/callback`,
     scopes: ['user:email'],
   })
 }

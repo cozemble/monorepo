@@ -4,6 +4,7 @@ import * as http from 'http'
 import { makeTenant } from '../tenant/testHelpers'
 import { uuids } from '@cozemble/lang-util'
 import { withAdminPgClient } from '../../src/infra/postgresPool'
+import { testEnv } from '../helper'
 
 const jwtSigningSecret = 'secret'
 const port = 3006
@@ -23,7 +24,7 @@ describe('with a running backend', () => {
   test('returns user json if refresh code exists, has not been used and has not expired', async () => {
     const refreshToken = await makeLegitRefreshToken()
 
-    const response = await fetch(`http://localhost:3006/api/v1/auth/token`, {
+    const response = await fetch(`http://localhost:3006/${testEnv}/api/v1/auth/token`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refreshToken }),
@@ -36,13 +37,13 @@ describe('with a running backend', () => {
   test('second use of refresh token is 401', async () => {
     const refreshToken = await makeLegitRefreshToken()
 
-    const firstResponse = await fetch(`http://localhost:3006/api/v1/auth/token`, {
+    const firstResponse = await fetch(`http://localhost:3006/${testEnv}/api/v1/auth/token`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refreshToken }),
     })
     expect(firstResponse.status).toBe(200)
-    const secondResponse = await fetch(`http://localhost:3006/api/v1/auth/token`, {
+    const secondResponse = await fetch(`http://localhost:3006/${testEnv}/api/v1/auth/token`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refreshToken }),
@@ -51,7 +52,7 @@ describe('with a running backend', () => {
   })
 
   test('401 if authorization code does not exist', async () => {
-    const response = await fetch(`http://localhost:3006/api/v1/auth/token`, {
+    const response = await fetch(`http://localhost:3006/${testEnv}/api/v1/auth/token`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refreshToken: '123' }),
@@ -64,8 +65,8 @@ async function makeRefreshToken(userId: string) {
   return await withAdminPgClient(async (pg) => {
     const refreshToken = uuids.v4()
     await pg.query(
-      'insert into refresh_token(id, user_id, user_pool, refresh_token) values($1, $2, $3, $4)',
-      [uuids.v4(), userId, 'root', refreshToken],
+      'insert into refresh_token(env,id, user_id, user_pool, refresh_token) values($1, $2, $3, $4,$5)',
+      [testEnv, uuids.v4(), userId, 'root', refreshToken],
     )
     return refreshToken
   })

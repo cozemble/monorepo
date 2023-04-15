@@ -7,11 +7,13 @@ import { uuids } from '@cozemble/lang-util'
 import { getFileObject } from './getFileObject'
 import { StorageProvider } from './StorageProvider'
 import sharp from 'sharp'
+import { mandatory } from '@cozemble/lang-util'
 
 const thumbnailWidth = 100
 
 async function createObject(
   client: pg.PoolClient,
+  env: string,
   tenantId: string,
   file: Express.Multer.File,
   fileId: string,
@@ -20,8 +22,9 @@ async function createObject(
   thumbnailUrl: string | null,
 ): Promise<any | null> {
   const createObjectResponse = await client.query(
-    `SELECT create_object( $1, $2, $3, $4, $5, $6, $7, $8,$9 ) as object_id;`,
+    `SELECT create_object( $1, $2, $3, $4, $5, $6, $7, $8,$9,$10 ) as object_id;`,
     [
+      env,
       fileId,
       tenantId,
       file.originalname,
@@ -42,6 +45,7 @@ async function createObject(
 async function processUpload(
   client: pg.PoolClient,
   storageProvider: StorageProvider,
+  env: string,
   tenantId: string,
   file: Express.Multer.File,
 ) {
@@ -50,6 +54,7 @@ async function processUpload(
   if (file.mimetype.startsWith('image/')) {
     const thumbnailBuffer = await sharp(file.buffer).resize(thumbnailWidth).png().toBuffer()
     thumbnailUrl = await storageProvider.storeThumbnail(
+      env,
       tenantId,
       fileId,
       thumbnailBuffer,
@@ -57,12 +62,14 @@ async function processUpload(
     )
   }
   const { storageProvider: storageProviderName, storageDetails } = await storageProvider.storeFile(
+    env,
     tenantId,
     fileId,
     file,
   )
   const object = await createObject(
     client,
+    env,
     tenantId,
     file,
     fileId,
@@ -85,13 +92,14 @@ async function processUpload(
 async function handleUpload(
   client: pg.PoolClient,
   storageProvider: StorageProvider,
+  env: string,
   tenantId: string,
   req: express.Request,
   res: express.Response,
 ) {
   const uploadedFiles = await Promise.all(
     (req.files as Express.Multer.File[]).map((file) =>
-      processUpload(client, storageProvider, tenantId, file),
+      processUpload(client, storageProvider, env, tenantId, file),
     ),
   )
   if (uploadedFiles.some((uf) => uf === null)) {
@@ -113,14 +121,15 @@ export function makeStorageRoute(storageProvider: StorageProvider) {
           message: 'No files uploaded',
         })
       }
+      const env = mandatory(req.env, `No env in request`)
       const tenantId = (req.params.tenantId as string) ?? null
-      if (!tenantId) {
+      if (!tenantId || !env) {
         return res.status(400).json({
-          message: 'No tenant id provided',
+          message: 'No tenant id or env provided',
         })
       }
 
-      return await handleUpload(client, storageProvider, tenantId, req, res)
+      return await handleUpload(client, storageProvider, env, tenantId, req, res)
     })
   })
 

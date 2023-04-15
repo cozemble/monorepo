@@ -2,6 +2,7 @@ import { StorageProvider } from './StorageProvider'
 
 export class MemoryStorageProvider implements StorageProvider {
   async storeFile(
+    env: string,
     tenantId: string,
     fileId: string,
     file: Express.Multer.File,
@@ -10,6 +11,7 @@ export class MemoryStorageProvider implements StorageProvider {
   }
 
   async storeThumbnail(
+    env: string,
     tenantId: string,
     fileId: string,
     thumbnailBuffer: Buffer,
@@ -18,7 +20,12 @@ export class MemoryStorageProvider implements StorageProvider {
     return 'https://via.placeholder.com/150'
   }
 
-  async createSignedUrl(tenantId: string, attachmentId: string, fileName: string): Promise<string> {
+  async createSignedUrl(
+    env: string,
+    tenantId: string,
+    attachmentId: string,
+    fileName: string,
+  ): Promise<string> {
     return `placeholder url for tenant id ${tenantId} and attachment id ${attachmentId}`
   }
 }

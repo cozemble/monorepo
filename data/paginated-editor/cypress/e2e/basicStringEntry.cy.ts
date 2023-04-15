@@ -26,8 +26,8 @@ describe('paginated editor', () => {
       price: '1.00',
     })
 
-    cy.get('button.save').click()
-    cy.get('button.save').click()
+    cy.get('button.save-lineItem').click()
+    cy.get('button.save-invoice').click()
     cy.contains('Add Invoice').should('exist')
   })
 })

@@ -37,7 +37,7 @@
             name="checkbox"
             value="text"
             checked={property.multiline}
-            class="required-toggle"
+            class="multiline-toggle"
             on:change={multilineChanged}/>
     Multiple Lines
 </label>

@@ -1,7 +1,7 @@
 describe('model editor', () => {
   it('supports nested models', () => {
     cy.visit('http://localhost:5173/modelEditor')
-    cy.get('.model-name').click()
+    cy.get('div.model-name').click()
     cy.get('input.model-name').type('{selectall}Delivery{enter}')
 
     cy.contains('Add property').click()

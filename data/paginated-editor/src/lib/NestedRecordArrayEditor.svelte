@@ -56,8 +56,7 @@
 <table
         on:click={(event) => dataRecordTableClicked(focus, event)}
         on:keyup={(event) => dataRecordTableClicked(focus, event)}
-        class="table"
->
+        class="table">
     <thead>
     <tr>
         {#each model.slots as slot}
@@ -87,6 +86,7 @@
     {/each}
     </tbody>
 </table>
-<div class="bottom-buttons btn-group">
+
+<div class="bottom-buttons">
     <button type="button" on:click={addItem} class="btn">Add {model.name.value}</button>
 </div>

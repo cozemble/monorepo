@@ -1,10 +1,6 @@
 import { GithubUser } from './githubAuth'
 
-async function fetchGithubUserEmail(
-  userPool: string,
-  accessToken: string,
-  profile: any,
-): Promise<GithubUser> {
+async function fetchGithubUserEmail(accessToken: string, profile: any): Promise<GithubUser> {
   const response = await fetch('https://api.github.com/user/emails', {
     method: 'GET',
     headers: {
@@ -22,10 +18,7 @@ async function fetchGithubUserEmail(
   }
 }
 
-export async function fetchGithubUserDetails(
-  userPool: string,
-  accessToken: string,
-): Promise<GithubUser> {
+export async function fetchGithubUserDetails(accessToken: string): Promise<GithubUser> {
   const response = await fetch('https://api.github.com/user', {
     method: 'GET',
     headers: {
@@ -39,7 +32,7 @@ export async function fetchGithubUserDetails(
     if (body.email) {
       return body
     }
-    return fetchGithubUserEmail(userPool, accessToken, body)
+    return fetchGithubUserEmail(accessToken, body)
   } else {
     throw new Error('Unable to fetch user details')
   }

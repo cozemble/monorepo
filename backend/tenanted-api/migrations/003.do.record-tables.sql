@@ -1,23 +1,25 @@
 create table if not exists record
 (
+    env        text      not null,
     id         text      not null,
     tenant     ltree     not null,
     model_id   text      not null,
     definition jsonb     not null,
     created_at timestamp not null default now(),
     updated_at timestamp not null default now(),
-    primary key (id, model_id, tenant)
+    primary key (env, id, model_id, tenant)
 );
 
-create index if not exists record_tenant_idx on record using gist (tenant);
+create index record_tenant_idx on record using gist (tenant);
 
-create index if not exists record_model_id_idx on record (model_id);
+create index record_model_id_idx on record (model_id);
+create index record_model_env_idx on record (env);
 
 -- should refer to the model table via foreign key
 alter table record
     add constraint record_model_id_fkey
-        foreign key (model_id, tenant)
-            references model (id, tenant)
+        foreign key (env, model_id, tenant)
+            references model (env, id, tenant)
             on delete cascade;
 
 -- add a column called text to the record table
@@ -25,7 +27,7 @@ ALTER TABLE record
     ADD COLUMN text text;
 
 
-CREATE OR REPLACE FUNCTION upsert_record(p_tenant LTREE, p_definition JSONB)
+CREATE OR REPLACE FUNCTION upsert_record(given_env text, p_tenant LTREE, p_definition JSONB)
     RETURNS JSONB AS
 $$
 DECLARE
@@ -69,6 +71,7 @@ BEGIN
                     SELECT EXISTS (SELECT 1
                                    FROM record
                                    WHERE tenant = p_tenant
+                                     AND env = given_env
                                      AND model_id = p_model_id
                                      AND (definition -> 'values') @> current_path_value
                                      AND id != p_id)
@@ -80,6 +83,7 @@ BEGIN
                         INTO conflicting_record_id
                         FROM record
                         WHERE tenant = p_tenant
+                          AND env = given_env
                           AND model_id = p_model_id
                           AND (definition -> 'values') @> current_path_value
                           AND id != p_id;
@@ -98,8 +102,8 @@ BEGIN
 
                 -- If the record does not exist, insert a new one
                 IF NOT FOUND THEN
-                    INSERT INTO record (id, tenant, model_id, definition)
-                    VALUES (p_id, p_tenant, p_model_id, record_obj);
+                    INSERT INTO record (env, id, tenant, model_id, definition)
+                    VALUES (given_env, p_id, p_tenant, p_model_id, record_obj);
                     inserted_count := inserted_count + 1;
                 ELSE
                     updated_count := updated_count + 1;

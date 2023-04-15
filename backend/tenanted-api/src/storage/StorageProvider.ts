@@ -1,5 +1,6 @@
 export interface StorageProvider {
   storeThumbnail(
+    env: string,
     tenantId: string,
     fileId: string,
     thumbnailBuffer: Buffer,
@@ -7,10 +8,16 @@ export interface StorageProvider {
   ): Promise<string | null>
 
   storeFile(
+    env: string,
     tenantId: string,
     fileId: string,
     file: Express.Multer.File,
   ): Promise<{ storageProvider: string; storageDetails: any }>
 
-  createSignedUrl(tenantId: string, attachmentId: string, fileName: string): Promise<string>
+  createSignedUrl(
+    env: string,
+    tenantId: string,
+    attachmentId: string,
+    fileName: string,
+  ): Promise<string>
 }
