@@ -14,6 +14,7 @@ jobs:
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+      CYPRESS_CACHE_FOLDER: ./tmp/Cypress
 
     steps:
       - name: Check out code
@@ -42,7 +43,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: CYPRESS_CACHE_FOLDER=./tmp/Cypress pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Versions
         run: npx turbo --version
@@ -55,4 +56,4 @@ jobs:
         run: npx turbo test
 
       - name: Model editor cypress tests
-        run: cd model/editor && CYPRESS_CACHE_FOLDER=./tmp/Cypress ./scripts/run-cypress.sh
+        run: cd model/editor && ˚./scripts/run-cypress.sh
