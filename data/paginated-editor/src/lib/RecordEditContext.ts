@@ -3,11 +3,12 @@ import type {
   DataRecordValuePath,
   Model,
   ModelId,
+  NestedModel,
   SystemConfiguration,
 } from '@cozemble/model-core'
 import { DataRecordPathFocus } from './DataRecordPathFocus'
 import { writable, type Writable } from 'svelte/store'
-import { modelFns } from '@cozemble/model-api'
+import { dataRecordFns, modelFns } from '@cozemble/model-api'
 import type { DataRecordControlEvent } from '@cozemble/data-editor-sdk'
 import {
   type DataRecordEditEvent,
@@ -42,6 +43,43 @@ export type RecordSaveOutcome = RecordSaveSucceeded | RecordSaveFailed
 
 export type RecordSaveFunction = (record: EventSourcedDataRecord) => Promise<RecordSaveOutcome>
 
+export const recordEditContextFns = {
+  nestedRecord: (context: RecordEditContext, nestedModel: NestedModel): RecordEditContext => {
+    const relatedModel = modelFns.findById(context.models, nestedModel.modelId)
+    let nestedRecord = context.eventSourcedRecord.record.values[nestedModel.id.value]
+    if (!nestedRecord) {
+      nestedRecord = dataRecordFns.newInstance(
+        relatedModel,
+        context.eventSourcedRecord.record.createdBy.value,
+      )
+      context.eventSourcedRecord.record.values[nestedModel.id.value] = nestedRecord
+    }
+    const nestedEventSourcedRecord = eventSourcedDataRecordFns.fromRecord(
+      context.models,
+      nestedRecord,
+    )
+    const onSave: RecordSaveFunction = async (record: EventSourcedDataRecord) => {
+      throw new Error('Not implemented')
+    }
+    const onCancel: () => void = () => {
+      throw new Error('Not implemented')
+    }
+    return new RecordEditContext(
+      context.models,
+      context.saveNewRecord,
+      nestedEventSourcedRecord,
+      onSave,
+      onCancel,
+      'Nested Record',
+      context.systemConfiguration,
+      context._errors,
+      context.errors,
+      relatedModel,
+      context.focus,
+    )
+  },
+}
+
 export class RecordEditContext {
   constructor(
     public models: Model[],
@@ -62,7 +100,6 @@ export class RecordEditContext {
       ).setInitial(model),
     ),
     public record = writable(eventSourcedRecord.record),
-    public child: RecordEditContext | null = null,
     public showErrors: Writable<boolean> = writable(false),
     public id = uuids.v4(),
   ) {

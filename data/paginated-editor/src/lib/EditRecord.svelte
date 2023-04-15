@@ -11,6 +11,7 @@
     import type {AttachmentsManager} from "./AttachmentsManager";
     import type {AttachmentIdAndFileName} from "@cozemble/data-editor-sdk";
     import type {UserInstruction} from "@cozemble/data-editor-sdk";
+    import {strings} from "@cozemble/lang-util";
 
     export let recordEditContext: RecordEditContext
     export let recordSearcher: RecordSearcher
@@ -83,9 +84,10 @@
 
 <DataRecordEditor {recordEditContext} {pushContext} {popContext}/>
 
-<div class="buttons btn-group my-4">
-    <button type="button" class="save btn btn-primary" on:click={handleSave}>Save</button>
-    <button type="button" class="cancel btn btn-error" on:click={handleCancel}>{cancelButtonText}</button>
+<br/>
+<div class="buttons my-4">
+    <button type="button" class="btn btn-primary save save-{strings.camelize(recordEditContext.model.name.value)}" on:click={handleSave}>Save</button>
+    <button type="button" class="btn btn-error cancel cancel-{strings.camelize(recordEditContext.model.name.value)}" on:click={handleCancel}>{cancelButtonText}</button>
 </div>
 
 <style>
