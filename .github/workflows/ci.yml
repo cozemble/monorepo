@@ -66,5 +66,5 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cypress-
 
-      - name: Model editor cypress tests
+      - name: Paginated data editor cypress tests
         run: cd data/paginated-editor && ./scripts/run-cypress.sh
