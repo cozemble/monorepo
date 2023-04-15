@@ -54,5 +54,13 @@ jobs:
       - name: Test
         run: npx turbo test
 
+      - name: Cache Cypress binary
+        uses: actions/cache@v2
+        with:
+          path: /home/runner/.cache/Cypress
+          key: ${{ runner.os }}-cypress-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cypress-
+
       - name: Model editor cypress tests
         run: cd model/editor && ./scripts/run-cypress.sh
