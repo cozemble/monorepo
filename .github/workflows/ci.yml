@@ -60,9 +60,9 @@ jobs:
         run: |
           npx turbo build
 
-#      - name: Test
-#        run: npx turbo test
-#
+      - name: Test
+        run: npx turbo test
+
       - name: Model editor cypress tests
         run: cd model/editor && ./scripts/run-cypress.sh
 
