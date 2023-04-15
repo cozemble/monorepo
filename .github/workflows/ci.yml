@@ -42,7 +42,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: CYPRESS_CACHE_FOLDER=./tmp/Cypress pnpm install --frozen-lockfile
 
       - name: Versions
         run: npx turbo --version
@@ -54,13 +54,5 @@ jobs:
       - name: Test
         run: npx turbo test
 
-      - name: Cache Cypress binary
-        uses: actions/cache@v2
-        with:
-          path: /home/runner/.cache/Cypress
-          key: ${{ runner.os }}-cypress-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cypress-
-
       - name: Model editor cypress tests
-        run: cd model/editor && ./scripts/run-cypress.sh
+        run: cd model/editor && CYPRESS_CACHE_FOLDER=./tmp/Cypress ./scripts/run-cypress.sh
