@@ -45,6 +45,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Cache Cypress binary
+        uses: actions/cache@v2
+        with:
+          path: ./tmp/Cypress
+          key: ${{ runner.os }}-cypress-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cypress-
+
       - name: Versions
         run: npx turbo --version
 
