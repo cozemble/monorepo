@@ -13,7 +13,7 @@ npm run dev &
 npx wait-on http://localhost:5173
 
 set -x
-./node_modules/.bin/cypress install cypress --force
+./node_modules/.bin/cypress install cypress
 # Run the tests
 npx cypress run
 TEST_EXIT_CODE=$?
