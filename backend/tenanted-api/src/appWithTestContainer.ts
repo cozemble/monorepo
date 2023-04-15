@@ -3,7 +3,8 @@ import { PostgreSqlContainer, StartedPostgreSqlContainer } from 'testcontainers'
 import { expressApp } from './expressApp'
 import * as http from 'http'
 import { closePgPool, withAdminPgClient } from './infra/postgresPool'
-import { testEnv } from '../test/helper'
+
+const testEnv = 'test'
 
 function pgConnectString(container: StartedPostgreSqlContainer) {
   return `postgres://${container.getUsername()}:${container.getPassword()}@${container.getHost()}:${container.getPort()}/${container.getDatabase()}`
