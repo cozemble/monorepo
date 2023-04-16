@@ -32,7 +32,7 @@
     $: focussed = $focus.isPropertyFocussed(modelSlot, parentPath)
 </script>
 
-<td class:focussed data-record-path={dataRecordPathAsString(modelSlot)}>
+<td class:focussed data-record-path={dataRecordPathAsString(modelSlot)} class="border">
     {#if focussed}
         <SlotEdit {systemConfiguration} {parentPath} {modelSlot} {record}/>
     {:else}
