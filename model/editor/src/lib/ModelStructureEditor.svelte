@@ -115,7 +115,7 @@
             </tbody>
         </table>
         <div class="actions">
-            <button on:click={addNestedModel} class="btn btn-active btn-ghost add-nested-model">Add nested model
+            <button on:click={addNestedModel} class="btn btn-active btn-ghost add-nested-model btn-sm">Add nested model
             </button>
         </div>
     </div>
@@ -123,7 +123,7 @@
 
 {#each model.nestedModels as nestedModel}
     {@const eventSourced = host.modelWithId(allModels, nestedModel.modelId)}
-    <div class="nested-model-container">
+    <div class="nested-model-container mt-2">
         <h5>{nestedModel.name.value}</h5>
         <svelte:self {allModels} {eventSourced} {host}/>
     </div>

@@ -60,7 +60,7 @@
 
 <svelte:window on:keydown={keydown}/>
 
-<label for="cardinality">Cardinality</label><br/>
+<label for="cardinality">Every {parentModel.name.value} has:</label><br/>
 <select id="cardinality" bind:value={cardinality} class="cardinality input input-bordered">
     <option value="one">One</option>
     <option value="many">Many</option>
