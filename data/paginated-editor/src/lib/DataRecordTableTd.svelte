@@ -21,7 +21,6 @@
     export let focus: Writable<DataRecordPathFocus>
     export let systemConfiguration: SystemConfiguration
 
-
     function dataRecordPathAsString(slot: LeafModelSlot) {
         return dataRecordValuePathFns.toDottedPath(
             dataRecordValuePathFns.newInstance(slot, ...parentPath),

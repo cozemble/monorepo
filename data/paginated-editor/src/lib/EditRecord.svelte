@@ -67,7 +67,7 @@
             return attachmentsManager.getAttachmentViewUrls(attachmentIds)
         },
 
-        instructUser(userInstruction: UserInstruction): void {
+        instructUser(_userInstruction: UserInstruction): void {
             throw new Error("Not implemented")
         },
     }

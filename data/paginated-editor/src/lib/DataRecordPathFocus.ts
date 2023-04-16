@@ -65,7 +65,7 @@ export class DataRecordPathFocus {
       ),
     )
     const indexOfFocus = allValues.findIndex(
-      (v) => v.value && v.path && dataRecordValuePathFns.sameDottedPaths(v.path, focus),
+      (v) => v.path && dataRecordValuePathFns.sameDottedPaths(v.path, focus),
     )
     if (indexOfFocus === -1) {
       return this._newFocus(null)
