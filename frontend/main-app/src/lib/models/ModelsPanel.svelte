@@ -6,6 +6,7 @@
     export let tenantId: string
 
 </script>
+
 {#if $modelBeingEdited}
     <EditModel modelId={$modelBeingEdited.modelId} {tenantId} editImmediately={$modelBeingEdited.context === 'create'}
                on:finished={() => modelBeingEdited.set(null)}/>
@@ -28,7 +29,6 @@
         <button class="btn btn-primary" type="button" on:click={addNewModel}>Add first model</button>
     {:else}
         <ModelList/>
-        <br/>
         <button class="btn btn-primary" type="button" on:click={addNewModel}>Add another model</button>
     {/if}
 {/if}
