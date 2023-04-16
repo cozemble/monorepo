@@ -6,6 +6,7 @@
     import {openRecordViewStore} from "./openRecordViews";
     import {modelFns} from "@cozemble/model-api";
     import OpenRecordWithLoader from "./OpenRecordWithLoader.svelte";
+    import {onMount} from "svelte";
 
     export let tenantId: string
     $: actualModels = $allModels.map(m => m.model)
@@ -21,6 +22,12 @@
     function showRecord(recordId: string) {
         navbarState.set(recordId)
     }
+
+    onMount(() => {
+        if (rootModels.length > 0) {
+            showModel(rootModels[0].id.value)
+        }
+    })
 </script>
 
 {#if rootModels.length === 0}
@@ -28,20 +35,17 @@
 {:else if rootModels.length === 1 && $openRecordViewStore.length === 0}
     <DataPanelWithLoader models={actualModels} model={rootModels[0]} {tenantId}/>
 {:else}
-    <div class="navbar bg-base-300 rounded-xl">
-        <div>
-            <ul class="menu menu-horizontal px-1">
-                {#each rootModels as model}
-                    <li class:active-nav-item={$navbarState === model.id.value}
-                        on:click={() => showModel(model.id.value)}><a>{model.name.value}</a></li>
-                {/each}
-                {#each $openRecordViewStore as openRecordView}
-                    {@const model = modelFns.findById(actualModels, openRecordView.modelId)}
-                    <li class:active-nav-item={$navbarState === openRecordView.recordId.value}
-                        on:click={() => showRecord(openRecordView.recordId.value)}><a>A {model.name.value} record</a></li>
-                {/each}
-            </ul>
-        </div>
+    <div class="tabs bg-base-300 rounded p-1">
+        {#each rootModels as model}
+            <a class="tab tab-lg  tab-bordered" class:tab-active={$navbarState === model.id.value}
+               on:click={() => showModel(model.id.value)}>{model.name.value}</a>
+        {/each}
+        {#each $openRecordViewStore as openRecordView}
+            {@const model = modelFns.findById(actualModels, openRecordView.modelId)}
+            <a class="tab tab-lg  tab-bordered" class:tab-active={$navbarState === openRecordView.recordId.value}
+               on:click={() => showRecord(openRecordView.recordId.value)}>A {model.name.value} record</a>
+        {/each}
+
     </div>
 {/if}
 
