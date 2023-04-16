@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type {ModelSlot, ModelSlotId} from '@cozemble/model-core'
+    import type {ModelSlot, ModelSlotId, SystemConfiguration} from '@cozemble/model-core'
     import {modelIdAndNameFns, nestedModelNameFns, propertyDescriptors, propertyNameFns,} from '@cozemble/model-core'
     import ModelSlotEditor from './ModelSlotEditor.svelte'
     import AddNestedModelDialog from './AddNestedModelDialog.svelte'
@@ -8,7 +8,6 @@
     import type {EventSourcedModel} from '@cozemble/model-event-sourced'
     import {coreModelEvents} from '@cozemble/model-event-sourced'
     import {createEventDispatcher} from "svelte";
-    import type {SystemConfiguration} from "@cozemble/model-core";
 
     export let host: ModelEditorHost
     export let allModels: EventSourcedModel[]
@@ -28,7 +27,7 @@
             model.id,
             propertyDescriptors
                 .getDefault()
-                .newProperty(systemConfiguration,model.id, propertyNameFns.newInstance(propertyName)),
+                .newProperty(systemConfiguration, model.id, propertyNameFns.newInstance(propertyName)),
         )
     }
 
@@ -116,7 +115,6 @@
             </tbody>
         </table>
         <div class="actions">
-            <br/>
             <button on:click={addNestedModel} class="btn btn-active btn-ghost add-nested-model">Add nested model
             </button>
         </div>

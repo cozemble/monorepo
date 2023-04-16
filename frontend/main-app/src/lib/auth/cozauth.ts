@@ -104,4 +104,8 @@ export const cozauth = {
     }
     return accessToken
   },
+  clearTokens: (userPool: string) => {
+    localStorage.removeItem(accessTokenKey(userPool))
+    localStorage.removeItem(refreshTokenKey(userPool))
+  },
 }
