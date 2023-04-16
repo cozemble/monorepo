@@ -18,7 +18,7 @@
     "build-run-db": "npm run compile && npm run bounce:db",
     "bounce:db": "node dist/cjs/devDb.js",
     "compile": "npx tsc -p tsconfig-cjs.json",
-    "server": "NODE_ENV=development node dist/cjs/src/index.js",
+    "server": "NODE_ENV=development node dist/cjs/index.js",
     "clean:postgres": "./scripts/run-clean-postgres.sh && npm run db:migrate-local"
   },
   "devDependencies": {

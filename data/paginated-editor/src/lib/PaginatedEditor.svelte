@@ -126,7 +126,7 @@
                     {/if}
                 {/each}
                 <td>
-                    <button class="edit btn btn-active btn-ghost btn-sm" on:click={() => viewRecord(record)}>View
+                    <button class="edit btn btn-active btn-ghost btn-sm" on:click={() => viewRecord(record)}>Details
                     </button>
                     <button class="edit btn btn-active btn-ghost btn-sm" on:click={() => editRecord(record)}>Edit
                     </button>
