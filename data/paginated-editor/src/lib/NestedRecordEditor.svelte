@@ -18,25 +18,42 @@
     const modelOfNestedRecord = modelFns.findById(rootRecordEditContext.models, nestedModel.modelId)
 
     $: nestedRecord = dataRecordPathElementFns.getNestedRecord(rootRecordEditContext.models, $rootRecord, parentPath) ?? dataRecordFns.newInstance(modelOfNestedRecord, $rootRecord.createdBy.value)
+
+    function shouldIndent(path:DataRecordPathParentElement[]) {
+        return path.length > 0
+    }
+
 </script>
 
 <DataRecordTable systemConfiguration={rootRecordEditContext.systemConfiguration} record={nestedRecord}
                  model={modelOfNestedRecord} {focus} {parentPath} errors={$errors} showErrors={$showErrors}/>
 
 {#each modelOfNestedRecord.nestedModels as nestedModel}
-    <h3>{nestedModel.name.value}</h3>
     {#if nestedModel.cardinality === 'one'}
-        <svelte:self {rootRecordEditContext}
-                     {nestedModel}
-                     parentPath={[...parentPath, nestedModel]}
-                     {pushContext}
-                     {popContext}/>
+        <div class:indented={shouldIndent(parentPath)}>
+            <h3>{nestedModel.name.value}</h3>
+
+            <svelte:self {rootRecordEditContext}
+                         {nestedModel}
+                         parentPath={[...parentPath, nestedModel]}
+                         {pushContext}
+                         {popContext}/>
+        </div>
     {:else}
-        <NestedRecordArrayEditor
-                recordEditContext={rootRecordEditContext}
-                {nestedModel}
-                parentPath={[...parentPath, nestedModel]}
-                {pushContext}
-                {popContext}/>
+        <div class:indented={shouldIndent(parentPath)}>
+            <h3>{nestedModel.name.value}</h3>
+            <NestedRecordArrayEditor
+                    recordEditContext={rootRecordEditContext}
+                    {nestedModel}
+                    parentPath={[...parentPath, nestedModel]}
+                    {pushContext}
+                    {popContext}/>
+        </div>
     {/if}
 {/each}
+
+<style>
+    .indented {
+        margin-left: 2em;
+    }
+</style>
