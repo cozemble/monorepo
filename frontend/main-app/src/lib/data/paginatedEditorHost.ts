@@ -19,7 +19,7 @@ import type {
 } from '@cozemble/data-editor-sdk'
 import type { Writable } from 'svelte/store'
 import type { UserInstruction } from '@cozemble/data-editor-sdk'
-import { userInstructionStoreFns } from '../userInstruction/userInstructionStore'
+import { userInstructionStoreFns } from '../notices/userInstructionStore'
 
 export function makePaginatedEditorHost(
   tenantId: string,

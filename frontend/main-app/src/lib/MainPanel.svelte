@@ -13,7 +13,8 @@
     import DatabaseIcon from "../lib/icons/DatabaseIcon.svelte";
     import Cog6ToothIcon from "./icons/Cog6ToothIcon.svelte";
     import SettingsPanel from "./settings/SettingsPanel.svelte";
-    import UserInstructionNotices from "./userInstruction/UserInstructionNotices.svelte";
+    import UserInstructionNotices from "./notices/UserInstructionNotices.svelte";
+    import ToastNotices from "./notices/ToastNotices.svelte";
 
     export let tenantId: string
     let panelToShow: "models" | "data" | "settings" = "models"
@@ -43,6 +44,7 @@
     <div class="drawer-content">
         <div class="floating-div bg-accent">
             <UserInstructionNotices />
+            <ToastNotices />
         </div>
         <!-- Page content here -->
         <div class="tabs ml-2">
