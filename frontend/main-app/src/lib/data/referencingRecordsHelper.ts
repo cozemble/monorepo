@@ -4,43 +4,21 @@ import type {
   ModelId,
   ModelPath,
   ModelPathElement,
+  SystemConfiguration,
 } from '@cozemble/model-core'
 import { type ReferencedRecords, referencedRecordsFns } from '@cozemble/model-core'
-import { cozauth } from '../auth/cozauth'
-import { config } from '../config'
 import type { EventSourcedDataRecordOption } from '@cozemble/data-editor-sdk'
 import { dataRecordEditEvents, eventSourcedDataRecordFns } from '@cozemble/data-editor-sdk'
 import { mandatory } from '@cozemble/lang-util'
 import { dataRecordValuePathFns } from '@cozemble/model-api'
-import type { SystemConfiguration } from '@cozemble/model-core'
+import { backend } from '../backend/backendStore'
 
 export async function referencingRecordsHelper(
   tenantId: string,
   recordId: DataRecordId, // Customer
   referencingModelId: ModelId, // Booking
 ): Promise<DataRecord[]> {
-  const accessToken = await cozauth.getAccessToken(cozauth.getTenantRoot(tenantId))
-  if (!accessToken) {
-    throw new Error('Failed to get accessToken')
-  }
-  const url = `${config.backendUrl()}/api/v1/tenant/${tenantId}/model/${
-    referencingModelId.value
-  }/referencing/${recordId.value}`
-  const recordsResponse = await fetch(url, {
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-      Authorization: `Bearer ${accessToken}`,
-    },
-  })
-
-  if (!recordsResponse.ok) {
-    throw new Error(
-      `Failed to fetch records at ${url}: ${recordsResponse.status} ${recordsResponse.statusText}`,
-    )
-  }
-  const json = await recordsResponse.json()
-  return mandatory(json.records, 'Missing records in response')
+  return backend.referencingRecords(tenantId, recordId, referencingModelId)
 }
 
 export function makeOnNewRecord(

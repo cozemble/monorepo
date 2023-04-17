@@ -8,6 +8,7 @@ import { mandatory } from '@cozemble/lang-util'
 import { config } from '../config'
 import { cozauth } from '../auth/cozauth'
 import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
+import { backend } from '../backend/backendStore'
 
 export const allModels: Writable<EventSourcedModel[]> = writable([])
 
@@ -61,17 +62,6 @@ function toBackendModel(m: EventSourcedModel): BackendModel {
 }
 
 export async function putAllModels(tenantId: string, all: EventSourcedModel[]) {
-  const accessToken = await cozauth.getAccessToken(cozauth.getTenantRoot(tenantId))
   const models = all.map((m) => toBackendModel(m))
-  const result = await fetch(`${config.backendUrl()}/api/v1/tenant/${tenantId}/model`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${accessToken}`,
-    },
-    body: JSON.stringify(models),
-  })
-  if (!result.ok) {
-    throw new Error(`Failed to save models: ${result.statusText}`)
-  }
+  return backend.putModels(tenantId, models)
 }

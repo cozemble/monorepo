@@ -5,6 +5,7 @@ import { derived, writable } from 'svelte/store'
 import { cozauth } from '../auth/cozauth'
 import { config } from '../config'
 import { slotSystemConfigurationDescriptors, systemConfigurationFns } from '@cozemble/model-core'
+import { backend } from '../backend/backendStore'
 
 export interface TenantEntity {
   _type: string
@@ -59,18 +60,7 @@ function ensureDefaultSystemConfiguration(
 }
 
 async function saveEntities(tenantId: string, entities: TenantEntity[]) {
-  const accessToken = await cozauth.getAccessToken(cozauth.getTenantRoot(tenantId))
-  const result = await fetch(`${config.backendUrl()}/api/v1/tenant/${tenantId}/entity`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${accessToken}`,
-    },
-    body: JSON.stringify(entities),
-  })
-  if (!result.ok) {
-    throw new Error(`Failed to save entities: ${result.statusText}`)
-  }
+  return backend.saveEntities(tenantId, entities)
 }
 
 function createSummaryView(viewId: ModelViewId, modelId: ModelId, template: string) {
