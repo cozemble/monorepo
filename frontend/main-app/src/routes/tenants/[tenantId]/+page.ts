@@ -7,11 +7,18 @@ import { tenantStore } from '../../../lib/tenant/tenantStore'
 import { tenantEntities } from '../../../lib/models/tenantEntityStore'
 import { backend, setBackend } from '../../../lib/backend/backendStore'
 import { RestBackend } from '../../../lib/backend/RestBackend'
+import { LocalStorageBackend } from '../../../lib/backend/LocalStorageBackend'
 
-export const load: PageLoad = async ({ params }) => {
+export const load: PageLoad = async ({ params, url }) => {
   if (browser) {
     try {
-      setBackend(new RestBackend())
+      if (url.searchParams.get('backend') === 'localstorage') {
+        console.log('Using localstorage backend')
+        setBackend(new LocalStorageBackend())
+      } else {
+        console.log('Using rest backend')
+        setBackend(new RestBackend())
+      }
       const tenantData = await backend.getTenantDetails(params.tenantId)
       allModels.set(tenantData.models.map((m) => eventSourcedModelFns.newInstance(m)))
       tenantEntities.set(tenantData.entities)

@@ -6,7 +6,7 @@ import type {
   UploadedAttachment,
 } from '@cozemble/data-editor-sdk'
 import type { RecordDeleteOutcome, RecordSaveOutcome } from '@cozemble/data-paginated-editor'
-import type { BackendModel } from '@cozemble/backend-tenanted-api-types/dist/esm'
+import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
 
 export interface FetchTenantResponse {
   id: string
