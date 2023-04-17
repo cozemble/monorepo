@@ -6,8 +6,7 @@
     import {createEventDispatcher} from "svelte";
     import {putEditedSummaryView, putNewSummaryView, systemConfiguration, tenantEntities} from "./tenantEntityStore";
     import {getSummaryView} from "./views";
-    import EditModelSummaryView from './EditModelSummaryView.svelte';
-    import CreateModelSummaryView from './CreateModelSummaryView.svelte';
+    import AppearancePanel from "./AppearancePanel.svelte";
 
     export let tenantId: string
     export let modelId: ModelId
@@ -37,6 +36,7 @@
         const editingSomething = event.detail
         showModelSaveButtons = !editingSomething
     }
+
 </script>
 
 
@@ -63,11 +63,6 @@
         {/if}
     {/if}
     {#if sectionToShow === 'appearance'}
-        <h4>Summary card HTML</h4>
-        {#if summaryView}
-            <EditModelSummaryView {modelId} {summaryView} saveHandler={summaryViewEdited}/>
-        {:else}
-            <CreateModelSummaryView {modelId} saveHandler={summaryViewCreated}/>
-        {/if}
+        <AppearancePanel {tenantId} {modelId} {summaryView} {summaryViewCreated} {summaryViewEdited} on:cancel={() => sectionToShow = 'model'}/>
     {/if}
 </div>

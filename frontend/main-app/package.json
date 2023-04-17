@@ -37,6 +37,7 @@
     "@cozemble/data-filters-core": "workspace:*",
     "@cozemble/data-filters-config": "workspace:*",
     "@cozemble/ui-filter-editor": "workspace:*",
+    "@cozemble/model-to-json": "workspace:*",
     "@tailwindcss/typography": "^0.5.9",
     "axios": "^1.2.3",
     "daisyui": "^2.47.0"

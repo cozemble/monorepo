@@ -4,11 +4,13 @@
     import {allModels} from "./modelsStore";
     import {toastNoticeStoreFns} from "../notices/toastNoticeStore";
     import SummaryViewExplainer from './SummaryViewExplainer.svelte'
+    import {createEventDispatcher} from "svelte";
 
     export let saveHandler: (template: string) => Promise<void>
     export let template = ""
     export let modelId: ModelId
     const model = modelFns.findById($allModels.map(e => e.model), modelId)
+    const dispatch = createEventDispatcher()
     let error = ""
     let saving = false
 
@@ -31,10 +33,16 @@
 
     function keyup() {
         error = ""
+        setTimeout(() => dispatch("templateChanged", template))
     }
 
     function setTemplate(t: string) {
         template = t
+        setTimeout(() => dispatch("templateChanged", template))
+    }
+
+    function cancel() {
+        dispatch("cancel")
     }
 </script>
 
@@ -51,4 +59,7 @@
 {#if error}
     <div class="text-error mt-2">{error}</div>
 {/if}
-<button class="btn" on:click={save}>Save</button>
+<div>
+    <button class="btn btn-primary" on:click={save}>Save</button>
+    <button class="btn btn-secondary" on:click={cancel}>Cancel</button>
+</div>

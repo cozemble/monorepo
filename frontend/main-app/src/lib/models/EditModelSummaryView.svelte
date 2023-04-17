@@ -14,7 +14,7 @@
 </script>
 
 {#if summaryView.view._type === "summary.view"}
-    <CreateModelSummaryView {modelId} template={summaryView.view.view.template} saveHandler={onSave}/>
+    <CreateModelSummaryView {modelId} template={summaryView.view.view.template} saveHandler={onSave} on:templateChanged on:cancel/>
 {:else}
     <p>Not a summary view</p>
 {/if}
