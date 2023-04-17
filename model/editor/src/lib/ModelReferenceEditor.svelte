@@ -35,7 +35,6 @@
 {#if otherModelIds.length === 0}
     <div>No other models to link to</div>
 {:else}
-    <br/>
     <select class="input input-bordered" id="referencedModel" on:change={referencedModelChanged}>
         <option selected={referencedModelId === null}>----</option>
         {#each otherModels as model}
