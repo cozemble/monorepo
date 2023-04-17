@@ -43,28 +43,27 @@
 </label>
 
 {#each property.validations as _validation, index}
-    <div class="validation-container">
+    <div class="validation-container ml-9 px-5">
         <div class="validation-configuration">
-            <label>Regex validation</label><br/>
-            <input bind:value={property.validations[index].regex} class="regex"/>
-            <br/>
+            <label>Regex validation</label>
+            <input bind:value={property.validations[index].regex} class="regex input input-bordered"/>
             <MaybeErrorMessage
                     showErrors={$formSectionErrorState.showErrors}
                     {errors}
                     key="validations.{index}.regex"/>
-            <label>Error message</label><br/>
+            <label>Error message</label>
             <input
                     bind:value={property.validations[index].message}
-                    class="message"/>
-            <br/>
+                    class="message input input-bordered"/>
             <MaybeErrorMessage
                     showErrors={$formSectionErrorState.showErrors}
                     {errors}
                     key="validations.{index}.message"/>
-        </div>
-        <div class="validation-buttons">
-            <button on:click={() => deleteValidation(index)} class="delete-validation">Delete
-            </button>
+            <div class="validation-buttons mt-2">
+                <button class="btn btn-ghost btn-active delete-validation" on:click={() => deleteValidation(index)}>
+                    Delete
+                </button>
+            </div>
         </div>
     </div>
 {/each}
@@ -86,13 +85,7 @@
     .validation-container {
         display: flex;
         flex-direction: row;
+        border-left: 4px solid #e5e7eb;
     }
 
-    .validation-buttons {
-        margin-left: 10px;
-    }
-
-    .validation-buttons {
-        display: flex;
-    }
 </style>
