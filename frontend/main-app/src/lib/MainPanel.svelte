@@ -15,6 +15,8 @@
     import SettingsPanel from "./settings/SettingsPanel.svelte";
     import UserInstructionNotices from "./notices/UserInstructionNotices.svelte";
     import ToastNotices from "./notices/ToastNotices.svelte";
+    import {toastNoticeStoreFns} from "./notices/toastNoticeStore";
+    import {addErrorListener} from "./backend/backendStore";
 
     export let tenantId: string
     let panelToShow: "models" | "data" | "settings" = "models"
@@ -38,6 +40,12 @@
     function showSettings() {
         panelToShow = "settings"
     }
+
+    function errorListener(e:any) {
+        toastNoticeStoreFns.add(e.message, 'error')
+    }
+
+    addErrorListener(errorListener)
 </script>
 <div class="drawer drawer-mobile">
     <input id="my-drawer-2" type="checkbox" class="drawer-toggle"/>

@@ -86,7 +86,7 @@ router.get('/callback', async (req: Request, res: Response) => {
       res.status(302)
       res.header(
         'Location',
-        `${signinState.cozembleRoot}/session/establish?token=${authorizationToken}`,
+        `${signinState.cozembleRoot}/${env}/session/establish?token=${authorizationToken}`,
       )
       return res.send()
     })

@@ -52,10 +52,10 @@ export class RestBackend implements Backend {
     })
 
     const responses = await Promise.all(
-      endpoints.map((endpoint) => {
+      endpoints.map(async (endpoint) => {
         return axiosInstance.delete(endpoint, {
           headers: {
-            Authorization: `Bearer ${accessToken(tenantId)}`,
+            Authorization: `Bearer ${await accessToken(tenantId)}`,
           },
         })
       }),
@@ -82,7 +82,7 @@ export class RestBackend implements Backend {
 
     const response = await axiosInstance.post<UploadedAttachment[]>(uploadEndpoint, formData, {
       headers: {
-        Authorization: `Bearer ${accessToken(tenantId)}`,
+        Authorization: `Bearer ${await accessToken(tenantId)}`,
         'Content-Type': 'multipart/form-data',
       },
       onUploadProgress: (progressEvent) => {
@@ -116,10 +116,10 @@ export class RestBackend implements Backend {
     })
 
     const responses = await Promise.all(
-      endpoints.map((endpoint) => {
+      endpoints.map(async (endpoint) => {
         return axiosInstance.post(endpoint, null, {
           headers: {
-            Authorization: `Bearer ${accessToken(tenantId)}`,
+            Authorization: `Bearer ${await accessToken(tenantId)}`,
           },
         })
       }),
@@ -147,7 +147,7 @@ export class RestBackend implements Backend {
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
-          Authorization: `Bearer ${accessToken(tenantId)}`,
+          Authorization: `Bearer ${await accessToken(tenantId)}`,
         },
         body: JSON.stringify(filterRequestPayloadFns.newInstance(search, filters)),
       },
@@ -171,7 +171,7 @@ export class RestBackend implements Backend {
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
-          Authorization: `Bearer ${accessToken(tenantId)}`,
+          Authorization: `Bearer ${await accessToken(tenantId)}`,
         },
       },
     )
@@ -193,7 +193,7 @@ export class RestBackend implements Backend {
       {
         method: 'DELETE',
         headers: {
-          Authorization: `Bearer ${accessToken(tenantId)}`,
+          Authorization: `Bearer ${await accessToken(tenantId)}`,
         },
       },
     )
@@ -217,7 +217,7 @@ export class RestBackend implements Backend {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken(tenantId)}`,
+          Authorization: `Bearer ${await accessToken(tenantId)}`,
         },
         body: JSON.stringify(savableRecords([newRecord.record])),
       },
@@ -253,7 +253,7 @@ export class RestBackend implements Backend {
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
-        Authorization: `Bearer ${accessToken(tenantId)}`,
+        Authorization: `Bearer ${await accessToken(tenantId)}`,
       },
     })
 
@@ -271,7 +271,7 @@ export class RestBackend implements Backend {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken(tenantId)}`,
+        Authorization: `Bearer ${await accessToken(tenantId)}`,
       },
       body: JSON.stringify(models),
     })
@@ -285,7 +285,7 @@ export class RestBackend implements Backend {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken(tenantId)}`,
+        Authorization: `Bearer ${await accessToken(tenantId)}`,
       },
       body: JSON.stringify(entities),
     })
