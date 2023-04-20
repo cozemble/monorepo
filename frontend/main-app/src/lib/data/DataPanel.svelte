@@ -32,8 +32,6 @@
 
 {#if rootModels.length === 0}
     <p>When you have created your first model, you will be able to edit data here</p>
-{:else if rootModels.length === 1 && $openRecordViewStore.length === 0}
-    <DataPanelWithLoader models={actualModels} model={rootModels[0]} {tenantId}/>
 {:else}
     <div class="tabs bg-base-300 rounded p-1">
         {#each rootModels as model}

@@ -1,8 +1,5 @@
-import { config } from '../config'
-import {
-  filledFilterInstanceGroupFns,
-  filterRequestPayloadFns,
-} from '@cozemble/backend-tenanted-api-types'
+import { filledFilterInstanceGroupFns } from '@cozemble/backend-tenanted-api-types'
+import { backend } from '../backend/backendStore'
 
 export async function fetchRecords(
   tenantId: string,
@@ -11,13 +8,5 @@ export async function fetchRecords(
   search: string | null = null,
   filters = filledFilterInstanceGroupFns.empty(),
 ) {
-  return await fetch(`${config.backendUrl()}/api/v1/tenant/${tenantId}/model/${modelId}/record`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-      Authorization: `Bearer ${accessToken}`,
-    },
-    body: JSON.stringify(filterRequestPayloadFns.newInstance(search, filters)),
-  })
+  return backend.fetchRecords(tenantId, modelId, search, filters)
 }
