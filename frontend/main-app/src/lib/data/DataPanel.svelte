@@ -28,6 +28,7 @@
             showModel(rootModels[0].id.value)
         }
     })
+
 </script>
 
 {#if rootModels.length === 0}
