@@ -92,5 +92,5 @@
 </table>
 
 <div class="mt-2">
-    <button class="btn btn-primary" on:click={addRecord}>Add record</button>
+    <button class="btn btn-primary" on:click={addRecord}>Add {model.name}</button>
 </div>

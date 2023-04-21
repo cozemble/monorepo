@@ -6,6 +6,7 @@ export interface NestedModel {
 }
 
 export interface Model {
+  name: string
   fields: string[]
   nestedModels: NestedModel[]
 }
@@ -16,8 +17,8 @@ export interface DataRecord {
 }
 
 export const modelFns = {
-  newInstance(): Model {
-    return { fields: [], nestedModels: [] }
+  newInstance(name: string): Model {
+    return { name, fields: [], nestedModels: [] }
   },
   addField(model: Model, field: string): Model {
     return { ...model, fields: [...model.fields, field] }
@@ -25,7 +26,7 @@ export const modelFns = {
   addNestedModel(model: Model, name: string): Model {
     return {
       ...model,
-      nestedModels: [...model.nestedModels, { name, model: modelFns.newInstance() }],
+      nestedModels: [...model.nestedModels, { name, model: modelFns.newInstance(name) }],
     }
   },
 }
