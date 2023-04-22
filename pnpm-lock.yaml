@@ -353,6 +353,7 @@ importers:
   frontend/incremental-modelling-spike:
     specifiers:
       '@cozemble/lang-util': workspace:*
+      '@floating-ui/dom': ^1.2.6
       '@originjs/vite-plugin-commonjs': ^1.0.3
       '@sveltejs/adapter-auto': ^2.0.0
       '@sveltejs/kit': ^1.5.0
@@ -368,6 +369,7 @@ importers:
       vite: ^4.2.0
     dependencies:
       '@cozemble/lang-util': link:../../lang/util
+      '@floating-ui/dom': 1.2.6
     devDependencies:
       '@originjs/vite-plugin-commonjs': 1.0.3
       '@sveltejs/adapter-auto': 2.0.0_@sveltejs+kit@1.11.0
@@ -1354,6 +1356,16 @@ packages:
     resolution: {integrity: sha512-lxJ9R5ygVm8ZWgYdUweoq5ownDlJ4upvoWmO4eLxBYHdMo+vZ/Rx0EN6MbKWDJOSUGrqJy2Gt+Dyv/VKml0fjg==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
+
+  /@floating-ui/core/1.2.6:
+    resolution: {integrity: sha512-EvYTiXet5XqweYGClEmpu3BoxmsQ4hkj3QaYA6qEnigCWffTP3vNRwBReTdrwDwo7OoJ3wM8Uoe9Uk4n+d4hfg==}
+    dev: false
+
+  /@floating-ui/dom/1.2.6:
+    resolution: {integrity: sha512-02vxFDuvuVPs22iJICacezYJyf7zwwOCWkPNkWNBr1U0Qt1cKFYzWvxts0AmqcOQGwt/3KJWcWIgtbUU38keyw==}
+    dependencies:
+      '@floating-ui/core': 1.2.6
+    dev: false
 
   /@google-cloud/paginator/3.0.7:
     resolution: {integrity: sha512-jJNutk0arIQhmpUUQJPJErsojqo834KcyB6X7a1mxuic8i1tKXxde8E69IZxNZawRIlZdIK2QY4WALvlK5MzYQ==}

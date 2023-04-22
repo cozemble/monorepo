@@ -2,6 +2,7 @@ import { uuids } from '@cozemble/lang-util'
 
 export interface NestedModel {
   name: string
+  pluralName: string
   model: Model
 }
 
@@ -23,10 +24,25 @@ export const modelFns = {
   addField(model: Model, field: string): Model {
     return { ...model, fields: [...model.fields, field] }
   },
-  addNestedModel(model: Model, name: string): Model {
+  addNestedModel(model: Model, name: string, pluralName: string): Model {
+    let nestedModel = modelFns.newInstance(name)
+    nestedModel = modelFns.addField(nestedModel, 'Field 1')
+
     return {
       ...model,
-      nestedModels: [...model.nestedModels, { name, model: modelFns.newInstance(name) }],
+      nestedModels: [...model.nestedModels, { name, pluralName, model: nestedModel }],
+    }
+  },
+  renameField(model: Model, originalFieldName: string, editingFieldName: string): Model {
+    return {
+      ...model,
+      fields: model.fields.map((field) => (field === originalFieldName ? editingFieldName : field)),
+    }
+  },
+  deleteField(model: Model, editingFieldName: string): Model {
+    return {
+      ...model,
+      fields: model.fields.filter((field) => field !== editingFieldName),
     }
   },
 }
