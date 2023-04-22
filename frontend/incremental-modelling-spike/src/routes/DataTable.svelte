@@ -6,35 +6,122 @@
 
     export let model: Model
     export let records: DataRecord[]
+    export let oneOnly = false
     let expandedRecordId: string | null = null
     let addingNestedModel = false
+    let addingNestedRecord = false
     let editingField = false
     let originalFieldName: string | null = null
     let editingFieldName: string | null = null
     let recordHavingNestedTableAdded: DataRecord | null = null
+    let recordHavingNestedRecordAdded: DataRecord | null = null
 
-    async function addField() {
+    async function addFieldToModel() {
         const fieldName = `Field ${model.fields.length + 1}`
         model = modelFns.addField(model, fieldName)
         await tick()
-        const element = document.querySelector(`th#field-${model.fields.length}`)
-        console.log(element)
+        const element = document.querySelector(`th#field-${model.fields.length}`) as HTMLElement
         if (element) {
             editFieldRelativeToAnchor(element, fieldName)
         }
     }
 
-    async function addNestedTable(clicked: HTMLElement, record: DataRecord) {
+
+    async function addField() {
+        recordNameBeingAdded = ""
+        const fieldName = `Field ${model.fields.length + 1}`
+        model = modelFns.addField(model, fieldName)
+        await tick()
+        const element = document.querySelector(`th#field-${model.fields.length}`) as HTMLElement
+        if (element) {
+            editFieldRelativeToAnchor(element, fieldName)
+        }
+    }
+
+    async function addNestedRecordToModel(clicked: Event) {
+        const elem = document.activeElement as HTMLElement;
+        if (elem) {
+            elem?.blur();
+        }
+        const addNestedRecordModal = document.querySelector('#add-nested-record-modal') as HTMLElement
+        const nearestTd = (clicked.target as HTMLElement).closest('td')
+        if (!addNestedRecordModal || !nearestTd) {
+            return
+        }
+        addingNestedRecord = true
+        computePosition(nearestTd, addNestedRecordModal).then(({x, y}) => {
+            x = Math.max(10, x)
+            Object.assign(addNestedRecordModal.style, {
+                left: `${x}px`,
+                top: `${y}px`,
+            });
+        });
+        await tick()
+        focusFirstInput('add-nested-record-modal')
+    }
+
+    async function addNestedRecord(clicked: Event, record: DataRecord) {
+        const elem = document.activeElement as HTMLElement;
+        if (elem) {
+            elem?.blur();
+        }
+        const addNestedRecordModal = document.querySelector('#add-nested-record-modal') as HTMLElement
+        const nearestTd = (clicked.target as HTMLElement).closest('td')
+        if (!addNestedRecordModal || !nearestTd) {
+            return
+        }
+        addingNestedRecord = true
+        computePosition(nearestTd, addNestedRecordModal).then(({x, y}) => {
+            x = Math.max(10, x)
+            Object.assign(addNestedRecordModal.style, {
+                left: `${x}px`,
+                top: `${y}px`,
+            });
+        });
+        await tick()
+        focusFirstInput('add-nested-record-modal')
+        recordHavingNestedRecordAdded = record
+    }
+
+    async function addNestedTableToModel(clicked: Event) {
         tableNameAsPlural = ""
         tableNameAsSingular = ""
-        recordHavingNestedTableAdded = record
-        const elem = document.activeElement;
+        const elem = document.activeElement as HTMLElement;
         if (elem) {
             elem?.blur();
         }
         addingNestedModel = true
-        const addNestedTableModal = document.querySelector('#add-nested-table-modal')
-        computePosition(clicked.target.closest('td'), addNestedTableModal).then(({x, y}) => {
+        const addNestedTableModal = document.querySelector('#add-nested-table-modal') as HTMLElement
+        const nearestTd = (clicked.target as HTMLElement).closest('td')
+        if (!addNestedTableModal || !nearestTd) {
+            return
+        }
+        computePosition(nearestTd, addNestedTableModal).then(({x, y}) => {
+            x = Math.max(10, x)
+            Object.assign(addNestedTableModal.style, {
+                left: `${x}px`,
+                top: `${y}px`,
+            });
+        });
+        await tick()
+        focusFirstInput('add-nested-table-modal')
+    }
+
+    async function addNestedTable(clicked: Event, record: DataRecord) {
+        tableNameAsPlural = ""
+        tableNameAsSingular = ""
+        recordHavingNestedTableAdded = record
+        const elem = document.activeElement as HTMLElement;
+        if (elem) {
+            elem?.blur();
+        }
+        addingNestedModel = true
+        const addNestedTableModal = document.querySelector('#add-nested-table-modal') as HTMLElement
+        const nearestTd = (clicked.target as HTMLElement).closest('td')
+        if (!addNestedTableModal || !nearestTd) {
+            return
+        }
+        computePosition(nearestTd, addNestedTableModal).then(({x, y}) => {
             x = Math.max(10, x)
             Object.assign(addNestedTableModal.style, {
                 left: `${x}px`,
@@ -60,15 +147,32 @@
         return record.values[nestedModel.name]
     }
 
-    function addRecord() {
-        records = [...records, dataRecordFns.newInstance()]
+    function ensureNestedRecords(record: DataRecord, nestedModel: NestedModel) {
+        if (!record.values[nestedModel.name]) {
+            record.values[nestedModel.name] = []
+        }
+        if(nestedModel.cardinality === "one") {
+            if(record.values[nestedModel.name].length === 0) {
+                record.values[nestedModel.name].push(dataRecordFns.newInstance())
+            }
+        }
+        return record.values[nestedModel.name]
     }
 
+    function addRecord() {
+        records.push(dataRecordFns.newInstance())
+        records = records
+    }
+
+    let recordNameBeingAdded = ""
     let tableNameAsPlural = ""
     let tableNameAsSingular = ""
 
     function saveNestedTable() {
-        model = modelFns.addNestedModel(model, tableNameAsSingular, tableNameAsPlural)
+        if (!tableNameAsPlural || !tableNameAsSingular) {
+            return
+        }
+        model = modelFns.addNestedModel("many", model, tableNameAsSingular, tableNameAsPlural)
         if (recordHavingNestedTableAdded) {
             expandedRecordId = recordHavingNestedTableAdded.id
         }
@@ -82,16 +186,19 @@
         recordHavingNestedTableAdded = null
     }
 
-    function editField(clicked: PointerEvent, field: string) {
-        const anchorElement = clicked.target.closest('th')
+    function editField(clicked: Event, field: string) {
+        const anchorElement = (clicked.target as HTMLElement).closest('th')
+        if (!anchorElement) {
+            return
+        }
         editFieldRelativeToAnchor(anchorElement, field)
     }
 
-    async function editFieldRelativeToAnchor(anchorElement: Element, field: string) {
+    async function editFieldRelativeToAnchor(anchorElement: HTMLElement, field: string) {
         editingFieldName = field
         originalFieldName = field
         editingField = true
-        const modal = document.querySelector('#edit-field-modal')
+        const modal = document.querySelector('#edit-field-modal') as HTMLElement
         computePosition(anchorElement, modal).then(({x, y}) => {
             x = Math.max(10, x)
             Object.assign(modal.style, {
@@ -105,7 +212,7 @@
 
     function focusFirstInput(divId: string) {
         const firstInput = document.querySelector(`#${divId} input.first`);
-        if (firstInput) {
+        if (firstInput && firstInput instanceof HTMLInputElement) {
             firstInput.focus()
         }
     }
@@ -133,6 +240,21 @@
             }
         }
     }
+
+    function saveNestedRecord() {
+        if (!recordNameBeingAdded) {
+            return
+        }
+        model = modelFns.addNestedModel("one", model, recordNameBeingAdded, recordNameBeingAdded)
+        cancelNestedRecord()
+    }
+
+    function cancelNestedRecord() {
+        addingNestedRecord = false
+        recordNameBeingAdded = ""
+        recordHavingNestedRecordAdded = null
+    }
+
 </script>
 
 <div id="edit-field-modal" class="xabsolute-top" class:invisible={editingField === false}>
@@ -182,6 +304,21 @@
     </div>
 </div>
 
+<div id="add-nested-record-modal" class="xabsolute-top" class:invisible={addingNestedRecord === false}>
+    <div class="modal-box  mx-8">
+        <h3 class="font-bold text-lg">Add nested record to {model.name}</h3>
+        <div class="mt-2">
+            <label>Record name</label><br/>
+            <input type="text" class="input input-bordered w-full first"
+                   placeholder="Record name" bind:value={recordNameBeingAdded}/>
+        </div>
+        <div class="modal-action">
+            <label class="btn btn-primary" on:click={saveNestedRecord}>Apply</label>
+            <label class="btn btn-secondary" on:click={cancelNestedRecord}>Cancel</label>
+        </div>
+    </div>
+</div>
+
 <table class="table">
     <thead>
     <tr>
@@ -195,11 +332,25 @@
                 </div>
             </th>
         {/each}
-        <td on:click={addField} class="bg-base-300 px-8">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                 stroke="currentColor" class="w-6 h-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
-            </svg>
+        <td class="bg-base-300 px-8">
+            <div class="flex items-center">
+                <div class="dropdown">
+                    <label tabindex="0" class="label m-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                             stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+                        </svg>
+                        <span class="ml-2">Add </span>
+                    </label>
+                    <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+                        <li><a on:click={addFieldToModel}>Field</a></li>
+                        <li><a on:click={(clicked) => addNestedRecordToModel(clicked)}>Nested record</a></li>
+                        <li><a on:click={(clicked) => addNestedTableToModel(clicked)}>Nested table</a></li>
+                    </ul>
+                </div>
+
+
+            </div>
         </td>
         <td class="bg-base-300">Actions</td>
     </tr>
@@ -208,7 +359,9 @@
     {#each records as record}
         <tr>
             {#each model.fields as field}
-                <td class="border">{record.values[field] ?? ""} </td>
+                <td class="border">
+                    <input type="text" class="input input-bordered w-full" bind:value={record.values[field]}/>
+                </td>
             {/each}
             <td class="border"></td>
             <td class="border">
@@ -222,18 +375,6 @@
                             {/if}
                         </button>
                     {/if}
-                    <div class="dropdown">
-                        <label tabindex="0" class="label m-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                 stroke="currentColor" class="w-6 h-6">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                      d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                        </label>
-                        <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
-                            <li on:click={(elem) => addNestedTable(elem,record)}><a>Add nested table</a></li>
-                        </ul>
-                    </div>
                 </div>
             </td>
         </tr>
@@ -242,12 +383,19 @@
                 <td class="border" colspan={model.fields.length + 2}>
                     <div class="nested-border border border-2 p-3">
                         {#each model.nestedModels as nestedModel}
-                            {@const _nestedRecords = ensureNestedRecord(record, nestedModel)}
-                            <div class="mb-5">
-                                <h6>{nestedModel.pluralName}</h6>
+                            {#if nestedModel.cardinality === "one"}
+                                {@const _nestedRecords = ensureNestedRecords(record, nestedModel)}
+                                <h6>{nestedModel.model.name}</h6>
                                 <svelte:self bind:model={nestedModel.model}
-                                             bind:records={record.values[nestedModel.name]}/>
-                            </div>
+                                             bind:records={record.values[nestedModel.name]} oneOnly={true}/>
+                            {:else}
+                                {@const _nestedRecords = ensureNestedRecords(record, nestedModel)}
+                                <div class="mb-5">
+                                    <h6>{nestedModel.model.pluralName}</h6>
+                                    <svelte:self bind:model={nestedModel.model}
+                                                 bind:records={record.values[nestedModel.name]}/>
+                                </div>
+                            {/if}
                         {/each}
                     </div>
                 </td>
@@ -258,7 +406,9 @@
 </table>
 
 <div class="mt-2">
-    <button class="btn btn-primary" on:click={addRecord}>Add {model.name}</button>
+    {#if !oneOnly}
+        <button class="btn btn-primary" on:click={addRecord}>Add {model.name}</button>
+    {/if}
 </div>
 
 <style>
@@ -272,6 +422,7 @@
         border-top: none;
         border-right: none;
         border-bottom: none;
+        border-left: none;
     }
 
 </style>
