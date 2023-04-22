@@ -255,17 +255,38 @@
         recordHavingNestedRecordAdded = null
     }
 
+    function handleKeyUp(event: KeyboardEvent) {
+        if (event.key === "Escape") {
+            cancelNestedRecord()
+            cancelNestedTable()
+            cancelEditedField()
+        }
+        if(event.key === "Enter") {
+            if(addingNestedModel) {
+                saveNestedTable()
+            }
+            if(addingNestedRecord) {
+                saveNestedRecord()
+            }
+            if(editingField) {
+                saveEditedField()
+            }
+        }
+    }
+
 </script>
+
+<svelte:window on:keyup={handleKeyUp}/>
 
 <div id="edit-field-modal" class="xabsolute-top" class:invisible={editingField === false}>
     <div class="modal-box  mx-8">
         <h3 class="font-bold text-lg">Edit field</h3>
         <div class="mt-2">
-            <label>Field name</label><br/>
+            <label class="label">Field name</label><br/>
             <input type="text" class="input input-bordered w-full first" bind:value={editingFieldName}/>
         </div>
         <div class="mt-2">
-            <label>Field type</label><br/>
+            <label class="label">Field type</label><br/>
             <select class="input input-bordered w-full">
                 <option>Text</option>
                 <option>Number</option>
@@ -274,13 +295,28 @@
             </select>
         </div>
         <div class="mt-2">
+            <div class="form-control">
+                <label class="label cursor-pointer">
+                    <span class="label-text">Required</span>
+                    <input type="checkbox" class="checkbox" />
+                </label>
+            </div>
+        </div>
+        <div class="mt-2">
+            <div class="form-control">
+                <label class="label cursor-pointer">
+                    <span class="label-text">Unique</span>
+                    <input type="checkbox" class="checkbox" />
+                </label>
+            </div>
+        </div>
+        <div class="mt-2">
             <div class="modal-action">
                 <label class="btn btn-primary" on:click={saveEditedField}>Save</label>
                 <label class="btn btn-secondary" on:click={cancelEditedField}>Close</label>
                 <label class="btn btn-error" on:click={deleteField}>Delete Field</label>
             </div>
         </div>
-
     </div>
 </div>
 
@@ -348,8 +384,6 @@
                         <li><a on:click={(clicked) => addNestedTableToModel(clicked)}>Nested table</a></li>
                     </ul>
                 </div>
-
-
             </div>
         </td>
         <td class="bg-base-300">Actions</td>
@@ -367,7 +401,7 @@
             <td class="border">
                 <div class="flex items-center">
                     {#if model.nestedModels.length > 0}
-                        <button class="btn btn-ghost btn-active btn-sm" on:click={() => toggleRecordExpand(record)}>
+                        <button class="btn btn-ghost btn-active btn-sm mr-2" on:click={() => toggleRecordExpand(record)}>
                             {#if expandedRecordId === record.id}
                                 Collapse
                             {:else}
@@ -375,6 +409,7 @@
                             {/if}
                         </button>
                     {/if}
+                    <button class="btn btn-ghost btn-active btn-sm  mr-2" on:click={() => alert("to do")}>Delete</button>
                 </div>
             </td>
         </tr>
@@ -406,7 +441,7 @@
 </table>
 
 <div class="mt-2">
-    {#if !oneOnly}
+    {#if !oneOnly && model.fields.length > 0}
         <button class="btn btn-primary" on:click={addRecord}>Add {model.name}</button>
     {/if}
 </div>
