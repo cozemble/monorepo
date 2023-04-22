@@ -22,6 +22,7 @@ import { format, parse } from 'date-fns'
 const iso8601DateFormat = 'yyyy-MM-dd'
 const defaultDateFormat = 'yyyy-MM-dd'
 const html5InputDateFormat = 'yyyy-MM-dd'
+
 export const datePropertyType = propertyTypeFns.newInstance('date.property')
 
 export interface DateProperty extends Property {
