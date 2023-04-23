@@ -519,6 +519,9 @@ importers:
 
   frontend/datatable:
     dependencies:
+      '@cozemble/frontend-bff':
+        specifier: workspace:*
+        version: link:../bff
       '@cozemble/lang-util':
         specifier: workspace:*
         version: link:../../lang/util
@@ -2783,7 +2786,7 @@ packages:
     peerDependencies:
       '@sveltejs/kit': ^1.0.0
     dependencies:
-      '@sveltejs/kit': 1.11.0(svelte@3.56.0)(vite@4.3.0)
+      '@sveltejs/kit': 1.11.0(svelte@3.56.0)(vite@4.1.4)
       import-meta-resolve: 2.2.2
     dev: true
 
