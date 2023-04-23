@@ -43,13 +43,13 @@
 	"types": "./dist/index.d.ts",
 	"type": "module",
 	"dependencies": {
+		"@cozemble/frontend-bff": "workspace:*",
 		"@cozemble/lang-util": "workspace:*",
 		"@cozemble/model-api": "workspace:*",
 		"@cozemble/model-assembled": "workspace:*",
 		"@cozemble/model-core": "workspace:*",
 		"@cozemble/model-editor-sdk": "workspace:*",
 		"@cozemble/model-event-sourced": "workspace:*",
-		"@cozemble/frontend-bff": "workspace:*",
 		"@cozemble/ui-atoms": "workspace:*",
 		"@floating-ui/dom": "^1.2.6"
 	}

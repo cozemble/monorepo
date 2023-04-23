@@ -11,7 +11,7 @@ export interface EditModelModalState {
 export const editModelModal = writable<EditModelModalState | null>(null)
 
 export const modelUi = {
-  edit(newModel: EventSourcedModel, anchorElement: HTMLDivElement) {
+  edit(newModel: EventSourcedModel, anchorElement: HTMLElement) {
     editModelModal.set({ model: newModel, anchorElement })
   },
 }

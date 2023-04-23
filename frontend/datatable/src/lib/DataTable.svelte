@@ -7,6 +7,7 @@
     import type {EventSourcedStore} from "./stores/EventSourcedStore";
     import type {TablesAction} from "./tables/actions";
     import {DownCaret} from "@cozemble/ui-atoms";
+    import {modelUi} from "./modelUi";
 
     export let tables: EventSourcedStore<Model[], TablesAction>
     const navbarState: Writable<string | null> = writable(null)
@@ -16,20 +17,22 @@
     }
 
 
-    function onEditModelClicked(clicked: Event, model: Model) {
+    function onEditModelClicked(clicked: Event, modelIndex: number) {
         clicked.stopPropagation()
-        console.log({model})
-        // modelUi.
-        // editModel(model)
+        const model = $tables[modelIndex]
+        const anchor = (clicked.target as HTMLElement).closest(`.model-${modelIndex + 1}`) as HTMLElement
+        if(model && anchor) {
+            modelUi.edit(model, anchor)
+        }
     }
 
 </script>
-<div class="tabs bg-base-300 rounded p-1">
+<div class="tabs bg-base-200 rounded pb-1 pl-2">
     {#each $tables as model, index}
         <div class="flex items-center">
-            <a class="tab tab-lg tab-bordered model-{index + 1} mr-3" class:tab-active={$navbarState === model.id.value}
+            <a class="tab tab-lg tab-bordered mr-4 p-0 model-{index + 1}" class:tab-active={$navbarState === model.id.value}
                on:click={() => showTable(model.id)}>{model.pluralName.value}
-                <span on:click={(clicked) => onEditModelClicked(clicked, model)} class="ml-2 mt-1">
+                <span on:click={(clicked) => onEditModelClicked(clicked, index)} class="ml-2 mt-1">
             <DownCaret/></span>
             </a>
         </div>

@@ -7,3 +7,5 @@
 {#if $editModelModal}
     <EditModelModal />
 {/if}
+
+<p>editModelModal = {JSON.stringify($editModelModal)}</p>
