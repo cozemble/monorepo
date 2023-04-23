@@ -6,6 +6,7 @@
     import Modals from "./Modals.svelte";
     import type {EventSourcedStore} from "./stores/EventSourcedStore";
     import type {TablesAction} from "./tables/actions";
+    import {DownCaret} from "@cozemble/ui-atoms";
 
     export let tables: EventSourcedStore<Model[], TablesAction>
     const navbarState: Writable<string | null> = writable(null)
@@ -17,6 +18,8 @@
 
     function onEditModelClicked(clicked: Event, model: Model) {
         clicked.stopPropagation()
+        console.log({model})
+        // modelUi.
         // editModel(model)
     }
 
@@ -24,15 +27,14 @@
 <div class="tabs bg-base-300 rounded p-1">
     {#each $tables as model, index}
         <div class="flex items-center">
-            <a class="tab tab-lg tab-bordered mr-2 model-{index + 1}" class:tab-active={$navbarState === model.id.value}
-               on:click={() => showTable(model.id)}>{model.pluralName.value}</a>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                 stroke="currentColor" class="w-6 h-6" on:click={(elem) => onEditModelClicked(elem,model)}>
-                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/>
-            </svg>
+            <a class="tab tab-lg tab-bordered model-{index + 1} mr-3" class:tab-active={$navbarState === model.id.value}
+               on:click={() => showTable(model.id)}>{model.pluralName.value}
+                <span on:click={(clicked) => onEditModelClicked(clicked, model)} class="ml-2 mt-1">
+            <DownCaret/></span>
+            </a>
         </div>
     {/each}
-    <AddTableNavButton  {tables}/>
+    <AddTableNavButton {tables}/>
 </div>
 
-<Modals />
+<Modals/>
