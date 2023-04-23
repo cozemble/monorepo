@@ -25,3 +25,9 @@ h5 {
 h6 {
     @apply text-base font-semibold leading-normal;
 }
+
+.coz-modal {
+    display: flex;
+    position: absolute;
+    z-index: 100;
+}

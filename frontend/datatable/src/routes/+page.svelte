@@ -1,12 +1,15 @@
 <script lang="ts">
-    import type {DataRecord} from "@cozemble/model-core";
-    import {writable, derived} from "svelte/store";
-    import type {EventSourcedModel} from "@cozemble/model-event-sourced";
+    import type {Model} from "@cozemble/model-core";
     import DataTable from "../lib/DataTable.svelte";
+    import {eventSourcedStore} from "../lib/stores/EventSourcedStore";
+    import {type TablesAction, tablesActionReducer} from "../lib/tables/actions";
+    import type {JustErrorMessage} from "@cozemble/lang-util";
 
-    let eventSourcedModels = writable([] as EventSourcedModel[])
-    const models = derived(eventSourcedModels, models => models.map(m => m.model))
-    let recordsByModelId: { [key: string]: DataRecord[] } = {}
+    async function saveTables(actions: TablesAction[], tables: Model[]): Promise<JustErrorMessage | null> {
+        return null
+    }
+
+    const eventSourcedTables = eventSourcedStore(tablesActionReducer, saveTables, [] as Model[])
 </script>
 
-<DataTable {models}  />
+<DataTable tables={eventSourcedTables}/>
