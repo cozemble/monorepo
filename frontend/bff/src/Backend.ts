@@ -1,5 +1,4 @@
 import type { DataRecord, DataRecordId, Model, ModelEvent, ModelId } from '@cozemble/model-core'
-import type { TenantEntity } from '../models/tenantEntityStore'
 import type {
   AttachmentIdAndFileName,
   EventSourcedDataRecord,
@@ -7,6 +6,12 @@ import type {
 } from '@cozemble/data-editor-sdk'
 import type { RecordDeleteOutcome, RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
+
+export interface TenantEntity {
+  _type: string
+  id: { value: string }
+  name: { value: string }
+}
 
 export interface FetchTenantResponse {
   id: string

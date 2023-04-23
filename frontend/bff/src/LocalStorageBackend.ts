@@ -1,9 +1,8 @@
-import type { Backend, FetchRecordsResponse, FetchTenantResponse } from './Backend'
+import type { Backend, FetchRecordsResponse, FetchTenantResponse, TenantEntity } from './Backend'
 import type { DataRecord, DataRecordId, Model, ModelId } from '@cozemble/model-core'
 import type { RecordDeleteOutcome, RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import { recordSaveSucceeded } from '@cozemble/data-paginated-editor'
 import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
-import type { TenantEntity } from '../models/tenantEntityStore'
 import type {
   AttachmentIdAndFileName,
   EventSourcedDataRecord,

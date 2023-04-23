@@ -1,13 +1,9 @@
-import {
-  type Backend,
-  type FetchRecordsResponse,
-  type FetchTenantResponse,
-  notImplementedBackend,
-} from './Backend'
 import type { RecordDeleteOutcome, RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import type { DataRecord, Model } from '@cozemble/model-core/dist/esm'
 import type { TenantEntity } from '../models/tenantEntityStore'
 import type { EventSourcedDataRecord, UploadedAttachment } from '@cozemble/data-editor-sdk'
+import type { FetchRecordsResponse, FetchTenantResponse } from '@cozemble/frontend-bff'
+import { type Backend, notImplementedBackend } from '@cozemble/frontend-bff'
 
 export let backend = notImplementedBackend
 export type ErrorListener = (e: any) => void

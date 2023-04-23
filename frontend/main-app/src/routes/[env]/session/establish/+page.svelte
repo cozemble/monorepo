@@ -1,9 +1,9 @@
 <script lang="ts">
     import {onMount} from 'svelte';
-    import {LocalStorageBackend} from "../../../../lib/backend/LocalStorageBackend";
-    import {RestBackend} from "../../../../lib/backend/RestBackend";
     import {backend, setBackend} from "../../../../lib/backend/backendStore";
     import {cozauth} from "../../../../lib/auth/cozauth";
+    import {LocalStorageBackend, RestBackend} from "@cozemble/frontend-bff";
+    import {accessTokenProvider, backendUrlProvider} from "../../../../lib/backend/adapters";
 
     export let data: any;
     onMount(async () => {
@@ -13,11 +13,11 @@
                 setBackend(new LocalStorageBackend())
             } else {
                 console.log('Using rest backend')
-                setBackend(new RestBackend())
+                setBackend(new RestBackend(accessTokenProvider, backendUrlProvider))
             }
 
             await backend.tradeAuthTokenForSession(data.authorizationCode)
-                .then(async (data) => {
+                .then(async (data:any) => {
                     const accessToken = data.accessToken;
                     const refreshToken = data.refreshToken;
                     if (accessToken && refreshToken) {
@@ -27,7 +27,7 @@
                         alert("Did not get tokens from cookie")
                     }
                     console.log(data)
-                }).catch((err) => {
+                }).catch((err:any) => {
                     console.log(err)
                 })
         }
