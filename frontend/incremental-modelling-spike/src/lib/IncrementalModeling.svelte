@@ -27,7 +27,8 @@
 
     async function addTable() {
         const tableName = `Table ${models.length + 1}`
-        const newModel = modelFns.newInstance(tableName, tableName)
+        let newModel = modelFns.newInstance(tableName, tableName)
+        newModel = modelFns.addField(newModel, "Field 1")
         models = [...models, newModel]
         await tick()
         editModel(newModel)

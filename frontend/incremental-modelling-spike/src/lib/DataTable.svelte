@@ -27,40 +27,7 @@
     }
 
 
-    async function addField() {
-        recordNameBeingAdded = ""
-        const fieldName = `Field ${model.fields.length + 1}`
-        model = modelFns.addField(model, fieldName)
-        await tick()
-        const element = document.querySelector(`th#field-${model.fields.length}`) as HTMLElement
-        if (element) {
-            editFieldRelativeToAnchor(element, fieldName)
-        }
-    }
-
-    async function addNestedRecordToModel(clicked: Event) {
-        const elem = document.activeElement as HTMLElement;
-        if (elem) {
-            elem?.blur();
-        }
-        const addNestedRecordModal = document.querySelector('#add-nested-record-modal') as HTMLElement
-        const nearestTd = (clicked.target as HTMLElement).closest('td')
-        if (!addNestedRecordModal || !nearestTd) {
-            return
-        }
-        addingNestedRecord = true
-        computePosition(nearestTd, addNestedRecordModal).then(({x, y}) => {
-            x = Math.max(10, x)
-            Object.assign(addNestedRecordModal.style, {
-                left: `${x}px`,
-                top: `${y}px`,
-            });
-        });
-        await tick()
-        focusFirstInput('add-nested-record-modal')
-    }
-
-    async function addNestedRecord(clicked: Event, record: DataRecord) {
+    async function addNestedObjectToModel(clicked: Event, record: DataRecord) {
         const elem = document.activeElement as HTMLElement;
         if (elem) {
             elem?.blur();
@@ -83,7 +50,8 @@
         recordHavingNestedRecordAdded = record
     }
 
-    async function addNestedTableToModel(clicked: Event) {
+
+    async function addNestedTableToModel(clicked: Event, record:DataRecord) {
         tableNameAsPlural = ""
         tableNameAsSingular = ""
         const elem = document.activeElement as HTMLElement;
@@ -105,32 +73,9 @@
         });
         await tick()
         focusFirstInput('add-nested-table-modal')
+        recordHavingNestedTableAdded = record
     }
 
-    async function addNestedTable(clicked: Event, record: DataRecord) {
-        tableNameAsPlural = ""
-        tableNameAsSingular = ""
-        recordHavingNestedTableAdded = record
-        const elem = document.activeElement as HTMLElement;
-        if (elem) {
-            elem?.blur();
-        }
-        addingNestedModel = true
-        const addNestedTableModal = document.querySelector('#add-nested-table-modal') as HTMLElement
-        const nearestTd = (clicked.target as HTMLElement).closest('td')
-        if (!addNestedTableModal || !nearestTd) {
-            return
-        }
-        computePosition(nearestTd, addNestedTableModal).then(({x, y}) => {
-            x = Math.max(10, x)
-            Object.assign(addNestedTableModal.style, {
-                left: `${x}px`,
-                top: `${y}px`,
-            });
-        });
-        await tick()
-        focusFirstInput('add-nested-table-modal')
-    }
 
     function toggleRecordExpand(record: DataRecord) {
         if (expandedRecordId === record.id) {
@@ -140,19 +85,13 @@
         }
     }
 
-    function ensureNestedRecord(record: DataRecord, nestedModel: NestedModel) {
-        if (!record.values[nestedModel.name]) {
-            record.values[nestedModel.name] = []
-        }
-        return record.values[nestedModel.name]
-    }
 
     function ensureNestedRecords(record: DataRecord, nestedModel: NestedModel) {
         if (!record.values[nestedModel.name]) {
             record.values[nestedModel.name] = []
         }
-        if(nestedModel.cardinality === "one") {
-            if(record.values[nestedModel.name].length === 0) {
+        if (nestedModel.cardinality === "one") {
+            if (record.values[nestedModel.name].length === 0) {
                 record.values[nestedModel.name].push(dataRecordFns.newInstance())
             }
         }
@@ -246,6 +185,9 @@
             return
         }
         model = modelFns.addNestedModel("one", model, recordNameBeingAdded, recordNameBeingAdded)
+        if(recordHavingNestedRecordAdded) {
+            expandedRecordId = recordHavingNestedRecordAdded.id
+        }
         cancelNestedRecord()
     }
 
@@ -261,14 +203,14 @@
             cancelNestedTable()
             cancelEditedField()
         }
-        if(event.key === "Enter") {
-            if(addingNestedModel) {
+        if (event.key === "Enter") {
+            if (addingNestedModel) {
                 saveNestedTable()
             }
-            if(addingNestedRecord) {
+            if (addingNestedRecord) {
                 saveNestedRecord()
             }
-            if(editingField) {
+            if (editingField) {
                 saveEditedField()
             }
         }
@@ -298,7 +240,7 @@
             <div class="form-control">
                 <label class="label cursor-pointer">
                     <span class="label-text">Required</span>
-                    <input type="checkbox" class="checkbox" />
+                    <input type="checkbox" class="checkbox"/>
                 </label>
             </div>
         </div>
@@ -306,7 +248,7 @@
             <div class="form-control">
                 <label class="label cursor-pointer">
                     <span class="label-text">Unique</span>
-                    <input type="checkbox" class="checkbox" />
+                    <input type="checkbox" class="checkbox"/>
                 </label>
             </div>
         </div>
@@ -370,20 +312,13 @@
         {/each}
         <td class="bg-base-300 px-8">
             <div class="flex items-center">
-                <div class="dropdown">
-                    <label tabindex="0" class="label m-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                             stroke="currentColor" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
-                        </svg>
-                        <span class="ml-2">Add </span>
-                    </label>
-                    <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
-                        <li><a on:click={addFieldToModel}>Field</a></li>
-                        <li><a on:click={(clicked) => addNestedRecordToModel(clicked)}>Nested record</a></li>
-                        <li><a on:click={(clicked) => addNestedTableToModel(clicked)}>Nested table</a></li>
-                    </ul>
-                </div>
+                <label tabindex="0" class="label m-1" on:click={addFieldToModel}>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                         stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+                    </svg>
+                    <span class="ml-2">Add Field</span>
+                </label>
             </div>
         </td>
         <td class="bg-base-300">Actions</td>
@@ -401,7 +336,8 @@
             <td class="border">
                 <div class="flex items-center">
                     {#if model.nestedModels.length > 0}
-                        <button class="btn btn-ghost btn-active btn-sm mr-2" on:click={() => toggleRecordExpand(record)}>
+                        <button class="btn btn-ghost btn-active btn-sm mr-2"
+                                on:click={() => toggleRecordExpand(record)}>
                             {#if expandedRecordId === record.id}
                                 Collapse
                             {:else}
@@ -409,7 +345,24 @@
                             {/if}
                         </button>
                     {/if}
-                    <button class="btn btn-ghost btn-active btn-sm  mr-2" on:click={() => alert("to do")}>Delete</button>
+                    <button class="btn btn-ghost btn-active btn-sm  mr-2" on:click={() => alert("to do")}>Delete
+                    </button>
+                    <div class="dropdown mr-2">
+                        <button class="btn btn-ghost btn-active btn-sm  mr-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                 stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+                            </svg>
+
+                            Define
+                        </button>
+                        <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+                            <li><a on:click={(clicked) => addNestedObjectToModel(clicked, record)}>Nested object</a>
+                            </li>
+                            <li><a on:click={(clicked) => addNestedTableToModel(clicked, record)}>Nested table</a></li>
+                        </ul>
+                    </div>
+
                 </div>
             </td>
         </tr>
