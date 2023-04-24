@@ -1,6 +1,8 @@
 <script lang="ts">
+    import {eventSourcedStore} from "./stores/EventSourcedStore";
+    import {editModelModal} from "./modelUi";
 
-    console.log("Hello world");
+    // const eventSourcedModel = eventSourcedStore(modelReducer, save, $editModelModal.)
 </script>
 
 

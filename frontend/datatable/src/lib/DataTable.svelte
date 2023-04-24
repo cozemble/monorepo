@@ -6,8 +6,8 @@
     import Modals from "./Modals.svelte";
     import type {EventSourcedStore} from "./stores/EventSourcedStore";
     import type {TablesAction} from "./tables/actions";
-    import {DownCaret} from "@cozemble/ui-atoms";
     import {modelUi} from "./modelUi";
+    import DownCaret from "./icons/DownCaret.svelte";
 
     export let tables: EventSourcedStore<Model[], TablesAction>
     const navbarState: Writable<string | null> = writable(null)

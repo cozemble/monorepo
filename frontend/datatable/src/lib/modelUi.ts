@@ -1,18 +1,18 @@
-import type { EventSourcedModel } from '@cozemble/model-event-sourced'
 import { writable } from 'svelte/store'
 import { computePosition } from '@floating-ui/dom'
 import { tick } from 'svelte'
+import type { Model } from '@cozemble/model-core'
 
 export interface EditModelModalState {
-  model: EventSourcedModel
+  model: Model
   anchorElement: HTMLElement
 }
 
 export const editModelModal = writable<EditModelModalState | null>(null)
 
 export const modelUi = {
-  edit(newModel: EventSourcedModel, anchorElement: HTMLElement) {
-    editModelModal.set({ model: newModel, anchorElement })
+  edit(model: Model, anchorElement: HTMLElement) {
+    editModelModal.set({ model, anchorElement })
   },
 }
 
