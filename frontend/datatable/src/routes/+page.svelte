@@ -1,15 +1,11 @@
 <script lang="ts">
-    import type {Model} from "@cozemble/model-core";
     import DataTable from "../lib/DataTable.svelte";
-    import {eventSourcedStore} from "../lib/stores/EventSourcedStore";
-    import {type TablesAction, tablesActionReducer} from "../lib/tables/actions";
-    import type {JustErrorMessage} from "@cozemble/lang-util";
+    import type {EventSourcedModel} from "@cozemble/model-event-sourced";
+    import {backendStore, saveModels} from "../lib/appBackend";
+    import {ConsoleLoggingBackend} from "../lib/backend/ConsoleLoggingBackend";
 
-    async function saveTables(actions: TablesAction[], tables: Model[]): Promise<JustErrorMessage | null> {
-        return null
-    }
-
-    const eventSourcedTables = eventSourcedStore(tablesActionReducer, saveTables, [] as Model[])
+    backendStore.set(new ConsoleLoggingBackend())
+    const models = [] as EventSourcedModel[]
 </script>
 
-<DataTable tables={eventSourcedTables}/>
+<DataTable {models}/>

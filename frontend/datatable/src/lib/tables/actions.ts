@@ -1,5 +1,6 @@
-import type { Model } from '@cozemble/model-core'
 import { modelFns } from '@cozemble/model-api'
+import type { EventSourcedModel } from '@cozemble/model-event-sourced'
+import { eventSourcedModelFns } from '@cozemble/model-event-sourced'
 
 export interface AddTableAction {
   _type: 'add.table.action'
@@ -17,9 +18,12 @@ export function addTableAction(name: string, pluralName: string): AddTableAction
 
 export type TablesAction = AddTableAction
 
-export function tablesActionReducer(tables: Model[], action: TablesAction): Model[] {
+export function tablesActionReducer(
+  tables: EventSourcedModel[],
+  action: TablesAction,
+): EventSourcedModel[] {
   if (action._type === 'add.table.action') {
-    return [...tables, modelFns.newInstance(action.name)]
+    return [...tables, eventSourcedModelFns.newInstance(modelFns.newInstance(action.name))]
   }
   throw new Error(`Unknown action`)
 }

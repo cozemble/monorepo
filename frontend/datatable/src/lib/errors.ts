@@ -31,7 +31,7 @@ export function cantBeOneOf<V>(exclusions: any[], message: string): Check<V> {
 }
 
 export function conditionalErrorChecks<V>(
-  v: V,
+  v: V | null,
   condition: Check<V>,
   ...checks: Check<V>[]
 ): string[] {

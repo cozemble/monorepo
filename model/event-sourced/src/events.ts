@@ -16,10 +16,16 @@ import {
   PropertyName,
 } from '@cozemble/model-core'
 import { modelIdFns, nestedModelFns } from '@cozemble/model-api'
+import { ModelPluralName } from '@cozemble/model-core/dist/esm/core'
 
 export interface ModelRenamed extends ModelEvent {
   _type: 'model.renamed.event'
   newModelName: ModelName
+}
+
+export interface ModelPluralRenamed extends ModelEvent {
+  _type: 'model.plural.renamed.event'
+  newName: ModelPluralName
 }
 
 function modelRenamed(modelId: ModelId, newModelName: ModelName): ModelRenamed {
@@ -30,6 +36,14 @@ function modelRenamed(modelId: ModelId, newModelName: ModelName): ModelRenamed {
   }
 }
 
+function modelPluralRenamed(modelId: ModelId, newName: ModelPluralName): ModelPluralRenamed {
+  return {
+    _type: 'model.plural.renamed.event',
+    ...modelEventFns.coreParts(modelId),
+    newName,
+  }
+}
+
 const modelRenamedDescriptor: ModelEventDescriptor<ModelRenamed> = {
   _type: 'model.event.descriptor',
   modelEventType: 'model.renamed.event',
@@ -37,6 +51,17 @@ const modelRenamedDescriptor: ModelEventDescriptor<ModelRenamed> = {
     return {
       ...model,
       name: event.newModelName,
+    }
+  },
+}
+
+const modelPluralRenamedDescriptor: ModelEventDescriptor<ModelPluralRenamed> = {
+  _type: 'model.event.descriptor',
+  modelEventType: 'model.plural.renamed.event',
+  applyEvent: (model, event) => {
+    return {
+      ...model,
+      pluralName: event.newName,
     }
   },
 }
@@ -179,12 +204,14 @@ const booleanPropertyChangeDescriptor: ModelEventDescriptor<BooleanPropertyChang
 }
 
 modelEventDescriptors.register(modelRenamedDescriptor)
+modelEventDescriptors.register(modelPluralRenamedDescriptor)
 modelEventDescriptors.register(modelSlotRenamedDescriptor)
 modelEventDescriptors.register(nestedModelAddedDescriptor)
 modelEventDescriptors.register(booleanPropertyChangeDescriptor)
 
 export const coreModelEvents = {
   modelRenamed,
+  modelPluralRenamed,
   slotRenamed,
   nestedModelAdded,
   modelCreated,

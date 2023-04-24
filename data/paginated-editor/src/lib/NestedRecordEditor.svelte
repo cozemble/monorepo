@@ -3,7 +3,7 @@
     import type {DataRecordPathParentElement, NestedModel} from "@cozemble/model-core";
     import DataRecordTable from "./DataRecordTable.svelte";
     import {dataRecordPathElementFns, modelFns} from "@cozemble/model-api";
-    import {dataRecordFns} from "@cozemble/model-api/dist/esm";
+    import {dataRecordFns} from "@cozemble/model-api";
     import NestedRecordArrayEditor from "./NestedRecordArrayEditor.svelte";
 
     export let rootRecordEditContext: RecordEditContext

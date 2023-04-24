@@ -5,5 +5,5 @@
 </script>
 
 {#if $editModelModal}
-    <EditModelModal />
+    <EditModelModal state={$editModelModal}/>
 {/if}

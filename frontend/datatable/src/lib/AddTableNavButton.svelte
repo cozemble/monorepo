@@ -1,8 +1,6 @@
 <script lang="ts">
-    import type {EventSourcedModelStore} from "./types";
     import AddTableModal from "./AddTableModal.svelte";
-
-    export let tables: EventSourcedModelStore
+    import {allModels} from "./stores/allModels";
 
     let rootDiv: HTMLDivElement;
     let addingTable = false
@@ -14,7 +12,7 @@
 
 
 <div bind:this={rootDiv}>
-    {#if $tables.length === 0}
+    {#if $allModels.length === 0}
         <a class="tab tab-lg"
            on:click={addTable}>+ Add your first table</a>
     {:else}
@@ -24,5 +22,5 @@
 </div>
 
 {#if addingTable}
-    <AddTableModal anchorElement={rootDiv} {tables} on:finished={() => addingTable = false}/>
+    <AddTableModal anchorElement={rootDiv} on:finished={() => addingTable = false}/>
 {/if}
