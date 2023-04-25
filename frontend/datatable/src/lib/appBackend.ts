@@ -1,15 +1,17 @@
-import { notImplementedBackend } from './backend/Backend'
-import { writable } from 'svelte/store'
+import { type Backend, notImplementedBackend } from './backend/Backend'
 import type { EventSourcedModel } from '@cozemble/model-event-sourced'
 import type { JustErrorMessage } from '@cozemble/lang-util'
 
 let backend = notImplementedBackend
-export const backendStore = writable(backend)
-backendStore.subscribe((value) => {
-  backend = value
-})
+
+export const backendFns = {
+  setBackend: (newBackend: Backend) => {
+    backend = newBackend
+  },
+}
 
 export async function saveModel(model: EventSourcedModel): Promise<JustErrorMessage | null> {
+  console.log({ model })
   return backend.saveModel(model)
 }
 

@@ -51,7 +51,7 @@
     }
 
 
-    async function addNestedTableToModel(clicked: Event, record:DataRecord) {
+    async function addNestedTableToModel(clicked: Event, record: DataRecord) {
         tableNameAsPlural = ""
         tableNameAsSingular = ""
         const elem = document.activeElement as HTMLElement;
@@ -185,7 +185,7 @@
             return
         }
         model = modelFns.addNestedModel("one", model, recordNameBeingAdded, recordNameBeingAdded)
-        if(recordHavingNestedRecordAdded) {
+        if (recordHavingNestedRecordAdded) {
             expandedRecordId = recordHavingNestedRecordAdded.id
         }
         cancelNestedRecord()
@@ -345,21 +345,29 @@
                             {/if}
                         </button>
                     {/if}
-                    <button class="btn btn-ghost btn-active btn-sm  mr-2" on:click={() => alert("to do")}>Delete
-                    </button>
+                    {#if !oneOnly}
+                        <button class="btn btn-ghost btn-active btn-sm  mr-2" on:click={() => alert("to do")}>Delete
+                        </button>
+                    {/if}
                     <div class="dropdown mr-2">
-                        <button class="btn btn-ghost btn-active btn-sm  mr-2">
+                        <button class="btn btn-ghost btn-active btn-sm mr-2">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                  stroke="currentColor" class="w-6 h-6">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
                             </svg>
-
-                            Define
+                            Add sub-item
                         </button>
-                        <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
-                            <li><a on:click={(clicked) => addNestedObjectToModel(clicked, record)}>Nested object</a>
+                        <ul tabindex="0" class="dropdown-content menux p-2 shadow bg-base-100 rounded-box w-100">
+                            <li>
+                                <div class="card ">
+                                    <div class="card-body">
+                                        <button on:click={(clicked) => addNestedObjectToModel(clicked, record)} class="btn btn-secondary btn-sm">Add one sub-object</button>
+                                        <div>(e.g. a Customer has one "Address" sub-object)</div>
+                                        <button on:click={(clicked) => addNestedTableToModel(clicked, record)} class="btn btn-secondary btn-sm">Add a sub-table</button>
+                                        <div>(e.g. an Invoice has a sub-table of "Line Items")</div>
+                                    </div>
+                                </div>
                             </li>
-                            <li><a on:click={(clicked) => addNestedTableToModel(clicked, record)}>Nested table</a></li>
                         </ul>
                     </div>
 

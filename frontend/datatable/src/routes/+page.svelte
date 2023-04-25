@@ -1,10 +1,11 @@
 <script lang="ts">
     import DataTable from "../lib/DataTable.svelte";
     import type {EventSourcedModel} from "@cozemble/model-event-sourced";
-    import {backendStore, saveModels} from "../lib/appBackend";
     import {ConsoleLoggingBackend} from "../lib/backend/ConsoleLoggingBackend";
+    import {backendFns} from "../lib/appBackend";
+    import {StoreSyncBackend} from "../lib/app/StoreSyncBackend";
 
-    backendStore.set(new ConsoleLoggingBackend())
+    backendFns.setBackend(new StoreSyncBackend(new ConsoleLoggingBackend()))
     const models = [] as EventSourcedModel[]
 </script>
 
