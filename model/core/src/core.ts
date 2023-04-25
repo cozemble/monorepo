@@ -100,10 +100,23 @@ export interface ModelName extends TinyValue {
   _type: 'model.name'
 }
 
+export interface ModelPluralName extends TinyValue {
+  _type: 'model.plural.name'
+}
+
 export const modelNameFns = {
   newInstance: (value: string): ModelName => {
     return {
       _type: 'model.name',
+      value,
+    }
+  },
+}
+
+export const modelPluralNameFns = {
+  newInstance: (value: string): ModelPluralName => {
+    return {
+      _type: 'model.plural.name',
       value,
     }
   },
@@ -303,6 +316,7 @@ export interface Model {
   id: ModelId
   parentModelId?: ModelId
   name: ModelName
+  pluralName: ModelPluralName
   slots: ModelSlot[]
   nestedModels: NestedModel[]
 }
@@ -399,10 +413,12 @@ export type PropertyOption = Option<Property>
 
 export function emptyModel(name: string | ModelName): Model {
   name = typeof name === 'string' ? modelNameFns.newInstance(name) : name
+  const pluralName = modelPluralNameFns.newInstance(name.value)
   return {
     _type: 'model',
     id: { _type: 'model.id', value: uuids.v4() },
     name,
+    pluralName,
     slots: [],
     nestedModels: [],
   }

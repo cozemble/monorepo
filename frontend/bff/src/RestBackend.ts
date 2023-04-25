@@ -1,12 +1,11 @@
-import type { Backend, FetchRecordsResponse, FetchTenantResponse } from './Backend'
-import { cozauth } from '../auth/cozauth'
-import { config } from '../config'
+import type { Backend, FetchRecordsResponse, FetchTenantResponse, TenantEntity } from './Backend'
 import type {
   AttachmentIdAndFileName,
   EventSourcedDataRecord,
   UploadedAttachment,
 } from '@cozemble/data-editor-sdk'
 import axios from 'axios'
+import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
 import {
   type ConflictErrorType,
   filterRequestPayloadFns,
@@ -23,17 +22,6 @@ import type { RecordDeleteOutcome, RecordSaveOutcome } from '@cozemble/data-pagi
 import { recordSaveFailed, recordSaveSucceeded } from '@cozemble/data-paginated-editor'
 import { justErrorMessage, mandatory } from '@cozemble/lang-util'
 import { dataRecordValuePathFns, modelFns } from '@cozemble/model-api'
-import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
-import type { TenantEntity } from '../models/tenantEntityStore'
-
-async function accessToken(tenantId: string) {
-  const accessToken = await cozauth.getAccessToken(cozauth.getTenantRoot(tenantId))
-  if (!accessToken) {
-    throw new Error(`No access token for tenant ${tenantId}`)
-  }
-
-  return accessToken
-}
 
 const axiosInstance = axios.create({
   validateStatus: function () {
@@ -41,21 +29,37 @@ const axiosInstance = axios.create({
   },
 })
 
+export type AccessTokenProvider = (tenantId: string) => Promise<string>
+export type BackendUrlProvider = () => string
+
 export class RestBackend implements Backend {
+  constructor(
+    private readonly accessTokenProvider: AccessTokenProvider,
+    private readonly backendUrlProvider: BackendUrlProvider,
+  ) {}
+
+  async accessToken(tenantId: string): Promise<string> {
+    return this.accessTokenProvider(tenantId)
+  }
+
+  backendUrl(): string {
+    return this.backendUrlProvider()
+  }
+
   async getTenantDetails(tenantId: string): Promise<FetchTenantResponse> {
-    return fetchTenant(tenantId, await accessToken(tenantId))
+    return fetchTenant(this.backendUrl(), tenantId, await this.accessToken(tenantId))
   }
 
   async deleteAttachments(tenantId: string, attachmentIds: string[]): Promise<void> {
     const endpoints = attachmentIds.map((attachmentId) => {
-      return `${config.backendUrl()}/api/v1/storage/files/${tenantId}/${attachmentId}`
+      return `${this.backendUrl()}/api/v1/storage/files/${tenantId}/${attachmentId}`
     })
 
     const responses = await Promise.all(
       endpoints.map(async (endpoint) => {
         return axiosInstance.delete(endpoint, {
           headers: {
-            Authorization: `Bearer ${await accessToken(tenantId)}`,
+            Authorization: `Bearer ${await this.accessToken(tenantId)}`,
           },
         })
       }),
@@ -73,7 +77,7 @@ export class RestBackend implements Backend {
     files: File[],
     progressUpdater: (percent: number) => void,
   ): Promise<UploadedAttachment[]> {
-    const uploadEndpoint = `${config.backendUrl()}/api/v1/storage/files/${tenantId}`
+    const uploadEndpoint = `${this.backendUrl()}/api/v1/storage/files/${tenantId}`
     const formData = new FormData()
 
     files.forEach((file) => {
@@ -82,7 +86,7 @@ export class RestBackend implements Backend {
 
     const response = await axiosInstance.post<UploadedAttachment[]>(uploadEndpoint, formData, {
       headers: {
-        Authorization: `Bearer ${await accessToken(tenantId)}`,
+        Authorization: `Bearer ${await this.accessToken(tenantId)}`,
         'Content-Type': 'multipart/form-data',
       },
       onUploadProgress: (progressEvent) => {
@@ -110,7 +114,7 @@ export class RestBackend implements Backend {
     attachments: AttachmentIdAndFileName[],
   ): Promise<string[]> {
     const endpoints = attachments.map((a) => {
-      return `${config.backendUrl()}/api/v1/storage/urls/${tenantId}/${
+      return `${this.backendUrl()}/api/v1/storage/urls/${tenantId}/${
         a.attachmentId
       }/${encodeURIComponent(a.fileName)}`
     })
@@ -119,7 +123,7 @@ export class RestBackend implements Backend {
       endpoints.map(async (endpoint) => {
         return axiosInstance.post(endpoint, null, {
           headers: {
-            Authorization: `Bearer ${await accessToken(tenantId)}`,
+            Authorization: `Bearer ${await this.accessToken(tenantId)}`,
           },
         })
       }),
@@ -141,13 +145,13 @@ export class RestBackend implements Backend {
     filters: any,
   ): Promise<FetchRecordsResponse> {
     const respone = await fetch(
-      `${config.backendUrl()}/api/v1/tenant/${tenantId}/model/${modelId}/record`,
+      `${this.backendUrl()}/api/v1/tenant/${tenantId}/model/${modelId}/record`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
-          Authorization: `Bearer ${await accessToken(tenantId)}`,
+          Authorization: `Bearer ${await this.accessToken(tenantId)}`,
         },
         body: JSON.stringify(filterRequestPayloadFns.newInstance(search, filters)),
       },
@@ -164,14 +168,14 @@ export class RestBackend implements Backend {
     recordId: DataRecordId,
   ): Promise<DataRecord | null> {
     const recordsResponse = await fetch(
-      `${config.backendUrl()}/api/v1/tenant/${tenantId}/model/${modelId.value}/record/${
+      `${this.backendUrl()}/api/v1/tenant/${tenantId}/model/${modelId.value}/record/${
         recordId.value
       }`,
       {
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
-          Authorization: `Bearer ${await accessToken(tenantId)}`,
+          Authorization: `Bearer ${await this.accessToken(tenantId)}`,
         },
       },
     )
@@ -189,11 +193,11 @@ export class RestBackend implements Backend {
   ): Promise<RecordDeleteOutcome> {
     const recordId = record.id.value
     const saveResponse = await fetch(
-      `${config.backendUrl()}/api/v1/tenant/${tenantId}/model/${modelId}/record/${recordId}`,
+      `${this.backendUrl()}/api/v1/tenant/${tenantId}/model/${modelId}/record/${recordId}`,
       {
         method: 'DELETE',
         headers: {
-          Authorization: `Bearer ${await accessToken(tenantId)}`,
+          Authorization: `Bearer ${await this.accessToken(tenantId)}`,
         },
       },
     )
@@ -212,12 +216,12 @@ export class RestBackend implements Backend {
     const modelId = newRecord.record.modelId.value
     const model = modelFns.findById(models, newRecord.record.modelId)
     const saveResponse = await fetch(
-      `${config.backendUrl()}/api/v1/tenant/${tenantId}/model/${modelId}/record`,
+      `${this.backendUrl()}/api/v1/tenant/${tenantId}/model/${modelId}/record`,
       {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${await accessToken(tenantId)}`,
+          Authorization: `Bearer ${await this.accessToken(tenantId)}`,
         },
         body: JSON.stringify(savableRecords([newRecord.record])),
       },
@@ -246,14 +250,14 @@ export class RestBackend implements Backend {
     recordId: DataRecordId, // Customer
     referencingModelId: ModelId, // Booking
   ): Promise<DataRecord[]> {
-    const url = `${config.backendUrl()}/api/v1/tenant/${tenantId}/model/${
+    const url = `${this.backendUrl()}/api/v1/tenant/${tenantId}/model/${
       referencingModelId.value
     }/referencing/${recordId.value}`
     const recordsResponse = await fetch(url, {
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
-        Authorization: `Bearer ${await accessToken(tenantId)}`,
+        Authorization: `Bearer ${await this.accessToken(tenantId)}`,
       },
     })
 
@@ -267,11 +271,11 @@ export class RestBackend implements Backend {
   }
 
   async putModels(tenantId: string, models: BackendModel[]): Promise<any> {
-    const result = await fetch(`${config.backendUrl()}/api/v1/tenant/${tenantId}/model`, {
+    const result = await fetch(`${this.backendUrl()}/api/v1/tenant/${tenantId}/model`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${await accessToken(tenantId)}`,
+        Authorization: `Bearer ${await this.accessToken(tenantId)}`,
       },
       body: JSON.stringify(models),
     })
@@ -281,11 +285,11 @@ export class RestBackend implements Backend {
   }
 
   async saveEntities(tenantId: string, entities: TenantEntity[]): Promise<any> {
-    const result = await fetch(`${config.backendUrl()}/api/v1/tenant/${tenantId}/entity`, {
+    const result = await fetch(`${this.backendUrl()}/api/v1/tenant/${tenantId}/entity`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${await accessToken(tenantId)}`,
+        Authorization: `Bearer ${await this.accessToken(tenantId)}`,
       },
       body: JSON.stringify(entities),
     })
@@ -297,7 +301,7 @@ export class RestBackend implements Backend {
   async tradeAuthTokenForSession(
     authorizationToken: string,
   ): Promise<{ accessToken: string; refreshToken: string }> {
-    const res = await fetch(`${config.backendUrl()}/api/v1/auth/token`, {
+    const res = await fetch(`${this.backendUrl()}/api/v1/auth/token`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -314,10 +318,11 @@ export class RestBackend implements Backend {
 }
 
 export async function fetchTenant(
+  backendUrl: string,
   tenantId: string,
   accessToken: string,
 ): Promise<FetchTenantResponse> {
-  const response = await fetch(`${config.backendUrl()}/api/v1/tenant/${tenantId}`, {
+  const response = await fetch(`${backendUrl}/api/v1/tenant/${tenantId}`, {
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',

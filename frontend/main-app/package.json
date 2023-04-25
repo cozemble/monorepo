@@ -7,7 +7,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch --threshold error",
     "test": "svelte-check --tsconfig ./tsconfig.json --threshold error"
   },
   "devDependencies": {
@@ -38,9 +38,12 @@
     "@cozemble/data-filters-config": "workspace:*",
     "@cozemble/ui-filter-editor": "workspace:*",
     "@cozemble/model-to-json": "workspace:*",
+    "@cozemble/frontend-incremental-modelling-spike": "workspace:*",
+    "@cozemble/frontend-bff": "workspace:*",
     "@tailwindcss/typography": "^0.5.9",
     "axios": "^1.2.3",
     "daisyui": "^2.47.0"
   }
 }
+
 
