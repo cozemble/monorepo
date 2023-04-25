@@ -226,6 +226,16 @@
         expandedRecordId = null
     }
 
+    function onAddNestedRecord(event: CustomEvent) {
+        const nestedModel:Model = event.detail
+        model = modelFns.addNestedModel("one", model, nestedModel.name, nestedModel.name)
+    }
+
+    function onAddNestedTable(event: CustomEvent) {
+        const nestedModel:Model = event.detail
+        model = modelFns.addNestedModel("many", model, nestedModel.name, nestedModel.pluralName)
+    }
+
 </script>
 
 <svelte:window on:keyup={handleKeyUp}/>
@@ -360,14 +370,14 @@
                         </button>
                     {/if}
                     {#if permitSubItemAddition}
-                    <button class="btn btn-ghost btn-active btn-sm mr-2" on:click={() => beginSubItem(record)}>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                             stroke="currentColor" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
-                        </svg>
-                        Add sub-item
-                    </button>
-                        {/if}
+                        <button class="btn btn-ghost btn-active btn-sm mr-2" on:click={() => beginSubItem(record)}>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                 stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+                            </svg>
+                            Add sub-item
+                        </button>
+                    {/if}
                 </div>
             </td>
         </tr>
@@ -379,13 +389,13 @@
                             {#each model.nestedModels as nestedModel}
                                 {#if nestedModel.cardinality === "one"}
                                     {@const _nestedRecords = ensureNestedRecords(record, nestedModel)}
-                                    <h6>{nestedModel.model.name}</h6>
+                                    <h6 class="mb-2">{nestedModel.model.name}</h6>
                                     <svelte:self bind:model={nestedModel.model}
                                                  bind:records={record.values[nestedModel.name]} oneOnly={true}/>
                                 {:else}
                                     {@const _nestedRecords = ensureNestedRecords(record, nestedModel)}
                                     <div class="mb-5">
-                                        <h6>{nestedModel.model.pluralName}</h6>
+                                        <h6  class="mb-2">{nestedModel.model.pluralName}</h6>
                                         <svelte:self bind:model={nestedModel.model}
                                                      bind:records={record.values[nestedModel.name]}/>
                                     </div>
@@ -397,7 +407,9 @@
             {:else}
                 <tr>
                     <td class="border" colspan={model.fields.length + 2}>
-                        <AddSubItemDialogue2 bind:model={model} on:close={closeAddSubItemDialogue}/>
+                        <AddSubItemDialogue2 bind:model={model} on:close={closeAddSubItemDialogue}
+                                             on:addNestedRecord={onAddNestedRecord}
+                                             on:addNestedTable={onAddNestedTable}/>
                     </td>
                 </tr>
             {/if}

@@ -1,10 +1,20 @@
 <script lang="ts">
     import {dataRecordFns, modelFns} from "./types";
     import DataTable from "./DataTable.svelte";
+    import {createEventDispatcher} from "svelte";
 
     let model = modelFns.newInstance("Sub Item", "Sub Items")
     model = modelFns.addField(model, "Field 1")
     const records = [dataRecordFns.newInstance()]
+    const dispatch = createEventDispatcher()
+
+    function cancel() {
+        dispatch('close')
+    }
+
+    function apply() {
+        dispatch('apply', model)
+    }
 </script>
 
 
@@ -12,6 +22,7 @@
     <div class="card-body">
         <div class="tooltip tooltip-open tooltip-accent" data-tip="Preview of sub-table">
             <div class="disabled-content border border-info rounded p-2 flex flex-col items-start">
+                <h6>{model.pluralName}</h6>
                 <DataTable {model} {records} permitSubItemAddition={false}/>
             </div>
         </div>
@@ -31,17 +42,16 @@
             <input type="text" class="input input-bordered w-full" bind:value={model.pluralName}/>
             <label class="label">The "Add" button text should read:</label>
             <div class="flex items-center">
-                <button class="btn btn-primary btn-sm mr-1">Add</button>
+                <button class="btn btn-primary btn-sm mr-2">Add</button>
                 <input type="text" class="input input-bordered w-full" bind:value={model.name}/>
             </div>
         </div>
-
     </div>
 </div>
 
 <div class="mt-8">
-    <button class="btn btn-secondary">Apply sub-item</button>
-    <button class="btn">Cancel</button>
+    <button class="btn btn-secondary" on:click={apply}>Apply sub-item</button>
+    <button class="btn" on:click={cancel}>Cancel</button>
 </div>
 
 <style>

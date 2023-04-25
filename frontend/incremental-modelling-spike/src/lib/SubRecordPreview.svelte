@@ -1,17 +1,29 @@
 <script lang="ts">
     import {dataRecordFns, modelFns} from "./types";
     import DataTable from "./DataTable.svelte";
+    import {createEventDispatcher} from "svelte";
 
     let model = modelFns.newInstance("Untitled sub-record", "Untitled sub-record")
     model = modelFns.addField(model, "Field 1")
     const records = [dataRecordFns.newInstance()]
+    const dispatch = createEventDispatcher()
+
+    function cancel() {
+        dispatch('close')
+    }
+
+    function apply() {
+        dispatch('apply', model)
+    }
+
 </script>
 
 
 <div class="card bg-base-200 shadow-xl pt-2">
     <div class="card-body">
         <div class="tooltip tooltip-open tooltip-accent" data-tip="Preview of your sub-record">
-            <div class="disabled-content border border-info rounded p-2">
+            <div class="disabled-content border border-info rounded p-2 flex flex-col items-start">
+                <h6>{model.name}</h6>
                 <DataTable {model} {records} oneOnly={true} permitSubItemAddition={false}/>
             </div>
         </div>
@@ -33,8 +45,8 @@
 
 
 <div class="mt-8">
-    <button class="btn btn-secondary">Apply sub-item</button>
-    <button class="btn">Cancel</button>
+    <button class="btn btn-secondary" on:click={apply}>Apply sub-item</button>
+    <button class="btn" on:click={cancel}>Cancel</button>
 </div>
 
 <style>
