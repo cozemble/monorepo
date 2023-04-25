@@ -1,5 +1,5 @@
 import type { Check } from '../errors'
-import { conditionalErrorChecks } from '../errors'
+import { alwaysTrue, conditionalErrorChecks } from '../errors'
 import { derived } from 'svelte/store'
 import { gettableWritable } from './GettableWritable'
 
@@ -37,4 +37,11 @@ export function editableWithConditionalChecks<T = string>(
   ...errorChecks: Check<T>[]
 ): EditableValue<T> {
   return new EditableValue<T>(initialValue, conditionalErrorCheck, errorChecks)
+}
+
+export function editableWithChecks<T = string>(
+  initialValue: T | null,
+  ...errorChecks: Check<T>[]
+): EditableValue<T> {
+  return new EditableValue<T>(initialValue, alwaysTrue(), errorChecks)
 }
