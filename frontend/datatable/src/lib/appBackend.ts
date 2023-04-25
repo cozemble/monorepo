@@ -11,10 +11,11 @@ export const backendFns = {
 }
 
 export async function saveModel(model: EventSourcedModel): Promise<JustErrorMessage | null> {
-  console.log({ model })
+  console.log({ model, backend })
   return backend.saveModel(model)
 }
 
 export async function saveModels(models: EventSourcedModel[]): Promise<JustErrorMessage | null> {
+  console.log({ models, backend })
   return backend.saveModels(models)
 }

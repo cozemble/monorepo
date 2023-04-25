@@ -7,7 +7,7 @@ export class StoreSyncBackend implements Backend {
   constructor(private readonly delegate: Backend) {}
 
   async saveModel(model: EventSourcedModel): Promise<JustErrorMessage | null> {
-    const result = this.delegate.saveModel(model)
+    const result = await this.delegate.saveModel(model)
     console.log({ result })
     if (result === null) {
       allModels.update((ms) => {
@@ -24,6 +24,8 @@ export class StoreSyncBackend implements Backend {
   }
 
   async saveModels(models: EventSourcedModel[]): Promise<JustErrorMessage | null> {
-    return this.delegate.saveModels(models)
+    const result = await this.delegate.saveModels(models)
+    console.log({ result })
+    return result
   }
 }

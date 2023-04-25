@@ -19,14 +19,16 @@
     const pluralTableName = editablePluralTableName(state.model.model.pluralName.value, state.allModels)
     const showErrors = writable(false)
     let modal: HTMLDivElement
+    const tableNameValue = tableName.value
+    const pluralTableNameValue = pluralTableName.value
 
     async function save() {
         if (editableValueFns.hasErrors([tableName, pluralTableName])) {
             $showErrors = true
         } else {
-            let changed = dispatchChange(eventSourcedModel, tableName, (newName) => coreModelEvents.modelRenamed(state.model.model.id, modelNameFns.newInstance(mandatory(newName, `Cannot set name to null`))))
-            changed = changed || dispatchChange(eventSourcedModel, pluralTableName, (newPluralName) => coreModelEvents.modelPluralRenamed(state.model.model.id, modelPluralNameFns.newInstance(mandatory(newPluralName, `Cannot set plural name to null`))))
-            if (changed) {
+            let changed = [dispatchChange(eventSourcedModel, tableName, (newName) => coreModelEvents.modelRenamed(state.model.model.id, modelNameFns.newInstance(mandatory(newName, `Cannot set name to null`))))]
+            changed = [...changed, dispatchChange(eventSourcedModel, pluralTableName, (newPluralName) => coreModelEvents.modelPluralRenamed(state.model.model.id, modelPluralNameFns.newInstance(mandatory(newPluralName, `Cannot set plural name to null`))))]
+            if (changed.some(c => c)) {
                 const saveOutcome = await eventSourcedModel.save()
                 modelUi.handleSaveOutcome(saveOutcome)
             } else {

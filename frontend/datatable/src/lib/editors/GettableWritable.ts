@@ -6,8 +6,11 @@ interface GettableWritable<T> extends Writable<T> {
 
 export function gettableWritable<T>(initialValue: T): GettableWritable<T> {
   let value = initialValue
-  const { set, subscribe } = writable(initialValue)
-
+  const { set: originalSet, subscribe } = writable(initialValue)
+  const set = (newValue: T) => {
+    value = newValue
+    originalSet(newValue)
+  }
   return {
     set,
     subscribe,
