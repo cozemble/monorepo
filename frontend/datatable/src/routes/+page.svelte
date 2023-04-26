@@ -6,11 +6,16 @@
     import {StoreSyncBackend} from "../lib/app/StoreSyncBackend";
     import {systemConfigurationFns} from "@cozemble/model-core";
     import {registerEverything} from "@cozemble/model-assembled";
+    import {onMount} from 'svelte'
 
     backendFns.setBackend(new StoreSyncBackend(new ConsoleLoggingBackend()))
     const models = [] as EventSourcedModel[]
     const systemConfiguration = systemConfigurationFns.empty()
-    registerEverything()
+
+    onMount(() => {
+        registerEverything()
+    })
+
 </script>
 
 <DataTable {models} {systemConfiguration}/>

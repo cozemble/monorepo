@@ -1,9 +1,16 @@
-import type { DataRecord, ModelEvent, ModelId, SystemConfiguration } from '@cozemble/model-core'
+import type {
+  DataRecord,
+  ModelEvent,
+  ModelId,
+  ModelPathElement,
+  SystemConfiguration,
+} from '@cozemble/model-core'
 import type { Backend } from '../backend/Backend'
 import { derived, writable, type Writable } from 'svelte/store'
 import type { EventSourcedModel } from '@cozemble/model-event-sourced'
 import { eventSourcedModelFns } from '@cozemble/model-event-sourced'
 import { mandatory } from '@cozemble/lang-util'
+import type { Cardinality, NestedModel } from '@cozemble/model-core'
 
 export type LoadingState = 'loading' | 'loaded'
 
@@ -22,7 +29,9 @@ export class RecordsContext {
     private readonly backend: Backend,
     public readonly systemConfiguration: SystemConfiguration,
     private readonly modelId: ModelId,
-    private readonly allModels: Writable<EventSourcedModel[]>,
+    public readonly allModels: Writable<EventSourcedModel[]>,
+    private readonly parentElements: ModelPathElement[],
+    public readonly cardinality: Cardinality = 'many',
     public readonly model = derived(allModels, (models) =>
       mandatory(
         models.find((model) => model.model.id.value === modelId.value),
@@ -46,5 +55,21 @@ export class RecordsContext {
       const mutated = eventSourcedModelFns.addEvent(model, event)
       return models.map((model) => (model.model.id.value === modelId.value ? mutated : model))
     })
+  }
+
+  async modelEdited(model: EventSourcedModel): Promise<void> {
+    this.allModels.update((models) => {
+      return models.map((m) => (m.model.id.value === model.model.id.value ? model : m))
+    })
+  }
+
+  nestedContext(model: NestedModel): RecordsContext {
+    return new RecordsContext(
+      this.backend,
+      this.systemConfiguration,
+      model.modelId,
+      this.allModels,
+      [...this.parentElements, model],
+    )
   }
 }

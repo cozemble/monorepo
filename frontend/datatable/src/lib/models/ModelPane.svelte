@@ -16,5 +16,6 @@
         await context.loadRecords()
     })
 </script>
-<h6>{model.pluralName.value}</h6>
-<DataRecordsTable {context}/>
+<div class="mt-3">
+    <DataRecordsTable {context}/>
+</div>

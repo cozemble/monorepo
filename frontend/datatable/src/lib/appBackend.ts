@@ -27,5 +27,5 @@ export function recordsContext(
   models: Writable<EventSourcedModel[]>,
   modelId: ModelId,
 ): RecordsContext {
-  return new RecordsContext(backend, systemConfiguration, modelId, models)
+  return new RecordsContext(backend, systemConfiguration, modelId, models, [])
 }

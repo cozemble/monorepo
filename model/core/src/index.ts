@@ -57,6 +57,7 @@ export {
   referencedRecordsFns,
   modelSlotFns,
   modelPluralNameFns,
+  ModelPluralName,
 } from './core'
 
 export { propertyDescriptors } from './propertyDescriptor'

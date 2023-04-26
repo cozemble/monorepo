@@ -49,6 +49,7 @@
 		"@cozemble/model-assembled": "workspace:*",
 		"@cozemble/model-core": "workspace:*",
 		"@cozemble/model-editor-sdk": "workspace:*",
+		"@cozemble/model-editor": "workspace:*",
 		"@cozemble/model-event-sourced": "workspace:*",
 		"@cozemble/ui-atoms": "workspace:*",
 		"@floating-ui/dom": "^1.2.6"

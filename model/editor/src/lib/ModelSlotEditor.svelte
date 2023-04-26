@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type {Model, ModelSlot, PropertyDescriptor} from '@cozemble/model-core'
+    import type {Model, ModelSlot, PropertyDescriptor, SystemConfiguration} from '@cozemble/model-core'
     import {
         modelReferenceIdFns,
         modelReferenceNameFns,
@@ -17,19 +17,18 @@
     import PropertyEditor from "./PropertyEditor.svelte";
     import {validateSlot} from "./validateSlot";
     import ModelReferenceEditor from "./ModelReferenceEditor.svelte";
-    import type {SystemConfiguration} from "@cozemble/model-core";
+    import {tick} from "svelte";
 
     export let modelChangeHandler: ModelChangeHandler
     export let model: Model
     export let models: Model[]
     export let modelSlot: ModelSlot
     export let systemConfiguration: SystemConfiguration
-
+    export let slotNoun = 'Property'
 
     const formSectionErrorState = writable(emptyFormErrorState())
     editorHost.setErrorState(formSectionErrorState)
     editorHost.setModels(readable(models))
-
 
     function slotTypeChanged(event: Event) {
         const target = event.target as HTMLSelectElement
@@ -47,7 +46,7 @@
             const propertyId = propertyIdFns.newInstance(modelSlot.id.value)
             modelChangeHandler.modelChanged(
                 model.id,
-                propertyDescriptor.newProperty(systemConfiguration,model.id, propertyName, propertyId),
+                propertyDescriptor.newProperty(systemConfiguration, model.id, propertyName, propertyId),
             )
         } else {
             alert('Dont know how to handle model slot type ' + target.value)
@@ -56,6 +55,10 @@
 
     $: errors = validateSlot(modelSlot)
     const dispatch = createEventDispatcher()
+
+    function closeClicked() {
+        dispatch('close')
+    }
 
     function saveClicked() {
         const errors = validateSlot(modelSlot)
@@ -85,17 +88,27 @@
         return slot._type === 'model.reference'
     }
 
+    async function onKeyDown(event: KeyboardEvent) {
+        if (event.key === 'Enter') {
+            if(document.activeElement instanceof HTMLInputElement) {
+                document.activeElement.blur()
+            }
+            await tick()
+            saveClicked()
+        }
+    }
 </script>
 
+<svelte:window on:keydown={onKeyDown}/>
 
 <form>
-    <label class="label">Property Name</label>
+    <label class="label">{slotNoun} Name</label>
     <input
             value={modelSlot.name.value}
-            class="property-name input input-bordered"
+            class="property-name input input-bordered first"
             on:change={slotNameChanged}/>
 
-    <label class="label">Property Type</label>
+    <label class="label">{slotNoun} Type</label>
     <select on:change={slotTypeChanged} class="property-type input input-bordered">
         <option value="">----</option>
         {#each propertyDescriptors.list() as propertyDescriptor}
@@ -123,9 +136,12 @@
 </form>
 
 <br/>
-<button
-        type="submit"
-        on:click|preventDefault={saveClicked}
-        disabled={errors.size > 0}
-        class="btn save-property btn-primary">Save Property
-</button>
+<div class="flex">
+    <button
+            type="submit"
+            on:click|preventDefault={saveClicked}
+            disabled={errors.size > 0}
+            class="btn save-property btn-primary">Save {slotNoun}
+    </button>
+    <button class="btn btn-secondary ml-2" on:click={closeClicked}>Cancel</button>
+</div>

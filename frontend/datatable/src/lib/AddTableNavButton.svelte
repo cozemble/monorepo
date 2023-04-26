@@ -1,12 +1,22 @@
 <script lang="ts">
     import AddTableModal from "./AddTableModal.svelte";
     import {allEventSourcedModels} from "./stores/allModels";
+    import {createEventDispatcher} from "svelte";
 
     let rootDiv: HTMLDivElement;
     let addingTable = false
+    const dispatch = createEventDispatcher()
 
     async function addTable() {
         addingTable = true
+    }
+
+    function cancel() {
+        addingTable = false
+    }
+    function added(event:CustomEvent) {
+        dispatch('added', event.detail)
+        cancel()
     }
 </script>
 
@@ -22,5 +32,5 @@
 </div>
 
 {#if addingTable}
-    <AddTableModal anchorElement={rootDiv} on:finished={() => addingTable = false}/>
+    <AddTableModal anchorElement={rootDiv} on:cancel={cancel} on:added={added}/>
 {/if}

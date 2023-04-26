@@ -10,9 +10,12 @@
     import {allEventSourcedModels} from "./stores/allModels";
     import ModelPane from "./models/ModelPane.svelte";
     import type {SystemConfiguration} from "@cozemble/model-core";
+    import {currentUserId} from "./stores/currentUserId";
 
     export let models: EventSourcedModel[]
     export let systemConfiguration:SystemConfiguration
+    export let userId:string
+    currentUserId.set(userId)
     allEventSourcedModels.set(models)
     const navbarState: Writable<string | null> = writable(null)
 
@@ -29,6 +32,13 @@
         }
     }
 
+    function newTableAdded(event:CustomEvent) {
+        const modelId = event.detail.modelId
+        if (modelId) {
+            showModel(modelId)
+        }
+    }
+
 </script>
 <div class="tabs bg-base-200 rounded pb-1 pl-2">
     {#each $allEventSourcedModels as model, index}
@@ -41,7 +51,7 @@
             </a>
         </div>
     {/each}
-    <AddTableNavButton/>
+    <AddTableNavButton on:added={newTableAdded}/>
 </div>
 
 {#if $navbarState}

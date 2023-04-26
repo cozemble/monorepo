@@ -16,7 +16,7 @@ import {
   PropertyName,
 } from '@cozemble/model-core'
 import { modelIdFns, nestedModelFns } from '@cozemble/model-api'
-import { ModelPluralName } from '@cozemble/model-core/dist/esm/core'
+import { ModelPluralName } from '@cozemble/model-core'
 
 export interface ModelRenamed extends ModelEvent {
   _type: 'model.renamed.event'

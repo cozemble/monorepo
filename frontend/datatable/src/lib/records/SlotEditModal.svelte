@@ -1,26 +1,51 @@
 <script lang="ts">
     import type {SlotBeingEdited} from "./helperTypes";
-    import {createEventDispatcher} from "svelte";
+    import {createEventDispatcher, onMount} from "svelte";
+    import type {ModelChangeHandler} from "@cozemble/model-editor";
+    import {ModelSlotEditor} from "@cozemble/model-editor";
+    import type {ModelEvent, ModelId, ModelSlot, SystemConfiguration} from "@cozemble/model-core";
+    import {eventSourcedModelFns} from "@cozemble/model-event-sourced";
+    import {modelFns} from "@cozemble/model-api";
+    import {positionModal} from "../modelUi";
 
     export let slotBeingEdited: SlotBeingEdited
+    export let systemConfiguration: SystemConfiguration
+    let model = slotBeingEdited.model
+    let slot = slotBeingEdited.slot
+    const models = slotBeingEdited.models.map(m => m.model)
     let modal: HTMLDivElement
     const dispatch = createEventDispatcher()
-
-    function save() {
-        dispatch('close')
-    }
 
     function close() {
         dispatch('close')
     }
+
+    const modelChangeHandler: ModelChangeHandler = {
+        modelChanged(modelId: ModelId, action: ModelEvent) {
+            model = eventSourcedModelFns.addEvent(model, action)
+            slot = modelFns.elementById(model.model, slot.id.value) as ModelSlot
+        }
+    }
+
+    function saveSlot() {
+        dispatch('edited',{model})
+    }
+
+    function onKeyup(event: KeyboardEvent) {
+        if (event.key === 'Escape') {
+            close()
+        }
+    }
+
+    onMount(() => positionModal(modal, slotBeingEdited.anchorElement))
 </script>
 
+<svelte:window on:keyup={onKeyup} />
+
 <div class="coz-modal" bind:this={modal}>
-    <div class="modal-box  mx-8">
-        <h3 class="font-bold text-lg">Edit table</h3>
-        <div class="modal-action justify-center">
-            <label class="btn btn-primary" on:click={save}>Save</label>
-            <label class="btn btn-secondary" on:click={close}>Cancel</label>
-        </div>
+    <div class="modal-box mx-2">
+        <h3 class="font-bold text-lg">Edit {slot.name.value}</h3>
+        <ModelSlotEditor {systemConfiguration} {models} model={model.model} {modelChangeHandler} modelSlot={slot}
+                         slotNoun="Field" on:save={saveSlot} on:close={close}/>
     </div>
 </div>
