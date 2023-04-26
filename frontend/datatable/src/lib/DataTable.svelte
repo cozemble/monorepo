@@ -6,11 +6,14 @@
     import Modals from "./Modals.svelte";
     import {modelUi} from "./modelUi";
     import DownCaret from "./icons/DownCaret.svelte";
-    import type {EventSourcedModel} from "@cozemble/model-event-sourced/dist/esm";
-    import {allModels} from "./stores/allModels";
+    import type {EventSourcedModel} from "@cozemble/model-event-sourced";
+    import {allEventSourcedModels} from "./stores/allModels";
+    import ModelPane from "./models/ModelPane.svelte";
+    import type {SystemConfiguration} from "@cozemble/model-core";
 
     export let models: EventSourcedModel[]
-    allModels.set(models)
+    export let systemConfiguration:SystemConfiguration
+    allEventSourcedModels.set(models)
     const navbarState: Writable<string | null> = writable(null)
 
     function showModel(modelId: ModelId) {
@@ -19,16 +22,16 @@
 
     function onEditModelClicked(clicked: Event, modelIndex: number) {
         clicked.stopPropagation()
-        const model = $allModels[modelIndex]
+        const model = $allEventSourcedModels[modelIndex]
         const anchor = (clicked.target as HTMLElement).closest(`.model-${modelIndex + 1}`) as HTMLElement
         if (model && anchor) {
-            modelUi.edit($allModels,model, anchor)
+            modelUi.edit($allEventSourcedModels, model, anchor)
         }
     }
 
 </script>
 <div class="tabs bg-base-200 rounded pb-1 pl-2">
-    {#each $allModels as model, index}
+    {#each $allEventSourcedModels as model, index}
         <div class="flex items-center">
             <a class="tab tab-lg tab-bordered mr-4 p-0 model-{index + 1}"
                class:tab-active={$navbarState === model.model.id.value}
@@ -38,7 +41,13 @@
             </a>
         </div>
     {/each}
-    <AddTableNavButton />
+    <AddTableNavButton/>
 </div>
+
+{#if $navbarState}
+    {#key $navbarState}
+        <ModelPane modelId={$navbarState} {systemConfiguration}/>
+    {/key}
+{/if}
 
 <Modals/>

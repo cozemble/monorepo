@@ -1,6 +1,6 @@
 <script lang="ts">
     import AddTableModal from "./AddTableModal.svelte";
-    import {allModels} from "./stores/allModels";
+    import {allEventSourcedModels} from "./stores/allModels";
 
     let rootDiv: HTMLDivElement;
     let addingTable = false
@@ -12,7 +12,7 @@
 
 
 <div bind:this={rootDiv}>
-    {#if $allModels.length === 0}
+    {#if $allEventSourcedModels.length === 0}
         <a class="tab tab-lg"
            on:click={addTable}>+ Add your first table</a>
     {:else}

@@ -93,3 +93,11 @@ export function registerAllSlotEditors() {
 export function registerAllSystemConfigurations() {
   registerDateSystemConfiguration()
 }
+
+export function registerEverything() {
+  registerAllProperties()
+  registerAllPropertyConfigurers()
+  registerAllSlotViewers()
+  registerAllSlotEditors()
+  registerAllSystemConfigurations()
+}

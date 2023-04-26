@@ -7,11 +7,11 @@
     import {positionModal} from "./modelUi";
     import {editableTableName} from "./models/editableTableName";
     import EditableStringInput from "../lib/editors/EditableStringInput.svelte";
-    import {allModels} from "./stores/allModels";
+    import {allEventSourcedModels} from "./stores/allModels";
 
     export let anchorElement: HTMLElement;
 
-    const tableName = editableTableName(`Table ${$allModels.length + 1}`, $allModels)
+    const tableName = editableTableName(`Table ${$allEventSourcedModels.length + 1}`, $allEventSourcedModels)
     const newTableNameErrors = tableName.errors
     const newTableName = tableName.value
 
@@ -41,8 +41,8 @@
             if ($newTableName === null) {
                 throw new Error('newTableName is null')
             }
-            allModels.dispatch(addTableAction($newTableName, $newTableName))
-            const saveOutcome = await allModels.save()
+            allEventSourcedModels.dispatch(addTableAction($newTableName, $newTableName))
+            const saveOutcome = await allEventSourcedModels.save()
             if (saveOutcome === null) {
                 cancelNewTable()
             } else {

@@ -2,9 +2,14 @@ import { eventSourcedStore } from './EventSourcedStore'
 import { tablesActionReducer } from '../tables/actions'
 import { saveModels } from '../appBackend'
 import type { EventSourcedModel } from '@cozemble/model-event-sourced'
+import { derived } from 'svelte/store'
 
-export const allModels = eventSourcedStore(
+export const allEventSourcedModels = eventSourcedStore(
   tablesActionReducer,
   saveModels,
   [] as EventSourcedModel[],
 )
+
+export const allModels = derived(allEventSourcedModels, (models) => {
+  return models.map((model) => model.model)
+})
