@@ -1,25 +1,27 @@
 <script lang="ts">
     import type {RecordsContext} from "./RecordsContext";
-    import type {DataRecord, ModelSlot, NestedModel} from "@cozemble/model-core";
+    import type {DataRecord, ModelSlot} from "@cozemble/model-core";
     import {propertyDescriptors, propertyNameFns} from "@cozemble/model-core";
-    import type {SlotBeingEdited} from "./helperTypes";
-    import {ensureNestedRecords} from "./helperTypes";
+    import type {RecordBeingAdded, SlotBeingEdited} from "./helperTypes";
     import SlotEditModal from "./SlotEditModal.svelte";
     import {tick} from "svelte";
     import DownCaret from "../icons/DownCaret.svelte";
-    import {currentUserId} from "../stores/currentUserId";
     import NestedDataRecords from "./NestedDataRecords.svelte";
+    import RecordBeingAddedModal from "./RecordBeingAddedModal.svelte";
 
     export let context: RecordsContext
     export let oneOnly = false
     export let permitSubItemAddition = true
 
+    const allEventSourcedModels = context.allEventSourcedModels
     const allModels = context.allModels
     const model = context.model
     const records = context.records
     let slotBeingEdited: SlotBeingEdited | null = null
+    let recordBeingAdded: RecordBeingAdded | null = null
     let expandedRecordId: string | null = null
     let recordHavingSubItemAdded: string | null = null
+    let addRecordButton:HTMLElement
 
     function beginSubItem(record: DataRecord) {
         recordHavingSubItemAdded = record.id.value
@@ -30,7 +32,7 @@
         if (!anchorElement) {
             return
         }
-        slotBeingEdited = {models: $allModels, model: $model, slot, anchorElement}
+        slotBeingEdited = {models: $allEventSourcedModels, model: $model, slot, anchorElement}
     }
 
     async function addSlotToModel() {
@@ -46,7 +48,7 @@
         const element = document.querySelector(`th#field-${$model.model.slots.length}`) as HTMLElement
         if (element) {
             const slot = $model.model.slots[$model.model.slots.length - 1]
-            slotBeingEdited = {models: $allModels, model: $model, slot, anchorElement: element}
+            slotBeingEdited = {models: $allEventSourcedModels, model: $model, slot, anchorElement: element}
         }
     }
 
@@ -64,12 +66,8 @@
         }
     }
 
-    function onEnsureNestedRecords(record: DataRecord, nestedModel: NestedModel): DataRecord {
-        return ensureNestedRecords($currentUserId, $model.model, record, nestedModel)
-    }
-
     function addRecord() {
-
+        recordBeingAdded = {models: $allModels, model: $model.model, anchorElement:addRecordButton}
     }
 </script>
 
@@ -142,7 +140,7 @@
                         <div class="nested-border border border-2 p-3">
                             {#each $model.model.nestedModels as nestedModel}
                                 {@const nestedContext = context.nestedContext(nestedModel)}
-                                <NestedDataRecords {nestedContext} />
+                                <NestedDataRecords {nestedContext}/>
                             {/each}
                         </div>
                     </td>
@@ -161,7 +159,7 @@
 
 <div class="mt-2">
     {#if !oneOnly && $model.model.slots.length > 0}
-        <button class="btn btn-primary" on:click={addRecord}>Add {$model.model.name.value}</button>
+        <button class="btn btn-primary" bind:this={addRecordButton} on:click={addRecord}>Add {$model.model.name.value}</button>
     {/if}
 </div>
 
@@ -169,4 +167,7 @@
 {#if slotBeingEdited}
     <SlotEditModal systemConfiguration={context.systemConfiguration} {slotBeingEdited}
                    on:close={() => slotBeingEdited = null} on:edited={modelEdited}/>
+{/if}
+{#if recordBeingAdded}
+    <RecordBeingAddedModal recordsContext={context} {recordBeingAdded} />
 {/if}

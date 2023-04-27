@@ -8,10 +8,16 @@
 
 </script>
 
-<h2 class="font-bold text-xl">{recordEditContext.title}</h2>
+<h2 class="font-bold text-xl whitespace-nowrap">{recordEditContext.title}</h2>
 
 <DataRecordEditorInner
         {recordEditContext}
         parentPath={[]}
         {pushContext}
         {popContext}/>
+
+<style>
+    h2 {
+        white-space: nowrap;
+    }
+</style>

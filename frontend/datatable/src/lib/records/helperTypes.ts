@@ -9,6 +9,12 @@ export interface SlotBeingEdited {
   anchorElement: HTMLElement
 }
 
+export interface RecordBeingAdded {
+  models: Model[]
+  model: Model
+  anchorElement: HTMLElement
+}
+
 export function ensureNestedRecords(
   currentUserId: string,
   model: Model,
