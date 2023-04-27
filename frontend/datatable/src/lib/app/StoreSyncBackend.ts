@@ -3,6 +3,8 @@ import type { EventSourcedModel } from '@cozemble/model-event-sourced'
 import type { JustErrorMessage } from '@cozemble/lang-util'
 import { allEventSourcedModels } from '../stores/allModels'
 import type { DataRecord, ModelId } from '@cozemble/model-core'
+import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
+import type { EventSourcedDataRecord } from '@cozemble/data-editor-sdk'
 
 export class StoreSyncBackend implements Backend {
   constructor(private readonly delegate: Backend) {}
@@ -29,5 +31,9 @@ export class StoreSyncBackend implements Backend {
 
   async getRecords(modelId: ModelId): Promise<DataRecord[]> {
     return await this.delegate.getRecords(modelId)
+  }
+
+  async saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
+    return await this.delegate.saveNewRecord(newRecord)
   }
 }

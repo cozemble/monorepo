@@ -11,6 +11,7 @@
     import ModelPane from "./models/ModelPane.svelte";
     import type {SystemConfiguration} from "@cozemble/model-core";
     import {currentUserId} from "./stores/currentUserId";
+    import ModelTab from "./ModelTab.svelte";
 
     export let models: EventSourcedModel[]
     export let systemConfiguration:SystemConfiguration
@@ -42,14 +43,7 @@
 </script>
 <div class="tabs bg-base-200 rounded pb-1 pl-2">
     {#each $allEventSourcedModels as model, index}
-        <div class="flex items-center">
-            <a class="tab tab-lg tab-bordered mr-4 p-0 model-{index + 1}"
-               class:tab-active={$navbarState === model.model.id.value}
-               on:click={() => showModel(model.model.id)}>{model.model.pluralName.value}
-                <span on:click={(clicked) => onEditModelClicked(clicked, index)} class="ml-2 mt-1">
-            <DownCaret/></span>
-            </a>
-        </div>
+        <ModelTab {model} {index} {navbarState} {onEditModelClicked} />
     {/each}
     <AddTableNavButton on:added={newTableAdded}/>
 </div>

@@ -18,4 +18,4 @@
 
 </script>
 
-<DataTable {models} {systemConfiguration}/>
+<DataTable {models} {systemConfiguration} userId="test"/>

@@ -17,5 +17,5 @@
     })
 </script>
 <div class="mt-3">
-    <DataRecordsTable {context}/>
+    <DataRecordsTable {context} {systemConfiguration}/>
 </div>

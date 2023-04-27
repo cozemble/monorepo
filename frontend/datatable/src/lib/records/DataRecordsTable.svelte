@@ -8,8 +8,11 @@
     import DownCaret from "../icons/DownCaret.svelte";
     import NestedDataRecords from "./NestedDataRecords.svelte";
     import RecordBeingAddedModal from "./RecordBeingAddedModal.svelte";
+    import type {SystemConfiguration} from "@cozemble/model-core";
+    import SlotTh from "./SlotTh.svelte";
 
     export let context: RecordsContext
+    export let systemConfiguration: SystemConfiguration
     export let oneOnly = false
     export let permitSubItemAddition = true
 
@@ -69,6 +72,12 @@
     function addRecord() {
         recordBeingAdded = {models: $allModels, model: $model.model, anchorElement:addRecordButton}
     }
+
+    async function onNewRecordAdded(event:CustomEvent) {
+        const newRecord = event.detail.newRecord
+        await context.saveNewRecord(newRecord)
+        recordBeingAdded = null
+    }
 </script>
 
 
@@ -76,11 +85,7 @@
     <thead>
     <tr>
         {#each $model.model.slots as slot, index}
-            <th class="bg-base-300" id="field-{index + 1}">
-                <div class="flex items-center"><span class="mr-1">{slot.name.value}</span>
-                    <span class="mt-1" on:click={(elem) => editSlot(elem,slot)}><DownCaret/></span>
-                </div>
-            </th>
+            <SlotTh {slot} {index} {editSlot} />
         {/each}
         <td class="bg-base-300 px-8">
             <div class="flex items-center">
@@ -140,7 +145,7 @@
                         <div class="nested-border border border-2 p-3">
                             {#each $model.model.nestedModels as nestedModel}
                                 {@const nestedContext = context.nestedContext(nestedModel)}
-                                <NestedDataRecords {nestedContext}/>
+                                <NestedDataRecords {systemConfiguration} {nestedContext}/>
                             {/each}
                         </div>
                     </td>
@@ -169,5 +174,5 @@
                    on:close={() => slotBeingEdited = null} on:edited={modelEdited}/>
 {/if}
 {#if recordBeingAdded}
-    <RecordBeingAddedModal recordsContext={context} {recordBeingAdded} />
+    <RecordBeingAddedModal {systemConfiguration} recordsContext={context} {recordBeingAdded} on:added={onNewRecordAdded} on:cancel={() => recordBeingAdded = null}/>
 {/if}

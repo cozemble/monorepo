@@ -11,10 +11,12 @@
     import type {RecordsContext} from "./RecordsContext";
     import type {EventSourcedDataRecord} from "@cozemble/data-editor-sdk";
     import {eventSourcedDataRecordFns} from "@cozemble/data-editor-sdk";
+    import {createEventDispatcher} from "svelte";
 
     export let recordsContext: RecordsContext
     export let recordBeingAdded: RecordBeingAdded
     export let systemConfiguration: SystemConfiguration
+    const dispatch = createEventDispatcher()
     const {models, model} = recordBeingAdded
     let modal: HTMLDivElement
 
@@ -27,7 +29,13 @@
     }
 
     function onCancel() {
+        dispatch('cancel')
+    }
 
+    async function onSaveRecord(newRecord: EventSourcedDataRecord):Promise<RecordSaveOutcome> {
+        const outcome = await recordsContext.saveNewRecord(newRecord)
+        dispatch('added', {newRecord})
+        return outcome
     }
 
 </script>
@@ -38,6 +46,6 @@
                 {recordSearcher}
                 {attachmentsManager}
                 modelViews={$modelViews}
-                recordEditContext={new RecordEditContext( models, justSaveNewRecord,eventSourcedDataRecordFns.newInstance(models, model.id, $currentUserId), justSaveNewRecord, onCancel, `Add new ${model.name.value}`,systemConfiguration )}/>
+                recordEditContext={new RecordEditContext( models, justSaveNewRecord,eventSourcedDataRecordFns.newInstance(models, model.id, $currentUserId), onSaveRecord, onCancel, `Add new ${model.name.value}`,systemConfiguration )}/>
     </div>
 </div>

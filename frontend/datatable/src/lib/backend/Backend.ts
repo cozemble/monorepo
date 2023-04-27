@@ -11,7 +11,7 @@ export interface Backend {
 
   getRecords(modelId: ModelId): Promise<DataRecord[]>
 
-  saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcom>
+  saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome>
 }
 
 export const notImplementedBackend: Backend = {
