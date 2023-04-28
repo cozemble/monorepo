@@ -7,7 +7,7 @@
     import type {DataRecord} from "@cozemble/model-core";
     import {writable} from "svelte/store";
     import {onMount} from "svelte";
-    import {eventSourcedModelFns} from "@cozemble/model-event-sourced/dist/esm";
+    import {eventSourcedModelFns} from "@cozemble/model-event-sourced";
     import {dataRecordsTableOptions} from "./DataRecordsTableOptions";
     import DataRecordsTable from "./DataRecordsTable.svelte";
 

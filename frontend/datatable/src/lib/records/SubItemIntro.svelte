@@ -1,14 +1,16 @@
 <script lang="ts">
     import ExplainSubRecords from "./ExplainSubRecords.svelte";
     import ExplainSubTables from "./ExplainSubTables.svelte";
+    import {createEventDispatcher} from "svelte";
 
     let step: "explain-sub-records" | "explain-sub-tables" = "explain-sub-records"
 
+    const dispatch = createEventDispatcher()
     function next() {
         if (step === "explain-sub-records") {
             step = "explain-sub-tables"
         } else {
-            throw new Error("Unknown step")
+            dispatch("finished")
         }
     }
 </script>
