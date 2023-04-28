@@ -3,13 +3,13 @@
     import {createEventDispatcher, onMount} from "svelte";
     import type {ModelChangeHandler} from "@cozemble/model-editor";
     import {ModelSlotEditor} from "@cozemble/model-editor";
-    import type {ModelEvent, ModelId, ModelSlot, SystemConfiguration} from "@cozemble/model-core";
+    import type {ModelEvent, ModelId, ModelSlot} from "@cozemble/model-core";
     import {eventSourcedModelFns} from "@cozemble/model-event-sourced";
     import {modelFns} from "@cozemble/model-api";
     import {positionModal} from "../modelUi";
+    import {systemConfiguration} from "../stores/systemConfiguration";
 
     export let slotBeingEdited: SlotBeingEdited
-    export let systemConfiguration: SystemConfiguration
     let model = slotBeingEdited.model
     let slot = slotBeingEdited.slot
     const models = slotBeingEdited.models.map(m => m.model)
@@ -28,7 +28,7 @@
     }
 
     function saveSlot() {
-        dispatch('edited',{model})
+        dispatch('edited', {model})
     }
 
     function onKeyup(event: KeyboardEvent) {
@@ -40,12 +40,13 @@
     onMount(() => positionModal(modal, slotBeingEdited.anchorElement))
 </script>
 
-<svelte:window on:keyup={onKeyup} />
+<svelte:window on:keyup={onKeyup}/>
 
 <div class="coz-modal" bind:this={modal}>
     <div class="modal-box mx-2">
         <h3 class="font-bold text-lg">Edit {slot.name.value}</h3>
-        <ModelSlotEditor {systemConfiguration} {models} model={model.model} {modelChangeHandler} modelSlot={slot}
+        <ModelSlotEditor systemConfiguration={$systemConfiguration} {models} model={model.model} {modelChangeHandler}
+                         modelSlot={slot}
                          slotNoun="Field" on:save={saveSlot} on:close={close}/>
     </div>
 </div>

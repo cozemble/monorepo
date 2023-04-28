@@ -1,21 +1,18 @@
 <script lang="ts">
     import type {RecordBeingAdded} from "./helperTypes";
-    import {onMount} from 'svelte'
+    import {createEventDispatcher, onMount} from 'svelte'
     import {positionModal} from "../modelUi";
-    import {StackingRecordEditor} from '@cozemble/data-paginated-editor'
-    import {RecordEditContext, type RecordSaveOutcome} from "@cozemble/data-paginated-editor";
+    import {RecordEditContext, type RecordSaveOutcome, StackingRecordEditor} from '@cozemble/data-paginated-editor'
     import {currentUserId} from "../stores/currentUserId";
-    import type {SystemConfiguration} from "@cozemble/model-core";
     import {attachmentsManager, recordSearcher} from "../appBackend";
     import {modelViews} from "../stores/modelViews";
-    import type {RecordsContext} from "./RecordsContext";
+    import type {RootRecordsContext} from "./RecordsContext";
     import type {EventSourcedDataRecord} from "@cozemble/data-editor-sdk";
     import {eventSourcedDataRecordFns} from "@cozemble/data-editor-sdk";
-    import {createEventDispatcher} from "svelte";
+    import {systemConfiguration} from "../stores/systemConfiguration";
 
-    export let recordsContext: RecordsContext
+    export let recordsContext: RootRecordsContext
     export let recordBeingAdded: RecordBeingAdded
-    export let systemConfiguration: SystemConfiguration
     const dispatch = createEventDispatcher()
     const {models, model} = recordBeingAdded
     let modal: HTMLDivElement
@@ -32,7 +29,7 @@
         dispatch('cancel')
     }
 
-    async function onSaveRecord(newRecord: EventSourcedDataRecord):Promise<RecordSaveOutcome> {
+    async function onSaveRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
         const outcome = await recordsContext.saveNewRecord(newRecord)
         dispatch('added', {newRecord})
         return outcome
@@ -46,6 +43,6 @@
                 {recordSearcher}
                 {attachmentsManager}
                 modelViews={$modelViews}
-                recordEditContext={new RecordEditContext( models, justSaveNewRecord,eventSourcedDataRecordFns.newInstance(models, model.id, $currentUserId), onSaveRecord, onCancel, `Add new ${model.name.value}`,systemConfiguration )}/>
+                recordEditContext={new RecordEditContext( models, justSaveNewRecord,eventSourcedDataRecordFns.newInstance(models, model.id, $currentUserId), onSaveRecord, onCancel, `Add new ${model.name.value}`,$systemConfiguration )}/>
     </div>
 </div>

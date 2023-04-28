@@ -12,12 +12,14 @@
     import type {SystemConfiguration} from "@cozemble/model-core";
     import {currentUserId} from "./stores/currentUserId";
     import ModelTab from "./ModelTab.svelte";
+    import {systemConfiguration as systemConfigurationStore} from "./stores/systemConfiguration";
 
     export let models: EventSourcedModel[]
     export let systemConfiguration:SystemConfiguration
     export let userId:string
     currentUserId.set(userId)
     allEventSourcedModels.set(models)
+    systemConfigurationStore.set(systemConfiguration)
     const navbarState: Writable<string | null> = writable(null)
 
     function showModel(modelId: ModelId) {
