@@ -56,7 +56,15 @@ export class RecordsContext {
   }
 
   async saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
-    return this.backend.saveNewRecord(newRecord)
+    const outcome = await this.backend.saveNewRecord(newRecord)
+    if (outcome._type === 'record.save.succeeded') {
+      this.records.update((records) => {
+        return {
+          records: [...records.records, outcome.record],
+        }
+      })
+    }
+    return outcome
   }
 
   async updateModel(modelId: ModelId, event: ModelEvent): Promise<void> {

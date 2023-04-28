@@ -10,6 +10,7 @@
     import RecordBeingAddedModal from "./RecordBeingAddedModal.svelte";
     import type {SystemConfiguration} from "@cozemble/model-core";
     import SlotTh from "./SlotTh.svelte";
+    import DataTd from "./DataTd.svelte";
 
     export let context: RecordsContext
     export let systemConfiguration: SystemConfiguration
@@ -73,9 +74,7 @@
         recordBeingAdded = {models: $allModels, model: $model.model, anchorElement:addRecordButton}
     }
 
-    async function onNewRecordAdded(event:CustomEvent) {
-        const newRecord = event.detail.newRecord
-        await context.saveNewRecord(newRecord)
+    async function onNewRecordAdded(_event:CustomEvent) {
         recordBeingAdded = null
     }
 </script>
@@ -102,15 +101,13 @@
     </tr>
     </thead>
     <tbody>
-    {#each $records.records as record}
+    {#each $records.records as record, rowIndex}
         <tr>
-            {#each $model.model.slots as slot}
-                <td class="border">
-                    <input type="text" class="input input-bordered w-full" bind:value={record.values[slot.id.value]}/>
-                </td>
+            {#each $model.model.slots as slot, colIndex}
+                <DataTd {rowIndex} {colIndex} {record} modelSlot={slot} {systemConfiguration}/>
             {/each}
-            <td class="border"></td>
-            <td class="border">
+            <td class="border  border-base-300"></td>
+            <td class="border  border-base-300">
                 <div class="flex items-center">
                     {#if $model.model.nestedModels.length > 0}
                         <button class="btn btn-ghost btn-active btn-sm mr-2"
