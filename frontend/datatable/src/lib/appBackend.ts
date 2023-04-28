@@ -27,7 +27,7 @@ export function rootRecordsContext(
   models: Writable<EventSourcedModel[]>,
   modelId: ModelId,
 ): RootRecordsContext {
-  return new RootRecordsContext(backend, modelId, models, [])
+  return new RootRecordsContext(backend, modelId, models)
 }
 
 export const recordSearcher: RecordSearcher = {

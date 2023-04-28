@@ -1,37 +1,33 @@
-import type { DataRecord, ModelEvent, ModelId, NestedModel } from '@cozemble/model-core'
+import type {
+  Cardinality,
+  DataRecord,
+  Model,
+  ModelEvent,
+  ModelId,
+  NestedModel,
+} from '@cozemble/model-core'
 import type { Backend } from '../backend/Backend'
-import { derived, type Readable, type Writable, writable } from 'svelte/store'
+import { derived, readable, type Readable, type Writable, writable } from 'svelte/store'
 import type { EventSourcedModel } from '@cozemble/model-event-sourced'
 import { eventSourcedModelFns } from '@cozemble/model-event-sourced'
 import { mandatory } from '@cozemble/lang-util'
 import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import type { EventSourcedDataRecord } from '@cozemble/data-editor-sdk'
-import type { Model } from '@cozemble/model-core/dist/esm'
+import { dataRecordFns } from '@cozemble/model-api'
+import { modelFns } from '@cozemble/model-api/dist/esm'
 
 export type LoadingState = 'loading' | 'loaded'
 
-export interface PaginatedRecords {
-  records: DataRecord[]
-}
-
-function emptyPaginatedRecords(): PaginatedRecords {
-  return {
-    records: [],
-  }
-}
-
 export interface RecordsContext {
-  loadRecords(): Promise<void>
-
   saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome>
 
   updateModel(modelId: ModelId, event: ModelEvent): Promise<void>
 
   modelEdited(model: EventSourcedModel): Promise<void>
 
-  nestedContext(model: NestedModel): RecordsContext
+  nestedContext(record: DataRecord, model: NestedModel): RecordsContext
 
-  records(): Readable<PaginatedRecords>
+  records(): Readable<DataRecord[]>
 
   model(): Readable<EventSourcedModel>
 
@@ -54,27 +50,25 @@ export class RootRecordsContext implements RecordsContext {
       ),
     ),
     private readonly _loadingState = writable('loading' as LoadingState),
-    private readonly _records = writable(emptyPaginatedRecords()),
-    private readonly _allModels = derived(_allEventSourcedModels, (models) =>
-      models.map((m) => m.model),
-    ),
+    private readonly _records = writable([] as DataRecord[]),
+    private _allModelCache: Model[] = [],
+    private readonly _allModels = derived(_allEventSourcedModels, (models) => {
+      this._allModelCache = models.map((m) => m.model)
+      return this._allModelCache
+    }),
   ) {}
 
   async loadRecords(): Promise<void> {
     this._loadingState.set('loading')
     const loaded = await this.backend.getRecords(this.modelId)
-    this._records.set({ records: loaded })
+    this._records.set(loaded)
     this._loadingState.set('loaded')
   }
 
   async saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
     const outcome = await this.backend.saveNewRecord(newRecord)
     if (outcome._type === 'record.save.succeeded') {
-      this._records.update((records) => {
-        return {
-          records: [...records.records, outcome.record],
-        }
-      })
+      this._records.update((records) => [...records, outcome.record])
     }
     return outcome
   }
@@ -93,12 +87,76 @@ export class RootRecordsContext implements RecordsContext {
     })
   }
 
-  nestedContext(model: NestedModel): RecordsContext {
-    return new RootRecordsContext(this.backend, model.modelId, this._allEventSourcedModels)
+  nestedContext(record: DataRecord, nestedModel: NestedModel): RecordsContext {
+    let maybeRecords = record.values[nestedModel.id.value] as DataRecord[]
+    if (maybeRecords === undefined) {
+      if (nestedModel.cardinality === 'many') {
+        maybeRecords = []
+      } else {
+        const model = modelFns.findById(this._allModelCache, nestedModel.modelId)
+        maybeRecords = [dataRecordFns.newInstance(model, record.createdBy.value)]
+      }
+    }
+    return new NestedRecordsContext(this._allEventSourcedModels, nestedModel, maybeRecords)
   }
 
-  records(): Readable<PaginatedRecords> {
+  records(): Readable<DataRecord[]> {
     return this._records
+  }
+
+  model(): Readable<EventSourcedModel> {
+    return this._model
+  }
+
+  allModels(): Readable<Model[]> {
+    return this._allModels
+  }
+
+  loadingState(): Readable<LoadingState> {
+    return this._loadingState
+  }
+
+  allEventSourcedModels(): Readable<EventSourcedModel[]> {
+    return this._allEventSourcedModels
+  }
+}
+
+export class NestedRecordsContext implements RecordsContext {
+  constructor(
+    private readonly _allEventSourcedModels: Writable<EventSourcedModel[]>,
+    public readonly nestedModel: NestedModel,
+    private readonly _records: DataRecord[],
+    private readonly _recordsStore = readable(_records),
+    private readonly _model = derived(_allEventSourcedModels, (models) =>
+      mandatory(
+        models.find((model) => model.model.id.value === nestedModel.modelId.value),
+        `Model ${nestedModel.modelId.value} not found`,
+      ),
+    ),
+    private readonly _allModels = derived(_allEventSourcedModels, (models) =>
+      models.map((m) => m.model),
+    ),
+    private readonly _loadingState = writable('loading' as LoadingState),
+  ) {}
+
+  async saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
+    throw new Error('Method not implemented.')
+  }
+
+  async updateModel(modelId: ModelId, event: ModelEvent): Promise<void> {
+    throw new Error('Method not implemented.')
+  }
+
+  async modelEdited(model: EventSourcedModel): Promise<void> {
+    throw new Error('Method not implemented.')
+  }
+
+  nestedContext(record: DataRecord, model: NestedModel): RecordsContext {
+    throw new Error('Method not implemented.')
+  }
+
+  records(): Readable<DataRecord[]> {
+    return this._recordsStore
   }
 
   model(): Readable<EventSourcedModel> {

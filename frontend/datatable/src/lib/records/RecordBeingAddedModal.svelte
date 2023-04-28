@@ -6,12 +6,12 @@
     import {currentUserId} from "../stores/currentUserId";
     import {attachmentsManager, recordSearcher} from "../appBackend";
     import {modelViews} from "../stores/modelViews";
-    import type {RootRecordsContext} from "./RecordsContext";
+    import type {RecordsContext} from "./RecordsContext";
     import type {EventSourcedDataRecord} from "@cozemble/data-editor-sdk";
     import {eventSourcedDataRecordFns} from "@cozemble/data-editor-sdk";
     import {systemConfiguration} from "../stores/systemConfiguration";
 
-    export let recordsContext: RootRecordsContext
+    export let recordsContext: RecordsContext
     export let recordBeingAdded: RecordBeingAdded
     const dispatch = createEventDispatcher()
     const {models, model} = recordBeingAdded

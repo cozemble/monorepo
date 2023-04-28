@@ -1,6 +1,6 @@
 <script lang="ts">
-    import type {RootRecordsContext} from "./RecordsContext";
-    import type {DataRecord, ModelSlot, SystemConfiguration} from "@cozemble/model-core";
+    import type {RecordsContext} from "./RecordsContext";
+    import type {DataRecord, ModelSlot} from "@cozemble/model-core";
     import {propertyDescriptors, propertyNameFns} from "@cozemble/model-core";
     import type {RecordBeingAdded, SlotBeingEdited} from "./helperTypes";
     import SlotEditModal from "./SlotEditModal.svelte";
@@ -13,8 +13,10 @@
     import type {DataRecordsTableOptions} from "./DataRecordsTableOptions";
     import {dataRecordsTableOptions} from "./DataRecordsTableOptions";
     import {systemConfiguration} from "../stores/systemConfiguration";
+    import type {NestedModel} from "@cozemble/model-core";
+    import type {NestedRecordsContext} from "./RecordsContext";
 
-    export let context: RootRecordsContext
+    export let context: RecordsContext
     export let oneOnly = false
     export let options: DataRecordsTableOptions = dataRecordsTableOptions(true, true, true)
     export let expandedRecordId: string | null = null
@@ -78,6 +80,10 @@
     async function onNewRecordAdded(_event: CustomEvent) {
         recordBeingAdded = null
     }
+
+    function makeNestedContext(record:DataRecord,nestedModel:NestedModel) {
+        return context.nestedContext(record,nestedModel) as NestedRecordsContext
+    }
 </script>
 
 
@@ -106,11 +112,11 @@
     </tr>
     </thead>
     <tbody>
-    {#each $records.records as record, rowIndex}
+    {#each $records as record, rowIndex}
         <tr>
             {#each $model.model.slots as slot, colIndex}
                 {#if slot._type === 'property' || slot._type === 'model.reference'}
-                    <DataTd {rowIndex} {colIndex} {record} modelSlot={slot} />
+                    <DataTd {rowIndex} {colIndex} {record} modelSlot={slot}/>
                 {:else}
                     <td>To do: {slot._type}</td>
                 {/if}
@@ -156,7 +162,7 @@
                     <td class="border border-base-300" colspan={$model.model.slots.length + 2}>
                         <div class="nested-border border border-2 p-3">
                             {#each $model.model.nestedModels as nestedModel}
-                                {@const nestedContext = context.nestedContext(nestedModel)}
+                                {@const nestedContext = makeNestedContext(record,nestedModel)}
                                 <NestedDataRecords {nestedContext} {options}/>
                             {/each}
                         </div>
