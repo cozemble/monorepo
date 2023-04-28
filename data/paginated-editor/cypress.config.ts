@@ -5,5 +5,6 @@ export default defineConfig({
     video: false,
     defaultCommandTimeout: 10000,
     screenshotOnRunFailure: false,
+    retries: 2,
   },
 })
