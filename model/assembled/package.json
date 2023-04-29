@@ -20,6 +20,10 @@
     "@cozemble/model-string-ui": "workspace:*",
     "@cozemble/model-date-core": "workspace:*",
     "@cozemble/model-date-ui": "workspace:*",
+    "@cozemble/model-integer-ui": "workspace:*",
+    "@cozemble/model-integer-core": "workspace:*",
+    "@cozemble/model-decimal-ui": "workspace:*",
+    "@cozemble/model-decimal-core": "workspace:*",    
     "@cozemble/model-attachment-core": "workspace:*",
     "@cozemble/model-attachment-ui": "workspace:*"
   }

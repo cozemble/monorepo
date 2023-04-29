@@ -7,6 +7,8 @@ packages:
   - 'model/*'
   - 'model/string/*'
   - 'model/date/*'
+  - 'model/integer/*'
+  - 'model/decimal/*'
   - 'model/attachment/*'
   - 'scripts/*'
   - 'sql/*'
