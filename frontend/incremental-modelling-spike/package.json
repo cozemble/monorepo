@@ -29,6 +29,7 @@
 		"@sveltejs/adapter-auto": "^2.0.0",
 		"@sveltejs/kit": "^1.5.0",
 		"@sveltejs/package": "^2.0.0",
+		"@tailwindcss/typography": "^0.5.9",
 		"autoprefixer": "^10.4.13",
 		"postcss": "^8.4.21",
 		"publint": "^0.1.9",
@@ -44,6 +45,7 @@
 	"type": "module",
 	"dependencies": {
 		"@cozemble/lang-util": "workspace:*",
-		"@floating-ui/dom": "^1.2.6"
+		"@floating-ui/dom": "^1.2.6",
+		"daisyui": "^2.47.0"
 	}
 }
