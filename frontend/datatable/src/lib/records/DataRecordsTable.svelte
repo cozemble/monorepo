@@ -2,7 +2,7 @@
     import type {NestedRecordsContext, RecordsContext} from "./RecordsContext";
     import type {Cardinality, DataRecord, Model, ModelSlot, NestedModel} from "@cozemble/model-core";
     import {propertyDescriptors, propertyNameFns} from "@cozemble/model-core";
-    import type {RecordBeingAdded, SlotBeingEdited} from "./helperTypes";
+    import type {RecordBeingAdded, RecordBeingEdited, SlotBeingEdited} from "./helperTypes";
     import SlotEditModal from "./SlotEditModal.svelte";
     import {tick} from "svelte";
     import NestedDataRecords from "./NestedDataRecords.svelte";
@@ -14,6 +14,8 @@
     import {dataRecordsTableOptions} from "./DataRecordsTableOptions";
     import {systemConfiguration} from "../stores/systemConfiguration";
     import {introductionsState} from "../stores/introductions";
+    import RecordActionButton from "./RecordActionButton.svelte";
+    import RecordBeingEditedModal from "./RecordBeingEditedModal.svelte";
 
     export let context: RecordsContext
     export let oneOnly = false
@@ -26,6 +28,7 @@
     const records = context.records()
     let slotBeingEdited: SlotBeingEdited | null = null
     let recordBeingAdded: RecordBeingAdded | null = null
+    let recordBeingEdited: RecordBeingEdited | null = null
     let recordHavingSubItemAdded: string | null = null
     let addRecordButton: HTMLElement
 
@@ -97,6 +100,14 @@
         expandedRecordId = recordHavingSubItemAdded
         recordHavingSubItemAdded = null
     }
+
+    function beginRecordEdit(event:MouseEvent,record: DataRecord) {
+        recordBeingEdited = {models: $allModels, model: $model.model, record, anchorElement: event.target as HTMLElement}
+    }
+
+    async function onNewRecordEdited(_event: CustomEvent) {
+        recordBeingEdited = null
+    }
 </script>
 
 
@@ -151,6 +162,7 @@
                                 {/if}
                             </button>
                         {/if}
+                        <RecordActionButton text="Edit" {record} onClick={beginRecordEdit}/>
                         {#if !oneOnly}
                             <button class="btn btn-ghost btn-active btn-sm  mr-2" on:click={() => alert("to do")}>Delete
                             </button>
@@ -210,4 +222,8 @@
 {#if recordBeingAdded}
     <RecordBeingAddedModal recordsContext={context} {recordBeingAdded} on:added={onNewRecordAdded}
                            on:cancel={() => recordBeingAdded = null}/>
+{/if}
+{#if recordBeingEdited}
+    <RecordBeingEditedModal recordsContext={context} {recordBeingEdited} on:edited={onNewRecordEdited}
+                           on:cancel={() => recordBeingEdited = null}/>
 {/if}

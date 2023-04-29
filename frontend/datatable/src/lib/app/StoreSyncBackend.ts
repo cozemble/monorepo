@@ -36,4 +36,8 @@ export class StoreSyncBackend implements Backend {
   async saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
     return await this.delegate.saveNewRecord(newRecord)
   }
+
+  async saveExistingRecord(record: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
+    return await this.delegate.saveNewRecord(record)
+  }
 }

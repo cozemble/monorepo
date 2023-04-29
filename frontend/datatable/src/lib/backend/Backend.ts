@@ -12,10 +12,15 @@ export interface Backend {
   getRecords(modelId: ModelId): Promise<DataRecord[]>
 
   saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome>
+
+  saveExistingRecord(record: EventSourcedDataRecord): Promise<RecordSaveOutcome>
 }
 
 export const notImplementedBackend: Backend = {
   saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
+    throw new Error('Not implemented')
+  },
+  saveExistingRecord(record: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
     throw new Error('Not implemented')
   },
   saveModel: async (model) => {

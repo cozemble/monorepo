@@ -13,7 +13,6 @@
     export let focus: Writable<DataRecordPathFocus>
     export let showErrors: boolean
     export let systemConfiguration: SystemConfiguration
-
 </script>
 
 <table

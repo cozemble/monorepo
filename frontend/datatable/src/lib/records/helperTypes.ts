@@ -15,6 +15,13 @@ export interface RecordBeingAdded {
   anchorElement: HTMLElement
 }
 
+export interface RecordBeingEdited {
+  record: DataRecord
+  models: Model[]
+  model: Model
+  anchorElement: HTMLElement
+}
+
 export function ensureNestedRecords(
   currentUserId: string,
   model: Model,

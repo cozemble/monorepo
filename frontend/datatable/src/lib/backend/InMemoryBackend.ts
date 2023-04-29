@@ -33,4 +33,16 @@ export class InMemoryBackend implements Backend {
     this.records.set(newRecord.record.modelId.value, updatedRecords)
     return recordSaveSucceeded(newRecord.record)
   }
+
+  async saveExistingRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
+    const existingRecords = this.records.get(newRecord.record.modelId.value) || []
+    const updatedRecords = existingRecords.map((record) => {
+      if (record.id.value === newRecord.record.id.value) {
+        return newRecord.record
+      }
+      return record
+    })
+    this.records.set(newRecord.record.modelId.value, updatedRecords)
+    return recordSaveSucceeded(newRecord.record)
+  }
 }

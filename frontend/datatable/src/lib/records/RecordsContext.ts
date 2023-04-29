@@ -25,6 +25,8 @@ export interface RecordsContext {
 
   saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome>
 
+  saveExistingRecord(record: EventSourcedDataRecord): Promise<RecordSaveOutcome>
+
   updateModel(modelId: ModelId, event: ModelEvent): Promise<void>
 
   modelEdited(model: EventSourcedModel): Promise<void>
@@ -122,6 +124,16 @@ export class RootRecordsContext implements RecordsContext {
     return outcome
   }
 
+  async saveExistingRecord(record: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
+    const outcome = await this.backend.saveExistingRecord(record)
+    if (outcome._type === 'record.save.succeeded') {
+      this._records.update((records) =>
+        records.map((r) => (r.id.value === record.record.id.value ? record.record : r)),
+      )
+    }
+    return outcome
+  }
+
   async updateModel(modelId: ModelId, event: ModelEvent): Promise<void> {
     this._allEventSourcedModels.update((models) => {
       const model = eventSourcedModelFns.findById(models, modelId)
@@ -214,6 +226,13 @@ export class NestedRecordsContext implements RecordsContext {
   async saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
     this._recordsStore.update((records) => [...records, newRecord.record])
     return recordSaveSucceeded(newRecord.record)
+  }
+
+  async saveExistingRecord(record: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
+    this._recordsStore.update((records) =>
+      records.map((r) => (r.id.value === record.record.id.value ? record.record : r)),
+    )
+    return recordSaveSucceeded(record.record)
   }
 
   async updateModel(modelId: ModelId, event: ModelEvent): Promise<void> {
