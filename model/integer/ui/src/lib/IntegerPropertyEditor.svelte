@@ -17,7 +17,7 @@
 
     function integerChanged(event: Event) {
         const target = event.target as HTMLInputElement
-        const newValue = target.value
+        const newValue = target.valueAsNumber
         if (newValue !== editableValue) {
             editableValue = newValue
             dataRecordEditorClient.dispatchEditEvent(
