@@ -15,6 +15,11 @@ import {
   PropertyEditor as IntegerPropertyEditor,
   PropertyViewer as IntegerPropertyViewer,
 } from '@cozemble/model-integer-ui'
+import {
+  PropertyConfigurer as DecimalPropertyConfigurer,
+  PropertyEditor as DecimalPropertyEditor,
+  PropertyViewer as DecimalPropertyViewer,
+} from '@cozemble/model-decimal-ui'
 import { registerStringProperty, stringPropertyType } from '@cozemble/model-string-core'
 import { datePropertyType, registerDateProperty } from '@cozemble/model-date-core'
 import { attachmentPropertyType, registerAttachmentProperty } from '@cozemble/model-attachment-core'
@@ -25,6 +30,7 @@ import {
 } from '@cozemble/model-attachment-ui'
 import { registerDateSystemConfiguration } from '@cozemble/model-date-ui'
 import { integerPropertyType, registerIntegerProperty } from '@cozemble/model-integer-core'
+import { decimalPropertyType, registerDecimalProperty } from '@cozemble/model-decimal-core'
 
 export { propertyDescriptors } from '@cozemble/model-core'
 
@@ -76,6 +82,7 @@ export function registerAllProperties() {
   registerStringProperty()
   registerDateProperty()
   registerIntegerProperty()
+  registerDecimalProperty()
   registerAttachmentProperty()
 }
 
@@ -83,6 +90,7 @@ export function registerAllPropertyConfigurers() {
   propertyConfigurerRegistry.register(stringPropertyType, StringPropertyConfigurer)
   propertyConfigurerRegistry.register(datePropertyType, DatePropertyConfigurer)
   propertyConfigurerRegistry.register(integerPropertyType, IntegerPropertyConfigurer)
+  propertyConfigurerRegistry.register(decimalPropertyType, DecimalPropertyConfigurer)
   propertyConfigurerRegistry.register(attachmentPropertyType, AttachmentPropertyConfigurer)
 }
 
@@ -90,6 +98,7 @@ export function registerAllSlotViewers() {
   slotViewerRegistry.register(stringPropertyType, StringPropertyViewer)
   slotViewerRegistry.register(datePropertyType, DatePropertyViewer)
   slotViewerRegistry.register(integerPropertyType, IntegerPropertyViewer)
+  slotViewerRegistry.register(decimalPropertyType, DecimalPropertyViewer)
   slotViewerRegistry.register(attachmentPropertyType, AttachmentPropertyViewer)
 }
 
@@ -97,6 +106,7 @@ export function registerAllSlotEditors() {
   slotEditorRegistry.register(stringPropertyType, StringPropertyEditor)
   slotEditorRegistry.register(datePropertyType, DatePropertyEditor)
   slotEditorRegistry.register(integerPropertyType, IntegerPropertyEditor)
+  slotEditorRegistry.register(decimalPropertyType, DecimalPropertyEditor)
   slotEditorRegistry.register(attachmentPropertyType, AttachmentPropertyEditor)
 }
 
