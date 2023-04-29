@@ -1,5 +1,4 @@
 <script lang="ts">
-    import type {EventSourcedModelStore} from "./types";
     import {writable} from "svelte/store";
     import type {JustErrorMessage} from "@cozemble/lang-util";
     import {addTableAction} from "./tables/actions";
@@ -7,11 +6,12 @@
     import {positionModal} from "./modelUi";
     import {editableTableName} from "./models/editableTableName";
     import EditableStringInput from "../lib/editors/EditableStringInput.svelte";
-    import {allModels} from "./stores/allModels";
+    import {allEventSourcedModels} from "./stores/allModels";
+    import {modelIdFns} from "@cozemble/model-api";
 
     export let anchorElement: HTMLElement;
 
-    const tableName = editableTableName(`Table ${$allModels.length + 1}`, $allModels)
+    const tableName = editableTableName(`Table ${$allEventSourcedModels.length + 1}`, $allEventSourcedModels)
     const newTableNameErrors = tableName.errors
     const newTableName = tableName.value
 
@@ -21,7 +21,7 @@
     let addTableModal: HTMLDivElement
 
     function cancelNewTable() {
-        dispatch('finished')
+        dispatch('cancel')
     }
 
     function onKeyUp(event: KeyboardEvent) {
@@ -41,10 +41,11 @@
             if ($newTableName === null) {
                 throw new Error('newTableName is null')
             }
-            allModels.dispatch(addTableAction($newTableName, $newTableName))
-            const saveOutcome = await allModels.save()
+            const newModelId = modelIdFns.newInstance()
+            allEventSourcedModels.dispatch(addTableAction(newModelId,$newTableName, $newTableName))
+            const saveOutcome = await allEventSourcedModels.save()
             if (saveOutcome === null) {
-                cancelNewTable()
+                dispatch('added',{modelId: newModelId})
             } else {
                 saveError = saveOutcome
             }
@@ -61,7 +62,7 @@
         <h3 class="font-bold text-lg">Add new table</h3>
         <div class="mt-2">
             <label class="label">Table name (should be plural)</label>
-            <EditableStringInput value={tableName} {showErrors} extraClasses="first" />
+            <EditableStringInput value={tableName} {showErrors} extraClasses="first"/>
         </div>
         <div class="modal-action justify-center">
             <label class="btn btn-primary" on:click={saveNewTable}>Add table</label>

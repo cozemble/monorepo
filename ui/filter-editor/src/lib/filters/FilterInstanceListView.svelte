@@ -7,6 +7,8 @@
     import UserSelectedRhsValue from "./UserSelectedRhsValue.svelte";
     import {filterInstanceFns} from "@cozemble/data-filters-core";
     import {onlyUserSelectedRhsValues} from "./onlyUserSelectedRhsValues";
+    import LhsSelector from "./LhsSelector.svelte";
+    import OperatorSelector from "./OperatorSelector.svelte";
 
     export let list: FilterInstanceList
     export let filterActionHandler: FilterActionHandler
@@ -50,22 +52,10 @@
         {#if filterIndex > 1}
             <ConjunctionView conjunction={list.conjunction} classes="mr-2" disabled={true}/>
         {/if}
-            <select class="input input-bordered" on:change={(event) => lhsChanged(event, filter)}>
-                <option value={null} selected={filter.selectedLhsOption === null}>-----</option>
-                {#each filter.lhsOptions as lhsOption}
-                    <option value={lhsOption.id}
-                            selected={filter.selectedLhsOption?.id === lhsOption.id}>{lhsOption.label}</option>
-                {/each}
-            </select>
+            <LhsSelector {filter} {lhsChanged} />
         {#if filter.selectedLhsOption}
             <div class="ml-2">
-                <select class="input input-bordered" on:change={(event) => operatorChanged(event, filter)}>
-                    <option value={null} selected={filter.selectedOperatorOption === null}>-----</option>
-                    {#each filter.selectedLhsOption.operators as operator}
-                        <option value={operator.id}
-                                selected={filter.selectedOperatorOption?.id === operator.id}>{operator.label}</option>
-                    {/each}
-                </select>
+                <OperatorSelector {filter} {operatorChanged} />
             </div>
             {#if filter.selectedOperatorOption && requiresRhs(filter)}
                 <div class="ml-2">

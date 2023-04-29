@@ -519,6 +519,12 @@ importers:
 
   frontend/datatable:
     dependencies:
+      '@cozemble/data-editor-sdk':
+        specifier: workspace:*
+        version: link:../../data/editor-sdk
+      '@cozemble/data-paginated-editor':
+        specifier: workspace:*
+        version: link:../../data/paginated-editor
       '@cozemble/frontend-bff':
         specifier: workspace:*
         version: link:../bff
@@ -534,6 +540,9 @@ importers:
       '@cozemble/model-core':
         specifier: workspace:*
         version: link:../../model/core
+      '@cozemble/model-editor':
+        specifier: workspace:*
+        version: link:../../model/editor
       '@cozemble/model-editor-sdk':
         specifier: workspace:*
         version: link:../../model/editor-sdk
@@ -546,6 +555,9 @@ importers:
       '@floating-ui/dom':
         specifier: ^1.2.6
         version: 1.2.6
+      daisyui:
+        specifier: ^2.47.0
+        version: 2.51.3(autoprefixer@10.4.14)(postcss@8.4.21)
     devDependencies:
       '@originjs/vite-plugin-commonjs':
         specifier: ^1.0.3
@@ -559,6 +571,9 @@ importers:
       '@sveltejs/package':
         specifier: ^2.0.0
         version: 2.0.2(svelte@3.56.0)(typescript@5.0.2)
+      '@tailwindcss/typography':
+        specifier: ^0.5.9
+        version: 0.5.9(tailwindcss@3.2.7)
       autoprefixer:
         specifier: ^10.4.13
         version: 10.4.14(postcss@8.4.21)
@@ -595,6 +610,9 @@ importers:
       '@floating-ui/dom':
         specifier: ^1.2.6
         version: 1.2.6
+      daisyui:
+        specifier: ^2.47.0
+        version: 2.51.3(autoprefixer@10.4.14)(postcss@8.4.21)
     devDependencies:
       '@originjs/vite-plugin-commonjs':
         specifier: ^1.0.3
@@ -608,6 +626,9 @@ importers:
       '@sveltejs/package':
         specifier: ^2.0.0
         version: 2.0.2(svelte@3.56.0)(typescript@5.0.2)
+      '@tailwindcss/typography':
+        specifier: ^0.5.9
+        version: 0.5.9(tailwindcss@3.2.7)
       autoprefixer:
         specifier: ^10.4.13
         version: 10.4.14(postcss@8.4.21)
@@ -3068,7 +3089,6 @@ packages:
       lodash.merge: 4.6.2
       postcss-selector-parser: 6.0.10
       tailwindcss: 3.2.7(postcss@8.4.21)
-    dev: false
 
   /@tootallnate/once@2.0.0:
     resolution: {integrity: sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==}
@@ -6985,7 +7005,6 @@ packages:
 
   /lodash.castarray@4.4.0:
     resolution: {integrity: sha512-aVx8ztPv7/2ULbArGJ2Y42bG1mEQ5mGjpdvrbJcJFU3TbYybe+QlLS4pst9zV52ymy2in1KpFPiZnAOATxD4+Q==}
-    dev: false
 
   /lodash.defaults@4.2.0:
     resolution: {integrity: sha512-qjxPLHd3r5DnsdGacqOMU6pb/avJzdh9tFX2ymgoZE27BmjXrNy/y4LoaiTeAb+O3gL8AfpJGtqfX/ae2leYYQ==}
@@ -7823,7 +7842,6 @@ packages:
     dependencies:
       cssesc: 3.0.0
       util-deprecate: 1.0.2
-    dev: false
 
   /postcss-selector-parser@6.0.11:
     resolution: {integrity: sha512-zbARubNdogI9j7WY4nQJBiNqQf3sLS3wCP4WfOidu+p28LofJqDH1tcXypGrcmMHhDk2t9wGhCsYe/+szLTy1g==}

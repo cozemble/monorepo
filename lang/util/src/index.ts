@@ -42,13 +42,7 @@ import {
   stripHtml,
 } from './string'
 import { getQueryParams } from './urls'
-import {
-  bestGuessAtMessageForUser,
-  ErrorWithContext,
-  mergeContext,
-  mergeErrorContext,
-  prependToMessage,
-} from './errors'
+import { ErrorWithContext, mergeContext, mergeErrorContext, prependToMessage } from './errors'
 import { Selectable } from './selections'
 import {
   containsObject,
@@ -115,7 +109,6 @@ export const urls = {
 export const errors = {
   mergeContext,
   mergeErrorContext,
-  bestGuessAtMessageForUser,
   ErrorWithContext,
   prependToMessage,
 }

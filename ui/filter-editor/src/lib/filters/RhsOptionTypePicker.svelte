@@ -18,7 +18,7 @@
 
 </script>
 
-<select class="input input-bordered" on:change={(event) => rhsOptionTypeChanged(event)}>
+<select class="input input-bordered" on:change={rhsOptionTypeChanged}>
     <option value={null} selected={filter.rhsValue === null}>-----</option>
     {#each options as rhsOption}
         <option value={rhsOption.id} selected={isSelectedRhsOption(rhsOption, filter)}>{rhsOption.label}</option>

@@ -2,21 +2,13 @@
     import {cozauth} from "../../../lib/auth/cozauth";
     import MainPanel from "../../../lib/MainPanel.svelte";
     import {onMount} from "svelte";
-    import {
-        registerAllProperties,
-        registerAllPropertyConfigurers,
-        registerAllSlotEditors,
-        registerAllSlotViewers
-    } from "@cozemble/model-assembled";
+    import {registerEverything,} from "@cozemble/model-assembled";
     import {page} from '$app/stores';
     import {tenantStore} from "../../../lib/tenant/tenantStore";
     import {tempRegisterDateFilters} from "./temp";
 
     onMount(() => {
-        registerAllProperties()
-        registerAllPropertyConfigurers()
-        registerAllSlotViewers()
-        registerAllSlotEditors()
+        registerEverything()
         tempRegisterDateFilters()
     })
 

@@ -85,9 +85,9 @@
 <DataRecordEditor {recordEditContext} {pushContext} {popContext}/>
 
 <br/>
-<div class="buttons my-4">
+<div class="buttons my-4 flex">
     <button type="button" class="btn btn-primary save save-{strings.camelize(recordEditContext.model.name.value)}" on:click={handleSave}>Save</button>
-    <button type="button" class="btn btn-error cancel cancel-{strings.camelize(recordEditContext.model.name.value)}" on:click={handleCancel}>{cancelButtonText}</button>
+    <button type="button" class="btn btn-error ml-2 cancel cancel-{strings.camelize(recordEditContext.model.name.value)}" on:click={handleCancel}>{cancelButtonText}</button>
 </div>
 
 <style>

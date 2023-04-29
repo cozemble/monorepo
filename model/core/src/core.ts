@@ -67,6 +67,9 @@ export const modelIdAndNameFns = {
       name,
     }
   },
+  fromModel: (model: Model): ModelIdAndName => {
+    return modelIdAndNameFns.newInstance(model.id, model.name)
+  },
 }
 
 export type Cardinality = 'one' | 'many'

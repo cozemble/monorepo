@@ -1,2 +1,3 @@
-export type { ModelEditorHost } from './ModelEditorHost'
+export type { ModelEditorHost, ModelChangeHandler } from './ModelEditorHost'
 export { default as ModelEditor } from './ModelEditor.svelte'
+export { default as ModelSlotEditor } from './ModelSlotEditor.svelte'

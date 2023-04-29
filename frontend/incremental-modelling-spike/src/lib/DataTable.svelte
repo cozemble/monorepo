@@ -3,10 +3,12 @@
     import type {DataRecord, Model, NestedModel} from "./types";
     import {dataRecordFns, modelFns} from "./types";
     import {tick} from "svelte";
+    import AddSubItemDialogue2 from "./AddSubItemDialogue2.svelte";
 
     export let model: Model
     export let records: DataRecord[]
     export let oneOnly = false
+    export let permitSubItemAddition = true
     let expandedRecordId: string | null = null
     let addingNestedModel = false
     let addingNestedRecord = false
@@ -216,6 +218,24 @@
         }
     }
 
+    function beginSubItem(record: DataRecord) {
+        expandedRecordId = record.id
+    }
+
+    function closeAddSubItemDialogue() {
+        expandedRecordId = null
+    }
+
+    function onAddNestedRecord(event: CustomEvent) {
+        const nestedModel:Model = event.detail
+        model = modelFns.addNestedModel("one", model, nestedModel.name, nestedModel.name)
+    }
+
+    function onAddNestedTable(event: CustomEvent) {
+        const nestedModel:Model = event.detail
+        model = modelFns.addNestedModel("many", model, nestedModel.name, nestedModel.pluralName)
+    }
+
 </script>
 
 <svelte:window on:keyup={handleKeyUp}/>
@@ -349,53 +369,50 @@
                         <button class="btn btn-ghost btn-active btn-sm  mr-2" on:click={() => alert("to do")}>Delete
                         </button>
                     {/if}
-                    <div class="dropdown mr-2">
-                        <button class="btn btn-ghost btn-active btn-sm mr-2">
+                    {#if permitSubItemAddition}
+                        <button class="btn btn-ghost btn-active btn-sm mr-2" on:click={() => beginSubItem(record)}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                  stroke="currentColor" class="w-6 h-6">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
                             </svg>
                             Add sub-item
                         </button>
-                        <ul tabindex="0" class="dropdown-content menux p-2 shadow bg-base-100 rounded-box w-100">
-                            <li>
-                                <div class="card ">
-                                    <div class="card-body">
-                                        <button on:click={(clicked) => addNestedObjectToModel(clicked, record)} class="btn btn-secondary btn-sm">Add one sub-object</button>
-                                        <div>(e.g. a Customer has one "Address" sub-object)</div>
-                                        <button on:click={(clicked) => addNestedTableToModel(clicked, record)} class="btn btn-secondary btn-sm">Add a sub-table</button>
-                                        <div>(e.g. an Invoice has a sub-table of "Line Items")</div>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-
+                    {/if}
                 </div>
             </td>
         </tr>
         {#if expandedRecordId === record.id}
-            <tr>
-                <td class="border" colspan={model.fields.length + 2}>
-                    <div class="nested-border border border-2 p-3">
-                        {#each model.nestedModels as nestedModel}
-                            {#if nestedModel.cardinality === "one"}
-                                {@const _nestedRecords = ensureNestedRecords(record, nestedModel)}
-                                <h6>{nestedModel.model.name}</h6>
-                                <svelte:self bind:model={nestedModel.model}
-                                             bind:records={record.values[nestedModel.name]} oneOnly={true}/>
-                            {:else}
-                                {@const _nestedRecords = ensureNestedRecords(record, nestedModel)}
-                                <div class="mb-5">
-                                    <h6>{nestedModel.model.pluralName}</h6>
+            {#if model.nestedModels.length > 0}
+                <tr>
+                    <td class="border" colspan={model.fields.length + 2}>
+                        <div class="nested-border border border-2 p-3">
+                            {#each model.nestedModels as nestedModel}
+                                {#if nestedModel.cardinality === "one"}
+                                    {@const _nestedRecords = ensureNestedRecords(record, nestedModel)}
+                                    <h6 class="mb-2">{nestedModel.model.name}</h6>
                                     <svelte:self bind:model={nestedModel.model}
-                                                 bind:records={record.values[nestedModel.name]}/>
-                                </div>
-                            {/if}
-                        {/each}
-                    </div>
-                </td>
-            </tr>
+                                                 bind:records={record.values[nestedModel.name]} oneOnly={true}/>
+                                {:else}
+                                    {@const _nestedRecords = ensureNestedRecords(record, nestedModel)}
+                                    <div class="mb-5">
+                                        <h6  class="mb-2">{nestedModel.model.pluralName}</h6>
+                                        <svelte:self bind:model={nestedModel.model}
+                                                     bind:records={record.values[nestedModel.name]}/>
+                                    </div>
+                                {/if}
+                            {/each}
+                        </div>
+                    </td>
+                </tr>
+            {:else}
+                <tr>
+                    <td class="border" colspan={model.fields.length + 2}>
+                        <AddSubItemDialogue2 bind:model={model} on:close={closeAddSubItemDialogue}
+                                             on:addNestedRecord={onAddNestedRecord}
+                                             on:addNestedTable={onAddNestedTable}/>
+                    </td>
+                </tr>
+            {/if}
         {/if}
     {/each}
     </tbody>

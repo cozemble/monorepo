@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type {DataRecord, Model, ModelView} from '@cozemble/model-core'
+    import type {DataRecord, Model, ModelView, SystemConfiguration} from '@cozemble/model-core'
     import type {CellFocus} from './CellFocus'
     import {writable, type Writable} from 'svelte/store'
     import DataTd from './DataTd.svelte'
@@ -12,7 +12,6 @@
     import {slotEditorRegistry, slotViewerRegistry} from "@cozemble/model-assembled";
     import ModelReferenceViewer from "./modelReferences/ModelReferenceViewer.svelte";
     import ModelReferenceEditor from "./modelReferences/ModelReferenceEditor.svelte";
-    import type {SystemConfiguration} from "@cozemble/model-core";
 
     export let models: Model[]
     export let model: Model
@@ -22,7 +21,7 @@
     export let onNewRecord: EventSourcedDataRecordOption = (record) => record
     export let systemConfiguration: SystemConfiguration
 
-    dataRecordViewerHost.setClient(makeDataRecordViewer(systemConfiguration,models, modelViews, paginatedEditorHost, recordEdited, onError))
+    dataRecordViewerHost.setClient(makeDataRecordViewer(systemConfiguration, models, modelViews, paginatedEditorHost, recordEdited, onError))
 
     let focus: Writable<CellFocus | null> = writable(null)
     let doAddNewRecord = false
@@ -139,7 +138,8 @@
         </tbody>
     </table>
     <div class="actions">
-        <button type="button" class="btn add-record btn-primary" on:click={beginAddNewRecord}>Add {model.name.value}</button>
+        <button type="button" class="btn add-record btn-primary" on:click={beginAddNewRecord}>
+            Add {model.name.value}</button>
     </div>
 {/if}
 

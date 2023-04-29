@@ -18,6 +18,12 @@ export function required<V>(): Check<V> {
   }
 }
 
+export function alwaysTrue<V>(): Check<V> {
+  return (v: V | null) => {
+    return []
+  }
+}
+
 export function cantBeOneOf<V>(exclusions: any[], message: string): Check<V> {
   return (v: V | null) => {
     if (v === null || v === undefined) {

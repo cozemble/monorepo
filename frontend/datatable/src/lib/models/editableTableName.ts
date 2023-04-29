@@ -1,4 +1,4 @@
-import type { EventSourcedModel } from '@cozemble/model-event-sourced/dist/esm'
+import type { EventSourcedModel } from '@cozemble/model-event-sourced'
 import type { EditableValue } from '../editors/editableValue'
 import { editableWithConditionalChecks } from '../editors/editableValue'
 import { cantBeOneOf, notNull, required } from '../errors'
