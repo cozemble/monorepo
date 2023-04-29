@@ -1,15 +1,16 @@
 <script lang="ts">
     import {createEventDispatcher, onMount} from "svelte";
     import {modelFns} from "@cozemble/model-api";
-    import {type DataRecord, modelPluralNameFns} from "@cozemble/model-core/dist/esm";
-    import {dataRecordFns, modelOptions, propertyFns} from "@cozemble/model-api/dist/esm";
+    import {type DataRecord, modelPluralNameFns} from "@cozemble/model-core";
+    import {dataRecordFns, modelOptions, propertyFns} from "@cozemble/model-api";
     import {InMemoryBackend} from "../backend/InMemoryBackend";
     import {RootRecordsContext} from "./RecordsContext";
-    import type {EventSourcedModel} from "@cozemble/model-event-sourced/dist/esm";
-    import {eventSourcedModelFns} from "@cozemble/model-event-sourced/dist/esm";
+    import type {EventSourcedModel} from "@cozemble/model-event-sourced";
+    import {eventSourcedModelFns} from "@cozemble/model-event-sourced";
     import {writable} from "svelte/store";
     import DataRecordsTable from "./DataRecordsTable.svelte";
     import {systemConfiguration} from "../stores/systemConfiguration";
+    import {defaultOnError} from "../appBackend";
 
 
     let model = modelFns.newInstance("Sub Item", modelOptions.withProperties(propertyFns.newInstance("Field 1")))
@@ -38,7 +39,7 @@
     const recordMap = new Map<string, DataRecord[]>()
     recordMap.set(model.id.value, records)
     const backend = new InMemoryBackend(modelMap, recordMap)
-    const sampleRecordsContext = new RootRecordsContext(backend, model.id, writable(eventSourcedModels))
+    const sampleRecordsContext = new RootRecordsContext(backend, defaultOnError,model.id, writable(eventSourcedModels))
 
     onMount(async () => {
         await sampleRecordsContext.loadRecords()

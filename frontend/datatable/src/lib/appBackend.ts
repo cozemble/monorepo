@@ -24,10 +24,11 @@ export async function saveModels(models: EventSourcedModel[]): Promise<JustError
 }
 
 export function rootRecordsContext(
+  onError: (error: JustErrorMessage) => void,
   models: Writable<EventSourcedModel[]>,
   modelId: ModelId,
 ): RootRecordsContext {
-  return new RootRecordsContext(backend, modelId, models)
+  return new RootRecordsContext(backend, onError, modelId, models)
 }
 
 export const recordSearcher: RecordSearcher = {
@@ -54,4 +55,8 @@ export const attachmentsManager: AttachmentsManager = {
   async getAttachmentViewUrls(attachmentIds: AttachmentIdAndFileName[]): Promise<string[]> {
     throw new Error('Not implemented')
   },
+}
+
+export const defaultOnError = (error: JustErrorMessage) => {
+  console.error(error)
 }

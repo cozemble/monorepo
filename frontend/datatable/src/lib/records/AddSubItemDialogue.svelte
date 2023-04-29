@@ -2,17 +2,21 @@
 
     import SubItemIntro from "./SubItemIntro.svelte";
     import AddSubItemSteps from "./AddSubItemSteps.svelte";
+    import {introductionsState} from "../stores/introductions";
 
     export let showIntro = true
 
     function introFinished() {
         showIntro = false
-        console.log({showIntro})
+        introductionsState.update(introductions => {
+            introductions.subItemsIntroduction = "seen"
+            return introductions
+        })
     }
-
 </script>
+
 {#if showIntro}
     <SubItemIntro on:finished={introFinished}/>
 {:else}
-    <AddSubItemSteps />
+    <AddSubItemSteps on:addNestedRecord on:addNestedTable/>
 {/if}

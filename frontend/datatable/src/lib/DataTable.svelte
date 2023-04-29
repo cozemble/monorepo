@@ -5,9 +5,8 @@
     import AddTableNavButton from "./AddTableNavButton.svelte";
     import Modals from "./Modals.svelte";
     import {modelUi} from "./modelUi";
-    import DownCaret from "./icons/DownCaret.svelte";
     import type {EventSourcedModel} from "@cozemble/model-event-sourced";
-    import {allEventSourcedModels} from "./stores/allModels";
+    import {allEventSourcedModels, allTopLevelEventSourcedModels} from "./stores/allModels";
     import ModelPane from "./models/ModelPane.svelte";
     import type {SystemConfiguration} from "@cozemble/model-core";
     import {currentUserId} from "./stores/currentUserId";
@@ -44,7 +43,7 @@
 
 </script>
 <div class="tabs bg-base-200 rounded pb-1 pl-2">
-    {#each $allEventSourcedModels as model, index}
+    {#each $allTopLevelEventSourcedModels as model, index}
         <ModelTab {model} {index} {navbarState} {onEditModelClicked} />
     {/each}
     <AddTableNavButton on:added={newTableAdded}/>

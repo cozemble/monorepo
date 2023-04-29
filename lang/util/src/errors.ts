@@ -35,38 +35,6 @@ export function mergeErrorContext(error: any, context: any) {
   return error
 }
 
-function isFirebaseError(error: any) {
-  return error !== undefined && error.code !== undefined && error.name !== undefined
-}
-
-function isGoogleApiError(error: any) {
-  return (
-    error !== undefined &&
-    error.result &&
-    error.result.error &&
-    error.result.error.code &&
-    error.result.error.message
-  )
-}
-
-export function bestGuessAtMessageForUser(errorWithContext: ErrorWithContext) {
-  let message = errorWithContext.messageForUser
-  const error = errorWithContext.error
-  if (error && error.message) {
-    message = message + ` (${error.message})`
-  }
-  if (isFirebaseError(error)) {
-    message = message + ` (${error.name}: ${error.code})`
-  }
-  if (isGoogleApiError(error)) {
-    const googleMessage = error.result.error.message
-    const googleCode = error.result.error.message
-    message = message + ` (${googleCode}: ${googleMessage})`
-  }
-
-  return message
-}
-
 export function prependToMessage(error: any, prepend: string): any {
   if (typeof error.message !== 'undefined') {
     error.message = prepend + error.message

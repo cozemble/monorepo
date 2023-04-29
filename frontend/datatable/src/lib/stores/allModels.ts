@@ -10,6 +10,10 @@ export const allEventSourcedModels = eventSourcedStore(
   [] as EventSourcedModel[],
 )
 
+export const allTopLevelEventSourcedModels = derived(allEventSourcedModels, (models) => {
+  return models.filter((model) => !model.model.parentModelId)
+})
+
 export const allModels = derived(allEventSourcedModels, (models) => {
   return models.map((model) => model.model)
 })

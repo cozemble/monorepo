@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {dataRecordFns, modelFns, modelOptions, nestedModelFns, propertyFns} from "@cozemble/model-api/dist/esm";
+    import {dataRecordFns, modelFns, modelOptions, nestedModelFns, propertyFns} from "@cozemble/model-api";
     import {systemConfiguration} from "../stores/systemConfiguration";
     import {InMemoryBackend} from "../backend/InMemoryBackend";
     import {RootRecordsContext} from "./RecordsContext";
@@ -10,6 +10,7 @@
     import {eventSourcedModelFns} from "@cozemble/model-event-sourced";
     import {dataRecordsTableOptions} from "./DataRecordsTableOptions";
     import DataRecordsTable from "./DataRecordsTable.svelte";
+    import {defaultOnError} from "../appBackend";
 
     const lineItemModel = modelFns.newInstance("Line Item", modelOptions.withProperties(propertyFns.newInstance("Item"), propertyFns.newInstance("Quantity"), propertyFns.newInstance("Unit Price")))
     const nestedLineItems = nestedModelFns.newInstance("Line Items", lineItemModel.id, "many")
@@ -39,7 +40,7 @@
     const recordMap = new Map<string, DataRecord[]>()
     recordMap.set(invoiceModel.id.value, [invoiceRecord])
     const backend = new InMemoryBackend(modelMap, recordMap)
-    const customerRecordsContext = new RootRecordsContext(backend, invoiceModel.id, writable(eventSourcedModels))
+    const customerRecordsContext = new RootRecordsContext(backend, defaultOnError,invoiceModel.id, writable(eventSourcedModels))
 
     onMount(async () => {
         await customerRecordsContext.loadRecords()

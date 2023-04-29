@@ -1,6 +1,6 @@
 <script lang="ts">
     import {createEventDispatcher, onMount} from "svelte";
-    import {dataRecordFns, modelFns, modelOptions, propertyFns} from "@cozemble/model-api/dist/esm";
+    import {dataRecordFns, modelFns, modelOptions, propertyFns} from "@cozemble/model-api";
     import {systemConfiguration} from "../stores/systemConfiguration";
     import DataRecordsTable from "./DataRecordsTable.svelte";
     import {InMemoryBackend} from "../backend/InMemoryBackend";
@@ -9,6 +9,8 @@
     import {eventSourcedModelFns} from "@cozemble/model-event-sourced";
     import type {DataRecord} from "@cozemble/model-core";
     import {writable} from "svelte/store";
+    import {defaultOnError} from "../appBackend";
+    import {modelPluralNameFns} from "@cozemble/model-core";
 
     let model = modelFns.newInstance("Untitled sub-record", modelOptions.withProperties(propertyFns.newInstance("Field 1")))
     const models = [model]
@@ -24,6 +26,7 @@
     }
 
     function apply() {
+        model.pluralName = modelPluralNameFns.newInstance(model.name.value)
         dispatch('apply', model)
     }
 
@@ -33,7 +36,7 @@
     const recordMap = new Map<string, DataRecord[]>()
     recordMap.set(model.id.value, [sampleRecord])
     const backend = new InMemoryBackend(modelMap, recordMap)
-    const sampleRecordsContext = new RootRecordsContext(backend, model.id, writable(eventSourcedModels))
+    const sampleRecordsContext = new RootRecordsContext(backend, defaultOnError,model.id, writable(eventSourcedModels))
 
     onMount(async () => {
         await sampleRecordsContext.loadRecords()
@@ -58,6 +61,7 @@
         <div>
             <label class="label">Sub-record name:</label>
             <input type="text" class="input input-bordered w-full" bind:value={model.name.value} use:focus/>
+            <label class="label text-sm">Give your sub-record a name, it will update in the preview above</label>
         </div>
     </div>
 </div>

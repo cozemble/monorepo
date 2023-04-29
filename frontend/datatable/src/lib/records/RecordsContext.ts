@@ -1,11 +1,4 @@
-import type {
-  Cardinality,
-  DataRecord,
-  Model,
-  ModelEvent,
-  ModelId,
-  NestedModel,
-} from '@cozemble/model-core'
+import type { DataRecord, Model, ModelEvent, ModelId, NestedModel } from '@cozemble/model-core'
 import type { Backend } from '../backend/Backend'
 import { derived, readable, type Readable, type Writable, writable } from 'svelte/store'
 import type { EventSourcedModel } from '@cozemble/model-event-sourced'
@@ -13,8 +6,11 @@ import { eventSourcedModelFns } from '@cozemble/model-event-sourced'
 import { mandatory } from '@cozemble/lang-util'
 import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import type { EventSourcedDataRecord } from '@cozemble/data-editor-sdk'
-import { dataRecordFns } from '@cozemble/model-api'
-import { modelFns } from '@cozemble/model-api/dist/esm'
+import { dataRecordFns, modelFns } from '@cozemble/model-api'
+import type { Cardinality } from '@cozemble/model-core/dist/esm'
+import { modelIdAndNameFns, nestedModelNameFns } from '@cozemble/model-core/dist/esm'
+import type { JustErrorMessage } from '@cozemble/lang-util/dist/esm'
+import { coreModelEvents } from '@cozemble/model-event-sourced/dist/esm'
 
 export type LoadingState = 'loading' | 'loaded'
 
@@ -26,6 +22,8 @@ export interface RecordsContext {
   modelEdited(model: EventSourcedModel): Promise<void>
 
   nestedContext(record: DataRecord, model: NestedModel): RecordsContext
+
+  addNestedModel(model: Model, cardinality: Cardinality): Promise<void>
 
   records(): Readable<DataRecord[]>
 
@@ -41,6 +39,7 @@ export interface RecordsContext {
 export class RootRecordsContext implements RecordsContext {
   constructor(
     private readonly backend: Backend,
+    private readonly _onError: (error: JustErrorMessage) => void,
     private readonly modelId: ModelId,
     private readonly _allEventSourcedModels: Writable<EventSourcedModel[]>,
     private readonly _model = derived(_allEventSourcedModels, (models) =>
@@ -57,6 +56,23 @@ export class RootRecordsContext implements RecordsContext {
       return this._allModelCache
     }),
   ) {}
+
+  async addNestedModel(model: Model, cardinality: Cardinality): Promise<void> {
+    model.parentModelId = this.modelId
+    const saveModelOutcome = await this.backend.saveModel(eventSourcedModelFns.newInstance(model))
+    if (saveModelOutcome) {
+      this._onError(saveModelOutcome)
+      return
+    }
+    const parent = modelIdAndNameFns.fromModel(modelFns.findById(this._allModelCache, this.modelId))
+    const child = modelIdAndNameFns.fromModel(model)
+    const name =
+      cardinality === 'one'
+        ? nestedModelNameFns.newInstance(model.name.value)
+        : nestedModelNameFns.newInstance(model.pluralName.value)
+    const event = coreModelEvents.nestedModelAdded(parent, child, cardinality, name)
+    await this.updateModel(this.modelId, event)
+  }
 
   async loadRecords(): Promise<void> {
     this._loadingState.set('loading')
@@ -97,7 +113,12 @@ export class RootRecordsContext implements RecordsContext {
         maybeRecords = [dataRecordFns.newInstance(model, record.createdBy.value)]
       }
     }
-    return new NestedRecordsContext(this._allEventSourcedModels, nestedModel, maybeRecords)
+    return new NestedRecordsContext(
+      this._onError,
+      this._allEventSourcedModels,
+      nestedModel,
+      maybeRecords,
+    )
   }
 
   records(): Readable<DataRecord[]> {
@@ -123,6 +144,7 @@ export class RootRecordsContext implements RecordsContext {
 
 export class NestedRecordsContext implements RecordsContext {
   constructor(
+    private readonly onError: (error: JustErrorMessage) => void,
     private readonly _allEventSourcedModels: Writable<EventSourcedModel[]>,
     public readonly nestedModel: NestedModel,
     private readonly _records: DataRecord[],
@@ -138,6 +160,10 @@ export class NestedRecordsContext implements RecordsContext {
     ),
     private readonly _loadingState = writable('loading' as LoadingState),
   ) {}
+
+  async addNestedModel(model: Model, cardinality: Cardinality): Promise<void> {
+    throw new Error('Method not implemented.')
+  }
 
   async saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
     throw new Error('Method not implemented.')

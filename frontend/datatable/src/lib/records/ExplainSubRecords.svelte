@@ -10,6 +10,7 @@
     import type {DataRecord} from "@cozemble/model-core";
     import {writable} from "svelte/store";
     import {onMount} from "svelte";
+    import {defaultOnError} from "../appBackend";
 
     const addressModel = modelFns.newInstance("Address", modelOptions.withProperties(propertyFns.newInstance("Street"), propertyFns.newInstance("City"), propertyFns.newInstance("Postal code/Zip code")))
     const nestedDeliveryAddress = nestedModelFns.newInstance("Delivery Address", addressModel.id, "one")
@@ -39,7 +40,7 @@
     const recordMap = new Map<string, DataRecord[]>()
     recordMap.set(customer.id.value, [customerRecord])
     const backend = new InMemoryBackend(modelMap, recordMap)
-    const customerRecordsContext = new RootRecordsContext(backend, customer.id, writable(eventSourcedModels))
+    const customerRecordsContext = new RootRecordsContext(backend, defaultOnError,customer.id, writable(eventSourcedModels))
 
     onMount(async () => {
         await customerRecordsContext.loadRecords()
