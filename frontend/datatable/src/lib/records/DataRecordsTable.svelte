@@ -1,6 +1,6 @@
 <script lang="ts">
-    import type {RecordsContext} from "./RecordsContext";
-    import type {DataRecord, ModelSlot} from "@cozemble/model-core";
+    import type {NestedRecordsContext, RecordsContext} from "./RecordsContext";
+    import type {Cardinality, DataRecord, Model, ModelSlot, NestedModel} from "@cozemble/model-core";
     import {propertyDescriptors, propertyNameFns} from "@cozemble/model-core";
     import type {RecordBeingAdded, SlotBeingEdited} from "./helperTypes";
     import SlotEditModal from "./SlotEditModal.svelte";
@@ -13,11 +13,7 @@
     import type {DataRecordsTableOptions} from "./DataRecordsTableOptions";
     import {dataRecordsTableOptions} from "./DataRecordsTableOptions";
     import {systemConfiguration} from "../stores/systemConfiguration";
-    import type {NestedModel} from "@cozemble/model-core";
-    import type {NestedRecordsContext} from "./RecordsContext";
     import {introductionsState} from "../stores/introductions";
-    import type {Model} from "@cozemble/model-core";
-    import type {Cardinality} from "@cozemble/model-core";
 
     export let context: RecordsContext
     export let oneOnly = false
@@ -84,19 +80,19 @@
         recordBeingAdded = null
     }
 
-    function makeNestedContext(record:DataRecord,nestedModel:NestedModel) {
-        return context.nestedContext(record,nestedModel) as NestedRecordsContext
+    function makeNestedContext(record: DataRecord, nestedModel: NestedModel) {
+        return context.nestedContext(record, nestedModel) as NestedRecordsContext
     }
 
-    async function addNestedRecord(event:CustomEvent) {
+    async function addNestedRecord(event: CustomEvent) {
         return addNestedModel(event.detail, "one")
     }
 
-    async function addNestedTable(event:CustomEvent) {
+    async function addNestedTable(event: CustomEvent) {
         return addNestedModel(event.detail, "many")
     }
 
-    async function addNestedModel(model:Model, cardinality:Cardinality) {
+    async function addNestedModel(model: Model, cardinality: Cardinality) {
         await context.addNestedModel(model, cardinality)
         expandedRecordId = recordHavingSubItemAdded
         recordHavingSubItemAdded = null
@@ -179,7 +175,7 @@
                     <td class="border border-base-300" colspan={$model.model.slots.length + 2}>
                         <div class="nested-border border border-2 p-3">
                             {#each $model.model.nestedModels as nestedModel}
-                                {@const nestedContext = makeNestedContext(record,nestedModel)}
+                                {@const nestedContext = makeNestedContext(record, nestedModel)}
                                 <NestedDataRecords {nestedContext} {options}/>
                             {/each}
                         </div>
@@ -190,7 +186,8 @@
         {#if recordHavingSubItemAdded === record.id.value}
             <tr>
                 <td class="border border-base-300" colspan={$model.model.slots.length + 2}>
-                    <AddSubItemDialogue showIntro={$introductionsState.subItemsIntroduction === null} on:addNestedRecord={addNestedRecord} on:addNestedTable={addNestedTable}/>
+                    <AddSubItemDialogue showIntro={$introductionsState.subItemsIntroduction === null}
+                                        on:addNestedRecord={addNestedRecord} on:addNestedTable={addNestedTable}/>
                 </td>
             </tr>
         {/if}
