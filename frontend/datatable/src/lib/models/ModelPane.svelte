@@ -6,7 +6,6 @@
     import {onMount} from "svelte";
     import DataRecordsTable from "../records/DataRecordsTable.svelte";
     import {systemConfiguration} from "../stores/systemConfiguration";
-    import WithDataRecordEditorClient from "./WithDataRecordEditorClient.svelte";
 
     export let modelId: string
     const model = mandatory($allModels.find(model => model.id.value === modelId), `Model with id ${modelId} not found`)
@@ -17,7 +16,5 @@
     })
 </script>
 <div class="mt-3">
-    <WithDataRecordEditorClient {context}>
-        <DataRecordsTable {context}/>
-    </WithDataRecordEditorClient>
+    <DataRecordsTable {context}/>
 </div>

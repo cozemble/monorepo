@@ -27,7 +27,7 @@ import {
   emptyDataTableFocus,
 } from '../focus/DataTableFocus'
 import { gettableWritable } from '../editors/GettableWritable'
-import { eventSourcedDataRecordFns } from '@cozemble/data-editor-sdk/dist/esm'
+import { eventSourcedDataRecordFns } from '@cozemble/data-editor-sdk'
 
 export type LoadingState = 'loading' | 'loaded'
 
@@ -228,6 +228,7 @@ export class RootRecordsContext implements RecordsContext {
   }
 
   updateRecord(recordId: DataRecordId, event: DataRecordEditEvent): void {
+    console.log({ recordId, event })
     this._records.update((records) => {
       const record = records.find((r) => r.record.id.value === recordId.value)
       if (record === undefined) {
@@ -358,6 +359,7 @@ export class NestedRecordsContext implements RecordsContext {
   }
 
   updateRecord(recordId: DataRecordId, event: DataRecordEditEvent): void {
+    console.log({ recordId, event })
     return this.parent.updateRecord(recordId, event)
   }
 

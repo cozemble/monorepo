@@ -8,8 +8,12 @@ import type {
   UserInstruction,
 } from '@cozemble/data-editor-sdk'
 import type { DataRecord, Model, ModelId, ModelView } from '@cozemble/model-core'
+import type { DataRecordId } from '@cozemble/model-core'
 
-export function makeDataRecordEditorClient(context: RecordsContext): DataRecordEditorClient {
+export function makeDataRecordEditorClient(
+  context: RecordsContext,
+  recordId: DataRecordId,
+): DataRecordEditorClient {
   return {
     dispatchControlEvent(event: DataRecordControlEvent): void {
       console.log({ event })
@@ -17,7 +21,7 @@ export function makeDataRecordEditorClient(context: RecordsContext): DataRecordE
 
     dispatchEditEvent(event: DataRecordEditEvent): void {
       if (event._type === 'data.record.value.changed') {
-        context.updateRecord(event.record.id, event)
+        context.updateRecord(recordId, event)
         if (event.confirmMethod === 'Tab') {
           context.getFocusControls().moveForward()
         }
