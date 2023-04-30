@@ -53,7 +53,7 @@
 <div class="tooltip tooltip-open tooltip-accent mt-16" data-tip="Preview of a Customer with sub-items">
 
     <div class="mt-3 disabled-content border border-info rounded p-2 ">
-        <DataRecordsTable context={customerRecordsContext} expandedRecordId={invoiceRecord.id.value}
+        <DataRecordsTable context={customerRecordsContext} expandedRecordIds={writable([invoiceRecord.id])}
                           oneOnly={true}
                           options={dataRecordsTableOptions(false, false, false)}/>
     </div>

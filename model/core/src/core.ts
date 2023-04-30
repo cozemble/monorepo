@@ -342,6 +342,15 @@ export interface DataRecordId extends TinyValue {
   _type: 'data.record.id'
 }
 
+export const dataRecordIdFns = {
+  newInstance: (value = uuids.v4()): DataRecordId => {
+    return {
+      _type: 'data.record.id',
+      value,
+    }
+  },
+}
+
 export interface TimestampEpochMillis extends TinyValue<number> {
   _type: 'timestamp.epoch.millis'
 }

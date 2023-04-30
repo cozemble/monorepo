@@ -28,6 +28,18 @@ export class DataTableFocus {
   beginEditing(): DataTableFocus {
     return new DataTableFocus(this.recordsProvider, this.rowIndex, this.dataRecordPathFocus, true)
   }
+
+  moveForward(): DataTableFocus {
+    if (this.dataRecordPathFocus === null) {
+      return this
+    }
+    return new DataTableFocus(
+      this.recordsProvider,
+      this.rowIndex,
+      this.dataRecordPathFocus.moveFocus('right'),
+      this.isEditing,
+    )
+  }
 }
 
 export function emptyDataTableFocus(recordsProvider: () => DataRecord[]): DataTableFocus {
@@ -38,4 +50,6 @@ export interface DataTableFocusControls {
   setFocus(rowIndex: number, slot: LeafModelSlot): void
 
   keydown(event: KeyboardEvent): void
+
+  moveForward(): void
 }

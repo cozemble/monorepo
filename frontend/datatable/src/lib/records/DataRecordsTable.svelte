@@ -14,18 +14,22 @@
     import {dataRecordsTableOptions} from "./DataRecordsTableOptions";
     import {systemConfiguration} from "../stores/systemConfiguration";
     import {introductionsState} from "../stores/introductions";
-    import RecordActionButton from "./RecordActionButton.svelte";
     import RecordBeingEditedModal from "./RecordBeingEditedModal.svelte";
+    import type {DataRecordId} from "@cozemble/model-core/dist/esm";
+    import ExpandCollapseButton from "./ExpandCollapseButton.svelte";
+    import {writable} from "svelte/store";
+    import {dataRecordIdFns} from "@cozemble/model-core";
 
     export let context: RecordsContext
     export let oneOnly = false
     export let options: DataRecordsTableOptions = dataRecordsTableOptions(true, true, true)
-    export let expandedRecordId: string | null = null
+    export let expandedRecordIds = writable([] as DataRecordId[])
 
     const allEventSourcedModels = context.allEventSourcedModels()
     const allModels = context.allModels()
     const model = context.model()
     const records = context.records()
+    const dirtyRecords = context.getDirtyRecords()
     const focus = context.getFocus()
     const focusControls = context.getFocusControls()
     let slotBeingEdited: SlotBeingEdited | null = null
@@ -70,10 +74,10 @@
     }
 
     function toggleRecordExpand(record: DataRecord) {
-        if (expandedRecordId === record.id.value) {
-            expandedRecordId = null
+        if ($expandedRecordIds.some(id => id.value === record.id.value)) {
+            expandedRecordIds.update(ids => ids.filter(id => id.value !== record.id.value))
         } else {
-            expandedRecordId = record.id.value
+            expandedRecordIds.update(ids => [...ids, record.id])
         }
     }
 
@@ -97,18 +101,34 @@
         return addNestedModel(event.detail, "many")
     }
 
-    async function addNestedModel(model: Model, cardinality: Cardinality) {
-        await context.addNestedModel(model, cardinality)
-        expandedRecordId = recordHavingSubItemAdded
-        recordHavingSubItemAdded = null
+    function expandRecord(id: DataRecordId) {
+        expandedRecordIds.update((ids:DataRecordId[]) => [...ids, id])
     }
 
-    function beginRecordEdit(event:MouseEvent,record: DataRecord) {
-        recordBeingEdited = {models: $allModels, model: $model.model, record, anchorElement: event.target as HTMLElement}
+    async function addNestedModel(model: Model, cardinality: Cardinality) {
+        await context.addNestedModel(model, cardinality)
+        if(recordHavingSubItemAdded) {
+            expandRecord(dataRecordIdFns.newInstance(recordHavingSubItemAdded))
+            recordHavingSubItemAdded = null
+        }
+    }
+
+
+    function beginRecordEdit(event: MouseEvent, record: DataRecord) {
+        recordBeingEdited = {
+            models: $allModels,
+            model: $model.model,
+            record,
+            anchorElement: event.target as HTMLElement
+        }
     }
 
     async function onNewRecordEdited(_event: CustomEvent) {
         recordBeingEdited = null
+    }
+
+    function isDirtyRecord(dirtyRecordIds: DataRecordId[], record: DataRecord) {
+        return dirtyRecordIds.some(dirtyRecordId => dirtyRecordId.value === record.id.value)
     }
 </script>
 
@@ -142,7 +162,10 @@
         <tr>
             {#each $model.model.slots as slot, colIndex}
                 {#if slot._type === 'property' || slot._type === 'model.reference'}
-                    <DataTd {rowIndex} {colIndex} {record} modelSlot={slot} parentPath={context.getDataRecordPathParentElements()} isFocused={$focus.isFocused(rowIndex, context.getDataRecordPathParentElements(), slot)} isEditing={$focus.isEditing} {focusControls}/>
+                    <DataTd {rowIndex} {colIndex} {record} modelSlot={slot}
+                            parentPath={context.getDataRecordPathParentElements()}
+                            isFocused={$focus.isFocused(rowIndex, context.getDataRecordPathParentElements(), slot)}
+                            isEditing={$focus.isEditing} {focusControls}/>
                 {:else}
                     <td>To do: {slot._type}</td>
                 {/if}
@@ -153,36 +176,37 @@
             {#if options.showActions}
                 <td class="border  border-base-300">
                     <div class="flex items-center">
-                        {#if $model.model.nestedModels.length > 0}
-                            <button class="btn btn-ghost btn-active btn-sm mr-2"
-                                    on:click={() => toggleRecordExpand(record)}>
-                                {#if expandedRecordId === record.id.value}
-                                    Collapse
-                                {:else}
-                                    Expand
-                                {/if}
+                        {#if isDirtyRecord($dirtyRecords, record)}
+                            <button class="btn btn-primary btn-sm  mr-2" on:click={() => alert("to do")}>Save
                             </button>
-                        {/if}
-                        <RecordActionButton text="Edit" {record} onClick={beginRecordEdit}/>
-                        {#if !oneOnly}
-                            <button class="btn btn-ghost btn-active btn-sm  mr-2" on:click={() => alert("to do")}>Delete
+                            <button class="btn btn-sm  mr-2" on:click={() => alert("to do")}>Cancel
                             </button>
-                        {/if}
-                        {#if options.permitSubItemAddition}
-                            <button class="btn btn-ghost btn-active btn-sm mr-2" on:click={() => beginSubItem(record)}>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                     stroke-width="1.5"
-                                     stroke="currentColor" class="w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
-                                </svg>
-                                Add sub-item
-                            </button>
+                            <ExpandCollapseButton {expandedRecordIds} model={$model.model} {record}/>
+                        {:else}
+                            <ExpandCollapseButton {expandedRecordIds} model={$model.model} {record}/>
+                            {#if !oneOnly}
+                                <button class="btn btn-ghost btn-active btn-sm  mr-2" on:click={() => alert("to do")}>
+                                    Delete
+                                </button>
+                            {/if}
+                            {#if options.permitSubItemAddition}
+                                <button class="btn btn-ghost btn-active btn-sm mr-2"
+                                        on:click={() => beginSubItem(record)}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                         stroke-width="1.5"
+                                         stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                              d="M12 4.5v15m7.5-7.5h-15"/>
+                                    </svg>
+                                    Add sub-item
+                                </button>
+                            {/if}
                         {/if}
                     </div>
                 </td>
             {/if}
         </tr>
-        {#if expandedRecordId === record.id.value}
+        {#if $expandedRecordIds.some(id => id.value  ===record.id.value)}
             {#if $model.model.nestedModels.length > 0}
                 <tr>
                     <td class="border border-base-300" colspan={$model.model.slots.length + 2}>
@@ -226,5 +250,5 @@
 {/if}
 {#if recordBeingEdited}
     <RecordBeingEditedModal recordsContext={context} {recordBeingEdited} on:edited={onNewRecordEdited}
-                           on:cancel={() => recordBeingEdited = null}/>
+                            on:cancel={() => recordBeingEdited = null}/>
 {/if}

@@ -5,17 +5,19 @@
     import {modelIdFns} from "@cozemble/model-api";
     import {onMount} from "svelte";
     import DataRecordsTable from "../records/DataRecordsTable.svelte";
-    import type {SystemConfiguration} from "@cozemble/model-core";
+    import {systemConfiguration} from "../stores/systemConfiguration";
+    import WithDataRecordEditorClient from "./WithDataRecordEditorClient.svelte";
 
     export let modelId: string
-    export let systemConfiguration: SystemConfiguration
     const model = mandatory($allModels.find(model => model.id.value === modelId), `Model with id ${modelId} not found`)
-    const context = rootRecordsContext(() => systemConfiguration,defaultOnError,allEventSourcedModels, modelIdFns.newInstance(modelId))
+    const context = rootRecordsContext(() => $systemConfiguration, defaultOnError, allEventSourcedModels, modelIdFns.newInstance(modelId))
 
     onMount(async () => {
         await context.loadRecords()
     })
 </script>
 <div class="mt-3">
-    <DataRecordsTable {context}/>
+    <WithDataRecordEditorClient {context}>
+        <DataRecordsTable {context}/>
+    </WithDataRecordEditorClient>
 </div>

@@ -58,6 +58,7 @@ export {
   modelSlotFns,
   modelPluralNameFns,
   ModelPluralName,
+  dataRecordIdFns,
 } from './core'
 
 export { propertyDescriptors } from './propertyDescriptor'
