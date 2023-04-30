@@ -10,7 +10,7 @@
     export let modelId: string
     export let systemConfiguration: SystemConfiguration
     const model = mandatory($allModels.find(model => model.id.value === modelId), `Model with id ${modelId} not found`)
-    const context = rootRecordsContext(defaultOnError,allEventSourcedModels, modelIdFns.newInstance(modelId))
+    const context = rootRecordsContext(() => systemConfiguration,defaultOnError,allEventSourcedModels, modelIdFns.newInstance(modelId))
 
     onMount(async () => {
         await context.loadRecords()

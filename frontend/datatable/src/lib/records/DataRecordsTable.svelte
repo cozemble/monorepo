@@ -26,6 +26,8 @@
     const allModels = context.allModels()
     const model = context.model()
     const records = context.records()
+    const focus = context.getFocus()
+    const focusControls = context.getFocusControls()
     let slotBeingEdited: SlotBeingEdited | null = null
     let recordBeingAdded: RecordBeingAdded | null = null
     let recordBeingEdited: RecordBeingEdited | null = null
@@ -140,11 +142,10 @@
         <tr>
             {#each $model.model.slots as slot, colIndex}
                 {#if slot._type === 'property' || slot._type === 'model.reference'}
-                    <DataTd {rowIndex} {colIndex} {record} modelSlot={slot}/>
+                    <DataTd {rowIndex} {colIndex} {record} modelSlot={slot} parentPath={context.getDataRecordPathParentElements()} isFocused={$focus.isFocused(rowIndex, context.getDataRecordPathParentElements(), slot)} isEditing={$focus.isEditing} {focusControls}/>
                 {:else}
                     <td>To do: {slot._type}</td>
                 {/if}
-
             {/each}
             {#if options.permitModelEditing}
                 <td class="border  border-base-300"></td>

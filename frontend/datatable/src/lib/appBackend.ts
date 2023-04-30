@@ -6,6 +6,7 @@ import type { DataRecord, DataRecordId, ModelId } from '@cozemble/model-core'
 import type { Writable } from 'svelte/store'
 import type { AttachmentsManager, RecordSearcher } from '@cozemble/data-paginated-editor'
 import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
+import type { SystemConfiguration } from '@cozemble/model-core'
 
 let backend = notImplementedBackend
 
@@ -24,11 +25,12 @@ export async function saveModels(models: EventSourcedModel[]): Promise<JustError
 }
 
 export function rootRecordsContext(
+  systemConfigurationProvider: () => SystemConfiguration,
   onError: (error: JustErrorMessage) => void,
   models: Writable<EventSourcedModel[]>,
   modelId: ModelId,
 ): RootRecordsContext {
-  return new RootRecordsContext(backend, onError, modelId, models)
+  return new RootRecordsContext(backend, systemConfigurationProvider, onError, modelId, models)
 }
 
 export const recordSearcher: RecordSearcher = {

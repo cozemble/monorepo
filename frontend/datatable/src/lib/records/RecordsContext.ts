@@ -1,10 +1,13 @@
 import type {
   Cardinality,
   DataRecord,
+  DataRecordPathParentElement,
+  LeafModelSlot,
   Model,
   ModelEvent,
   ModelId,
   NestedModel,
+  SystemConfiguration,
 } from '@cozemble/model-core'
 import { modelIdAndNameFns, nestedModelNameFns } from '@cozemble/model-core'
 import type { Backend } from '../backend/Backend'
@@ -14,9 +17,15 @@ import { coreModelEvents, eventSourcedModelFns } from '@cozemble/model-event-sou
 import type { JustErrorMessage } from '@cozemble/lang-util'
 import { mandatory } from '@cozemble/lang-util'
 import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
-import { recordSaveSucceeded } from '@cozemble/data-paginated-editor'
+import { DataRecordPathFocus, recordSaveSucceeded } from '@cozemble/data-paginated-editor'
 import type { EventSourcedDataRecord } from '@cozemble/data-editor-sdk'
-import { dataRecordFns, modelFns } from '@cozemble/model-api'
+import { dataRecordFns, dataRecordValuePathFns, modelFns } from '@cozemble/model-api'
+import {
+  DataTableFocus,
+  type DataTableFocusControls,
+  emptyDataTableFocus,
+} from '../focus/DataTableFocus'
+import { gettableWritable } from '../editors/GettableWritable'
 
 export type LoadingState = 'loading' | 'loaded'
 
@@ -41,6 +50,10 @@ export interface RecordsContext {
 
   model(): Readable<EventSourcedModel>
 
+  getFocus(): Readable<DataTableFocus>
+
+  getFocusControls(): DataTableFocusControls
+
   allModels(): Readable<Model[]>
 
   findModelById(modelId: ModelId): Model
@@ -48,6 +61,8 @@ export interface RecordsContext {
   loadingState(): Readable<LoadingState>
 
   allEventSourcedModels(): Readable<EventSourcedModel[]>
+
+  getDataRecordPathParentElements(): DataRecordPathParentElement[]
 }
 
 async function addNestedModelFn(
@@ -75,9 +90,11 @@ async function addNestedModelFn(
 export class RootRecordsContext implements RecordsContext {
   constructor(
     private readonly backend: Backend,
+    private readonly systemConfigurationProvider: () => SystemConfiguration,
     private readonly _onError: (error: JustErrorMessage) => void,
     private readonly _modelId: ModelId,
     private readonly _allEventSourcedModels: Writable<EventSourcedModel[]>,
+    private readonly _focus = gettableWritable(emptyDataTableFocus(() => this._records.get())),
     private readonly _model = derived(_allEventSourcedModels, (models) =>
       mandatory(
         models.find((model) => model.model.id.value === _modelId.value),
@@ -85,7 +102,7 @@ export class RootRecordsContext implements RecordsContext {
       ),
     ),
     private readonly _loadingState = writable('loading' as LoadingState),
-    private readonly _records = writable([] as DataRecord[]),
+    private readonly _records = gettableWritable([] as DataRecord[]),
     private _allModelCache: Model[] = [],
     private readonly _allModels = derived(_allEventSourcedModels, (models) => {
       this._allModelCache = models.map((m) => m.model)
@@ -93,8 +110,47 @@ export class RootRecordsContext implements RecordsContext {
     }),
   ) {}
 
+  _recordsProvider: () => DataRecord[] = () => this._records.get()
+
+  getDataRecordPathParentElements() {
+    return []
+  }
+
   modelId() {
     return this._modelId
+  }
+
+  getFocus(): Readable<DataTableFocus> {
+    return this._focus
+  }
+
+  getFocusControls(): DataTableFocusControls {
+    const focus = this._focus
+    const focusValue = focus.get()
+    const recordsProvider = this._recordsProvider
+    const models = this._allModelCache
+    const systemConfiguration = this.systemConfigurationProvider()
+
+    return {
+      keydown: (event: KeyboardEvent) => {
+        if (!focusValue.isEditing && event.key === 'Enter') {
+          focus.update((f) => f.beginEditing())
+        }
+      },
+      setFocus(rowIndex: number, slot: LeafModelSlot) {
+        focus.update((f) =>
+          f.setFocus(
+            rowIndex,
+            new DataRecordPathFocus(
+              models,
+              () => recordsProvider()[rowIndex],
+              systemConfiguration,
+              dataRecordValuePathFns.newInstance(slot),
+            ),
+          ),
+        )
+      },
+    }
   }
 
   findModelById(modelId: ModelId): Model {
@@ -160,6 +216,7 @@ export class RootRecordsContext implements RecordsContext {
     }
     return new NestedRecordsContext(
       this,
+      [...this.getDataRecordPathParentElements(), nestedModel],
       this._onError,
       this._allEventSourcedModels,
       this._allModels,
@@ -192,6 +249,7 @@ export class RootRecordsContext implements RecordsContext {
 export class NestedRecordsContext implements RecordsContext {
   constructor(
     private readonly parent: RecordsContext,
+    private readonly _parentElements: DataRecordPathParentElement[],
     private readonly _onError: (error: JustErrorMessage) => void,
     private readonly _allEventSourcedModels: Writable<EventSourcedModel[]>,
     private readonly _allModels: Readable<Model[]>,
@@ -206,6 +264,18 @@ export class NestedRecordsContext implements RecordsContext {
     ),
     private readonly _loadingState = writable('loading' as LoadingState),
   ) {}
+
+  getDataRecordPathParentElements() {
+    return this._parentElements
+  }
+
+  getFocus() {
+    return this.parent.getFocus()
+  }
+
+  getFocusControls(): DataTableFocusControls {
+    return this.parent.getFocusControls()
+  }
 
   modelId() {
     return this.nestedModel.modelId
@@ -255,6 +325,7 @@ export class NestedRecordsContext implements RecordsContext {
     }
     return new NestedRecordsContext(
       this,
+      [...this.getDataRecordPathParentElements(), nestedModel],
       this._onError,
       this._allEventSourcedModels,
       this._allModels,

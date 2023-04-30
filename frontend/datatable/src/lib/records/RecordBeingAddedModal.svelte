@@ -34,7 +34,6 @@
         dispatch('added', {newRecord})
         return outcome
     }
-
 </script>
 
 <div class="coz-modal" bind:this={modal}>

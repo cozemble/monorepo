@@ -19,7 +19,7 @@
     currentUserId.set(userId)
     allEventSourcedModels.set(models)
     systemConfigurationStore.set(systemConfiguration)
-    const navbarState: Writable<string | null> = writable(null)
+    export let navbarState: Writable<string | null> = writable(null)
 
     function showModel(modelId: ModelId) {
         navbarState.set(modelId.value)
