@@ -29,12 +29,17 @@
             focusControls.keydown(event)
         }
     }
+
+    async function handleDblClick() {
+        setFocus()
+        focusControls.beginEditing()
+    }
 </script>
 
 <svelte:window on:keydown={onKeydown}/>
 
 <td data-cell-index="{rowIndex}-{colIndex}" class="border border-base-300" class:focused={isFocused}
-    on:click={setFocus}>
+    on:click={setFocus} on:dblclick={handleDblClick}>
     {#if isFocused && isEditing}
         <SlotEdit systemConfiguration={$systemConfiguration} {parentPath} {modelSlot} {record}/>
     {:else}

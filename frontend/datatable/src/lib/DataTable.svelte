@@ -7,6 +7,9 @@
     import DataTableInner from "./DataTableInner.svelte";
     import type {Writable} from "svelte/store";
     import {writable} from "svelte/store";
+    import {onMount} from "svelte";
+    import {ModelReferenceEditor, ModelReferenceViewer} from "@cozemble/data-paginated-editor";
+    import {slotEditorRegistry, slotViewerRegistry} from "@cozemble/model-assembled";
 
     export let models: EventSourcedModel[]
     export let systemConfiguration: SystemConfiguration
@@ -16,6 +19,12 @@
     currentUserId.set(userId)
     allEventSourcedModels.set(models)
     systemConfigurationStore.set(systemConfiguration)
+
+    onMount(() => {
+        slotViewerRegistry.register('model.reference', ModelReferenceViewer)
+        slotEditorRegistry.register('model.reference', ModelReferenceEditor)
+
+    })
 </script>
 
 <DataTableInner {navbarState}/>
