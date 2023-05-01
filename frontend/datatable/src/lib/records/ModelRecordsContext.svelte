@@ -17,6 +17,7 @@
     import {makeRecordControls} from "./makeRecordControls";
     import {currentUserId} from "../stores/currentUserId";
     import {makeModelControls} from "./makeModelControls";
+    import {onDestroy} from "svelte";
 
     export let modelId: ModelId;
     const eventSourcedModel = derived(allEventSourcedModels, models => eventSourcedModelFns.findById(models, modelId))
@@ -52,6 +53,16 @@
             loaded.map((r) => eventSourcedDataRecordFns.fromRecord($allModels, r)),
         )
         loadingState.set('loaded')
+    })
+
+    const unsubAllEventSourcedModels = allModels.subscribe(models => {
+        eventSourcedRecords.update(records => {
+            return records.map(r => ({...r, models}))
+        })
+    })
+
+    onDestroy(() => {
+        unsubAllEventSourcedModels()
     })
 </script>
 <DataRecordEditorContext>
