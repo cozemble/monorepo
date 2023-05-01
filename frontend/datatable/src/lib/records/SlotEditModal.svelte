@@ -22,6 +22,7 @@
 
     const modelChangeHandler: ModelChangeHandler = {
         modelChanged(modelId: ModelId, action: ModelEvent) {
+            console.log({modelId, action, model, slot, models})
             model = eventSourcedModelFns.addEvent(model, action)
             slot = modelFns.elementById(model.model, slot.id.value) as ModelSlot
         }

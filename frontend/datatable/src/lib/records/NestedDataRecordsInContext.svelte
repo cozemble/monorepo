@@ -6,15 +6,17 @@
     import {derived} from "svelte/store";
     import {mandatory} from "@cozemble/lang-util";
     import WithNestedRecordsContext from "./WithNestedRecordsContext.svelte";
-    import {allModels} from "../stores/allModels";
+    import {allEventSourcedModels, allModels} from "../stores/allModels";
     import {modelFns} from "@cozemble/model-api";
     import {dataRecordFns} from "@cozemble/model-api";
+    import {eventSourcedModelFns} from "@cozemble/model-event-sourced/dist/esm";
 
     export let options: DataRecordsTableOptions
     export let record: DataRecord
     export let nestedModel: NestedModel
     export let parentPath: DataRecordPathParentElement[]
-    const model = derived(allModels, allModels => mandatory(modelFns.findById(allModels, nestedModel.modelId), `No model found for ${nestedModel.modelId.value}`))
+    const eventSourcedModel = derived(allEventSourcedModels, allModels => mandatory(eventSourcedModelFns.findById(allModels, nestedModel.modelId), `No model found for ${nestedModel.modelId.value}`))
+    const model = derived(eventSourcedModel, esm => esm.model)
     const oneOnly = nestedModel.cardinality === 'one'
     const records = modelRecordsContextFns.getRecords()
     const nestedRecords = derived(records, records => {
@@ -33,7 +35,7 @@
     })
 </script>
 
-<WithNestedRecordsContext records={nestedRecords} {model}>
+<WithNestedRecordsContext records={nestedRecords} {eventSourcedModel} {model}>
     <h6 class="mb-2">{nestedModel.name.value}</h6>
     <DataRecordsTableInContext {options} {oneOnly} parentPath={[...parentPath, nestedModel]}/>
 </WithNestedRecordsContext>
