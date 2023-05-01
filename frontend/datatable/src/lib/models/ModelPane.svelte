@@ -4,8 +4,9 @@
     import {defaultOnError, rootRecordsContext} from "../appBackend";
     import {modelIdFns} from "@cozemble/model-api";
     import {onMount} from "svelte";
-    import DataRecordsTable from "../records/DataRecordsTable.svelte";
     import {systemConfiguration} from "../stores/systemConfiguration";
+    import DataRecordsTableInContext from "../records/DataRecordsTableInContext.svelte";
+    import ModelRecordsContext from "../records/ModelRecordsContext.svelte"
 
     export let modelId: string
     const model = mandatory($allModels.find(model => model.id.value === modelId), `Model with id ${modelId} not found`)
@@ -16,5 +17,7 @@
     })
 </script>
 <div class="mt-3">
-    <DataRecordsTable {context}/>
+    <ModelRecordsContext modelId={modelIdFns.newInstance(modelId)}>
+        <DataRecordsTableInContext/>
+    </ModelRecordsContext>
 </div>

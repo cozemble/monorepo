@@ -53,3 +53,15 @@ export interface DataTableFocusControls {
 
   moveForward(): void
 }
+
+export interface DataTableFocusControls2 {
+  setFocus(
+    rowIndex: number,
+    slot: LeafModelSlot,
+    parentElements: DataRecordPathParentElement[],
+  ): void
+
+  keydown(event: KeyboardEvent): void
+
+  moveForward(): void
+}

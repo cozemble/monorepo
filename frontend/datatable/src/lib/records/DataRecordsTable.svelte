@@ -73,14 +73,6 @@
         slotBeingEdited = null
     }
 
-    function toggleRecordExpand(record: DataRecord) {
-        if ($expandedRecordIds.some(id => id.value === record.id.value)) {
-            expandedRecordIds.update(ids => ids.filter(id => id.value !== record.id.value))
-        } else {
-            expandedRecordIds.update(ids => [...ids, record.id])
-        }
-    }
-
     function addRecord() {
         recordBeingAdded = {models: $allModels, model: $model.model, anchorElement: addRecordButton}
     }

@@ -1,23 +1,21 @@
 <script lang="ts">
-    import type {DataRecord, LeafModelSlot} from '@cozemble/model-core'
-    import {SlotView} from "@cozemble/data-paginated-editor";
+    import type {DataRecord, DataRecordPathParentElement, LeafModelSlot} from '@cozemble/model-core'
+    import {SlotEdit, SlotView} from "@cozemble/data-paginated-editor";
     import {systemConfiguration} from "../stores/systemConfiguration";
-    import type {DataTableFocusControls} from "../focus/DataTableFocus";
+    import type {DataTableFocusControls2} from "../focus/DataTableFocus";
     import {afterUpdate} from "svelte";
-    import SlotEdit from "@cozemble/data-paginated-editor/src/lib/SlotEdit.svelte";
-    import type {DataRecordPathParentElement} from "@cozemble/model-core";
 
     export let rowIndex: number
     export let colIndex: number
     export let record: DataRecord
     export let modelSlot: LeafModelSlot
-    export let focusControls: DataTableFocusControls
+    export let focusControls: DataTableFocusControls2
     export let isFocused: boolean
     export let isEditing: boolean
-    export let parentPath:DataRecordPathParentElement[]
+    export let parentPath: DataRecordPathParentElement[]
 
     function setFocus() {
-        focusControls.setFocus(rowIndex, modelSlot)
+        focusControls.setFocus(rowIndex, modelSlot, parentPath)
     }
 
     afterUpdate(() => console.log({isFocused, isEditing, name: modelSlot.name.value}))
