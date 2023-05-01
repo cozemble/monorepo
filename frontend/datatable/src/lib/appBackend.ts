@@ -2,17 +2,29 @@ import { type Backend, notImplementedBackend } from './backend/Backend'
 import type { EventSourcedModel } from '@cozemble/model-event-sourced'
 import type { JustErrorMessage } from '@cozemble/lang-util'
 import { RootRecordsContext } from './records/RecordsContext'
-import type { DataRecord, DataRecordId, ModelId } from '@cozemble/model-core'
+import type { DataRecord, DataRecordId, ModelId, SystemConfiguration } from '@cozemble/model-core'
 import type { Writable } from 'svelte/store'
 import type { AttachmentsManager, RecordSearcher } from '@cozemble/data-paginated-editor'
 import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
+import type { EventSourcedDataRecord } from '@cozemble/data-editor-sdk'
+import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 
-let backend = notImplementedBackend
+export let backend = notImplementedBackend
 
 export const backendFns = {
   setBackend: (newBackend: Backend) => {
     backend = newBackend
   },
+}
+
+export async function saveExistingRecord(
+  record: EventSourcedDataRecord,
+): Promise<RecordSaveOutcome> {
+  return backend.saveExistingRecord(record)
+}
+
+export async function getRecordsForModel(modelId: ModelId): Promise<DataRecord[]> {
+  return backend.getRecords(modelId)
 }
 
 export async function saveModel(model: EventSourcedModel): Promise<JustErrorMessage | null> {
@@ -24,11 +36,12 @@ export async function saveModels(models: EventSourcedModel[]): Promise<JustError
 }
 
 export function rootRecordsContext(
+  systemConfigurationProvider: () => SystemConfiguration,
   onError: (error: JustErrorMessage) => void,
   models: Writable<EventSourcedModel[]>,
   modelId: ModelId,
 ): RootRecordsContext {
-  return new RootRecordsContext(backend, onError, modelId, models)
+  return new RootRecordsContext(backend, systemConfigurationProvider, onError, modelId, models)
 }
 
 export const recordSearcher: RecordSearcher = {

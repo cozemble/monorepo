@@ -1,6 +1,6 @@
 import { writable, type Writable } from 'svelte/store'
 
-interface GettableWritable<T> extends Writable<T> {
+export interface GettableWritable<T> extends Writable<T> {
   get: () => T
 }
 

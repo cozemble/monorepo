@@ -1,39 +1,48 @@
 <script lang="ts">
-    import type {NestedRecordsContext, RecordsContext} from "./RecordsContext";
-    import type {Cardinality, DataRecord, Model, ModelSlot, NestedModel} from "@cozemble/model-core";
-    import {dataRecordIdFns, propertyDescriptors, propertyNameFns} from "@cozemble/model-core";
-    import type {RecordBeingAdded, RecordBeingEdited, SlotBeingEdited} from "./helperTypes";
-    import SlotEditModal from "./SlotEditModal.svelte";
-    import {tick} from "svelte";
-    import NestedDataRecords from "./NestedDataRecords.svelte";
-    import RecordBeingAddedModal from "./RecordBeingAddedModal.svelte";
+    import type {
+        Cardinality,
+        DataRecord,
+        DataRecordId,
+        DataRecordPathParentElement,
+        Model,
+        ModelSlot,
+        NestedModel
+    } from "@cozemble/model-core";
+    import type {RecordBeingEdited, SlotBeingEdited} from "./helperTypes";
     import SlotTh from "./SlotTh.svelte";
     import DataTd from "./DataTd.svelte";
     import AddSubItemDialogue from "./AddSubItemDialogue.svelte";
     import type {DataRecordsTableOptions} from "./DataRecordsTableOptions";
     import {dataRecordsTableOptions} from "./DataRecordsTableOptions";
-    import {systemConfiguration} from "../stores/systemConfiguration";
     import {introductionsState} from "../stores/introductions";
-    import RecordBeingEditedModal from "./RecordBeingEditedModal.svelte";
-    import type {DataRecordId} from "@cozemble/model-core/dist/esm";
     import ExpandCollapseButton from "./ExpandCollapseButton.svelte";
     import {writable} from "svelte/store";
-    import WithDataRecordEditorClient from "../models/WithDataRecordEditorClient.svelte";
+    import {allEventSourcedModels} from "../stores/allModels";
+    import {modelRecordsContextFns} from "./modelRecordsContextFns";
+    import NestedDataRecordsInContext from "./NestedDataRecordsInContext.svelte";
+    import WithSingleRecordContext from "./WithSingleRecordContext.svelte";
+    import {tick} from "svelte";
+    import {modelFns} from "@cozemble/model-api";
+    import SlotEditModal from "./SlotEditModal.svelte";
+    import {propertyDescriptors, propertyNameFns} from "@cozemble/model-core";
+    import {systemConfiguration} from "../stores/systemConfiguration";
+    import {dataRecordIdFns} from "@cozemble/model-core";
 
-    export let context: RecordsContext
     export let oneOnly = false
     export let options: DataRecordsTableOptions = dataRecordsTableOptions(true, true, true)
     export let expandedRecordIds = writable([] as DataRecordId[])
+    export let parentPath: DataRecordPathParentElement[] = []
+    const eventSourcedModel = modelRecordsContextFns.getEventSourcedModel()
+    const model = modelRecordsContextFns.getModel()
+    const records = modelRecordsContextFns.getRecords()
+    const focus = modelRecordsContextFns.getFocus()
+    const focusControls = modelRecordsContextFns.getFocusControls()
+    const dirtyRecords = modelRecordsContextFns.getDirtyRecords()
+    const recordControls = modelRecordsContextFns.getRecordControls()
+    const modelControls = modelRecordsContextFns.getModelControls()
 
-    const allEventSourcedModels = context.allEventSourcedModels()
-    const allModels = context.allModels()
-    const model = context.model()
-    const records = context.records()
-    const dirtyRecords = context.getDirtyRecords()
-    const focus = context.getFocus()
-    const focusControls = context.getFocusControls()
     let slotBeingEdited: SlotBeingEdited | null = null
-    let recordBeingAdded: RecordBeingAdded | null = null
+    let recordBeingAdded: DataRecord | null = null
     let recordBeingEdited: RecordBeingEdited | null = null
     let recordHavingSubItemAdded: string | null = null
     let addRecordButton: HTMLElement
@@ -47,42 +56,51 @@
         if (!anchorElement) {
             return
         }
-        slotBeingEdited = {models: $allEventSourcedModels, model: $model, slot, anchorElement}
+        slotBeingEdited = {models: $allEventSourcedModels, model: $eventSourcedModel, slot, anchorElement}
     }
 
     async function addSlotToModel() {
-        const fieldName = `Field ${$model.model.slots.length + 1}`
+        const fieldName = `Field ${$model.slots.length + 1}`
 
-        await context.updateModel(
-            $model.model.id,
+        await modelControls.updateModel(
+            $model.id,
             propertyDescriptors
                 .getDefault()
-                .newProperty($systemConfiguration, $model.model.id, propertyNameFns.newInstance(fieldName)),
+                .newProperty($systemConfiguration, $model.id, propertyNameFns.newInstance(fieldName)),
         )
         await tick()
-        const element = document.querySelector(`th#field-${$model.model.slots.length}`) as HTMLElement
+        const element = document.querySelector(`th#field-${$model.slots.length}`) as HTMLElement
         if (element) {
-            const slot = $model.model.slots[$model.model.slots.length - 1]
-            slotBeingEdited = {models: $allEventSourcedModels, model: $model, slot, anchorElement: element}
+            const slot = $model.slots[$model.slots.length - 1]
+            slotBeingEdited = {models: $allEventSourcedModels, model: $eventSourcedModel, slot, anchorElement: element}
         }
     }
 
     async function modelEdited(event: CustomEvent) {
         const edited = event.detail.model
-        await context.modelEdited(edited)
+        await modelControls.modelEdited(edited)
         slotBeingEdited = null
     }
 
-    function addRecord() {
-        recordBeingAdded = {models: $allModels, model: $model.model, anchorElement: addRecordButton}
+    async function addRecord() {
+        expandRecord(recordControls.addNewRecord())
+        await tick()
+        const lastRowIndex = $records.length - 1
+        const firstEditableSlot = modelFns.properties($model)[0]
+        if(firstEditableSlot) {
+            focusControls.setFocus(lastRowIndex, firstEditableSlot, [])
+            focusControls.beginEditing()
+        }
+        // recordBeingAdded = dataRecordFns.newInstance($model, $currentUserId)
+        // recordBeingAdded = {models: $allModels, model: $model.model, anchorElement: addRecordButton}
     }
 
     async function onNewRecordAdded(_event: CustomEvent) {
-        recordBeingAdded = null
+        // recordBeingAdded = null
     }
 
     function makeNestedContext(record: DataRecord, nestedModel: NestedModel) {
-        return context.nestedContext(record, nestedModel) as NestedRecordsContext
+        // return context.nestedContext(record, nestedModel) as NestedRecordsContext
     }
 
     async function addNestedRecord(event: CustomEvent) {
@@ -97,8 +115,8 @@
         expandedRecordIds.update((ids: DataRecordId[]) => [...ids, id])
     }
 
-    async function addNestedModel(model: Model, cardinality: Cardinality) {
-        await context.addNestedModel(model, cardinality)
+    async function addNestedModel(child: Model, cardinality: Cardinality) {
+        await modelControls.addNestedModel($eventSourcedModel,child, cardinality)
         if (recordHavingSubItemAdded) {
             expandRecord(dataRecordIdFns.newInstance(recordHavingSubItemAdded))
             recordHavingSubItemAdded = null
@@ -112,13 +130,18 @@
     function isDirtyRecord(dirtyRecordIds: DataRecordId[], record: DataRecord) {
         return dirtyRecordIds.some(dirtyRecordId => dirtyRecordId.value === record.id.value)
     }
+
+    async function save(record: DataRecord) {
+        await recordControls.saveRecord(record.id)
+    }
+
 </script>
 
 
 <table class="table">
     <thead>
     <tr>
-        {#each $model.model.slots as slot, index}
+        {#each $model.slots as slot, index}
             <SlotTh {slot} {index} {editSlot} permitModelEditing={options.permitModelEditing}/>
         {/each}
         {#if options.permitModelEditing}
@@ -141,13 +164,13 @@
     </thead>
     <tbody>
     {#each $records as record, rowIndex}
-        <WithDataRecordEditorClient {context} {record}>
+        <WithSingleRecordContext {record} {rowIndex} let:rootRecordIndex={rootRecordIndex}>
             <tr>
-                {#each $model.model.slots as slot, colIndex}
+                {#each $model.slots as slot, colIndex}
                     {#if slot._type === 'property' || slot._type === 'model.reference'}
                         <DataTd {rowIndex} {colIndex} {record} modelSlot={slot}
-                                parentPath={context.getDataRecordPathParentElements()}
-                                isFocused={$focus.isFocused(rowIndex, context.getDataRecordPathParentElements(), slot)}
+                                {parentPath}
+                                isFocused={$focus.isFocused(rootRecordIndex, parentPath, slot)}
                                 isEditing={$focus.isEditing} {focusControls}/>
                     {:else}
                         <td>To do: {slot._type}</td>
@@ -160,13 +183,13 @@
                     <td class="border  border-base-300">
                         <div class="flex items-center">
                             {#if isDirtyRecord($dirtyRecords, record)}
-                                <button class="btn btn-primary btn-sm  mr-2" on:click={() => alert("to do")}>Save
+                                <button class="btn btn-primary btn-sm  mr-2" on:click={() => save(record)}>Save
                                 </button>
                                 <button class="btn btn-sm  mr-2" on:click={() => alert("to do")}>Cancel
                                 </button>
-                                <ExpandCollapseButton {expandedRecordIds} model={$model.model} {record}/>
+                                <ExpandCollapseButton {expandedRecordIds} model={$model} {record}/>
                             {:else}
-                                <ExpandCollapseButton {expandedRecordIds} model={$model.model} {record}/>
+                                <ExpandCollapseButton {expandedRecordIds} model={$model} {record}/>
                                 {#if !oneOnly}
                                     <button class="btn btn-ghost btn-active btn-sm  mr-2"
                                             on:click={() => alert("to do")}>
@@ -191,13 +214,12 @@
                 {/if}
             </tr>
             {#if $expandedRecordIds.some(id => id.value === record.id.value)}
-                {#if $model.model.nestedModels.length > 0}
+                {#if $model.nestedModels.length > 0}
                     <tr>
-                        <td class="border border-base-300" colspan={$model.model.slots.length + 2}>
+                        <td class="border border-base-300" colspan={$model.slots.length + 2}>
                             <div class="nested-border border border-2 p-3">
-                                {#each $model.model.nestedModels as nestedModel}
-                                    {@const nestedContext = makeNestedContext(record, nestedModel)}
-                                    <NestedDataRecords {nestedContext} {options}/>
+                                {#each $model.nestedModels as nestedModel}
+                                    <NestedDataRecordsInContext {record} {nestedModel} {options} {parentPath}/>
                                 {/each}
                             </div>
                         </td>
@@ -206,21 +228,21 @@
             {/if}
             {#if recordHavingSubItemAdded === record.id.value}
                 <tr>
-                    <td class="border border-base-300" colspan={$model.model.slots.length + 2}>
+                    <td class="border border-base-300" colspan={$model.slots.length + 2}>
                         <AddSubItemDialogue showIntro={$introductionsState.subItemsIntroduction === null}
                                             on:addNestedRecord={addNestedRecord} on:addNestedTable={addNestedTable}/>
                     </td>
                 </tr>
             {/if}
-        </WithDataRecordEditorClient>
+        </WithSingleRecordContext>
     {/each}
     </tbody>
 </table>
 
 <div class="mt-2">
-    {#if !oneOnly && $model.model.slots.length > 0}
+    {#if !oneOnly && $model.slots.length > 0}
         <button class="btn btn-primary" bind:this={addRecordButton} on:click={addRecord}>
-            Add {$model.model.name.value}</button>
+            Add {$model.name.value}</button>
     {/if}
 </div>
 
@@ -228,12 +250,4 @@
 {#if slotBeingEdited}
     <SlotEditModal {slotBeingEdited}
                    on:close={() => slotBeingEdited = null} on:edited={modelEdited}/>
-{/if}
-{#if recordBeingAdded}
-    <RecordBeingAddedModal recordsContext={context} {recordBeingAdded} on:added={onNewRecordAdded}
-                           on:cancel={() => recordBeingAdded = null}/>
-{/if}
-{#if recordBeingEdited}
-    <RecordBeingEditedModal recordsContext={context} {recordBeingEdited} on:edited={onNewRecordEdited}
-                            on:cancel={() => recordBeingEdited = null}/>
 {/if}

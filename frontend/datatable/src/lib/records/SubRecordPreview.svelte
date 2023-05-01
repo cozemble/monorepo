@@ -36,7 +36,7 @@
     const recordMap = new Map<string, DataRecord[]>()
     recordMap.set(model.id.value, [sampleRecord])
     const backend = new InMemoryBackend(modelMap, recordMap)
-    const sampleRecordsContext = new RootRecordsContext(backend, defaultOnError,model.id, writable(eventSourcedModels))
+    const sampleRecordsContext = new RootRecordsContext(backend, () => $systemConfiguration,defaultOnError,model.id, writable(eventSourcedModels))
 
     onMount(async () => {
         await sampleRecordsContext.loadRecords()
@@ -53,7 +53,7 @@
         <div class="tooltip tooltip-open tooltip-accent" data-tip="Preview of your sub-record">
             <div class="disabled-content border border-info rounded p-2 flex flex-col items-start">
                 <h6>{model.name.value}</h6>
-                <DataRecordsTable context={sampleRecordsContext} expandedRecordId={sampleRecord.id.value}
+                <DataRecordsTable context={sampleRecordsContext} expandedRecordIds={writable([sampleRecord.id])}
                                   oneOnly={true}/>
 
             </div>

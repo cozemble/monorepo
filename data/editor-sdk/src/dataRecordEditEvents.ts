@@ -6,9 +6,11 @@ import type {
   ModelId,
 } from '@cozemble/model-core'
 import { NestedModel } from '@cozemble/model-core'
+import { timestampEpochMillis, TimestampEpochMillis } from '@cozemble/model-core/dist/esm'
 
 export interface DataRecordCreatedEvent {
   _type: 'data.record.created'
+  timestamp: TimestampEpochMillis
   modelId: ModelId
   recordId: DataRecordId
   creatorId: string
@@ -21,6 +23,7 @@ function dataRecordCreatedEvent(
 ): DataRecordCreatedEvent {
   return {
     _type: 'data.record.created',
+    timestamp: timestampEpochMillis(),
     modelId,
     recordId,
     creatorId,
@@ -29,6 +32,7 @@ function dataRecordCreatedEvent(
 
 export interface DataRecordDeletedEvent {
   _type: 'data.record.deleted'
+  timestamp: TimestampEpochMillis
   modelId: ModelId
   recordId: DataRecordId
   deleterId: string
@@ -41,6 +45,7 @@ export function dataRecordDeletedEvent(
 ): DataRecordDeletedEvent {
   return {
     _type: 'data.record.deleted',
+    timestamp: timestampEpochMillis(),
     modelId,
     recordId,
     deleterId,
@@ -62,6 +67,7 @@ export interface DataRecordEditMoveFocus {
 
 export interface DataRecordValueChanged<T = any> {
   _type: 'data.record.value.changed'
+  timestamp: TimestampEpochMillis
   record: DataRecord
   path: DataRecordValuePath
   oldValue: T | null
@@ -71,6 +77,7 @@ export interface DataRecordValueChanged<T = any> {
 
 export interface HasManyItemAdded {
   _type: 'data.record.has.many.item.added'
+  timestamp: TimestampEpochMillis
   record: DataRecord
   parentPath: DataRecordPathParentElement[]
   nestedModel: NestedModel
@@ -118,6 +125,8 @@ export const dataRecordEditEvents = {
   ): DataRecordValueChanged<T> {
     return {
       _type: 'data.record.value.changed',
+      timestamp: timestampEpochMillis(),
+
       record,
       path,
       oldValue,
@@ -133,6 +142,7 @@ export const dataRecordEditEvents = {
   ): HasManyItemAdded {
     return {
       _type: 'data.record.has.many.item.added',
+      timestamp: timestampEpochMillis(),
       record,
       parentPath,
       nestedModel,

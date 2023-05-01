@@ -39,7 +39,7 @@
     const recordMap = new Map<string, DataRecord[]>()
     recordMap.set(model.id.value, records)
     const backend = new InMemoryBackend(modelMap, recordMap)
-    const sampleRecordsContext = new RootRecordsContext(backend, defaultOnError,model.id, writable(eventSourcedModels))
+    const sampleRecordsContext = new RootRecordsContext(backend, () => $systemConfiguration,defaultOnError,model.id, writable(eventSourcedModels))
 
     onMount(async () => {
         await sampleRecordsContext.loadRecords()

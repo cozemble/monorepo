@@ -1,10 +1,14 @@
 import type {
   Cardinality,
   DataRecord,
+  DataRecordId,
+  DataRecordPathParentElement,
+  LeafModelSlot,
   Model,
   ModelEvent,
   ModelId,
   NestedModel,
+  SystemConfiguration,
 } from '@cozemble/model-core'
 import { modelIdAndNameFns, nestedModelNameFns } from '@cozemble/model-core'
 import type { Backend } from '../backend/Backend'
@@ -14,9 +18,16 @@ import { coreModelEvents, eventSourcedModelFns } from '@cozemble/model-event-sou
 import type { JustErrorMessage } from '@cozemble/lang-util'
 import { mandatory } from '@cozemble/lang-util'
 import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
-import { recordSaveSucceeded } from '@cozemble/data-paginated-editor'
-import type { EventSourcedDataRecord } from '@cozemble/data-editor-sdk'
-import { dataRecordFns, modelFns } from '@cozemble/model-api'
+import { DataRecordPathFocus, recordSaveSucceeded } from '@cozemble/data-paginated-editor'
+import type { DataRecordEditEvent, EventSourcedDataRecord } from '@cozemble/data-editor-sdk'
+import { dataRecordFns, dataRecordValuePathFns, modelFns } from '@cozemble/model-api'
+import {
+  DataTableFocus,
+  type DataTableFocusControls,
+  emptyDataTableFocus,
+} from '../focus/DataTableFocus'
+import { gettableWritable } from '../editors/GettableWritable'
+import { eventSourcedDataRecordFns } from '@cozemble/data-editor-sdk'
 
 export type LoadingState = 'loading' | 'loaded'
 
@@ -28,6 +39,8 @@ export interface RecordsContext {
   saveExistingRecord(record: EventSourcedDataRecord): Promise<RecordSaveOutcome>
 
   updateModel(modelId: ModelId, event: ModelEvent): Promise<void>
+
+  updateRecord(recordId: DataRecordId, event: DataRecordEditEvent): void
 
   modelEdited(model: EventSourcedModel): Promise<void>
 
@@ -41,6 +54,10 @@ export interface RecordsContext {
 
   model(): Readable<EventSourcedModel>
 
+  getFocus(): Readable<DataTableFocus>
+
+  getFocusControls(): DataTableFocusControls
+
   allModels(): Readable<Model[]>
 
   findModelById(modelId: ModelId): Model
@@ -48,6 +65,10 @@ export interface RecordsContext {
   loadingState(): Readable<LoadingState>
 
   allEventSourcedModels(): Readable<EventSourcedModel[]>
+
+  getDataRecordPathParentElements(): DataRecordPathParentElement[]
+
+  getDirtyRecords(): Readable<DataRecordId[]>
 }
 
 async function addNestedModelFn(
@@ -75,9 +96,13 @@ async function addNestedModelFn(
 export class RootRecordsContext implements RecordsContext {
   constructor(
     private readonly backend: Backend,
+    private readonly systemConfigurationProvider: () => SystemConfiguration,
     private readonly _onError: (error: JustErrorMessage) => void,
     private readonly _modelId: ModelId,
     private readonly _allEventSourcedModels: Writable<EventSourcedModel[]>,
+    private readonly _focus = gettableWritable(
+      emptyDataTableFocus(() => this._records.get().map((r) => r.record)),
+    ),
     private readonly _model = derived(_allEventSourcedModels, (models) =>
       mandatory(
         models.find((model) => model.model.id.value === _modelId.value),
@@ -85,16 +110,77 @@ export class RootRecordsContext implements RecordsContext {
       ),
     ),
     private readonly _loadingState = writable('loading' as LoadingState),
-    private readonly _records = writable([] as DataRecord[]),
+    private readonly _records = gettableWritable([] as EventSourcedDataRecord[]),
     private _allModelCache: Model[] = [],
     private readonly _allModels = derived(_allEventSourcedModels, (models) => {
       this._allModelCache = models.map((m) => m.model)
       return this._allModelCache
     }),
+    private readonly _recordStore = derived(_records, (records) => records.map((r) => r.record)),
+    private readonly recordSaveTimestamps = new Map<string, number>(),
+    private readonly dirtyRecords = derived(_records, (records) =>
+      records
+        .filter((r) => {
+          const lastSaveTimestamp = recordSaveTimestamps.get(r.record.id.value) ?? 0
+          return r.events.some((e) => e.timestamp.value > lastSaveTimestamp)
+        })
+        .map((r) => r.record.id),
+    ),
   ) {}
+
+  _recordsProvider: () => DataRecord[] = () => this._records.get().map((r) => r.record)
+
+  getDataRecordPathParentElements() {
+    return []
+  }
+
+  getDirtyRecords(): Readable<DataRecordId[]> {
+    return this.dirtyRecords
+  }
 
   modelId() {
     return this._modelId
+  }
+
+  getFocus(): Readable<DataTableFocus> {
+    return this._focus
+  }
+
+  getFocusControls(): DataTableFocusControls {
+    const focus = this._focus
+    const focusValue = focus.get()
+    const recordsProvider = this._recordsProvider
+    const models = this._allModelCache
+    const systemConfiguration = this.systemConfigurationProvider()
+
+    return {
+      keydown: (event: KeyboardEvent) => {
+        if (!focusValue.isEditing && event.key === 'Enter') {
+          event.stopPropagation()
+          event.preventDefault()
+          focus.update((f) => f.beginEditing())
+        }
+      },
+      setFocus(rowIndex: number, slot: LeafModelSlot) {
+        focus.update((f) =>
+          f.setFocus(
+            rowIndex,
+            new DataRecordPathFocus(
+              models,
+              () => recordsProvider()[rowIndex],
+              systemConfiguration,
+              dataRecordValuePathFns.newInstance(slot),
+            ),
+          ),
+        )
+      },
+      moveForward() {
+        focus.update((f) => f.moveForward())
+      },
+      beginEditing() {
+        focus.update((f) => f.beginEditing())
+      },
+    }
   }
 
   findModelById(modelId: ModelId): Model {
@@ -112,14 +198,16 @@ export class RootRecordsContext implements RecordsContext {
   async loadRecords(): Promise<void> {
     this._loadingState.set('loading')
     const loaded = await this.backend.getRecords(this.modelId())
-    this._records.set(loaded)
+    this._records.set(
+      loaded.map((r) => eventSourcedDataRecordFns.fromRecord(this._allModelCache, r)),
+    )
     this._loadingState.set('loaded')
   }
 
   async saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
     const outcome = await this.backend.saveNewRecord(newRecord)
     if (outcome._type === 'record.save.succeeded') {
-      this._records.update((records) => [...records, outcome.record])
+      this._records.update((records) => [...records, newRecord])
     }
     return outcome
   }
@@ -128,7 +216,7 @@ export class RootRecordsContext implements RecordsContext {
     const outcome = await this.backend.saveExistingRecord(record)
     if (outcome._type === 'record.save.succeeded') {
       this._records.update((records) =>
-        records.map((r) => (r.id.value === record.record.id.value ? record.record : r)),
+        records.map((r) => (r.record.id.value === record.record.id.value ? record : r)),
       )
     }
     return outcome
@@ -139,6 +227,22 @@ export class RootRecordsContext implements RecordsContext {
       const model = eventSourcedModelFns.findById(models, modelId)
       const mutated = eventSourcedModelFns.addEvent(model, event)
       return models.map((model) => (model.model.id.value === modelId.value ? mutated : model))
+    })
+  }
+
+  updateRecord(recordId: DataRecordId, event: DataRecordEditEvent): void {
+    console.log({ recordId, event })
+    this._records.update((records) => {
+      const record = records.find((r) => r.record.id.value === recordId.value)
+      if (record === undefined) {
+        throw new Error(`Record ${recordId} not found`)
+      }
+      const mutated = eventSourcedDataRecordFns.addEvent(
+        this.systemConfigurationProvider(),
+        event,
+        record,
+      )
+      return records.map((r) => (r.record.id.value === recordId.value ? mutated : r))
     })
   }
 
@@ -160,6 +264,7 @@ export class RootRecordsContext implements RecordsContext {
     }
     return new NestedRecordsContext(
       this,
+      [...this.getDataRecordPathParentElements(), nestedModel],
       this._onError,
       this._allEventSourcedModels,
       this._allModels,
@@ -169,7 +274,7 @@ export class RootRecordsContext implements RecordsContext {
   }
 
   records(): Readable<DataRecord[]> {
-    return this._records
+    return this._recordStore
   }
 
   model(): Readable<EventSourcedModel> {
@@ -192,6 +297,7 @@ export class RootRecordsContext implements RecordsContext {
 export class NestedRecordsContext implements RecordsContext {
   constructor(
     private readonly parent: RecordsContext,
+    private readonly _parentElements: DataRecordPathParentElement[],
     private readonly _onError: (error: JustErrorMessage) => void,
     private readonly _allEventSourcedModels: Writable<EventSourcedModel[]>,
     private readonly _allModels: Readable<Model[]>,
@@ -206,6 +312,22 @@ export class NestedRecordsContext implements RecordsContext {
     ),
     private readonly _loadingState = writable('loading' as LoadingState),
   ) {}
+
+  getDirtyRecords(): Readable<DataRecordId[]> {
+    return this.parent.getDirtyRecords()
+  }
+
+  getDataRecordPathParentElements() {
+    return this._parentElements
+  }
+
+  getFocus() {
+    return this.parent.getFocus()
+  }
+
+  getFocusControls(): DataTableFocusControls {
+    return this.parent.getFocusControls()
+  }
 
   modelId() {
     return this.nestedModel.modelId
@@ -239,6 +361,11 @@ export class NestedRecordsContext implements RecordsContext {
     return this.parent.updateModel(modelId, event)
   }
 
+  updateRecord(recordId: DataRecordId, event: DataRecordEditEvent): void {
+    console.log({ recordId, event })
+    return this.parent.updateRecord(recordId, event)
+  }
+
   async modelEdited(model: EventSourcedModel): Promise<void> {
     return this.parent.modelEdited(model)
   }
@@ -255,6 +382,7 @@ export class NestedRecordsContext implements RecordsContext {
     }
     return new NestedRecordsContext(
       this,
+      [...this.getDataRecordPathParentElements(), nestedModel],
       this._onError,
       this._allEventSourcedModels,
       this._allModels,
