@@ -32,6 +32,7 @@
     const focus = modelRecordsContextFns.getFocus()
     const focusControls = modelRecordsContextFns.getFocusControls()
     const dirtyRecords = modelRecordsContextFns.getDirtyRecords()
+    const recordControls = modelRecordsContextFns.getRecordControls()
 
     let slotBeingEdited: SlotBeingEdited | null = null
     let recordBeingAdded: RecordBeingAdded | null = null
@@ -113,6 +114,10 @@
     function isDirtyRecord(dirtyRecordIds: DataRecordId[], record: DataRecord) {
         return dirtyRecordIds.some(dirtyRecordId => dirtyRecordId.value === record.id.value)
     }
+
+    async function save(record:DataRecord) {
+        await recordControls.saveRecord(record.id)
+    }
 </script>
 
 
@@ -161,7 +166,7 @@
                 <td class="border  border-base-300">
                     <div class="flex items-center">
                         {#if isDirtyRecord($dirtyRecords, record)}
-                            <button class="btn btn-primary btn-sm  mr-2" on:click={() => alert("to do")}>Save
+                            <button class="btn btn-primary btn-sm  mr-2" on:click={() => save(record)}>Save
                             </button>
                             <button class="btn btn-sm  mr-2" on:click={() => alert("to do")}>Cancel
                             </button>

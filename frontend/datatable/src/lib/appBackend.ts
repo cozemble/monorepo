@@ -6,13 +6,21 @@ import type { DataRecord, DataRecordId, ModelId, SystemConfiguration } from '@co
 import type { Writable } from 'svelte/store'
 import type { AttachmentsManager, RecordSearcher } from '@cozemble/data-paginated-editor'
 import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
+import type { EventSourcedDataRecord } from '@cozemble/data-editor-sdk'
+import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 
-let backend = notImplementedBackend
+export let backend = notImplementedBackend
 
 export const backendFns = {
   setBackend: (newBackend: Backend) => {
     backend = newBackend
   },
+}
+
+export async function saveExistingRecord(
+  record: EventSourcedDataRecord,
+): Promise<RecordSaveOutcome> {
+  return backend.saveExistingRecord(record)
 }
 
 export async function getRecordsForModel(modelId: ModelId): Promise<DataRecord[]> {
