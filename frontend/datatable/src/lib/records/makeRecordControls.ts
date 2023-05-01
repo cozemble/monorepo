@@ -10,6 +10,9 @@ export function makeRecordControls(
   lastSavedByRecordId: Writable<Map<string, number>>,
 ): RecordControls {
   return {
+    addNewRecord(): DataRecordId {
+      return records.addNewRecord()
+    },
     async saveRecord(recordId: DataRecordId) {
       const record = mandatory(
         records.get().find((r) => r.record.id.value === recordId.value),

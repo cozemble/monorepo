@@ -4,14 +4,21 @@ import type { DataRecordEditEvent, EventSourcedDataRecord } from '@cozemble/data
 import type { DataRecordId } from '@cozemble/model-core'
 import { eventSourcedDataRecordFns } from '@cozemble/data-editor-sdk'
 import type { SystemConfiguration } from '@cozemble/model-core'
+import type { Model } from '@cozemble/model-core'
+import { dataRecordFns } from '@cozemble/model-api/dist/esm'
 
 export interface EventSourcedDataRecordsStore extends GettableWritable<EventSourcedDataRecord[]> {
   updateRecord(recordId: DataRecordId, event: DataRecordEditEvent): void
+
+  addNewRecord(): DataRecordId
 }
 
 class EventSourcedDataRecordsStoreImpl implements EventSourcedDataRecordsStore {
   constructor(
     private readonly systemConfigurationProvider: () => SystemConfiguration,
+    private readonly allModelsProvider: () => Model[],
+    private readonly modelProvider: () => Model,
+    private readonly currentUser: string,
     private readonly underlying: GettableWritable<EventSourcedDataRecord[]>,
   ) {}
 
@@ -42,18 +49,31 @@ class EventSourcedDataRecordsStoreImpl implements EventSourcedDataRecordsStore {
         event,
         record,
       )
-      console.log({ record, mutated })
       return records.map((r) => (r.record.id.value === recordId.value ? mutated : r))
     })
+  }
+
+  addNewRecord(): DataRecordId {
+    const model = this.modelProvider()
+    const newRecord = dataRecordFns.newInstance(model, this.currentUser)
+    const record = eventSourcedDataRecordFns.fromRecord(this.allModelsProvider(), newRecord)
+    this.update((records) => [...records, record])
+    return newRecord.id
   }
 }
 
 export function eventSourcedDataRecordsStore(
   systemConfigurationProvider: () => SystemConfiguration,
+  allModelsProvider: () => Model[],
+  modelProvider: () => Model,
+  currentUser: string,
   initialRecords: EventSourcedDataRecord[] = [],
 ): EventSourcedDataRecordsStore {
   return new EventSourcedDataRecordsStoreImpl(
     systemConfigurationProvider,
+    allModelsProvider,
+    modelProvider,
+    currentUser,
     gettableWritable(initialRecords),
   )
 }

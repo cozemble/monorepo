@@ -177,6 +177,9 @@ export class RootRecordsContext implements RecordsContext {
       moveForward() {
         focus.update((f) => f.moveForward())
       },
+      beginEditing() {
+        focus.update((f) => f.beginEditing())
+      },
     }
   }
 

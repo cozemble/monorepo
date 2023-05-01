@@ -30,7 +30,6 @@ export function makeFocusControls(
         dataRecordValuePathFns.newInstance(slot, ...parentElements),
       )
       focus.update((currentFocus) => {
-        const path = dataRecordValuePathFns.newInstance(slot, ...parentElements)
         return currentFocus.setFocus(rowIndex, newFocus)
       })
     },
@@ -46,6 +45,10 @@ export function makeFocusControls(
 
     moveForward(): void {
       focus.update((f) => f.moveForward())
+    },
+
+    beginEditing() {
+      focus.update((f) => f.beginEditing())
     },
   }
 }

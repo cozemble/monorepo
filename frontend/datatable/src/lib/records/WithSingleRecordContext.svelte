@@ -5,6 +5,7 @@
     import {modelRecordsContextFns} from "./modelRecordsContextFns";
 
     export let record: DataRecord
+    export let rowIndex: number
 
     const maybeExisting = getContext('com.cozemble.data.record.editor.client.context')
     if (!maybeExisting) {
@@ -13,5 +14,12 @@
         setContext('com.cozemble.data.record.editor.client.context', dataRecordEditorClient)
     }
 
+    let rootRecordIndex = getContext('single.record.context.root.record.index') as number
+    if(rootRecordIndex === undefined) {
+        rootRecordIndex = rowIndex
+        setContext('single.record.context.root.record.index', rootRecordIndex)
+
+    }
+
 </script>
-<slot></slot>
+<slot {rootRecordIndex}></slot>

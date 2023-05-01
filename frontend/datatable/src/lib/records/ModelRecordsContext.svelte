@@ -15,11 +15,12 @@
     import DataRecordEditorContext from "./DataRecordEditorContext.svelte";
     import {eventSourcedDataRecordsStore} from "./EventSourcedDataRecordsStore";
     import {makeRecordControls} from "./makeRecordControls";
+    import {currentUserId} from "../stores/currentUserId";
 
     export let modelId: ModelId;
     const eventSourcedModel = derived(allEventSourcedModels, models => eventSourcedModelFns.findById(models, modelId))
     const model = derived(eventSourcedModel, model => model.model)
-    const eventSourcedRecords = eventSourcedDataRecordsStore(() => $systemConfiguration)
+    const eventSourcedRecords = eventSourcedDataRecordsStore(() => $systemConfiguration, () => $allModels, () => $model, $currentUserId)
     const records = derived(eventSourcedRecords, records => records.map(record => record.record))
     const focus = gettableWritable(emptyDataTableFocus(() => eventSourcedRecords.get().map((r) => r.record)))
     const lastSavedByRecordId = writable(new Map<string, number>())

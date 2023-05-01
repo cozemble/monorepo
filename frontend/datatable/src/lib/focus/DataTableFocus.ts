@@ -52,6 +52,8 @@ export interface DataTableFocusControls {
   keydown(event: KeyboardEvent): void
 
   moveForward(): void
+
+  beginEditing(): void
 }
 
 export interface DataTableFocusControls2 {
@@ -64,4 +66,5 @@ export interface DataTableFocusControls2 {
   keydown(event: KeyboardEvent): void
 
   moveForward(): void
+  beginEditing(): void
 }
