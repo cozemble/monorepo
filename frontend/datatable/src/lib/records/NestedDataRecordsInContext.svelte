@@ -6,10 +6,9 @@
     import {derived} from "svelte/store";
     import {mandatory} from "@cozemble/lang-util";
     import WithNestedRecordsContext from "./WithNestedRecordsContext.svelte";
-    import {allEventSourcedModels, allModels} from "../stores/allModels";
-    import {modelFns} from "@cozemble/model-api";
+    import {allEventSourcedModels} from "../stores/allModels";
     import {dataRecordFns} from "@cozemble/model-api";
-    import {eventSourcedModelFns} from "@cozemble/model-event-sourced/dist/esm";
+    import {eventSourcedModelFns} from "@cozemble/model-event-sourced";
 
     export let options: DataRecordsTableOptions
     export let record: DataRecord
@@ -22,14 +21,14 @@
     const nestedRecords = derived(records, records => {
         const recordLatest = mandatory(records.find(r => r.id.value === record.id.value), `No record found for id ${record.id.value} in ${nestedModel.name.value}`)
         const maybeValue = recordLatest.values[nestedModel.id.value]
-        if(maybeValue) {
-            if(Array.isArray(maybeValue)) {
+        if (maybeValue) {
+            if (Array.isArray(maybeValue)) {
                 return maybeValue
             }
             return [maybeValue]
         }
-        if(oneOnly) {
-            return [dataRecordFns.newInstance($model,record.createdBy.value)]
+        if (oneOnly) {
+            return [dataRecordFns.newInstance($model, record.createdBy.value)]
         }
         return []
     })

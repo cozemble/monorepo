@@ -4,8 +4,8 @@ import type { ModelControls } from './ModelControls'
 import type { Writable } from 'svelte/store'
 import type { JustErrorMessage } from '@cozemble/lang-util'
 import type { Cardinality, Model, ModelEvent, ModelId } from '@cozemble/model-core'
-import { modelIdAndNameFns, nestedModelNameFns } from '@cozemble/model-core/dist/esm'
-import { coreModelEvents } from '@cozemble/model-event-sourced/dist/esm'
+import { modelIdAndNameFns, nestedModelNameFns } from '@cozemble/model-core'
+import { coreModelEvents } from '@cozemble/model-event-sourced'
 
 export function makeModelControls(
   eventSourcedModels: Writable<EventSourcedModel[]>,

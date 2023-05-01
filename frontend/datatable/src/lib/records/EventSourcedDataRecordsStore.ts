@@ -5,7 +5,7 @@ import type { DataRecordId } from '@cozemble/model-core'
 import { eventSourcedDataRecordFns } from '@cozemble/data-editor-sdk'
 import type { SystemConfiguration } from '@cozemble/model-core'
 import type { Model } from '@cozemble/model-core'
-import { dataRecordFns } from '@cozemble/model-api/dist/esm'
+import { dataRecordFns } from '@cozemble/model-api'
 
 export interface EventSourcedDataRecordsStore extends GettableWritable<EventSourcedDataRecord[]> {
   updateRecord(recordId: DataRecordId, event: DataRecordEditEvent): void

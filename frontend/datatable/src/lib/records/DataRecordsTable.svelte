@@ -15,7 +15,7 @@
     import {systemConfiguration} from "../stores/systemConfiguration";
     import {introductionsState} from "../stores/introductions";
     import RecordBeingEditedModal from "./RecordBeingEditedModal.svelte";
-    import type {DataRecordId} from "@cozemble/model-core/dist/esm";
+    import type {DataRecordId} from "@cozemble/model-core";
     import ExpandCollapseButton from "./ExpandCollapseButton.svelte";
     import {writable} from "svelte/store";
     import WithDataRecordEditorClient from "../models/WithDataRecordEditorClient.svelte";

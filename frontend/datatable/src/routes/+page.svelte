@@ -9,7 +9,6 @@
     import {registerEverything} from "@cozemble/model-assembled";
     import {onMount} from 'svelte'
     import {dataRecordFns, modelFns, modelOptions, propertyFns} from "@cozemble/model-api";
-    import {writable} from "svelte/store";
     import DataTable from "../lib/DataTable.svelte";
     import {nestedModelFns} from "@cozemble/model-api";
 

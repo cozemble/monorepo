@@ -6,7 +6,7 @@ import type {
   ModelId,
 } from '@cozemble/model-core'
 import { NestedModel } from '@cozemble/model-core'
-import { timestampEpochMillis, TimestampEpochMillis } from '@cozemble/model-core/dist/esm'
+import { timestampEpochMillis, TimestampEpochMillis } from '@cozemble/model-core'
 
 export interface DataRecordCreatedEvent {
   _type: 'data.record.created'
