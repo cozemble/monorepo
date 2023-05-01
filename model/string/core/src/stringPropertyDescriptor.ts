@@ -34,7 +34,7 @@ import { SystemConfiguration } from '@cozemble/model-core'
 export const stringPropertyDescriptor: PropertyDescriptor<StringProperty, string> = {
   _type: 'property.descriptor',
   propertyType: stringPropertyType,
-  name: { _type: 'dotted.name', value: 'String' },
+  name: { _type: 'dotted.name', value: 'Text' },
   isRequireable: true,
   isUniqueable: true,
   validateProperty,

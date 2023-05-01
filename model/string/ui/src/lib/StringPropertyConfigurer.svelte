@@ -31,16 +31,12 @@
     }
 </script>
 
-<label class="label">
-    <input
-            type="checkbox"
-            name="checkbox"
-            value="text"
-            checked={property.multiline}
-            class="multiline-toggle"
-            on:change={multilineChanged}/>
-    Multiple Lines
-</label>
+
+<div class="flex mt-3">
+    <input type="checkbox" checked={property.multiline} class="multiline-toggle checkbox"
+           on:change={multilineChanged}/>
+    <div class="ml-3">Multiple lines of text</div>
+</div>
 
 {#each property.validations as _validation, index}
     <div class="validation-container ml-9 px-5">
@@ -69,17 +65,13 @@
 {/each}
 <button
         type="button"
-        class="btn btn-secondary add-validation-button"
+        class="btn btn-secondary add-validation-button mt-3"
         on:click|preventDefault={addRegexValidation}>Add regex validation
 </button>
 
 <style>
     label {
         display: block;
-    }
-
-    .add-validation-button {
-        margin-top: 10px;
     }
 
     .validation-container {

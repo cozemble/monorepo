@@ -34,29 +34,19 @@
 </script>
 
 {#if propertyDescriptor?.isRequireable}
-    <label class="label">
-        <input
-                type="checkbox"
-                name="checkbox"
-                value="text"
-                checked={property.required}
-                class="required-toggle"
-                on:change={(event) => booleanChanged(event, 'required')}/>
-        Required
-    </label>
-
+    <div class="flex mt-3">
+        <input type="checkbox" checked={property.required} class="required-toggle checkbox"
+               on:change={(event) => booleanChanged(event, 'required')}/>
+        <div class="ml-3">Required</div>
+    </div>
 {/if}
 
 {#if propertyDescriptor?.isUniqueable}
-    <label class="label">
-        <input
-                type="checkbox"
-                name="checkbox"
-                value="text"
-                bind:checked={property.unique}
-                class="unique-toggle" on:change={(event) => booleanChanged(event, 'unique')}/>
-        Unique
-    </label>
+    <div class="flex mt-3">
+        <input type="checkbox" checked={property.unique} class="unique-toggle checkbox"
+               on:change={(event) => booleanChanged(event, 'unique')}/>
+        <div class="ml-3">Unique</div>
+    </div>
 {/if}
 
 {#if configurer}
