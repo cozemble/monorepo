@@ -15,6 +15,14 @@ export const propertyFns = {
   },
 }
 
+const required: PropertyOption = (property) => {
+  return { ...property, required: true }
+}
+
+const unique: PropertyOption = (property) => {
+  return { ...property, unique: true }
+}
+
 export const propertyOptions = {
   named(name: string | PropertyName): PropertyOption {
     return (property) => ({
@@ -22,4 +30,6 @@ export const propertyOptions = {
       name: typeof name === 'string' ? propertyNameFns.newInstance(name) : name,
     })
   },
+  required,
+  unique,
 }

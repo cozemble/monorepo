@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type {RecordBeingAdded} from "./helperTypes";
+    import type {RecordBeingAdded} from "./helpers";
     import {createEventDispatcher, onMount} from 'svelte'
     import {positionModal} from "../modelUi";
     import {RecordEditContext, type RecordSaveOutcome, StackingRecordEditor} from '@cozemble/data-paginated-editor'

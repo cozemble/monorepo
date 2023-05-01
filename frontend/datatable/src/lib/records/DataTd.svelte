@@ -3,7 +3,11 @@
     import {SlotEdit, SlotView} from "@cozemble/data-paginated-editor";
     import {systemConfiguration} from "../stores/systemConfiguration";
     import type {DataTableFocusControls2} from "../focus/DataTableFocus";
-    import {afterUpdate} from "svelte";
+    import {singleRecordErrorContext} from "./contextHelper";
+    import {getContext} from "svelte";
+    import MaybeDataTdError from "./MaybeDataTdError.svelte";
+    import {readable, type Readable} from "svelte/store";
+    import type {RecordErrorMap} from "./helpers";
 
     export let rowIndex: number
     export let colIndex: number
@@ -14,11 +18,11 @@
     export let isEditing: boolean
     export let parentPath: DataRecordPathParentElement[]
 
+    const errors = (getContext(singleRecordErrorContext) ?? readable(new Map())) as Readable<RecordErrorMap>
+
     function setFocus() {
         focusControls.setFocus(rowIndex, modelSlot, parentPath)
     }
-
-    afterUpdate(() => console.log({isFocused, isEditing, name: modelSlot.name.value}))
 
     function onKeydown(event: KeyboardEvent) {
         if (isFocused) {
@@ -36,6 +40,7 @@
     {:else}
         <SlotView systemConfiguration={$systemConfiguration} {record} {modelSlot}/>
     {/if}
+    <MaybeDataTdError errors={$errors} {modelSlot} {parentPath}/>
 </td>
 
 <style>

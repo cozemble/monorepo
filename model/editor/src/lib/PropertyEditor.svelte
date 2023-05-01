@@ -10,9 +10,7 @@
     export let property: Property
     $:propertyDescriptor = propertyDescriptors.get(property.propertyType) ?? null
 
-
     function onModelChangedEvent(event: CustomEvent) {
-        console.log({event})
         modelChangeHandler.modelChanged(model.id, event.detail)
     }
 
@@ -52,9 +50,3 @@
 {#if configurer}
     <svelte:component this={configurer} {model} {property} on:modelChanged={onModelChangedEvent}/>
 {/if}
-
-<style>
-    label {
-        display: block;
-    }
-</style>

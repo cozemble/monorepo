@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type {SlotBeingEdited} from "./helperTypes";
+    import type {SlotBeingEdited} from "./helpers";
     import {createEventDispatcher, onMount} from "svelte";
     import type {ModelChangeHandler} from "@cozemble/model-editor";
     import {ModelSlotEditor} from "@cozemble/model-editor";

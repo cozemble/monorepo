@@ -8,7 +8,7 @@
     import {emptyDataTableFocus} from "../focus/DataTableFocus";
     import {gettableWritable} from "../editors/GettableWritable";
     import {makeFocusControls} from "./makeFocusControls";
-    import {onMount} from "svelte";
+    import {onDestroy, onMount} from "svelte";
     import type {LoadingState} from "./RecordsContext";
     import {getRecordsForModel} from "../appBackend";
     import {systemConfiguration} from "../stores/systemConfiguration";
@@ -17,13 +17,16 @@
     import {makeRecordControls} from "./makeRecordControls";
     import {currentUserId} from "../stores/currentUserId";
     import {makeModelControls} from "./makeModelControls";
-    import {onDestroy} from "svelte";
+    import type {ErrorVisibilityByRecordId} from "./helpers";
 
     export let modelId: ModelId;
+    const systemConfigurationProvider = () => $systemConfiguration
+    const modelsProvider = () => $allModels
     const eventSourcedModel = derived(allEventSourcedModels, models => eventSourcedModelFns.findById(models, modelId))
     const model = derived(eventSourcedModel, model => model.model)
-    const eventSourcedRecords = eventSourcedDataRecordsStore(() => $systemConfiguration, () => $allModels, () => $model, $currentUserId)
+    const eventSourcedRecords = eventSourcedDataRecordsStore(systemConfigurationProvider, modelsProvider, () => $model, $currentUserId)
     const records = derived(eventSourcedRecords, records => records.map(record => record.record))
+    const errorVisibilityByRecordId = gettableWritable(new Map() as ErrorVisibilityByRecordId)
     const focus = gettableWritable(emptyDataTableFocus(() => eventSourcedRecords.get().map((r) => r.record)))
     const lastSavedByRecordId = writable(new Map<string, number>())
     const dirtyRecords = derived([eventSourcedRecords, lastSavedByRecordId], ([records, lastSavedByRecordId]) => {
@@ -41,10 +44,11 @@
     modelRecordsContextFns.setEventSourcedRecords(eventSourcedRecords)
     modelRecordsContextFns.setRecords(records)
     modelRecordsContextFns.setFocus(focus)
-    modelRecordsContextFns.setFocusControls(makeFocusControls(() => $allModels, () => $records, () => $systemConfiguration, focus))
+    modelRecordsContextFns.setFocusControls(makeFocusControls(modelsProvider, () => $records, systemConfigurationProvider, focus))
     modelRecordsContextFns.setDirtyRecords(dirtyRecords)
-    modelRecordsContextFns.setRecordControls(makeRecordControls(eventSourcedRecords, lastSavedByRecordId))
+    modelRecordsContextFns.setRecordControls(makeRecordControls(systemConfigurationProvider, modelsProvider,errorVisibilityByRecordId,eventSourcedRecords, lastSavedByRecordId))
     modelRecordsContextFns.setModelControls(makeModelControls(allEventSourcedModels))
+    modelRecordsContextFns.setErrorVisibilityByRecordId(errorVisibilityByRecordId)
 
     onMount(async () => {
         loadingState.set('loading')

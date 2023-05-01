@@ -4,7 +4,7 @@ describe('model editor', () => {
 
     cy.contains('Add property').click()
     cy.get('.edit-property[data-property-name="Property 1"]').click()
-    cy.contains('Required').click()
+    cy.get('input.required-toggle').click()
     cy.get('button.save-property').click()
     cy.get('button.edit-property').click()
     cy.get('input.required-toggle').should('be.checked')

@@ -2,7 +2,7 @@
     import type {NestedRecordsContext, RecordsContext} from "./RecordsContext";
     import type {Cardinality, DataRecord, Model, ModelSlot, NestedModel} from "@cozemble/model-core";
     import {dataRecordIdFns, propertyDescriptors, propertyNameFns} from "@cozemble/model-core";
-    import type {RecordBeingAdded, RecordBeingEdited, SlotBeingEdited} from "./helperTypes";
+    import type {RecordBeingAdded, RecordBeingEdited, SlotBeingEdited} from "./helpers";
     import SlotEditModal from "./SlotEditModal.svelte";
     import {tick} from "svelte";
     import NestedDataRecords from "./NestedDataRecords.svelte";

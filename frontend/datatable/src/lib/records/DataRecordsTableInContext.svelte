@@ -6,9 +6,8 @@
         DataRecordPathParentElement,
         Model,
         ModelSlot,
-        NestedModel
     } from "@cozemble/model-core";
-    import type {RecordBeingEdited, SlotBeingEdited} from "./helperTypes";
+    import type {SlotBeingEdited} from "./helpers";
     import SlotTh from "./SlotTh.svelte";
     import DataTd from "./DataTd.svelte";
     import AddSubItemDialogue from "./AddSubItemDialogue.svelte";
@@ -42,8 +41,6 @@
     const modelControls = modelRecordsContextFns.getModelControls()
 
     let slotBeingEdited: SlotBeingEdited | null = null
-    let recordBeingAdded: DataRecord | null = null
-    let recordBeingEdited: RecordBeingEdited | null = null
     let recordHavingSubItemAdded: string | null = null
     let addRecordButton: HTMLElement
 
@@ -91,16 +88,6 @@
             focusControls.setFocus(lastRowIndex, firstEditableSlot, [])
             focusControls.beginEditing()
         }
-        // recordBeingAdded = dataRecordFns.newInstance($model, $currentUserId)
-        // recordBeingAdded = {models: $allModels, model: $model.model, anchorElement: addRecordButton}
-    }
-
-    async function onNewRecordAdded(_event: CustomEvent) {
-        // recordBeingAdded = null
-    }
-
-    function makeNestedContext(record: DataRecord, nestedModel: NestedModel) {
-        // return context.nestedContext(record, nestedModel) as NestedRecordsContext
     }
 
     async function addNestedRecord(event: CustomEvent) {
@@ -123,10 +110,6 @@
         }
     }
 
-    async function onNewRecordEdited(_event: CustomEvent) {
-        recordBeingEdited = null
-    }
-
     function isDirtyRecord(dirtyRecordIds: DataRecordId[], record: DataRecord) {
         return dirtyRecordIds.some(dirtyRecordId => dirtyRecordId.value === record.id.value)
     }
@@ -138,7 +121,7 @@
 </script>
 
 
-<table class="table">
+<table class="table table-compact">
     <thead>
     <tr>
         {#each $model.slots as slot, index}

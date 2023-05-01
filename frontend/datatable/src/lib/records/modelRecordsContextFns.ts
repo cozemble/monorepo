@@ -1,14 +1,15 @@
 import type { EventSourcedModel } from '@cozemble/model-event-sourced'
-import type { Model } from '@cozemble/model-core'
+import type { DataRecord, DataRecordId, Model } from '@cozemble/model-core'
 import { getContext, setContext } from 'svelte'
 import { mandatory } from '@cozemble/lang-util'
 import type { Readable } from 'svelte/store'
 import type { EventSourcedDataRecord } from '@cozemble/data-editor-sdk'
-import type { DataRecord, DataRecordId } from '@cozemble/model-core'
 import type { DataTableFocus, DataTableFocusControls2 } from '../focus/DataTableFocus'
 import type { EventSourcedDataRecordsStore } from './EventSourcedDataRecordsStore'
 import type { RecordControls } from './RecordControls'
 import type { ModelControls } from './ModelControls'
+import type { ErrorVisibilityByRecordId } from './helpers'
+import type { GettableWritable } from '../editors/GettableWritable'
 
 const eventSourceModelContextKey = 'model.records.context.eventSourcedModel'
 const modelContextKey = 'model.records.context.model'
@@ -19,6 +20,7 @@ const focusControlsContextKey = 'model.records.context.focusControls'
 const dirtyRecordsContextKey = 'model.records.context.dirtyRecords'
 const recordControlsContextKey = 'model.records.context.recordControls'
 const modelControlsContextKey = 'model.records.context.modelControls'
+const errorVisibilityByRecordIdContextKey = 'model.records.context.errorVisibilityByRecordId'
 
 export const modelRecordsContextFns = {
   setEventSourcedModel: (model: Readable<EventSourcedModel>) => {
@@ -47,6 +49,9 @@ export const modelRecordsContextFns = {
   },
   setModelControls: (modelControls: ModelControls) => {
     setContext(modelControlsContextKey, modelControls)
+  },
+  setErrorVisibilityByRecordId: (visibility: GettableWritable<ErrorVisibilityByRecordId>) => {
+    setContext(errorVisibilityByRecordIdContextKey, visibility)
   },
   getEventSourcedModel: (): Readable<EventSourcedModel> => {
     return mandatory(
@@ -80,5 +85,11 @@ export const modelRecordsContextFns = {
   },
   getModelControls: (): ModelControls => {
     return mandatory(getContext(modelControlsContextKey), `No model controls found in context`)
+  },
+  getErrorVisibilityByRecordId: (): GettableWritable<ErrorVisibilityByRecordId> => {
+    return mandatory(
+      getContext(errorVisibilityByRecordIdContextKey),
+      `No error visibility by record id found in context`,
+    )
   },
 }
