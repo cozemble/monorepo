@@ -68,7 +68,7 @@
 
 
 <div class="mt-8">
-    <button class="btn btn-secondary" on:click={apply}>Apply sub-item</button>
+    <button class="btn btn-secondary" on:click={apply}>Apply sub-section</button>
     <button class="btn ml-2" on:click={cancel}>Cancel</button>
 </div>
 

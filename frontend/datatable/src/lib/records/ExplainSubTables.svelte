@@ -50,7 +50,7 @@
 <div>An <strong>Invoice</strong> usually has many
     <strong>Line Items</strong>.  Use a <strong>sub-table</strong> to create a table inside another record.</div>
 
-<div class="tooltip tooltip-open tooltip-accent mt-16" data-tip="Preview of a Customer with sub-items">
+<div class="tooltip tooltip-open tooltip-accent mt-16" data-tip="Preview of a Customer with sub-sections">
 
     <div class="mt-3 disabled-content border border-info rounded p-2 ">
         <DataRecordsTable context={customerRecordsContext} expandedRecordIds={writable([invoiceRecord.id])}

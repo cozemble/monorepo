@@ -19,7 +19,7 @@
 <div class="flex">
     <div>
         <div class="flex items-center mb-2">
-            <label class="label">Sub-item type:</label>
+            <label class="label">Sub-section type:</label>
             <input type="radio" name="radio-2" class="radio radio-primary ml-3" checked={addType === "sub-record"}
                    on:click={() => addType = "sub-record"}/> <label class="label">Sub-record</label>
             <input type="radio" name="radio-2" class="radio radio-primary ml-3" checked={addType === "sub-table"}

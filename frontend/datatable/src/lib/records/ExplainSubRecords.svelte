@@ -48,10 +48,10 @@
 
 </script>
 
-<div>Use sub-items to divide your data into logical sections. For example, a <strong>Customer</strong> might have a
+<div>Use sub-sections to divide your data into logical parts. For example, a <strong>Customer</strong> might have a
     <strong>Delivery Address</strong> and a <strong>Billing Address</strong></div>
 
-<div class="tooltip tooltip-open tooltip-accent mt-16" data-tip="Preview of a Customer with sub-items">
+<div class="tooltip tooltip-open tooltip-accent mt-16" data-tip="Preview of a Customer with sub-sections">
 
     <div class="mt-3 disabled-content border border-info rounded p-2 ">
         <DataRecordsTable context={customerRecordsContext} expandedRecordIds={writable([customerRecord.id])}
