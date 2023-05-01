@@ -23,6 +23,10 @@
     import WithSingleRecordContext from "./WithSingleRecordContext.svelte";
     import {tick} from "svelte";
     import {modelFns} from "@cozemble/model-api";
+    import SlotEditModal from "./SlotEditModal.svelte";
+    import {propertyDescriptors, propertyNameFns} from "@cozemble/model-core";
+    import {systemConfiguration} from "../stores/systemConfiguration";
+    import {dataRecordIdFns} from "@cozemble/model-core";
 
     export let oneOnly = false
     export let options: DataRecordsTableOptions = dataRecordsTableOptions(true, true, true)
@@ -35,6 +39,7 @@
     const focusControls = modelRecordsContextFns.getFocusControls()
     const dirtyRecords = modelRecordsContextFns.getDirtyRecords()
     const recordControls = modelRecordsContextFns.getRecordControls()
+    const modelControls = modelRecordsContextFns.getModelControls()
 
     let slotBeingEdited: SlotBeingEdited | null = null
     let recordBeingAdded: DataRecord | null = null
@@ -57,24 +62,24 @@
     async function addSlotToModel() {
         const fieldName = `Field ${$model.slots.length + 1}`
 
-        // await context.updateModel(
-        //     $model.model.id,
-        //     propertyDescriptors
-        //         .getDefault()
-        //         .newProperty($systemConfiguration, $model.model.id, propertyNameFns.newInstance(fieldName)),
-        // )
-        // await tick()
-        // const element = document.querySelector(`th#field-${$model.model.slots.length}`) as HTMLElement
-        // if (element) {
-        //     const slot = $model.model.slots[$model.model.slots.length - 1]
-        //     slotBeingEdited = {models: $allEventSourcedModels, model: $model, slot, anchorElement: element}
-        // }
+        await modelControls.updateModel(
+            $model.id,
+            propertyDescriptors
+                .getDefault()
+                .newProperty($systemConfiguration, $model.id, propertyNameFns.newInstance(fieldName)),
+        )
+        await tick()
+        const element = document.querySelector(`th#field-${$model.slots.length}`) as HTMLElement
+        if (element) {
+            const slot = $model.slots[$model.slots.length - 1]
+            slotBeingEdited = {models: $allEventSourcedModels, model: $eventSourcedModel, slot, anchorElement: element}
+        }
     }
 
     async function modelEdited(event: CustomEvent) {
-        // const edited = event.detail.model
-        // await context.modelEdited(edited)
-        // slotBeingEdited = null
+        const edited = event.detail.model
+        await modelControls.modelEdited(edited)
+        slotBeingEdited = null
     }
 
     async function addRecord() {
@@ -110,12 +115,12 @@
         expandedRecordIds.update((ids: DataRecordId[]) => [...ids, id])
     }
 
-    async function addNestedModel(model: Model, cardinality: Cardinality) {
-        // await context.addNestedModel(model, cardinality)
-        // if (recordHavingSubItemAdded) {
-        //     expandRecord(dataRecordIdFns.newInstance(recordHavingSubItemAdded))
-        //     recordHavingSubItemAdded = null
-        // }
+    async function addNestedModel(child: Model, cardinality: Cardinality) {
+        await modelControls.addNestedModel($eventSourcedModel,child, cardinality)
+        if (recordHavingSubItemAdded) {
+            expandRecord(dataRecordIdFns.newInstance(recordHavingSubItemAdded))
+            recordHavingSubItemAdded = null
+        }
     }
 
     async function onNewRecordEdited(_event: CustomEvent) {
@@ -242,15 +247,7 @@
 </div>
 
 
-<!--{#if slotBeingEdited}-->
-<!--    <SlotEditModal {slotBeingEdited}-->
-<!--                   on:close={() => slotBeingEdited = null} on:edited={modelEdited}/>-->
-<!--{/if}-->
-<!--{#if recordBeingAdded}-->
-<!--    <RecordBeingAddedModal recordsContext={context} {recordBeingAdded} on:added={onNewRecordAdded}-->
-<!--                           on:cancel={() => recordBeingAdded = null}/>-->
-<!--{/if}-->
-<!--{#if recordBeingEdited}-->
-<!--    <RecordBeingEditedModal recordsContext={context} {recordBeingEdited} on:edited={onNewRecordEdited}-->
-<!--                            on:cancel={() => recordBeingEdited = null}/>-->
-<!--{/if}-->
+{#if slotBeingEdited}
+    <SlotEditModal {slotBeingEdited}
+                   on:close={() => slotBeingEdited = null} on:edited={modelEdited}/>
+{/if}

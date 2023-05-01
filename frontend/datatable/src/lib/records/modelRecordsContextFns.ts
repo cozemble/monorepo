@@ -8,6 +8,7 @@ import type { DataRecord, DataRecordId } from '@cozemble/model-core/dist/esm'
 import type { DataTableFocus, DataTableFocusControls2 } from '../focus/DataTableFocus'
 import type { EventSourcedDataRecordsStore } from './EventSourcedDataRecordsStore'
 import type { RecordControls } from './RecordControls'
+import type { ModelControls } from './ModelControls'
 
 const eventSourceModelContextKey = 'model.records.context.eventSourcedModel'
 const modelContextKey = 'model.records.context.model'
@@ -17,6 +18,7 @@ const focusContextKey = 'model.records.context.focus'
 const focusControlsContextKey = 'model.records.context.focusControls'
 const dirtyRecordsContextKey = 'model.records.context.dirtyRecords'
 const recordControlsContextKey = 'model.records.context.recordControls'
+const modelControlsContextKey = 'model.records.context.modelControls'
 
 export const modelRecordsContextFns = {
   setEventSourcedModel: (model: Readable<EventSourcedModel>) => {
@@ -42,6 +44,9 @@ export const modelRecordsContextFns = {
   },
   setRecordControls: (recordControls: RecordControls) => {
     setContext(recordControlsContextKey, recordControls)
+  },
+  setModelControls: (modelControls: ModelControls) => {
+    setContext(modelControlsContextKey, modelControls)
   },
   getEventSourcedModel: (): Readable<EventSourcedModel> => {
     return mandatory(
@@ -72,5 +77,8 @@ export const modelRecordsContextFns = {
   },
   getRecordControls: (): RecordControls => {
     return mandatory(getContext(recordControlsContextKey), `No record controls found in context`)
+  },
+  getModelControls: (): ModelControls => {
+    return mandatory(getContext(modelControlsContextKey), `No model controls found in context`)
   },
 }

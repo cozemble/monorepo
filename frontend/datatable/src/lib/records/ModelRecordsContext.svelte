@@ -16,6 +16,7 @@
     import {eventSourcedDataRecordsStore} from "./EventSourcedDataRecordsStore";
     import {makeRecordControls} from "./makeRecordControls";
     import {currentUserId} from "../stores/currentUserId";
+    import {makeModelControls} from "./makeModelControls";
 
     export let modelId: ModelId;
     const eventSourcedModel = derived(allEventSourcedModels, models => eventSourcedModelFns.findById(models, modelId))
@@ -42,6 +43,7 @@
     modelRecordsContextFns.setFocusControls(makeFocusControls(() => $allModels, () => $records, () => $systemConfiguration, focus))
     modelRecordsContextFns.setDirtyRecords(dirtyRecords)
     modelRecordsContextFns.setRecordControls(makeRecordControls(eventSourcedRecords, lastSavedByRecordId))
+    modelRecordsContextFns.setModelControls(makeModelControls(allEventSourcedModels))
 
     onMount(async () => {
         loadingState.set('loading')
