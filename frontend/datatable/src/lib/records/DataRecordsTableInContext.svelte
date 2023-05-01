@@ -115,7 +115,10 @@
     }
 
     async function save(record: DataRecord) {
-        await recordControls.saveRecord(record.id)
+        const outcome = await recordControls.saveRecord(record.id)
+        if(outcome) {
+            expandRecord(record.id)
+        }
     }
 
 </script>

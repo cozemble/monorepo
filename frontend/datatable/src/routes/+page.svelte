@@ -14,7 +14,7 @@
     import {writable} from "svelte/store";
     import {propertyOptions} from "@cozemble/model-api";
 
-    const addressModel = modelFns.newInstance("Address", modelOptions.withProperties(propertyFns.newInstance("Street"), propertyFns.newInstance("City"), propertyFns.newInstance("Postal code/Zip code")))
+    const addressModel = modelFns.newInstance("Address", modelOptions.withProperties(propertyFns.newInstance("Street"), propertyFns.newInstance("City"), propertyFns.newInstance("Postal code/Zip code", propertyOptions.required)))
     const nestedDeliveryAddress = nestedModelFns.newInstance("Delivery Address", addressModel.id, "one")
 
     let customer = modelFns.newInstance("Customer", modelOptions.withProperties(propertyFns.newInstance("First name", propertyOptions.required), propertyFns.newInstance("Last name")), modelOptions.withNestedModels(nestedDeliveryAddress))

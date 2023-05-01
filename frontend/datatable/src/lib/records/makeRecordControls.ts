@@ -3,7 +3,7 @@ import type { RecordControls } from './RecordControls'
 import type { Writable } from 'svelte/store'
 import { saveExistingRecord } from '../appBackend'
 import type { DataRecordId, Model, SystemConfiguration } from '@cozemble/model-core'
-import { mandatory } from '@cozemble/lang-util'
+import { justErrorMessage, mandatory } from '@cozemble/lang-util'
 import { modelFns } from '@cozemble/model-api'
 import type { ErrorVisibilityByRecordId } from './helpers'
 
@@ -33,13 +33,14 @@ export function makeRecordControls(
         return recordErrorsById
       })
       if (errors.size > 0) {
-        return
+        return justErrorMessage(`${errors.size} error(s) when saving record`)
       }
       await saveExistingRecord(record)
       lastSavedByRecordId.update((lastSavedByRecordId) => {
         lastSavedByRecordId.set(record.record.id.value, Date.now())
         return lastSavedByRecordId
       })
+      return null
     },
   }
 }
