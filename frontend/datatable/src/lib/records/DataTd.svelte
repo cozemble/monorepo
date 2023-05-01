@@ -21,7 +21,9 @@
     const errors = (getContext(singleRecordErrorContext) ?? readable(new Map())) as Readable<RecordErrorMap>
 
     function setFocus() {
-        focusControls.setFocus(rowIndex, modelSlot, parentPath)
+        if(!isFocused) {
+            focusControls.setFocus(rowIndex, modelSlot, parentPath)
+        }
     }
 
     function onKeydown(event: KeyboardEvent) {
