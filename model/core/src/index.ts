@@ -83,6 +83,7 @@ export {
   ModelViewName,
   modelViewFns,
   NamingView,
+  summaryViewFns,
 } from './views'
 
 export {

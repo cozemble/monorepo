@@ -3,6 +3,7 @@ import type {
   DataRecordControlEvent,
   DataRecordEditEvent,
   DataRecordEditorClient,
+  DataRecordViewerClient,
   UploadedAttachment,
   UserInstruction,
 } from '@cozemble/data-editor-sdk'
@@ -10,11 +11,15 @@ import type { DataRecord, DataRecordId, Model, ModelId, ModelView } from '@cozem
 import type { EventSourcedDataRecordsStore } from './EventSourcedDataRecordsStore'
 import type { DataTableFocusControls2 } from '../focus/DataTableFocus'
 
-export function makeDataRecordEditorClient(
+export type CombinedDataRecordEditorClient = DataRecordEditorClient & DataRecordViewerClient
+
+export function makeCombinedDataRecordEditorClient(
+  modelsProvider: () => Model[],
+  modelViewsProvider: () => ModelView[],
   records: EventSourcedDataRecordsStore,
   focusControls: DataTableFocusControls2,
   recordId: DataRecordId,
-): DataRecordEditorClient {
+): CombinedDataRecordEditorClient {
   return {
     dispatchControlEvent(event: DataRecordControlEvent): void {
       console.log({ event })
@@ -40,11 +45,11 @@ export function makeDataRecordEditorClient(
     },
 
     getModels(): Model[] {
-      throw new Error('Method not implemented.')
+      return modelsProvider()
     },
 
     getModelViews(modelId: ModelId): ModelView[] {
-      throw new Error('Method not implemented.')
+      return modelViewsProvider()
     },
 
     uploadAttachments(
@@ -63,6 +68,10 @@ export function makeDataRecordEditorClient(
     },
 
     instructUser(userInstruction: UserInstruction): void {
+      throw new Error('Method not implemented.')
+    },
+
+    recordById(modelId: ModelId, recordId: DataRecordId): Promise<DataRecord | null> {
       throw new Error('Method not implemented.')
     },
   }

@@ -1,11 +1,11 @@
 <script lang="ts">
     import type {DataRecord} from "@cozemble/model-core";
     import {getContext, setContext} from "svelte";
-    import {makeDataRecordEditorClient} from "./makeDataRecordEditorClient";
+    import {makeCombinedDataRecordEditorClient} from "./makeCombinedDataRecordEditorClient";
     import {modelRecordsContextFns} from "./modelRecordsContextFns";
     import {derived} from "svelte/store";
     import {
-        recordEditorClientContext,
+        recordEditorClientContext, recordViewerClientContext,
         singleRecordErrorContext, singleRecordErrorVisibilityContext,
         singleRecordRootRecordIndexContext
     } from "./contextHelper";
@@ -13,6 +13,7 @@
     import {allModels} from "../stores/allModels";
     import {modelFns} from "@cozemble/model-api";
     import {mandatory} from "@cozemble/lang-util";
+    import {allModelViews} from "../stores/allModelViews";
 
     export let record: DataRecord
     export let rowIndex: number
@@ -22,8 +23,11 @@
     const maybeExistingEditor = getContext(recordEditorClientContext)
     if (!maybeExistingEditor) {
         const records = modelRecordsContextFns.getEventSourcedRecords()
-        const dataRecordEditorClient = makeDataRecordEditorClient(records, modelRecordsContextFns.getFocusControls(), record.id)
-        setContext(recordEditorClientContext, dataRecordEditorClient)
+        const modelViewsProvider = () => $allModelViews
+        const modelsProvider = () => $allModels
+        const combinedClient = makeCombinedDataRecordEditorClient(modelsProvider,modelViewsProvider,records, modelRecordsContextFns.getFocusControls(), record.id)
+        setContext(recordEditorClientContext, combinedClient)
+        setContext(recordViewerClientContext, combinedClient)
     }
 
     let rootRecordIndex = getContext(singleRecordRootRecordIndexContext) as number

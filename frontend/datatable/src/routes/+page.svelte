@@ -4,16 +4,22 @@
     import {InMemoryBackend} from "../lib/backend/InMemoryBackend";
     import {backendFns} from "../lib/appBackend";
     import {StoreSyncBackend} from "../lib/app/StoreSyncBackend";
-    import type {DataRecord} from "@cozemble/model-core";
+    import type {DataRecord, ModelView} from "@cozemble/model-core";
     import {systemConfigurationFns} from "@cozemble/model-core";
     import {registerEverything} from "@cozemble/model-assembled";
     import {onMount} from 'svelte'
-    import {dataRecordFns, modelFns, modelOptions, propertyFns} from "@cozemble/model-api";
+    import {
+        dataRecordFns,
+        modelFns,
+        modelOptions,
+        nestedModelFns,
+        propertyFns,
+        propertyOptions
+    } from "@cozemble/model-api";
     import DataTable from "../lib/DataTable.svelte";
-    import {nestedModelFns} from "@cozemble/model-api";
     import {writable} from "svelte/store";
-    import {propertyOptions} from "@cozemble/model-api";
 
+    const modelViews: ModelView[] = []
     const addressModel = modelFns.newInstance("Address", modelOptions.withProperties(propertyFns.newInstance("Street"), propertyFns.newInstance("City"), propertyFns.newInstance("Postal code/Zip code", propertyOptions.required)))
     const nestedDeliveryAddress = nestedModelFns.newInstance("Delivery Address", addressModel.id, "one")
 
@@ -37,5 +43,5 @@
 
 </script>
 
-<DataTable {models} {systemConfiguration} userId="test" navbarState={writable(customer.id.value)}/>
+<DataTable {models} {modelViews} {systemConfiguration} userId="test" navbarState={writable(customer.id.value)}/>
 <!--<DataTable models={[]} {systemConfiguration} userId="test"/>-->

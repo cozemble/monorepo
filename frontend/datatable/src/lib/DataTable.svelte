@@ -1,7 +1,7 @@
 <script lang="ts">
     import type {EventSourcedModel} from "@cozemble/model-event-sourced";
     import {allEventSourcedModels} from "./stores/allModels";
-    import type {SystemConfiguration} from "@cozemble/model-core";
+    import type {ModelView, SystemConfiguration} from "@cozemble/model-core";
     import {currentUserId} from "./stores/currentUserId";
     import {systemConfiguration as systemConfigurationStore} from "./stores/systemConfiguration";
     import DataTableInner from "./DataTableInner.svelte";
@@ -10,8 +10,10 @@
     import {onMount} from "svelte";
     import {ModelReferenceEditor, ModelReferenceViewer} from "@cozemble/data-paginated-editor";
     import {slotEditorRegistry, slotViewerRegistry} from "@cozemble/model-assembled";
+    import {allModelViews} from "./stores/allModelViews";
 
     export let models: EventSourcedModel[]
+    export let modelViews: ModelView[]
     export let systemConfiguration: SystemConfiguration
     export let userId: string
     export let navbarState: Writable<string | null> = writable(null)
@@ -19,6 +21,7 @@
     currentUserId.set(userId)
     allEventSourcedModels.set(models)
     systemConfigurationStore.set(systemConfiguration)
+    allModelViews.set(modelViews)
 
     onMount(() => {
         slotViewerRegistry.register('model.reference', ModelReferenceViewer)

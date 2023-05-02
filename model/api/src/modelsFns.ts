@@ -156,13 +156,13 @@ export const modelFns = {
     }
   },
   allPaths(models: Model[], model: Model): ModelPath<ModelPathElement>[] {
-    const propertyPaths = model.slots.map((p) => modelPathFns.newInstance(p))
+    const slotPaths = model.slots.map((p) => modelPathFns.newInstance(p))
     const nestedModelPaths = model.nestedModels.flatMap((r) => {
       return modelFns
         .allPaths(models, modelFns.findById(models, r.modelId))
         .map((p) => modelPathFns.prefix(r, p))
     })
-    return [...propertyPaths, ...nestedModelPaths]
+    return [...slotPaths, ...nestedModelPaths]
   },
   elementByName(model: Model, name: string): ModelPathElement {
     return mandatory(

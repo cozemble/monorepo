@@ -21,6 +21,18 @@ export interface SummaryView {
   view: ModelHtmlTemplate
 }
 
+export const summaryViewFns = {
+  empty: (): SummaryView => {
+    return {
+      _type: 'summary.view',
+      view: {
+        _type: 'model.html.template',
+        template: '',
+      },
+    }
+  },
+}
+
 export interface NamingView {
   _type: 'naming.view'
   view: ModelHtmlTemplate
@@ -36,11 +48,12 @@ export interface ModelView {
 
 export const modelViewFns = {
   newInstance: (
-    name: ModelViewName,
+    name: ModelViewName | string,
     modelId: ModelId,
     view: SummaryView | NamingView,
     id: ModelViewId = { _type: 'model.view.id', value: uuids.v4() },
   ): ModelView => {
+    name = typeof name === 'string' ? { _type: 'model.view.name', value: name } : name
     return {
       _type: 'model.view',
       id,
