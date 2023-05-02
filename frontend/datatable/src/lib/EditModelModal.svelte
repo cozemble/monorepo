@@ -19,8 +19,6 @@
     const pluralTableName = editablePluralTableName(state.model.model.pluralName.value, state.allModels)
     const showErrors = writable(false)
     let modal: HTMLDivElement
-    const tableNameValue = tableName.value
-    const pluralTableNameValue = pluralTableName.value
 
     async function save() {
         if (editableValueFns.hasErrors([tableName, pluralTableName])) {
@@ -53,7 +51,7 @@
 <svelte:window on:keyup={onKeyUp}/>
 
 <div class="coz-modal" bind:this={modal}>
-    <div class="modal-box  mx-8">
+    <div class="modal-box mx-8">
         <h3 class="font-bold text-lg">Edit table</h3>
         <div class="form-control">
             <label class="label">Table name (singular)</label>

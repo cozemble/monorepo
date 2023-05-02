@@ -5,14 +5,11 @@
         EventSourcedDataRecord,
         UploadedAttachment,
     } from '@cozemble/data-editor-sdk'
-    import type {DataRecord, DataRecordId, Model, ModelId} from '@cozemble/model-core'
+    import type {DataRecord, DataRecordId, Model, ModelId, ModelView} from '@cozemble/model-core'
+    import {systemConfigurationFns} from "@cozemble/model-core";
     import PaginatedEditor from '../../lib/PaginatedEditor.svelte'
     import {onMount, setContext} from 'svelte'
-    import {
-        registerAllProperties,
-        registerAllSlotEditors,
-        registerAllSlotViewers,
-    } from '@cozemble/model-assembled'
+    import {registerAllProperties, registerAllSlotEditors, registerAllSlotViewers,} from '@cozemble/model-assembled'
     import {pageEditorLocalStorageKey} from './context'
     import {allModels, invoiceModel} from '../testModels'
     import type {EditRecordListener} from '../../lib/EditRecordListener'
@@ -20,7 +17,7 @@
     import type {PaginatedEditorHost, RecordDeleteOutcome, RecordEditContext, RecordSaveOutcome,} from '../../lib'
     import {recordSaveSucceeded} from '../../lib'
     import EditEventInspector from './EditEventInspector.svelte'
-    import {systemConfigurationFns} from "@cozemble/model-core";
+    import type {JustErrorMessage} from "@cozemble/lang-util";
 
     export const ssr = false
 
@@ -108,7 +105,14 @@
         },
         instructUser() {
             throw new Error('Not implemented')
+        },
+        getModelViews(modelId: ModelId): ModelView[] {
+            throw new Error('Not implemented')
+        },
+        saveModelView(modelView: ModelView): Promise<JustErrorMessage | null> {
+            throw new Error('Not implemented')
         }
+
     }
 
 </script>
@@ -116,7 +120,8 @@
 <div class="bg-base-100 rounded-lg">
 
     {#if model}
-        <PaginatedEditor {systemConfiguration} {models} {model} {records} modelViews={[]} paginatedEditorHost={noOpEditorHost}/>
+        <PaginatedEditor {systemConfiguration} {models} {model} {records} modelViews={[]}
+                         paginatedEditorHost={noOpEditorHost}/>
     {/if}
 
     <EditEventInspector {editContexts}/>

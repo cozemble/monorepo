@@ -8,15 +8,13 @@
     export let modelView: Writable<ModelView>
     export let models: Model[]
     export let sampleRecords: DataRecord[]
-
-
 </script>
 
 <div class="flex">
-    <div>
+    <div class="w-1/2">
         <ModelViewEditor {modelView} {models}/>
     </div>
-    <div class="ml-3">
+    <div class="ml-3 mt-3">
         <ModelViewPreview {models} {modelView} {sampleRecords}/>
     </div>
 </div>

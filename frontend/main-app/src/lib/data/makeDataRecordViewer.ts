@@ -39,5 +39,11 @@ export function makeDataRecordViewer(
     instructUser: (userInstruction) => {
       throw new Error('Not implemented')
     },
+    saveModelView: () => {
+      throw new Error('Not implemented')
+    },
+    searchRecords: () => {
+      throw new Error('Not implemented')
+    },
   }
 }

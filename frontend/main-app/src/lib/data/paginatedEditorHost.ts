@@ -20,6 +20,8 @@ import type {
 import type { Writable } from 'svelte/store'
 import type { UserInstruction } from '@cozemble/data-editor-sdk'
 import { userInstructionStoreFns } from '../notices/userInstructionStore'
+import type { ModelView } from '@cozemble/model-core/dist/esm'
+import type { JustErrorMessage } from '@cozemble/lang-util/dist/esm'
 
 export function makePaginatedEditorHost(
   tenantId: string,
@@ -89,6 +91,12 @@ export function makePaginatedEditorHost(
     },
     instructUser(userInstruction: UserInstruction): void {
       userInstructionStoreFns.add(userInstruction)
+    },
+    getModelViews(modelId: ModelId): ModelView[] {
+      throw new Error('Not implemented')
+    },
+    async saveModelView(modelView: ModelView): Promise<JustErrorMessage | null> {
+      throw new Error('Not implemented')
     },
   }
   return paginatedEditorHost

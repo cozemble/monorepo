@@ -31,3 +31,5 @@ export {
   DataRecordViewerClient,
   dataRecordViewer,
 } from './dataRecordViewerHost'
+
+export { ModelViewManager } from './ModelViewManager'

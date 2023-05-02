@@ -1,5 +1,5 @@
 import { ModelId } from './core'
-import { uuids } from '@cozemble/lang-util'
+import { JustErrorMessage, uuids } from '@cozemble/lang-util'
 
 export interface ModelViewId {
   _type: 'model.view.id'
@@ -61,5 +61,14 @@ export const modelViewFns = {
       modelId,
       view,
     }
+  },
+  validate(modelView: ModelView): JustErrorMessage | null {
+    if (modelView.name.value.trim() === '') {
+      return { _type: 'just.error.message', message: 'Name cannot be empty' }
+    }
+    if (modelView.view._type === 'summary.view' && modelView.view.view.template.trim() === '') {
+      return { _type: 'just.error.message', message: 'Template cannot be empty' }
+    }
+    return null
   },
 }

@@ -3,13 +3,14 @@ import { DataRecord, DataRecordId, Model, ModelId, ModelView } from '@cozemble/m
 import { getContext, setContext } from 'svelte'
 import { AttachmentIdAndFileName, UserInstruction } from './dataRecordEditorHost'
 import { DataRecordEditEvent } from './dataRecordEditEvents'
+import { ModelViewManager } from './ModelViewManager'
 
 const dataRecordViewerClientContext = 'com.cozemble.data.record.viewer.client.context'
 
-export interface DataRecordViewerClient {
-  getModelViews(modelId: ModelId): ModelView[]
-
+export interface DataRecordViewerClient extends ModelViewManager {
   getModels(): Model[]
+
+  searchRecords(modelId: ModelId, search: string): Promise<DataRecord[]>
 
   recordById(modelId: ModelId, recordId: DataRecordId): Promise<DataRecord | null>
 

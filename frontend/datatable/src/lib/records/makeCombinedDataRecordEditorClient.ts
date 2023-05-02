@@ -10,6 +10,7 @@ import type {
 import type { DataRecord, DataRecordId, Model, ModelId, ModelView } from '@cozemble/model-core'
 import type { EventSourcedDataRecordsStore } from './EventSourcedDataRecordsStore'
 import type { DataTableFocusControls2 } from '../focus/DataTableFocus'
+import type { JustErrorMessage } from '@cozemble/lang-util/dist/esm'
 
 export type CombinedDataRecordEditorClient = DataRecordEditorClient & DataRecordViewerClient
 
@@ -50,6 +51,10 @@ export function makeCombinedDataRecordEditorClient(
 
     getModelViews(modelId: ModelId): ModelView[] {
       return modelViewsProvider()
+    },
+
+    saveModelView(modelView: ModelView): Promise<JustErrorMessage | null> {
+      throw new Error('Method not implemented.')
     },
 
     uploadAttachments(

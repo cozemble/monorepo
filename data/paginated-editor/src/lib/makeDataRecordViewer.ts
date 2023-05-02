@@ -30,6 +30,8 @@ export function makeDataRecordViewer(
     getModelViews: () => modelViews,
     getModels: () => models,
     recordById: paginatedEditorHost.recordById,
+    saveModelView: paginatedEditorHost.saveModelView,
+    searchRecords: paginatedEditorHost.searchRecords,
     getAttachmentViewUrls: paginatedEditorHost.getAttachmentViewUrls,
     dispatchEditEvent,
     instructUser: paginatedEditorHost.instructUser,

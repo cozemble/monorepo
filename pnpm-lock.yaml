@@ -364,6 +364,9 @@ importers:
       '@cozemble/data-editor-sdk':
         specifier: workspace:*
         version: link:../editor-sdk
+      '@cozemble/frontend-sdk-components':
+        specifier: workspace:*
+        version: link:../../frontend/sdk-components
       '@cozemble/lang-util':
         specifier: workspace:*
         version: link:../../lang/util
