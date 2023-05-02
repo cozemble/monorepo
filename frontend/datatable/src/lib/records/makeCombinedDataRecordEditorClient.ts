@@ -81,7 +81,7 @@ export function makeCombinedDataRecordEditorClient(
     },
 
     recordById(modelId: ModelId, recordId: DataRecordId): Promise<DataRecord | null> {
-      throw new Error('Method not implemented.')
+      return backend.recordById(modelId, recordId)
     },
   }
 }

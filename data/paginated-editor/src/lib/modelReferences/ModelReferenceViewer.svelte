@@ -55,7 +55,7 @@
         const referencedModelId = modelReference.referencedModels[0]
         referencedModel = modelFns.findById(models, referencedModelId)
         configureView = true
-        const found = await dataRecordViewerClient.searchRecords(record.modelId, "")
+        const found = await dataRecordViewerClient.searchRecords(referencedModel.id, "")
         // take at most three
         sampleRecords.set(found.slice(0, 3))
     }

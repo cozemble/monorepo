@@ -5,7 +5,7 @@ import { allEventSourcedModels } from '../stores/allModels'
 import type { DataRecord, ModelId } from '@cozemble/model-core'
 import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import type { EventSourcedDataRecord } from '@cozemble/data-editor-sdk'
-import type { ModelView } from '@cozemble/model-core/dist/esm'
+import type { DataRecordId, ModelView } from '@cozemble/model-core'
 import { allModelViews } from '../stores/allModelViews'
 
 export class StoreSyncBackend implements Backend {
@@ -40,7 +40,7 @@ export class StoreSyncBackend implements Backend {
   }
 
   async saveExistingRecord(record: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
-    return await this.delegate.saveNewRecord(record)
+    return await this.delegate.saveExistingRecord(record)
   }
 
   async searchRecords(modelId: ModelId, search: string): Promise<DataRecord[]> {
@@ -66,5 +66,9 @@ export class StoreSyncBackend implements Backend {
       return [...mvs, modelView]
     })
     return outcome
+  }
+
+  async recordById(modelId: ModelId, recordId: DataRecordId): Promise<DataRecord | null> {
+    return await this.delegate.recordById(modelId, recordId)
   }
 }

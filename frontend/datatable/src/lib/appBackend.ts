@@ -17,6 +17,10 @@ export const backendFns = {
   },
 }
 
+export async function saveNewRecord(record: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
+  return backend.saveNewRecord(record)
+}
+
 export async function saveExistingRecord(
   record: EventSourcedDataRecord,
 ): Promise<RecordSaveOutcome> {

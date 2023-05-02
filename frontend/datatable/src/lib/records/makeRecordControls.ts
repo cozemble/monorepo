@@ -1,7 +1,7 @@
 import type { EventSourcedDataRecordsStore } from './EventSourcedDataRecordsStore'
 import type { RecordControls } from './RecordControls'
 import type { Writable } from 'svelte/store'
-import { saveExistingRecord } from '../appBackend'
+import { saveExistingRecord, saveNewRecord } from '../appBackend'
 import type { DataRecordId, Model, SystemConfiguration } from '@cozemble/model-core'
 import { justErrorMessage, mandatory } from '@cozemble/lang-util'
 import { modelFns } from '@cozemble/model-api'
@@ -13,10 +13,13 @@ export function makeRecordControls(
   errorVisibilityByRecordId: Writable<ErrorVisibilityByRecordId>,
   records: EventSourcedDataRecordsStore,
   lastSavedByRecordId: Writable<Map<string, number>>,
+  newUnsavedRecords = [] as DataRecordId[],
 ): RecordControls {
   return {
     addNewRecord(): DataRecordId {
-      return records.addNewRecord()
+      const newRecordId = records.addNewRecord()
+      newUnsavedRecords.push(newRecordId)
+      return newRecordId
     },
     async saveRecord(recordId: DataRecordId) {
       const record = mandatory(
@@ -35,7 +38,16 @@ export function makeRecordControls(
       if (errors.size > 0) {
         return justErrorMessage(`${errors.size} error(s) when saving record`)
       }
-      await saveExistingRecord(record)
+      const indexOnNewUnsavedRecords = newUnsavedRecords.findIndex(
+        (id) => id.value === recordId.value,
+      )
+      if (indexOnNewUnsavedRecords >= 0) {
+        await saveNewRecord(record)
+        // remove recordId from newUnsavedRecords
+        newUnsavedRecords.splice(indexOnNewUnsavedRecords, 1)
+      } else {
+        await saveExistingRecord(record)
+      }
       lastSavedByRecordId.update((lastSavedByRecordId) => {
         lastSavedByRecordId.set(record.record.id.value, Date.now())
         return lastSavedByRecordId

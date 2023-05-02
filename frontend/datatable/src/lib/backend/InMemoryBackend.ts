@@ -5,7 +5,7 @@ import type { DataRecord, ModelId } from '@cozemble/model-core'
 import type { EventSourcedDataRecord } from '@cozemble/data-editor-sdk'
 import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import { recordSaveSucceeded } from '@cozemble/data-paginated-editor'
-import type { ModelView } from '@cozemble/model-core/dist/esm'
+import type { DataRecordId, ModelView } from '@cozemble/model-core/dist/esm'
 
 export class InMemoryBackend implements Backend {
   constructor(
@@ -33,6 +33,7 @@ export class InMemoryBackend implements Backend {
     const existingRecords = this.records.get(newRecord.record.modelId.value) || []
     const updatedRecords = [...existingRecords, newRecord.record]
     this.records.set(newRecord.record.modelId.value, updatedRecords)
+    console.log({ updatedRecords })
     return recordSaveSucceeded(newRecord.record)
   }
 
@@ -45,6 +46,7 @@ export class InMemoryBackend implements Backend {
       return record
     })
     this.records.set(newRecord.record.modelId.value, updatedRecords)
+    console.log({ updatedRecords })
     return recordSaveSucceeded(newRecord.record)
   }
 
@@ -57,5 +59,10 @@ export class InMemoryBackend implements Backend {
   async saveModelView(modelView: ModelView): Promise<JustErrorMessage | null> {
     this.modelViews.push(modelView)
     return null
+  }
+
+  async recordById(modelId: ModelId, recordId: DataRecordId): Promise<DataRecord | null> {
+    const records = this.records.get(modelId.value) || []
+    return records.find((record) => record.id.value === recordId.value) || null
   }
 }
