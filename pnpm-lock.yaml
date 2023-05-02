@@ -753,6 +753,9 @@ importers:
       '@cozemble/model-core':
         specifier: workspace:*
         version: link:../../model/core
+      '@cozemble/model-to-json':
+        specifier: workspace:*
+        version: link:../../model/to-json
       daisyui:
         specifier: ^2.47.0
         version: 2.51.3(autoprefixer@10.4.14)(postcss@8.4.21)
@@ -760,6 +763,9 @@ importers:
       '@cozemble/model-api':
         specifier: workspace:*
         version: link:../../model/api
+      '@cozemble/model-assembled':
+        specifier: workspace:*
+        version: link:../../model/assembled
       '@originjs/vite-plugin-commonjs':
         specifier: ^1.0.3
         version: 1.0.3

@@ -1,21 +1,36 @@
 <script lang="ts">
-    import {modelFns, modelOptions, nestedModelFns, propertyFns, propertyOptions} from "@cozemble/model-api";
-    import {modelViewFns, summaryViewFns} from "@cozemble/model-core";
-    import ModelViewEditor from "../lib/ModelViewEditor.svelte";
+    import {
+        dataRecordFns,
+        modelFns,
+        modelOptions,
+        nestedModelFns,
+        propertyFns,
+        propertyOptions
+    } from "@cozemble/model-api";
+    import {modelViewFns, summaryViewFns, systemConfigurationFns} from "@cozemble/model-core";
     import {writable} from "svelte/store";
-    import {afterUpdate} from "svelte";
+    import {registerEverything} from "@cozemble/model-assembled";
+    import {onMount} from "svelte";
+    import ModelViewEditorWithPreview from "../lib/modelViewEditor/ModelViewEditorWithPreview.svelte";
 
     const addressModel = modelFns.newInstance("Address", modelOptions.withProperties(propertyFns.newInstance("Street"), propertyFns.newInstance("City"), propertyFns.newInstance("Postcode")))
     const nestedDeliveryAddress = nestedModelFns.newInstance("Delivery Address", addressModel.id, "one")
 
     let customer = modelFns.newInstance("Customer", modelOptions.withProperties(propertyFns.newInstance("First name", propertyOptions.required), propertyFns.newInstance("Last name")), modelOptions.withNestedModels(nestedDeliveryAddress))
     addressModel.parentModelId = addressModel.id
+    const systemConfiguration = systemConfigurationFns.empty()
     const models = [customer, addressModel]
     const modelView = writable(modelViewFns.newInstance("Empty Model View", customer.id, summaryViewFns.empty()))
-    afterUpdate(() => {
-        console.log($modelView)
+    let sampleRecords = []
+
+    onMount(() => {
+        registerEverything()
+        const customerRecord1 = dataRecordFns.random(systemConfiguration, models, customer)
+        const customerRecord2 = dataRecordFns.random(systemConfiguration, models, customer)
+        sampleRecords = [customerRecord1, customerRecord2]
     })
+
 </script>
 <div class="m-2">
-    <ModelViewEditor {modelView} {models}/>
+    <ModelViewEditorWithPreview {modelView} {models} {sampleRecords}/>
 </div>

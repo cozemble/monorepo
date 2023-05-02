@@ -28,7 +28,7 @@
         onModelHtmlTemplateChanged(view)
     }
 </script>
-<h6 class="mt-3">Template options</h6>
+<h6>Template options</h6>
 <div>
     {#each propertyPaths as propertyPath}
         <div class="badge badge-ghost gap-2 p-3 m-1" on:click={() => addPath(propertyPath)}>
