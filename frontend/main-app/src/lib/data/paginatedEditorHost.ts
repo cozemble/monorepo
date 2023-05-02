@@ -20,8 +20,8 @@ import type {
 import type { Writable } from 'svelte/store'
 import type { UserInstruction } from '@cozemble/data-editor-sdk'
 import { userInstructionStoreFns } from '../notices/userInstructionStore'
-import type { ModelView } from '@cozemble/model-core/dist/esm'
-import type { JustErrorMessage } from '@cozemble/lang-util/dist/esm'
+import type { ModelView } from '@cozemble/model-core'
+import type { JustErrorMessage } from '@cozemble/lang-util'
 
 export function makePaginatedEditorHost(
   tenantId: string,

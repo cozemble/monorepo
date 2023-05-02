@@ -1,12 +1,11 @@
 import type { EventSourcedModel } from '@cozemble/model-event-sourced'
 import type { JustErrorMessage } from '@cozemble/lang-util'
-import type { DataRecord, ModelId } from '@cozemble/model-core'
-import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
+import type { DataRecord, DataRecordId, ModelId, ModelView } from '@cozemble/model-core'
+import type { AttachmentsManager, RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import type { EventSourcedDataRecord } from '@cozemble/data-editor-sdk'
-import type { ModelView } from '@cozemble/model-core'
-import type { DataRecordId } from '@cozemble/model-core'
+import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 
-export interface Backend {
+export interface Backend extends AttachmentsManager {
   saveModel(model: EventSourcedModel): Promise<JustErrorMessage | null>
 
   saveModels(model: EventSourcedModel[]): Promise<JustErrorMessage | null>
@@ -47,6 +46,20 @@ export const notImplementedBackend: Backend = {
     throw new Error('Not implemented')
   },
   async saveModelView(): Promise<JustErrorMessage | null> {
+    throw new Error('Not implemented')
+  },
+  async uploadAttachments(
+    files: File[],
+    progressUpdater: (percent: number) => void,
+  ): Promise<UploadedAttachment[]> {
+    throw new Error('Not implemented')
+  },
+
+  async deleteAttachments(attachmentIds: string[]): Promise<void> {
+    throw new Error('Not implemented')
+  },
+
+  async getAttachmentViewUrls(attachmentIds: AttachmentIdAndFileName[]): Promise<string[]> {
     throw new Error('Not implemented')
   },
 }

@@ -31,7 +31,6 @@
     }
 
     function uploadProgressUpdate(percentage: number) {
-        console.log("Upload progress:", percentage)
         uploadProgress = percentage
         if (percentage === 100) {
             uploading = false
@@ -71,6 +70,7 @@
             )
             attachments = newAttachments
         } catch (e: any) {
+            console.log({e})
             error = e.message
         } finally {
             uploading = false

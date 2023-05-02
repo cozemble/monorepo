@@ -7,6 +7,7 @@ import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import type { EventSourcedDataRecord } from '@cozemble/data-editor-sdk'
 import type { DataRecordId, ModelView } from '@cozemble/model-core'
 import { allModelViews } from '../stores/allModelViews'
+import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 
 export class StoreSyncBackend implements Backend {
   constructor(private readonly delegate: Backend) {}
@@ -49,7 +50,6 @@ export class StoreSyncBackend implements Backend {
 
   async saveModelView(modelView: ModelView): Promise<JustErrorMessage | null> {
     const outcome = await this.delegate.saveModelView(modelView)
-    console.log({ outcome })
     if (outcome !== null) {
       return outcome
     }
@@ -70,5 +70,20 @@ export class StoreSyncBackend implements Backend {
 
   async recordById(modelId: ModelId, recordId: DataRecordId): Promise<DataRecord | null> {
     return await this.delegate.recordById(modelId, recordId)
+  }
+
+  async uploadAttachments(
+    files: File[],
+    progressUpdater: (percent: number) => void,
+  ): Promise<UploadedAttachment[]> {
+    return await this.delegate.uploadAttachments(files, progressUpdater)
+  }
+
+  async deleteAttachments(attachmentIds: string[]): Promise<void> {
+    return await this.delegate.deleteAttachments(attachmentIds)
+  }
+
+  async getAttachmentViewUrls(attachmentIds: AttachmentIdAndFileName[]): Promise<string[]> {
+    return await this.delegate.getAttachmentViewUrls(attachmentIds)
   }
 }

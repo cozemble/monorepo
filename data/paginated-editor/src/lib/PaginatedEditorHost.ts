@@ -4,7 +4,7 @@ import type { DataRecord } from '@cozemble/model-core'
 import type { JustErrorMessage } from '@cozemble/lang-util'
 import type { RecordSearcher } from './RecordSearcher'
 import type { AttachmentsManager } from './AttachmentsManager'
-import type { ModelViewManager } from '@cozemble/data-editor-sdk/dist/esm/ModelViewManager'
+import type { ModelViewManager } from '@cozemble/data-editor-sdk'
 
 export type RecordDeleteOutcome = RecordSaveSucceeded | JustErrorMessage
 

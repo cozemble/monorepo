@@ -1,17 +1,22 @@
 import type { Backend } from './Backend'
 import type { JustErrorMessage } from '@cozemble/lang-util'
+import { uuids } from '@cozemble/lang-util'
 import type { EventSourcedModel } from '@cozemble/model-event-sourced'
-import type { DataRecord, ModelId } from '@cozemble/model-core'
-import type { EventSourcedDataRecord } from '@cozemble/data-editor-sdk'
+import type { DataRecord, DataRecordId, ModelId, ModelView } from '@cozemble/model-core'
+import type {
+  AttachmentIdAndFileName,
+  EventSourcedDataRecord,
+  UploadedAttachment,
+} from '@cozemble/data-editor-sdk'
 import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import { recordSaveSucceeded } from '@cozemble/data-paginated-editor'
-import type { DataRecordId, ModelView } from '@cozemble/model-core/dist/esm'
 
 export class InMemoryBackend implements Backend {
   constructor(
     private readonly models: Map<string, EventSourcedModel> = new Map(),
     private readonly records: Map<string, DataRecord[]> = new Map(),
     private readonly modelViews: ModelView[] = [],
+    private attachments: UploadedAttachment[] = [],
   ) {}
 
   async saveModel(model: EventSourcedModel): Promise<JustErrorMessage | null> {
@@ -33,7 +38,6 @@ export class InMemoryBackend implements Backend {
     const existingRecords = this.records.get(newRecord.record.modelId.value) || []
     const updatedRecords = [...existingRecords, newRecord.record]
     this.records.set(newRecord.record.modelId.value, updatedRecords)
-    console.log({ updatedRecords })
     return recordSaveSucceeded(newRecord.record)
   }
 
@@ -46,7 +50,6 @@ export class InMemoryBackend implements Backend {
       return record
     })
     this.records.set(newRecord.record.modelId.value, updatedRecords)
-    console.log({ updatedRecords })
     return recordSaveSucceeded(newRecord.record)
   }
 
@@ -64,5 +67,33 @@ export class InMemoryBackend implements Backend {
   async recordById(modelId: ModelId, recordId: DataRecordId): Promise<DataRecord | null> {
     const records = this.records.get(modelId.value) || []
     return records.find((record) => record.id.value === recordId.value) || null
+  }
+
+  async uploadAttachments(
+    files: File[],
+    progressUpdater: (percent: number) => void,
+  ): Promise<UploadedAttachment[]> {
+    const uploadedAttachments: UploadedAttachment[] = files.map((file) => {
+      return {
+        _type: 'uploaded.attachment',
+        attachmentId: uuids.v4(),
+        file,
+        size: null,
+        thumbnailUrl: 'https://freesvg.org/img/ftthumbnail.png',
+      }
+    })
+    this.attachments.push(...uploadedAttachments)
+    progressUpdater(100)
+    return uploadedAttachments
+  }
+
+  async deleteAttachments(attachmentIds: string[]): Promise<void> {
+    this.attachments = this.attachments.filter((ua) => !attachmentIds.includes(ua.attachmentId))
+  }
+
+  async getAttachmentViewUrls(attachmentIds: AttachmentIdAndFileName[]): Promise<string[]> {
+    return attachmentIds.map(
+      (a) => 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/TEIDE.JPG/440px-TEIDE.JPG',
+    )
   }
 }
