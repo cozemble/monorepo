@@ -15,7 +15,7 @@
     let toggleButton: HTMLLabelElement;
     let saveError: JustErrorMessage | null = null
 
-    const modelView: Writable<ModelView> = writable(modelViewFns.newInstance("Default", model.id, summaryViewFns.empty()))
+    const modelView: Writable<ModelView> = writable(modelViewFns.newInstance("Summary View", model.id, summaryViewFns.empty()))
     onMount(() => {
         toggleButton.click()
     })

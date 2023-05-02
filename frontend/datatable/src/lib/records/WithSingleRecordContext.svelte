@@ -14,6 +14,7 @@
     import {modelFns} from "@cozemble/model-api";
     import {mandatory} from "@cozemble/lang-util";
     import {allModelViews} from "../stores/allModelViews";
+    import {backend} from "../appBackend";
 
     export let record: DataRecord
     export let rowIndex: number
@@ -25,7 +26,7 @@
         const records = modelRecordsContextFns.getEventSourcedRecords()
         const modelViewsProvider = () => $allModelViews
         const modelsProvider = () => $allModels
-        const combinedClient = makeCombinedDataRecordEditorClient(modelsProvider,modelViewsProvider,records, modelRecordsContextFns.getFocusControls(), record.id)
+        const combinedClient = makeCombinedDataRecordEditorClient(backend,modelsProvider,modelViewsProvider,records, modelRecordsContextFns.getFocusControls(), record.id)
         setContext(recordEditorClientContext, combinedClient)
         setContext(recordViewerClientContext, combinedClient)
     }

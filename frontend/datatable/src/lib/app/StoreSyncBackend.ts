@@ -5,6 +5,8 @@ import { allEventSourcedModels } from '../stores/allModels'
 import type { DataRecord, ModelId } from '@cozemble/model-core'
 import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import type { EventSourcedDataRecord } from '@cozemble/data-editor-sdk'
+import type { ModelView } from '@cozemble/model-core/dist/esm'
+import { allModelViews } from '../stores/allModelViews'
 
 export class StoreSyncBackend implements Backend {
   constructor(private readonly delegate: Backend) {}
@@ -39,5 +41,30 @@ export class StoreSyncBackend implements Backend {
 
   async saveExistingRecord(record: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
     return await this.delegate.saveNewRecord(record)
+  }
+
+  async searchRecords(modelId: ModelId, search: string): Promise<DataRecord[]> {
+    return await this.delegate.searchRecords(modelId, search)
+  }
+
+  async saveModelView(modelView: ModelView): Promise<JustErrorMessage | null> {
+    const outcome = await this.delegate.saveModelView(modelView)
+    console.log({ outcome })
+    if (outcome !== null) {
+      return outcome
+    }
+    allModelViews.update((mvs) => {
+      const maybeExisting = mvs.find((mv) => mv.modelId.value === modelView.modelId.value)
+      if (maybeExisting) {
+        return mvs.map((mv) => {
+          if (mv.modelId.value === modelView.modelId.value) {
+            return modelView
+          }
+          return mv
+        })
+      }
+      return [...mvs, modelView]
+    })
+    return outcome
   }
 }

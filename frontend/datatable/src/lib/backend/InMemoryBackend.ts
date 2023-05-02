@@ -5,11 +5,13 @@ import type { DataRecord, ModelId } from '@cozemble/model-core'
 import type { EventSourcedDataRecord } from '@cozemble/data-editor-sdk'
 import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import { recordSaveSucceeded } from '@cozemble/data-paginated-editor'
+import type { ModelView } from '@cozemble/model-core/dist/esm'
 
 export class InMemoryBackend implements Backend {
   constructor(
     private readonly models: Map<string, EventSourcedModel> = new Map(),
     private readonly records: Map<string, DataRecord[]> = new Map(),
+    private readonly modelViews: ModelView[] = [],
   ) {}
 
   async saveModel(model: EventSourcedModel): Promise<JustErrorMessage | null> {
@@ -44,5 +46,16 @@ export class InMemoryBackend implements Backend {
     })
     this.records.set(newRecord.record.modelId.value, updatedRecords)
     return recordSaveSucceeded(newRecord.record)
+  }
+
+  async searchRecords(modelId: ModelId, search: string): Promise<DataRecord[]> {
+    const records = this.records.get(modelId.value) || []
+    if (search.trim().length === 0) return records
+    return records.filter((record) => JSON.stringify(record.id.value).includes(search))
+  }
+
+  async saveModelView(modelView: ModelView): Promise<JustErrorMessage | null> {
+    this.modelViews.push(modelView)
+    return null
   }
 }

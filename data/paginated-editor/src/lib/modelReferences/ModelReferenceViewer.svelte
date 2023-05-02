@@ -68,6 +68,7 @@
     function viewConfigured() {
         cancelConfigureViewModal()
         editorParams = assembleEditorParams(dataRecordViewerClient, recordPath)
+        console.log({editorParams})
     }
 </script>
 

@@ -11,10 +11,12 @@ import type { DataRecord, DataRecordId, Model, ModelId, ModelView } from '@cozem
 import type { EventSourcedDataRecordsStore } from './EventSourcedDataRecordsStore'
 import type { DataTableFocusControls2 } from '../focus/DataTableFocus'
 import type { JustErrorMessage } from '@cozemble/lang-util/dist/esm'
+import type { Backend } from '../backend/Backend'
 
 export type CombinedDataRecordEditorClient = DataRecordEditorClient & DataRecordViewerClient
 
 export function makeCombinedDataRecordEditorClient(
+  backend: Backend,
   modelsProvider: () => Model[],
   modelViewsProvider: () => ModelView[],
   records: EventSourcedDataRecordsStore,
@@ -42,7 +44,7 @@ export function makeCombinedDataRecordEditorClient(
     },
 
     searchRecords(modelId: ModelId, search: string): Promise<DataRecord[]> {
-      throw new Error('Method not implemented.')
+      return backend.searchRecords(modelId, search)
     },
 
     getModels(): Model[] {
@@ -50,11 +52,13 @@ export function makeCombinedDataRecordEditorClient(
     },
 
     getModelViews(modelId: ModelId): ModelView[] {
-      return modelViewsProvider()
+      const views = modelViewsProvider()
+      console.log({ views, models: modelsProvider() })
+      return views
     },
 
     saveModelView(modelView: ModelView): Promise<JustErrorMessage | null> {
-      throw new Error('Method not implemented.')
+      return backend.saveModelView(modelView)
     },
 
     uploadAttachments(
