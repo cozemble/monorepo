@@ -7,6 +7,7 @@
     import {tenantStore} from "../../../lib/tenant/tenantStore";
     import {tempRegisterDateFilters} from "./temp";
     import {browser} from '$app/environment';
+    import IncrementalModelingMain from "../../../lib/incrementalModelling/IncrementalModelingMain.svelte";
 
     let ui = 'milestone1'
     onMount(() => {
@@ -24,7 +25,7 @@
 {:then session}
     {#if session && $tenantStore}
         {#if ui === 'incremental-modeling'}
-            Incremental Modeling
+            <IncrementalModelingMain tenantId={$page.params.tenantId}/>
         {:else}
             <MainPanel tenantId={$page.params.tenantId}/>
         {/if}

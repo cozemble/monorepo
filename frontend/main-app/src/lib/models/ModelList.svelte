@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {allModels, modelBeingEdited, type ModelEditContext} from "./modelsStore";
+    import {eventSourcedModels, modelBeingEdited, type ModelEditContext} from "./modelsStore";
     import type {EventSourcedModel} from "@cozemble/model-event-sourced";
 
     function editModel(m: EventSourcedModel) {
@@ -17,7 +17,7 @@
     </tr>
     </thead>
     <tbody>
-    {#each $allModels as model}
+    {#each $eventSourcedModels as model}
         {#if !model.model.parentModelId}
             <tr>
                 <td>{model.model.name.value}</td>

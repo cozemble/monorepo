@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {allModels} from "../models/modelsStore";
+    import {eventSourcedModels} from "../models/modelsStore";
     import DataPanelWithLoader from "./DataPanelWithLoader.svelte";
     import {records} from "./recordsStore";
     import {navbarState} from "./navbarState";
@@ -9,7 +9,7 @@
     import {onMount} from "svelte";
 
     export let tenantId: string
-    $: actualModels = $allModels.map(m => m.model)
+    $: actualModels = $eventSourcedModels.map(m => m.model)
     $: rootModels = actualModels.filter(m => m.parentModelId === undefined)
     $: modelToShow = rootModels.find(m => m.id.value === $navbarState) ?? null
     $: openRecordToShow = $openRecordViewStore.find(or => or.recordId.value === $navbarState)
