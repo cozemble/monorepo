@@ -17,6 +17,7 @@ import {
   SlotConfiguration,
   SystemConfiguration,
 } from '@cozemble/model-core'
+import { numberOfDecimalPlacesChangeDescriptor } from './events';
 
 export const decimalPropertyType = propertyTypeFns.newInstance('decimal.property')
 
@@ -105,7 +106,7 @@ export function newIntegerPropertyModelEvent(
   }
 }
 
-export const newIntegerPropertyModelEventDescriptor: ModelEventDescriptor = {
+export const newDecimalPropertyModelEventDescriptor: ModelEventDescriptor = {
   _type: 'model.event.descriptor',
   modelEventType: 'new.decimal.property.model.event',
   applyEvent: (model: Model, event: NewIntegerPropertyModelEvent): Model => {
@@ -126,7 +127,8 @@ export const newIntegerPropertyModelEventDescriptor: ModelEventDescriptor = {
 }
 
 export function registerModelEvents() {
-  modelEventDescriptors.register(newIntegerPropertyModelEventDescriptor)
+  modelEventDescriptors.register(newDecimalPropertyModelEventDescriptor)
+  modelEventDescriptors.register(numberOfDecimalPlacesChangeDescriptor)
 }
 
 export function registerDecimalProperty() {

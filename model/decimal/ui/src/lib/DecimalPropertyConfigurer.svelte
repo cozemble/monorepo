@@ -7,5 +7,8 @@
 
 </script>
 
-<input type="number" value={property.numberOfDecimalPlaces} />
+<div class="mt-3">
+    <label class="label">Number of Decimal Places</label>
+    <input type="number" class="input input-bordered" value={property.numberOfDecimalPlaces} />
+</div>
 
