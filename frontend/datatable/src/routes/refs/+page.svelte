@@ -12,6 +12,7 @@
     import {StoreSyncBackend} from "../../lib/app/StoreSyncBackend";
     import {InMemoryBackend} from "../../lib/backend/InMemoryBackend";
     import RecordFilteringPanel from "../../lib/filtering/RecordFilteringPanel.svelte";
+    import {tempRegisterDateFilters} from "../temp";
 
     const modelViews: ModelView[] = []
 
@@ -32,6 +33,7 @@
     backendFns.setBackend(new StoreSyncBackend(new InMemoryBackend(modelMap, recordsMap)))
 
     onMount(() => {
+        tempRegisterDateFilters()
         registerEverything()
     })
 

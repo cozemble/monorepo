@@ -1,5 +1,4 @@
 <script lang="ts">
-    import {getFilterablePaths} from "./filtering";
     import type {Model} from "@cozemble/model-core";
     import {FilterManagement} from "@cozemble/ui-filter-editor";
     import type {FilterActionHandler, FilterGroupList} from "@cozemble/data-filters-core";
@@ -8,8 +7,6 @@
     export let models: Model[]
     export let rootFilter: FilterGroupList
     export let filterActionHandler: FilterActionHandler
-
-    const filterablePaths = getFilterablePaths(models, model)
 </script>
 
-<FilterManagement rootGroupList={rootFilter} {filterActionHandler} allowGroups={false}/>
+<FilterManagement rootGroupList={rootFilter} {filterActionHandler} allowGroups={false} filterAlias="Condition"/>

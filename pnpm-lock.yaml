@@ -525,12 +525,21 @@ importers:
       '@cozemble/data-editor-sdk':
         specifier: workspace:*
         version: link:../../data/editor-sdk
+      '@cozemble/data-filters-config':
+        specifier: workspace:*
+        version: link:../../data/filters-config
+      '@cozemble/data-filters-core':
+        specifier: workspace:*
+        version: link:../../data/filters-core
       '@cozemble/data-paginated-editor':
         specifier: workspace:*
         version: link:../../data/paginated-editor
       '@cozemble/frontend-bff':
         specifier: workspace:*
         version: link:../bff
+      '@cozemble/frontend-ui-blocks':
+        specifier: workspace:*
+        version: link:../ui-blocks
       '@cozemble/lang-util':
         specifier: workspace:*
         version: link:../../lang/util

@@ -19,9 +19,31 @@
 </script>
 <div class="mt-3">
     <ModelRecordsContext modelId={modelIdFns.newInstance(modelId)}>
-        {#if $recordFilteringComponentStore}
-            <svelte:component this={$recordFilteringComponentStore}/>
-        {/if}
-        <DataRecordsTableInContext/>
+        <div class="grid-container">
+            <div>
+                <div class="child">
+                    {#if $recordFilteringComponentStore}
+                        <svelte:component this={$recordFilteringComponentStore}/>
+                    {/if}
+                </div>
+            </div>
+            <div>
+                <DataRecordsTableInContext/>
+            </div>
+        </div>
     </ModelRecordsContext>
 </div>
+
+<style>
+    .grid-container {
+        display: grid;
+        grid-template-columns: max-content;
+        width: max-content;
+    }
+
+    .child {
+        display: flex;
+        justify-content: space-between;
+    }
+
+</style>
