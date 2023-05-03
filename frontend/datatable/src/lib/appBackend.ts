@@ -1,13 +1,19 @@
-import { type Backend, notImplementedBackend } from './backend/Backend'
+import { type Backend, type FilterParams, notImplementedBackend } from './backend/Backend'
 import type { EventSourcedModel } from '@cozemble/model-event-sourced'
 import type { JustErrorMessage } from '@cozemble/lang-util'
 import { RootRecordsContext } from './records/RecordsContext'
 import type { DataRecord, DataRecordId, ModelId, SystemConfiguration } from '@cozemble/model-core'
 import type { Writable } from 'svelte/store'
-import type { AttachmentsManager, RecordSearcher } from '@cozemble/data-paginated-editor'
-import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
-import type { EventSourcedDataRecord } from '@cozemble/data-editor-sdk'
-import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
+import type {
+  AttachmentsManager,
+  RecordSaveOutcome,
+  RecordSearcher,
+} from '@cozemble/data-paginated-editor'
+import type {
+  AttachmentIdAndFileName,
+  EventSourcedDataRecord,
+  UploadedAttachment,
+} from '@cozemble/data-editor-sdk'
 
 export let backend = notImplementedBackend
 
@@ -27,8 +33,11 @@ export async function saveExistingRecord(
   return backend.saveExistingRecord(record)
 }
 
-export async function getRecordsForModel(modelId: ModelId): Promise<DataRecord[]> {
-  return backend.getRecords(modelId)
+export async function getRecordsForModel(
+  modelId: ModelId,
+  filterParams: FilterParams,
+): Promise<DataRecord[]> {
+  return backend.getRecords(modelId, filterParams)
 }
 
 export async function saveModel(model: EventSourcedModel): Promise<JustErrorMessage | null> {

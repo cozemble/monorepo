@@ -8,7 +8,7 @@
     import {emptyDataTableFocus} from "../focus/DataTableFocus";
     import {gettableWritable} from "../editors/GettableWritable";
     import {makeFocusControls} from "./makeFocusControls";
-    import {onDestroy, onMount} from "svelte";
+    import {onDestroy} from "svelte";
     import type {LoadingState} from "./RecordsContext";
     import {getRecordsForModel} from "../appBackend";
     import {systemConfiguration} from "../stores/systemConfiguration";
@@ -18,6 +18,7 @@
     import {currentUserId} from "../stores/currentUserId";
     import {makeModelControls} from "./makeModelControls";
     import type {ErrorVisibilityByRecordId} from "./helpers";
+    import {emptyFilterParams, type FilterParams} from "../backend/Backend";
 
     export let modelId: ModelId;
     const systemConfigurationProvider = () => $systemConfiguration
@@ -38,6 +39,8 @@
             .map((r) => r.record.id)
     })
     const loadingState = writable('loading' as LoadingState)
+    const filterParams = writable(emptyFilterParams())
+    let debounceTimeout: any
 
     modelRecordsContextFns.setEventSourcedModel(eventSourcedModel)
     modelRecordsContextFns.setModel(model)
@@ -46,18 +49,11 @@
     modelRecordsContextFns.setFocus(focus)
     modelRecordsContextFns.setFocusControls(makeFocusControls(modelsProvider, () => $records, systemConfigurationProvider, focus))
     modelRecordsContextFns.setDirtyRecords(dirtyRecords)
-    modelRecordsContextFns.setRecordControls(makeRecordControls(systemConfigurationProvider, modelsProvider,errorVisibilityByRecordId,eventSourcedRecords, lastSavedByRecordId))
+    modelRecordsContextFns.setRecordControls(makeRecordControls(systemConfigurationProvider, modelsProvider, errorVisibilityByRecordId, eventSourcedRecords, lastSavedByRecordId))
     modelRecordsContextFns.setModelControls(makeModelControls(allEventSourcedModels))
     modelRecordsContextFns.setErrorVisibilityByRecordId(errorVisibilityByRecordId)
-
-    onMount(async () => {
-        loadingState.set('loading')
-        const loaded = await getRecordsForModel(modelId)
-        eventSourcedRecords.set(
-            loaded.map((r) => eventSourcedDataRecordFns.fromRecord($allModels, r)),
-        )
-        loadingState.set('loaded')
-    })
+    modelRecordsContextFns.setFilterParams(filterParams)
+    let someRecordsLoaded = false
 
     const unsubAllEventSourcedModels = allModels.subscribe(models => {
         eventSourcedRecords.update(records => {
@@ -65,7 +61,27 @@
         })
     })
 
+    async function loadRecords(filterParams: FilterParams) {
+        loadingState.set('loading')
+        const loaded = await getRecordsForModel(modelId, filterParams)
+        eventSourcedRecords.set(
+            loaded.map((r) => eventSourcedDataRecordFns.fromRecord($allModels, r)),
+        )
+        someRecordsLoaded = true
+        loadingState.set('loaded')
+    }
+
+    const unsubFilterParams = filterParams.subscribe(filterParams => {
+        debounceTimeout = setTimeout(() => {
+            loadRecords(filterParams)
+        }, someRecordsLoaded ? 500 : 0)
+    })
+
     onDestroy(() => {
+        if (debounceTimeout) {
+            clearTimeout(debounceTimeout)
+        }
+        unsubFilterParams()
         unsubAllEventSourcedModels()
     })
 </script>

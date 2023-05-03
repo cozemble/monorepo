@@ -4,13 +4,24 @@ import type { DataRecord, DataRecordId, ModelId, ModelView } from '@cozemble/mod
 import type { AttachmentsManager, RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import type { EventSourcedDataRecord } from '@cozemble/data-editor-sdk'
 import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
+import type { FilterGroupList } from '@cozemble/data-filters-core'
+import { filterGroupListFns } from '@cozemble/data-filters-core'
+
+export interface FilterParams {
+  search: string | null
+  filters: FilterGroupList
+}
+
+export function emptyFilterParams(): FilterParams {
+  return { search: null, filters: filterGroupListFns.empty() }
+}
 
 export interface Backend extends AttachmentsManager {
   saveModel(model: EventSourcedModel): Promise<JustErrorMessage | null>
 
   saveModels(model: EventSourcedModel[]): Promise<JustErrorMessage | null>
 
-  getRecords(modelId: ModelId): Promise<DataRecord[]>
+  getRecords(modelId: ModelId, filterParams: FilterParams): Promise<DataRecord[]>
 
   saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome>
 

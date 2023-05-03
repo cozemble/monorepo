@@ -39,8 +39,11 @@
     let maybeExistingErrorsForRecord = getContext(singleRecordErrorContext)
     if (!maybeExistingErrorsForRecord) {
         const errors = derived([records, allModels, systemConfiguration], ([records, models, systemConfiguration]) => {
-            const latestRecord = mandatory(records.find(r => r.id.value === record.id.value), `Could not find record with id ${record.id.value}`)
-            return modelFns.validate(systemConfiguration, models, latestRecord)
+            const maybeRecord = records.find(r => r.id.value === record.id.value)
+            if(maybeRecord) {
+                return modelFns.validate(systemConfiguration, models, maybeRecord)
+            }
+            return new Map()
         })
         setContext(singleRecordErrorContext, errors)
     }

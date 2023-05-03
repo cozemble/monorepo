@@ -1,4 +1,4 @@
-import type { Backend } from '../backend/Backend'
+import type { Backend, FilterParams } from '../backend/Backend'
 import type { EventSourcedModel } from '@cozemble/model-event-sourced'
 import type { JustErrorMessage } from '@cozemble/lang-util'
 import { allEventSourcedModels } from '../stores/allModels'
@@ -32,8 +32,8 @@ export class StoreSyncBackend implements Backend {
     return await this.delegate.saveModels(models)
   }
 
-  async getRecords(modelId: ModelId): Promise<DataRecord[]> {
-    return await this.delegate.getRecords(modelId)
+  async getRecords(modelId: ModelId, filterParams: FilterParams): Promise<DataRecord[]> {
+    return await this.delegate.getRecords(modelId, filterParams)
   }
 
   async saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {

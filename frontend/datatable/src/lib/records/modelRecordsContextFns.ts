@@ -2,7 +2,7 @@ import type { EventSourcedModel } from '@cozemble/model-event-sourced'
 import type { DataRecord, DataRecordId, Model } from '@cozemble/model-core'
 import { getContext, setContext } from 'svelte'
 import { mandatory } from '@cozemble/lang-util'
-import type { Readable } from 'svelte/store'
+import type { Readable, Writable } from 'svelte/store'
 import type { EventSourcedDataRecord } from '@cozemble/data-editor-sdk'
 import type { DataTableFocus, DataTableFocusControls2 } from '../focus/DataTableFocus'
 import type { EventSourcedDataRecordsStore } from './EventSourcedDataRecordsStore'
@@ -10,6 +10,7 @@ import type { RecordControls } from './RecordControls'
 import type { ModelControls } from './ModelControls'
 import type { ErrorVisibilityByRecordId } from './helpers'
 import type { GettableWritable } from '../editors/GettableWritable'
+import type { FilterParams } from '../backend/Backend'
 
 const eventSourceModelContextKey = 'model.records.context.eventSourcedModel'
 const modelContextKey = 'model.records.context.model'
@@ -21,6 +22,7 @@ const dirtyRecordsContextKey = 'model.records.context.dirtyRecords'
 const recordControlsContextKey = 'model.records.context.recordControls'
 const modelControlsContextKey = 'model.records.context.modelControls'
 const errorVisibilityByRecordIdContextKey = 'model.records.context.errorVisibilityByRecordId'
+const filterParamsContextKey = 'model.records.context.filterParams'
 
 export const modelRecordsContextFns = {
   setEventSourcedModel: (model: Readable<EventSourcedModel>) => {
@@ -52,6 +54,9 @@ export const modelRecordsContextFns = {
   },
   setErrorVisibilityByRecordId: (visibility: GettableWritable<ErrorVisibilityByRecordId>) => {
     setContext(errorVisibilityByRecordIdContextKey, visibility)
+  },
+  setFilterParams: (filterParams: Writable<FilterParams>) => {
+    setContext(filterParamsContextKey, filterParams)
   },
   getEventSourcedModel: (): Readable<EventSourcedModel> => {
     return mandatory(
@@ -91,5 +96,8 @@ export const modelRecordsContextFns = {
       getContext(errorVisibilityByRecordIdContextKey),
       `No error visibility by record id found in context`,
     )
+  },
+  getFilterParams: (): Writable<FilterParams> => {
+    return mandatory(getContext(filterParamsContextKey), `No filter params found in context`)
   },
 }

@@ -13,25 +13,21 @@
 
     const models = $allModels
     const model = modelRecordsContextFns.getModel()
+    const filterParams = modelRecordsContextFns.getFilterParams()
 
     const dispatch = createEventDispatcher()
     let searchText = ""
     let rootFilter = filterGroupListFns.empty()
-    let debounceTimeout: any
     let showFilters = false
     $: filterLhsOptions = getFilterLhsOptionsForModel(models, $model)
     $: reducer = partiallyAppliedFilterGroupListReducer(filterLhsOptions)
-
 
     function onShowFilters(event: CustomEvent<boolean>) {
         showFilters = event.detail
     }
 
     function searchTextChanged() {
-        clearTimeout(debounceTimeout)
-        debounceTimeout = setTimeout(() => {
-            dispatch("searchTextChanged", searchText)
-        }, 500)
+        filterParams.update(params => ({...params, search:searchText}))
     }
 
     function filterActionHandler(action: FilterAction) {
