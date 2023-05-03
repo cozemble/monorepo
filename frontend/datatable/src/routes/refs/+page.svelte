@@ -2,22 +2,16 @@
     import type {EventSourcedModel} from "@cozemble/model-event-sourced";
     import {eventSourcedModelFns} from "@cozemble/model-event-sourced";
     import type {DataRecord, ModelView} from "@cozemble/model-core";
-    import {systemConfigurationFns} from "@cozemble/model-core";
+    import {modelReferenceFns, systemConfigurationFns} from "@cozemble/model-core";
     import {registerEverything} from "@cozemble/model-assembled";
     import {onMount} from 'svelte'
-    import {
-        dataRecordFns,
-        modelFns,
-        modelOptions,
-        propertyFns,
-        propertyOptions
-    } from "@cozemble/model-api";
+    import {dataRecordFns, modelFns, modelOptions, propertyFns, propertyOptions} from "@cozemble/model-api";
     import {writable} from "svelte/store";
     import DataTable from "../../lib/DataTable.svelte";
     import {backendFns} from "../../lib/appBackend";
     import {StoreSyncBackend} from "../../lib/app/StoreSyncBackend";
     import {InMemoryBackend} from "../../lib/backend/InMemoryBackend";
-    import {modelReferenceFns} from "@cozemble/model-core";
+    import RecordFilteringPanel from "../../lib/filtering/RecordFilteringPanel.svelte";
 
     const modelViews: ModelView[] = []
 
@@ -43,4 +37,8 @@
 
 </script>
 
-<DataTable models={eventSourcedModels} {modelViews} {systemConfiguration} userId="test" navbarState={writable(invoiceModel.id.value)}/>
+<DataTable models={eventSourcedModels}
+           {modelViews}
+           {systemConfiguration}
+           userId="test"
+           navbarState={writable(invoiceModel.id.value)} recordFilteringComponent={RecordFilteringPanel}/>

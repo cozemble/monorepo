@@ -5,14 +5,14 @@
     import {createEventDispatcher} from "svelte";
     import {modelViews, systemConfiguration} from "../models/tenantEntityStore";
     import {makePaginatedEditorHost} from "./paginatedEditorHost";
-    import ShowFilterButton from "./filtering/ShowFilterButton.svelte";
-    import FilterConfigurer from "./filtering/FilterConfigurer.svelte";
+    import {ShowFilterButton} from "@cozemble/frontend-ui-blocks";
+    import {FilterConfigurer} from "@cozemble/frontend-ui-blocks";
     import {
         type FilterAction,
         filterGroupListFns,
         partiallyAppliedFilterGroupListReducer
     } from "@cozemble/data-filters-core";
-    import {getFilterLhsOptionsForModel} from "./filtering/filtering";
+    import {getFilterLhsOptionsForModel} from "@cozemble/frontend-ui-blocks";
 
     export let models: Model[]
     export let model: Model

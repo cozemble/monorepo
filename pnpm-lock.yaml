@@ -686,6 +686,9 @@ importers:
       '@cozemble/frontend-incremental-modelling-spike':
         specifier: workspace:*
         version: link:../incremental-modelling-spike
+      '@cozemble/frontend-ui-blocks':
+        specifier: workspace:*
+        version: link:../ui-blocks
       '@cozemble/lang-util':
         specifier: workspace:*
         version: link:../../lang/util
@@ -762,6 +765,85 @@ importers:
       '@cozemble/model-to-json':
         specifier: workspace:*
         version: link:../../model/to-json
+      daisyui:
+        specifier: ^2.47.0
+        version: 2.51.3(autoprefixer@10.4.14)(postcss@8.4.21)
+    devDependencies:
+      '@cozemble/model-api':
+        specifier: workspace:*
+        version: link:../../model/api
+      '@cozemble/model-assembled':
+        specifier: workspace:*
+        version: link:../../model/assembled
+      '@originjs/vite-plugin-commonjs':
+        specifier: ^1.0.3
+        version: 1.0.3
+      '@sveltejs/adapter-auto':
+        specifier: ^2.0.0
+        version: 2.0.0(@sveltejs/kit@1.11.0)
+      '@sveltejs/kit':
+        specifier: ^1.5.0
+        version: 1.11.0(svelte@3.56.0)(vite@4.1.4)
+      '@sveltejs/package':
+        specifier: ^2.0.0
+        version: 2.0.2(svelte@3.56.0)(typescript@5.0.2)
+      '@tailwindcss/typography':
+        specifier: ^0.5.9
+        version: 0.5.9(tailwindcss@3.2.7)
+      autoprefixer:
+        specifier: ^10.4.13
+        version: 10.4.14(postcss@8.4.21)
+      postcss:
+        specifier: ^8.4.21
+        version: 8.4.21
+      publint:
+        specifier: ^0.1.9
+        version: 0.1.10
+      svelte:
+        specifier: ^3.54.0
+        version: 3.56.0
+      svelte-check:
+        specifier: ^3.0.1
+        version: 3.1.4(postcss@8.4.21)(svelte@3.56.0)
+      tailwindcss:
+        specifier: ^3.2.4
+        version: 3.2.7(postcss@8.4.21)
+      tslib:
+        specifier: ^2.4.1
+        version: 2.5.0
+      typescript:
+        specifier: ^5.0.0
+        version: 5.0.2
+      vite:
+        specifier: 4.1.4
+        version: 4.1.4(@types/node@16.18.16)
+
+  frontend/ui-blocks:
+    dependencies:
+      '@cozemble/backend-tenanted-api-types':
+        specifier: workspace:*
+        version: link:../../backend/tenanted-api-types
+      '@cozemble/data-editor-sdk':
+        specifier: workspace:*
+        version: link:../../data/editor-sdk
+      '@cozemble/data-filters-config':
+        specifier: workspace:*
+        version: link:../../data/filters-config
+      '@cozemble/data-filters-core':
+        specifier: workspace:*
+        version: link:../../data/filters-core
+      '@cozemble/lang-util':
+        specifier: workspace:*
+        version: link:../../lang/util
+      '@cozemble/model-core':
+        specifier: workspace:*
+        version: link:../../model/core
+      '@cozemble/model-event-sourced':
+        specifier: workspace:*
+        version: link:../../model/event-sourced
+      '@cozemble/ui-filter-editor':
+        specifier: workspace:*
+        version: link:../../ui/filter-editor
       daisyui:
         specifier: ^2.47.0
         version: 2.51.3(autoprefixer@10.4.14)(postcss@8.4.21)

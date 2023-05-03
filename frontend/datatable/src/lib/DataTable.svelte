@@ -11,17 +11,20 @@
     import {ModelReferenceEditor, ModelReferenceViewer} from "@cozemble/data-paginated-editor";
     import {slotEditorRegistry, slotViewerRegistry} from "@cozemble/model-assembled";
     import {allModelViews} from "./stores/allModelViews";
+    import {recordFilteringComponentStore} from "./stores/recordFilteringComponentStore";
 
     export let models: EventSourcedModel[]
     export let modelViews: ModelView[]
     export let systemConfiguration: SystemConfiguration
     export let userId: string
     export let navbarState: Writable<string | null> = writable(null)
+    export let recordFilteringComponent: any | null = null
 
     currentUserId.set(userId)
     allEventSourcedModels.set(models)
     systemConfigurationStore.set(systemConfiguration)
     allModelViews.set(modelViews)
+    recordFilteringComponentStore.set(recordFilteringComponent)
 
     onMount(() => {
         slotViewerRegistry.register('model.reference', ModelReferenceViewer)

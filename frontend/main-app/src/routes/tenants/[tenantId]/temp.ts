@@ -8,7 +8,7 @@ import {
   onOrAfterFilterOperator,
   onOrBeforeFilterOperator,
 } from '@cozemble/data-filters-core'
-import FilterValueProviderUsingPropertyEditor from '../../../lib/data/filtering/FilterValueProviderUsingPropertyEditor.svelte'
+import { FilterValueProviderUsingPropertyEditor } from '@cozemble/frontend-ui-blocks'
 import { systemConfiguration } from '../../../lib/models/tenantEntityStore'
 
 export function tempRegisterDateFilters() {

@@ -7,6 +7,7 @@
     import {systemConfiguration} from "../stores/systemConfiguration";
     import DataRecordsTableInContext from "../records/DataRecordsTableInContext.svelte";
     import ModelRecordsContext from "../records/ModelRecordsContext.svelte"
+    import {recordFilteringComponentStore} from "../stores/recordFilteringComponentStore";
 
     export let modelId: string
     const model = mandatory($allModels.find(model => model.id.value === modelId), `Model with id ${modelId} not found`)
@@ -18,6 +19,9 @@
 </script>
 <div class="mt-3">
     <ModelRecordsContext modelId={modelIdFns.newInstance(modelId)}>
+        {#if $recordFilteringComponentStore}
+            <svelte:component this={$recordFilteringComponentStore}/>
+        {/if}
         <DataRecordsTableInContext/>
     </ModelRecordsContext>
 </div>

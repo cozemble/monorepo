@@ -4,7 +4,7 @@
     import {records} from "./recordsStore";
     import {onDestroy, onMount} from "svelte";
     import DataPanelInner from "./DataPanelInner.svelte";
-    import {toFilledFilterInstanceGroup} from "./filtering/filtering";
+    import {toFilledFilterInstanceGroup} from "@cozemble/frontend-ui-blocks";
     import {filledFilterInstanceGroupFns} from "@cozemble/backend-tenanted-api-types";
 
     export let tenantId: string
