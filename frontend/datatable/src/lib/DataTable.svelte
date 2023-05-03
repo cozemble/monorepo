@@ -9,12 +9,12 @@
     import {onMount} from "svelte";
     import {ModelReferenceEditor, ModelReferenceViewer} from "@cozemble/data-paginated-editor";
     import {slotEditorRegistry, slotViewerRegistry} from "@cozemble/model-assembled";
-    import {allModelViews} from "./stores/allModelViews";
+    import {setAllModelViews} from "./stores/allModelViews";
     import {recordFilteringComponentStore} from "./stores/recordFilteringComponentStore";
     import type {EventSourcedModelStore} from "./types";
 
     export let models: EventSourcedModelStore
-    export let modelViews: ModelView[]
+    export let modelViews: Writable<ModelView[]>
     export let systemConfiguration: SystemConfiguration
     export let userId: string
     export let navbarState: Writable<string | null> = writable(null)
@@ -23,7 +23,7 @@
     currentUserId.set(userId)
     setAllEventSourcedModels(models)
     systemConfigurationStore.set(systemConfiguration)
-    allModelViews.set(modelViews)
+    setAllModelViews(modelViews)
     recordFilteringComponentStore.set(recordFilteringComponent)
 
     onMount(() => {

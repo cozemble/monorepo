@@ -15,7 +15,7 @@
     import {tempRegisterDateFilters} from "../temp";
     import {eventSourcedModelStore} from "../../lib";
 
-    const modelViews: ModelView[] = []
+    const modelViews = writable([] as ModelView[])
 
     const customerModel = modelFns.newInstance("Customers", modelOptions.withProperties(propertyFns.newInstance("First name", propertyOptions.required), propertyFns.newInstance("Last name")))
     const invoiceModel = modelFns.newInstance("Invoices", modelOptions.withSlot(modelReferenceFns.newInstance([customerModel.id], "Customer")))

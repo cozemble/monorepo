@@ -20,7 +20,7 @@
     import {writable} from "svelte/store";
     import {eventSourcedModelStore} from "../lib";
 
-    const modelViews: ModelView[] = []
+    const modelViews = writable([] as ModelView[])
     const addressModel = modelFns.newInstance("Address", modelOptions.withProperties(propertyFns.newInstance("Street"), propertyFns.newInstance("City"), propertyFns.newInstance("Postal code/Zip code", propertyOptions.required)))
     const nestedDeliveryAddress = nestedModelFns.newInstance("Delivery Address", addressModel.id, "one")
 
