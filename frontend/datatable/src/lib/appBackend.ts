@@ -14,12 +14,14 @@ import type {
   EventSourcedDataRecord,
   UploadedAttachment,
 } from '@cozemble/data-editor-sdk'
+import { StoreSyncBackend } from './app/StoreSyncBackend'
 
 export let backend = notImplementedBackend
 
 export const backendFns = {
   setBackend: (newBackend: Backend) => {
-    backend = newBackend
+    backend = new StoreSyncBackend(newBackend)
+    return backend
   },
 }
 

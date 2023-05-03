@@ -13,6 +13,7 @@
     import {InMemoryBackend} from "../../lib/backend/InMemoryBackend";
     import RecordFilteringPanel from "../../lib/filtering/RecordFilteringPanel.svelte";
     import {tempRegisterDateFilters} from "../temp";
+    import {eventSourcedModelStore} from "../../lib";
 
     const modelViews: ModelView[] = []
 
@@ -30,7 +31,7 @@
     const recordsMap = new Map<string, DataRecord[]>()
     recordsMap.set(customerModel.id.value, [customerRecord1, customerRecord2])
     recordsMap.set(invoiceModel.id.value, [invoiceRecord1])
-    backendFns.setBackend(new StoreSyncBackend(new InMemoryBackend(modelMap, recordsMap)))
+    backendFns.setBackend(new InMemoryBackend(modelMap, recordsMap))
 
     onMount(() => {
         tempRegisterDateFilters()
@@ -39,7 +40,7 @@
 
 </script>
 
-<DataTable models={eventSourcedModels}
+<DataTable models={eventSourcedModelStore(eventSourcedModels)}
            {modelViews}
            {systemConfiguration}
            userId="test"

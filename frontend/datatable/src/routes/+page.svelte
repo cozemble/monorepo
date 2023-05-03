@@ -18,6 +18,7 @@
     } from "@cozemble/model-api";
     import DataTable from "../lib/DataTable.svelte";
     import {writable} from "svelte/store";
+    import {eventSourcedModelStore} from "../lib";
 
     const modelViews: ModelView[] = []
     const addressModel = modelFns.newInstance("Address", modelOptions.withProperties(propertyFns.newInstance("Street"), propertyFns.newInstance("City"), propertyFns.newInstance("Postal code/Zip code", propertyOptions.required)))
@@ -34,8 +35,8 @@
     modelMap.set(addressModel.id.value, eventSourcedModelFns.newInstance(addressModel))
     const recordsMap = new Map<string, DataRecord[]>()
     recordsMap.set(customer.id.value, [customerRecord1, customerRecord2])
-    // backendFns.setBackend(new StoreSyncBackend(new InMemoryBackend(modelMap, recordsMap)))
-    backendFns.setBackend(new StoreSyncBackend(new InMemoryBackend()))
+    // backendFns.setBackend(new InMemoryBackend(modelMap, recordsMap))
+    backendFns.setBackend(new InMemoryBackend())
 
     onMount(() => {
         registerEverything()
@@ -43,5 +44,5 @@
 
 </script>
 
-<!--<DataTable {models} {modelViews} {systemConfiguration} userId="test" navbarState={writable(customer.id.value)}/>-->
-<DataTable models={[]} {modelViews} {systemConfiguration} userId="test"/>
+<!--<DataTable models={eventSourcedModelStore(models)} {modelViews} {systemConfiguration} userId="test" navbarState={writable(customer.id.value)}/>-->
+<DataTable models={eventSourcedModelStore([])} {modelViews} {systemConfiguration} userId="test"/>

@@ -1,8 +1,6 @@
 import type { DataRecord, DataRecordValuePath, Model, ModelSlot } from '@cozemble/model-core'
 import type { EventSourcedModel } from '@cozemble/model-event-sourced'
 import { dataRecordValuePathFns } from '@cozemble/model-api'
-import type { FilterGroupList } from '@cozemble/data-filters-core'
-import { filterGroupListFns } from '@cozemble/data-filters-core'
 
 export interface SlotBeingEdited {
   models: EventSourcedModel[]

@@ -25,6 +25,7 @@ export class IncrementalModelingBackend implements DataTableBackend {
   }
 
   async saveModels(models: EventSourcedModel[]): Promise<JustErrorMessage | null> {
+    console.log({ savingModels: models })
     try {
       const backendModels: BackendModel[] = models.map((m) => ({
         _type: 'backend.model',

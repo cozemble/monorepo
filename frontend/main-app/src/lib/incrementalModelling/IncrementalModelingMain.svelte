@@ -6,21 +6,49 @@
     import UserInstructionNotices from "../notices/UserInstructionNotices.svelte";
     import ToastNotices from "../notices/ToastNotices.svelte";
     import {registerEverything} from "@cozemble/model-assembled";
-    import {onMount} from "svelte";
+    import {onDestroy, onMount} from "svelte";
     import IncrementalModelingData from "./IncrementalModelingData.svelte";
     import {IncrementalModelingBackend} from "./IncrementalModelingBackend";
+    import type {DataTableBackend} from "@cozemble/frontend-datatable";
     import {backendFns} from "@cozemble/frontend-datatable";
+    import {eventSourcedModels, models} from "./incrementalModelStore";
+    import type {EventSourcedModel} from "@cozemble/model-event-sourced";
+    import {toastNoticeStoreFns} from "../notices/toastNoticeStore";
     import {backend} from "../backend/backendStore";
-    import {models} from "../models/modelsStore";
 
     export let tenantId: string
     let panelToShow: "data" | "settings" = "data"
+    let dataTableBackend: DataTableBackend | null = null
 
     onMount(() => {
         registerEverything()
-        backendFns.setBackend(new IncrementalModelingBackend(backend,tenantId, () => $models))
+        dataTableBackend = backendFns.setBackend(new IncrementalModelingBackend(backend, tenantId, () => $models))
     })
 
+    let lastSavedModels: EventSourcedModel[] = []
+    const unsubModels = eventSourcedModels.subscribe(async (models: EventSourcedModel[]) => {
+        if (lastSavedModels.length === 0) {
+            lastSavedModels = models
+        } else {
+            saveModels(models)
+            lastSavedModels = models
+        }
+    })
+
+    async function saveModels(models: EventSourcedModel[]) {
+        if (dataTableBackend === null) {
+            throw new Error("Backend is null")
+        } else {
+            const saveOutcome = await dataTableBackend.saveModels(models)
+            if(saveOutcome !== null) {
+                toastNoticeStoreFns.add(saveOutcome.message, "error")
+            }
+        }
+    }
+
+    onDestroy(() => {
+        unsubModels()
+    })
 </script>
 <div class="drawer drawer-mobile">
     <input id="my-drawer-2" type="checkbox" class="drawer-toggle"/>
@@ -35,7 +63,7 @@
                 <div class="panel-container visible">
                     <div class="inner-panel-container">
                         {#if panelToShow === 'data'}
-                            <IncrementalModelingData />
+                            <IncrementalModelingData/>
                         {:else if panelToShow === 'settings'}
                             <SettingsPanel {tenantId}/>
                         {/if}
@@ -80,4 +108,7 @@
         padding: 1em;
     }
 
+    .drawer-content {
+        z-index: 100;
+    }
 </style>

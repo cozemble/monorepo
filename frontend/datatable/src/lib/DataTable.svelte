@@ -1,6 +1,5 @@
 <script lang="ts">
-    import type {EventSourcedModel} from "@cozemble/model-event-sourced";
-    import {allEventSourcedModels} from "./stores/allModels";
+    import {setAllEventSourcedModels} from "./stores/allModels";
     import type {ModelView, SystemConfiguration} from "@cozemble/model-core";
     import {currentUserId} from "./stores/currentUserId";
     import {systemConfiguration as systemConfigurationStore} from "./stores/systemConfiguration";
@@ -12,8 +11,9 @@
     import {slotEditorRegistry, slotViewerRegistry} from "@cozemble/model-assembled";
     import {allModelViews} from "./stores/allModelViews";
     import {recordFilteringComponentStore} from "./stores/recordFilteringComponentStore";
+    import type {EventSourcedModelStore} from "./types";
 
-    export let models: EventSourcedModel[]
+    export let models: EventSourcedModelStore
     export let modelViews: ModelView[]
     export let systemConfiguration: SystemConfiguration
     export let userId: string
@@ -21,7 +21,7 @@
     export let recordFilteringComponent: any | null = null
 
     currentUserId.set(userId)
-    allEventSourcedModels.set(models)
+    setAllEventSourcedModels(models)
     systemConfigurationStore.set(systemConfiguration)
     allModelViews.set(modelViews)
     recordFilteringComponentStore.set(recordFilteringComponent)
