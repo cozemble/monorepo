@@ -7,3 +7,5 @@
 
 </script>
 
+<input type="number" value={property.numberOfDecimalPlaces} />
+

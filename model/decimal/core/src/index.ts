@@ -21,7 +21,8 @@ import {
 export const decimalPropertyType = propertyTypeFns.newInstance('decimal.property')
 
 export interface DecimalProperty extends Property {
-  propertyType: { _type: 'property.type'; value: 'decimal.property' }
+  propertyType: { _type: 'property.type'; value: 'decimal.property' },
+  numberOfDecimalPlaces: number
 }
 
 export function emptyProperty(name: string): DecimalProperty {
@@ -34,6 +35,7 @@ export function emptyProperty(name: string): DecimalProperty {
     name: propertyNameFns.newInstance(name),
     required: false,
     unique: false,
+    numberOfDecimalPlaces: 4,
   }
 }
 
