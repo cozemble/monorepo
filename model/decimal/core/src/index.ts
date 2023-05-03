@@ -135,3 +135,5 @@ export function registerDecimalProperty() {
   propertyDescriptors.register(decimalPropertyDescriptor)
   registerModelEvents()
 }
+
+export { numberOfDecimalPlacesChanged } from './events'
