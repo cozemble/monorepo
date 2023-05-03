@@ -1,1 +1,1 @@
-export const x = 1
+export { default as DataTable } from './DataTable.svelte'

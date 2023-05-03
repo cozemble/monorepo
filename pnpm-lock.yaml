@@ -680,6 +680,9 @@ importers:
       '@cozemble/frontend-bff':
         specifier: workspace:*
         version: link:../bff
+      '@cozemble/frontend-datatable':
+        specifier: workspace:*
+        version: link:../datatable
       '@cozemble/frontend-incremental-modelling-spike':
         specifier: workspace:*
         version: link:../incremental-modelling-spike

@@ -6,10 +6,15 @@
     import {page} from '$app/stores';
     import {tenantStore} from "../../../lib/tenant/tenantStore";
     import {tempRegisterDateFilters} from "./temp";
+    import {browser} from '$app/environment';
 
+    let ui = 'milestone1'
     onMount(() => {
         registerEverything()
         tempRegisterDateFilters()
+        if (browser) {
+            ui = localStorage.getItem('cozemble.config.ui') || 'milestone1'
+        }
     })
 
 </script>
@@ -18,7 +23,11 @@
     <p>loading...</p>
 {:then session}
     {#if session && $tenantStore}
-        <MainPanel tenantId={$page.params.tenantId}/>
+        {#if ui === 'incremental-modeling'}
+            Incremental Modeling
+        {:else}
+            <MainPanel tenantId={$page.params.tenantId}/>
+        {/if}
     {:else }
         <h1>You need to login</h1>
     {/if}
