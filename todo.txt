@@ -1,0 +1,20 @@
+ * When I click save on a row, clear the row focus, if it exists.  It feels weird to type a value for Phone, click Save, and the Phone cell is still highlighted
+ * Link to another record should say link to another table, and Referenced Model, which appears underneath, should say Referenced Table
+ * If I want to fix the text on the button that says "Add Customers", so it reads "Add Customer", it is not obvious to me that that has to be done by editing the table, up top.
+    I would expect to be able to edit the button text by clicking on the button.
+ * The "Configure view for Customer" modal that pops up, its a confusing experience.  I need to add text that says something like "Choose the Customer fields you want to see"
+    and the "Customer view template" should be titled "Selected Customer Fields" or something like that.  The "Customre records preview" should
+    read "this is how your customer records will look"
+ * Clicking Save View does not save the model view.  Its a writable, but the app is not listening to changes and saving them
+ * After editing a date value, by clicking on the calendar, pressing tab tabs thru the parts of the date in the input.  I want it to tab to the next input.
+ * blurring from a date input causes the table to jump, because the rendered date is a different size to the date input
+ * When adding a sub-record, pressing enter after entering the record name should submit the form
+ * Editing and viewing Attachments causes the cell to widen/shorted as the Editor/Viewer are different widths
+ * It takes a long time with no feedback to show a thumbnail of an image after it has uploaded
+ * The choose file input extends beyond the edge of the cell once an image is uploaded
+ * Clicking away from a cell editor does not cause it to lose focus
+ * Thumbnails are too small
+ * It looks like I can't upload two images (at least upload 1, save record, refresh page, upload another)
+
+ * Note: it really isn't that great that I have to make a booking record to discover than I can make a sub record of Bike underneath it.  In general, its not great that the
+    developer has to enter data to unfurl all of the model editing features.
