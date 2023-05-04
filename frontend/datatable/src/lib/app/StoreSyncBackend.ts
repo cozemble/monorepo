@@ -50,14 +50,15 @@ export class StoreSyncBackend implements Backend {
 
   async saveModelView(modelView: ModelView): Promise<JustErrorMessage | null> {
     const outcome = await this.delegate.saveModelView(modelView)
+    console.log({ outcome })
     if (outcome !== null) {
       return outcome
     }
     allModelViews.update((mvs) => {
-      const maybeExisting = mvs.find((mv) => mv.modelId.value === modelView.modelId.value)
+      const maybeExisting = mvs.find((mv) => mv.id.value === modelView.id.value)
       if (maybeExisting) {
         return mvs.map((mv) => {
-          if (mv.modelId.value === modelView.modelId.value) {
+          if (mv.id.value === modelView.id.value) {
             return modelView
           }
           return mv

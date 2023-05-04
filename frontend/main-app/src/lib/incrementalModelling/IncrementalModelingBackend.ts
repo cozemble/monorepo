@@ -67,8 +67,9 @@ export class IncrementalModelingBackend implements DataTableBackend {
     return this.backend.findRecordById(this.tenantId, modelId, recordId)
   }
 
-  saveModelView(modelView: ModelView): Promise<JustErrorMessage | null> {
-    return this.backend.saveEntities(this.tenantId, [modelView])
+  async saveModelView(modelView: ModelView): Promise<JustErrorMessage | null> {
+    await this.backend.saveEntities(this.tenantId, [modelView])
+    return null
   }
 
   uploadAttachments(

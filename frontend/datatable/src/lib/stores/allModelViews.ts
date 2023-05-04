@@ -7,3 +7,7 @@ export let allModelViews = writable<ModelView[]>([])
 export function setAllModelViews(views: Writable<ModelView[]>): void {
   allModelViews = views
 }
+
+allModelViews.subscribe((views) => {
+  console.log({ views })
+})

@@ -1,10 +1,8 @@
 import { uuids } from '@cozemble/lang-util'
 import type { ModelId, ModelView, ModelViewId, SystemConfiguration } from '@cozemble/model-core'
+import { slotSystemConfigurationDescriptors, systemConfigurationFns } from '@cozemble/model-core'
 import type { Writable } from 'svelte/store'
 import { derived, writable } from 'svelte/store'
-import { cozauth } from '../auth/cozauth'
-import { config } from '../config'
-import { slotSystemConfigurationDescriptors, systemConfigurationFns } from '@cozemble/model-core'
 import { backend } from '../backend/backendStore'
 
 export interface TenantEntity {
@@ -25,6 +23,20 @@ function getSystemConfiguration(entities: TenantEntity[]): SystemConfiguration {
     (entities.find((e) => e._type === 'system.configuration') as SystemConfiguration) ??
       systemConfigurationFns.empty(),
   )
+}
+
+export function mergeTenantEntities(entities: TenantEntity[]) {
+  tenantEntities.update((existing) => {
+    const newEntities = entities.filter((e) => !existing.find((e2) => e2.id.value === e.id.value))
+    const changed = existing.map((entity) => {
+      const newEntity = newEntities.find((e) => e.id.value === entity.id.value)
+      if (newEntity) {
+        return newEntity
+      }
+      return entity
+    })
+    return [...changed, ...newEntities]
+  })
 }
 
 export async function saveSystemConfiguration(

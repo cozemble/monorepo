@@ -18,11 +18,10 @@
 
     export let tenantId: string
     let panelToShow: "data" | "settings" = "data"
-    let dataTableBackend: DataTableBackend | null = null
+    let dataTableBackend: DataTableBackend = backendFns.setBackend(new IncrementalModelingBackend(backend, tenantId, () => $models))
 
     onMount(() => {
         registerEverything()
-        dataTableBackend = backendFns.setBackend(new IncrementalModelingBackend(backend, tenantId, () => $models))
     })
 
     let lastSavedModels: EventSourcedModel[] = []
@@ -63,7 +62,7 @@
                 <div class="panel-container visible">
                     <div class="inner-panel-container">
                         {#if panelToShow === 'data'}
-                            <IncrementalModelingData/>
+                            <IncrementalModelingData {dataTableBackend}/>
                         {:else if panelToShow === 'settings'}
                             <SettingsPanel {tenantId}/>
                         {/if}
