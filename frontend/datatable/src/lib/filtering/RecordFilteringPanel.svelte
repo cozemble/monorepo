@@ -7,7 +7,6 @@
     } from "@cozemble/data-filters-core";
 
     import {FilterConfigurer, getFilterLhsOptionsForModel, ShowFilterButton} from "@cozemble/frontend-ui-blocks";
-    import {createEventDispatcher} from "svelte";
     import {modelRecordsContextFns} from "../records/modelRecordsContextFns";
     import {allModels} from "../stores/allModels";
 
@@ -15,7 +14,6 @@
     const model = modelRecordsContextFns.getModel()
     const filterParams = modelRecordsContextFns.getFilterParams()
 
-    const dispatch = createEventDispatcher()
     let searchText = ""
     let rootFilter = filterGroupListFns.empty()
     let showFilters = false
@@ -27,13 +25,13 @@
     }
 
     function searchTextChanged() {
-        filterParams.update(params => ({...params, search:searchText}))
+        filterParams.update(params => ({...params, search: searchText}))
     }
 
     function filterActionHandler(action: FilterAction) {
         rootFilter = reducer(action, rootFilter)
         if (filterGroupListFns.allFiltersAreFullySpecified(rootFilter)) {
-            dispatch("filtersChanged", rootFilter)
+            filterParams.update(params => ({...params, filters: rootFilter}))
         }
     }
 

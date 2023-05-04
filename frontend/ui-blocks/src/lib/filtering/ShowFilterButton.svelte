@@ -4,7 +4,6 @@
     import {getFilterablePaths} from "./filtering";
     import type {FilterGroupList} from "@cozemble/data-filters-core";
     import {filterGroupListFns} from "@cozemble/data-filters-core";
-    import {afterUpdate} from "svelte";
 
     export let model: Model
     export let models: Model[]
@@ -19,8 +18,6 @@
         showFilters = !showFilters
         dispatch('showFilters', showFilters)
     }
-
-    afterUpdate(() => console.log({model,filterablePaths}))
 </script>
 
 {#if filterablePaths.length > 0}

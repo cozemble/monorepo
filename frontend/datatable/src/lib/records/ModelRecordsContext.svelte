@@ -65,6 +65,7 @@
     async function loadRecords(filterParams: FilterParams) {
         loadingState.set('loading')
         const loaded = await getRecordsForModel(modelId, filterParams)
+        console.log({loaded,modelId, filterParams})
         eventSourcedRecords.set(
             loaded.map((r) => eventSourcedDataRecordFns.fromRecord($allModels, r)),
         )

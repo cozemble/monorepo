@@ -3,3 +3,4 @@ export type { Backend as DataTableBackend, FilterParams } from './backend/Backen
 export { type GettableWritable, gettableWritable } from './editors/GettableWritable'
 export { backendFns } from './appBackend'
 export { eventSourcedModelStore } from './stores/allModels'
+export { default as RecordFilteringPanel } from './filtering/RecordFilteringPanel.svelte'

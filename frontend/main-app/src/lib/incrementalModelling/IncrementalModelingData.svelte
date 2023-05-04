@@ -8,6 +8,7 @@
     import {toastNoticeStoreFns} from "../notices/toastNoticeStore";
     import {arrays} from "@cozemble/lang-util";
     import {afterUpdate} from "svelte";
+    import {RecordFilteringPanel} from "@cozemble/frontend-datatable";
 
     const writableModelViews = writable($modelViews)
     export let dataTableBackend: DataTableBackend
@@ -42,4 +43,4 @@
 </script>
 
 <DataTable models={eventSourcedModels} modelViews={writableModelViews} systemConfiguration={$systemConfiguration}
-           userId="test"/>
+           userId="test" recordFilteringComponent={RecordFilteringPanel}/>
