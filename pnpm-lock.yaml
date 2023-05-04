@@ -468,6 +468,48 @@ importers:
 
   frontend/combined-editor:
     dependencies:
+      '@cozemble/data-editor-sdk':
+        specifier: workspace:*
+        version: link:../../data/editor-sdk
+      '@cozemble/data-filters-config':
+        specifier: workspace:*
+        version: link:../../data/filters-config
+      '@cozemble/data-filters-core':
+        specifier: workspace:*
+        version: link:../../data/filters-core
+      '@cozemble/data-paginated-editor':
+        specifier: workspace:*
+        version: link:../../data/paginated-editor
+      '@cozemble/frontend-bff':
+        specifier: workspace:*
+        version: link:../bff
+      '@cozemble/frontend-ui-blocks':
+        specifier: workspace:*
+        version: link:../ui-blocks
+      '@cozemble/lang-util':
+        specifier: workspace:*
+        version: link:../../lang/util
+      '@cozemble/model-api':
+        specifier: workspace:*
+        version: link:../../model/api
+      '@cozemble/model-assembled':
+        specifier: workspace:*
+        version: link:../../model/assembled
+      '@cozemble/model-core':
+        specifier: workspace:*
+        version: link:../../model/core
+      '@cozemble/model-editor':
+        specifier: workspace:*
+        version: link:../../model/editor
+      '@cozemble/model-editor-sdk':
+        specifier: workspace:*
+        version: link:../../model/editor-sdk
+      '@cozemble/model-event-sourced':
+        specifier: workspace:*
+        version: link:../../model/event-sourced
+      '@cozemble/ui-atoms':
+        specifier: workspace:*
+        version: link:../../ui/atoms
       autoprefixer:
         specifier: ^10.4.13
         version: 10.4.14(postcss@8.4.23)
@@ -989,7 +1031,7 @@ importers:
         version: 3.56.0
       svelte-check:
         specifier: ^3.0.1
-        version: 3.1.4(postcss@8.4.21)(svelte@3.56.0)
+        version: 3.1.4(postcss@8.4.23)(svelte@3.56.0)
       tslib:
         specifier: ^2.4.1
         version: 2.5.0
@@ -1153,7 +1195,7 @@ importers:
         version: 3.56.0
       svelte-check:
         specifier: ^3.0.1
-        version: 3.1.4(postcss@8.4.21)(svelte@3.56.0)
+        version: 3.1.4(postcss@8.4.23)(svelte@3.56.0)
       tslib:
         specifier: ^2.4.1
         version: 2.5.0
@@ -3191,7 +3233,7 @@ packages:
     peerDependencies:
       '@sveltejs/kit': ^1.0.0
     dependencies:
-      '@sveltejs/kit': 1.11.0(svelte@3.56.0)(vite@4.3.4)
+      '@sveltejs/kit': 1.11.0(svelte@3.56.0)(vite@4.1.4)
       import-meta-resolve: 2.2.2
     dev: true
 
