@@ -12,6 +12,7 @@
     import {setAllModelViews} from "./stores/allModelViews";
     import {recordFilteringComponentStore} from "./stores/recordFilteringComponentStore";
     import type {EventSourcedModelStore} from "./types";
+    import {customNaming} from "@cozemble/model-editor";
 
     export let models: EventSourcedModelStore
     export let modelViews: Writable<ModelView[]>
@@ -29,7 +30,7 @@
     onMount(() => {
         slotViewerRegistry.register('model.reference', ModelReferenceViewer)
         slotEditorRegistry.register('model.reference', ModelReferenceEditor)
-
+        customNaming("Table", "Tables")
     })
 </script>
 
