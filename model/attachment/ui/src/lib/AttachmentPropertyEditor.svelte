@@ -1,10 +1,10 @@
 <script lang="ts">
     import type {DataRecord, DataRecordValuePath, SystemConfiguration} from '@cozemble/model-core'
     import {dataRecordEditEvents, dataRecordEditor} from "@cozemble/data-editor-sdk";
-    import type {AttachmentList, AttachmentReference} from "@cozemble/model-attachment-core";
-    import {dataRecordValuePathFns} from "@cozemble/model-api";
-    import AttachmentView from "./AttachmentView.svelte";
-    import AttachmentsRibbon from "./AttachmentsRibbon.svelte";
+    import type {AttachmentReference} from "@cozemble/model-attachment-core";
+    import ShowAttachmentThumbs from "./ShowAttachmentThumbs.svelte";
+    import {afterUpdate} from "svelte";
+    import {getAttachments} from "./helpers";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord
@@ -17,10 +17,9 @@
 
     const dataRecordEditorClient = dataRecordEditor.getClient()
 
-    let attachments = dataRecordValuePathFns.getValue(systemConfiguration, recordPath, record) as AttachmentList ?? ({
-        _type: 'attachment.list',
-        attachmentReferences: []
-    })
+    $: attachments = getAttachments(systemConfiguration, recordPath, record)
+
+    afterUpdate(() => console.log({attachments, recordPath, record}))
 
     function toggleSelection(attachment: AttachmentReference) {
         if (selectedAttachments.includes(attachment)) {
@@ -65,7 +64,7 @@
                     recordPath,
                     attachments,
                     newAttachments,
-                    null,
+                    "Tab",
                 ),
             )
             attachments = newAttachments
@@ -90,7 +89,7 @@
                 recordPath,
                 attachments,
                 newAttachments,
-                null,
+                "Tab",
             ),
         )
 
@@ -100,39 +99,35 @@
 
 </script>
 
-
-{#if selectedAttachments.length > 0}
-    <AttachmentsRibbon {selectedAttachments} on:deleteAttachments={onDeleteAttachments}/>
-{/if}
-
-{#each attachments.attachmentReferences as attachment}
-    <div class="attachment-container" on:click={() => toggleSelection(attachment)}>
-        <AttachmentView {attachment}/>
-    </div>
-{/each}
-
-{#if uploading}
-    <div class="progress">
-        <div class="progress-bar" style="width: {uploadProgress}%"></div>
-    </div>
+{#if attachments && attachments.attachmentReferences.length > 0}
+    <ShowAttachmentThumbs attachments={attachments.attachmentReferences}/>
 {:else}
-    <input type="file" accept="*/*" class="file-input file-input-bordered file-input-xs w-full max-w-xs"
-           on:change={handleFileSelect}/>
+    <p>----</p>
 {/if}
 
-{#if error}
-    <div class="alert alert-error shadow-lg">
-        <div>
-            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none"
-                 viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            <span>{error}</span>
+<div class="upload-container border p-4 rounded bg-base-100">
+    {#if uploading}
+        <div class="progress">
+            <div class="progress-bar" style="width: {uploadProgress}%"></div>
         </div>
-    </div>
-{/if}
+    {:else}
+        <input type="file" accept="*/*" class="file-input file-input-bordered file-input-xs w-full max-w-xs"
+               on:change={handleFileSelect}/>
+    {/if}
 
+    {#if error}
+        <div class="alert alert-error shadow-lg">
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none"
+                     viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span>{error}</span>
+            </div>
+        </div>
+    {/if}
+</div>
 <style>
 
     .progress {
@@ -163,4 +158,8 @@
         border-color: #000;
     }
 
+    .upload-container {
+        position: absolute;
+        min-width: 20rem;
+    }
 </style>

@@ -10,14 +10,12 @@
     export let recordPath: DataRecordValuePath
     export let record: DataRecord
     export let systemConfiguration: SystemConfiguration
-
+    import {afterUpdate} from "svelte";
+    import {getAttachments} from "./helpers";
 
     const viewClient = dataRecordViewer.getClient()
 
-    $: attachmentList = dataRecordValuePathFns.getValue(systemConfiguration,recordPath, record) as AttachmentList ?? ({
-        _type: 'attachment.list',
-        attachmentReferences: []
-    })
+    $: attachmentList = getAttachments(systemConfiguration, recordPath, record)
 
     function deleteAttachments(event: CustomEvent<AttachmentReference[]>) {
         const attachmentReferences = event.detail
@@ -35,12 +33,15 @@
             ),
         )
     }
+
+    afterUpdate(() => console.log({attachmentList, recordPath, record}))
+
 </script>
 
 
-{#if attachmentList}
+{#if attachmentList && attachmentList.attachmentReferences.length > 0}
     <ShowAttachmentThumbs attachments={attachmentList.attachmentReferences} on:deleteAttachments={deleteAttachments}/>
 {:else}
-    <p>No attachments</p>
+    <p>----</p>
 {/if}
 
