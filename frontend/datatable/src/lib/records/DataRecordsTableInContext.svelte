@@ -113,10 +113,12 @@
         return dirtyRecordIds.some(dirtyRecordId => dirtyRecordId.value === record.id.value)
     }
 
-    async function save(record: DataRecord) {
+    async function save(record: DataRecord, rootRecordIndex: number) {
         const outcome = await recordControls.saveRecord(record.id)
         if (outcome) {
             expandRecord(record.id)
+        } else {
+            focusControls.ensureNotFocusedOnRow(rootRecordIndex)
         }
     }
 
@@ -169,7 +171,8 @@
                         <td class="border  border-base-300">
                             <div class="flex items-center">
                                 {#if isDirtyRecord($dirtyRecords, record)}
-                                    <button class="btn btn-primary btn-sm  mr-2" on:click={() => save(record)}>Save
+                                    <button class="btn btn-primary btn-sm  mr-2"
+                                            on:click={() => save(record, rootRecordIndex)}>Save
                                     </button>
                                     <button class="btn btn-sm  mr-2" on:click={() => alert("to do")}>Cancel
                                     </button>

@@ -181,6 +181,10 @@ export class RootRecordsContext implements RecordsContext {
       beginEditing() {
         focus.update((f) => f.beginEditing())
       },
+
+      clearFocus() {},
+
+      ensureNotFocusedOnRow(rootRecordIndex: number) {},
     }
   }
 

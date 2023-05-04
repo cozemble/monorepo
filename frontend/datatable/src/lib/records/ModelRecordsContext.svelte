@@ -41,13 +41,14 @@
     const loadingState = writable('loading' as LoadingState)
     const filterParams = writable(emptyFilterParams())
     let debounceTimeout: any
+    const focusControls = makeFocusControls(modelsProvider, () => $records, systemConfigurationProvider, focus)
 
     modelRecordsContextFns.setEventSourcedModel(eventSourcedModel)
     modelRecordsContextFns.setModel(model)
     modelRecordsContextFns.setEventSourcedRecords(eventSourcedRecords)
     modelRecordsContextFns.setRecords(records)
     modelRecordsContextFns.setFocus(focus)
-    modelRecordsContextFns.setFocusControls(makeFocusControls(modelsProvider, () => $records, systemConfigurationProvider, focus))
+    modelRecordsContextFns.setFocusControls(focusControls)
     modelRecordsContextFns.setDirtyRecords(dirtyRecords)
     modelRecordsContextFns.setRecordControls(makeRecordControls(systemConfigurationProvider, modelsProvider, errorVisibilityByRecordId, eventSourcedRecords, lastSavedByRecordId))
     modelRecordsContextFns.setModelControls(makeModelControls(allEventSourcedModels))
@@ -86,5 +87,5 @@
     })
 </script>
 <DataRecordEditorContext>
-    <slot></slot>
+    <slot {focusControls}></slot>
 </DataRecordEditorContext>

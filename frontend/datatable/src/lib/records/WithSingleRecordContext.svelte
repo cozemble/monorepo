@@ -5,14 +5,15 @@
     import {modelRecordsContextFns} from "./modelRecordsContextFns";
     import {derived} from "svelte/store";
     import {
-        recordEditorClientContext, recordViewerClientContext,
-        singleRecordErrorContext, singleRecordErrorVisibilityContext,
+        recordEditorClientContext,
+        recordViewerClientContext,
+        singleRecordErrorContext,
+        singleRecordErrorVisibilityContext,
         singleRecordRootRecordIndexContext
     } from "./contextHelper";
     import {systemConfiguration} from "../stores/systemConfiguration";
     import {allModels} from "../stores/allModels";
     import {modelFns} from "@cozemble/model-api";
-    import {mandatory} from "@cozemble/lang-util";
     import {allModelViews} from "../stores/allModelViews";
     import {backend} from "../appBackend";
 
@@ -26,7 +27,7 @@
         const records = modelRecordsContextFns.getEventSourcedRecords()
         const modelViewsProvider = () => $allModelViews
         const modelsProvider = () => $allModels
-        const combinedClient = makeCombinedDataRecordEditorClient(backend,modelsProvider,modelViewsProvider,records, modelRecordsContextFns.getFocusControls(), record.id)
+        const combinedClient = makeCombinedDataRecordEditorClient(backend, modelsProvider, modelViewsProvider, records, modelRecordsContextFns.getFocusControls(), record.id)
         setContext(recordEditorClientContext, combinedClient)
         setContext(recordViewerClientContext, combinedClient)
     }
@@ -40,7 +41,7 @@
     if (!maybeExistingErrorsForRecord) {
         const errors = derived([records, allModels, systemConfiguration], ([records, models, systemConfiguration]) => {
             const maybeRecord = records.find(r => r.id.value === record.id.value)
-            if(maybeRecord) {
+            if (maybeRecord) {
                 return modelFns.validate(systemConfiguration, models, maybeRecord)
             }
             return new Map()
@@ -48,7 +49,7 @@
         setContext(singleRecordErrorContext, errors)
     }
     const maybeExistingErrorVisibility = getContext(singleRecordErrorVisibilityContext)
-    if(!maybeExistingErrorVisibility) {
+    if (!maybeExistingErrorVisibility) {
         const errorVisibility = derived(errorVisibilityByRecordId, errorVisibilityByRecordId => {
             return errorVisibilityByRecordId.get(record.id.value) ?? false
         })

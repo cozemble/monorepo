@@ -8,6 +8,8 @@
     import DataRecordsTableInContext from "../records/DataRecordsTableInContext.svelte";
     import ModelRecordsContext from "../records/ModelRecordsContext.svelte"
     import {recordFilteringComponentStore} from "../stores/recordFilteringComponentStore";
+    import {clickOutside} from "@cozemble/ui-atoms";
+    import type {DataTableFocusControls2} from "../focus/DataTableFocus";
 
     export let modelId: string
     const model = mandatory($allModels.find(model => model.id.value === modelId), `Model with id ${modelId} not found`)
@@ -16,9 +18,13 @@
     onMount(async () => {
         await context.loadRecords()
     })
+
+    function clickedOutsideTable(focusControls: DataTableFocusControls2) {
+        focusControls.clearFocus()
+    }
 </script>
 <div class="mt-3">
-    <ModelRecordsContext modelId={modelIdFns.newInstance(modelId)}>
+    <ModelRecordsContext modelId={modelIdFns.newInstance(modelId)} let:focusControls>
         <div class="grid-container">
             <div>
                 <div class="child">
@@ -27,7 +33,8 @@
                     {/if}
                 </div>
             </div>
-            <div>
+            <div use:clickOutside
+                 on:click_outside={() => clickedOutsideTable(focusControls)}>
                 <DataRecordsTableInContext/>
             </div>
         </div>
