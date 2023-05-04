@@ -220,6 +220,7 @@
                         <td class="border border-base-300" colspan={$model.slots.length + 2}>
                             <AddSubItemDialogue showIntro={$introductionsState.subItemsIntroduction === null}
                                                 on:addNestedRecord={addNestedRecord}
+                                                on:close={() => recordHavingSubItemAdded = null}
                                                 on:addNestedTable={addNestedTable}/>
                         </td>
                     </tr>
