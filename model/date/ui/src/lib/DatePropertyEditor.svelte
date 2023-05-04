@@ -2,6 +2,7 @@
     import type {DataRecord, DataRecordValuePath, SystemConfiguration} from '@cozemble/model-core'
     import {dataRecordEditEvents, dataRecordEditor,} from '@cozemble/data-editor-sdk'
     import {dataRecordValuePathFns} from '@cozemble/model-api'
+    import {dataRecordControlEvents} from "@cozemble/data-editor-sdk";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord
@@ -34,6 +35,14 @@
     }
 
     $: value = dataRecordValuePathFns.getValue(systemConfiguration, recordPath, record) ?? null
+
+    function handleKeyDown(event: KeyboardEvent) {
+        if (event.key === 'Escape') {
+            dataRecordEditorClient.dispatchControlEvent(
+                dataRecordControlEvents.editAborted(record, recordPath),
+            )
+        }
+    }
 </script>
 {#if value}
     {value}
@@ -43,7 +52,7 @@
 
 
 <div class="input-container">
-    <input class="input input-bordered" type="date" value={editableValue} on:change={dateChanged} use:init/>
+    <input class="input input-bordered" type="date" value={editableValue} on:change={dateChanged} use:init on:keydown={handleKeyDown}/>
 </div>
 
 <style>

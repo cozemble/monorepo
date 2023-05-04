@@ -26,6 +26,14 @@ export function makeCombinedDataRecordEditorClient(
   return {
     dispatchControlEvent(event: DataRecordControlEvent): void {
       console.log({ event })
+      if (event._type === 'data.record.edit.move.focus') {
+        if (event.direction === 'right') {
+          focusControls.moveForward()
+        }
+      }
+      if (event._type === 'data.record.edit.aborted') {
+        focusControls.clearFocus()
+      }
     },
 
     dispatchEditEvent(event: DataRecordEditEvent): void {

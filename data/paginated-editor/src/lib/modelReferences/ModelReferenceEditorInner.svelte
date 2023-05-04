@@ -1,10 +1,9 @@
 <script lang="ts">
-    import type {DataRecord, DataRecordValuePath, ReferencedRecords} from "@cozemble/model-core";
+    import type {DataRecord, DataRecordValuePath, ReferencedRecords, SystemConfiguration} from "@cozemble/model-core";
     import {dataRecordValuePathFns} from "@cozemble/model-api";
     import {dataRecordControlEvents, dataRecordEditEvents, dataRecordEditor} from "@cozemble/data-editor-sdk";
     import {onMount} from "svelte";
     import {type EditorParams, makeSummaryView} from "./editorHelper";
-    import type {SystemConfiguration} from "@cozemble/model-core";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord
@@ -12,7 +11,7 @@
     export let systemConfiguration: SystemConfiguration
 
 
-    let initialValue: ReferencedRecords | null = dataRecordValuePathFns.getValue(systemConfiguration,recordPath, record) ?? null
+    let initialValue: ReferencedRecords | null = dataRecordValuePathFns.getValue(systemConfiguration, recordPath, record) ?? null
 
     $:selectedRecordId = initialValue?.referencedRecords[0]?.referencedRecordId.value ?? null;
 
@@ -87,8 +86,22 @@
     onMount(async () => {
         options = await dataRecordEditorClient.searchRecords(editorParams.referencedModelId, searchTerm)
     })
+
+    function handleKeydown(event: KeyboardEvent) {
+        if (event.key === "Escape") {
+            dataRecordEditorClient.dispatchControlEvent(
+                dataRecordControlEvents.editAborted(record, recordPath),
+            )
+        }
+        if (event.key === "Tab") {
+            dataRecordEditorClient.dispatchControlEvent(
+                dataRecordControlEvents.moveFocus(record, recordPath, "right"),
+            )
+        }
+    }
 </script>
 
+<svelte:window on:keydown={handleKeydown}/>
 <select class="input input-bordered" on:change={optionChanged}>
     <option selected={initialValue === null}>----</option>
     <option value="create.new.record">Create a new {editorParams.referencedModel.name.value}</option>

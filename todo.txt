@@ -14,8 +14,8 @@
  * It looks like I can't upload two images (at least upload 1, save record, refresh page, upload another)
  * When adding a sub-record, pressing enter after entering the record name should submit the form
  * cancel of sub record addition does not work
-
  * Tabbing from a model reference slot does not advance to the next editable slot
+
  * Deleting an attachment causes an error in stringPropertyDescriptor
 
  * If I want to fix the text on the button that says "Add Customers", so it reads "Add Customer", it is not obvious to me that that has to be done by editing the table, up top.
