@@ -13,7 +13,7 @@
 </script>
 
 {#if $modelView.view._type === 'summary.view' && $modelView.view.view._type === 'model.html.template'}
-    <h6>{model.name.value} records preview</h6>
+    <h6>This is how your {model.name.value} records will look</h6>
 
     {#if sampleRecords.length === 0}
         <label class="label">
@@ -22,7 +22,7 @@
     {:else}
         {#each sampleRecords as sampleRecord, index}
             <div class="sample-record p-2">
-                <SummaryCardPreview {models} record={sampleRecord} {index} template={$modelView.view.view.template}/>
+                <strong class="mr-3">{index + 1}.</strong><SummaryCardPreview {models} record={sampleRecord} {index} template={$modelView.view.view.template}/>
             </div>
         {/each}
     {/if}

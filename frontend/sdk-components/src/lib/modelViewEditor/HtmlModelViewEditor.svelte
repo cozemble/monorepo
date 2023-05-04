@@ -28,7 +28,7 @@
         onModelHtmlTemplateChanged(view)
     }
 </script>
-<h6>Template options</h6>
+<h6>Choose the {model.name.value} fields you want to see</h6>
 <div>
     {#each propertyPaths as propertyPath}
         <div class="badge badge-ghost gap-2 p-3 m-1" on:click={() => addPath(propertyPath)}>
@@ -42,7 +42,7 @@
         New line
     </div>
 </div>
-<h6 class="mt-3"> {model.name.value} view template</h6>
+<h6 class="mt-8">Selected {model.name.value} fields</h6>
 <div class="rounded border border-base-300 p-2 expression">
     {#each lines as line}
         <div class="mb-2">
