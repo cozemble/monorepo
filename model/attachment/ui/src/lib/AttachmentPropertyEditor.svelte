@@ -3,7 +3,6 @@
     import {dataRecordEditEvents, dataRecordEditor} from "@cozemble/data-editor-sdk";
     import type {AttachmentReference} from "@cozemble/model-attachment-core";
     import ShowAttachmentThumbs from "./ShowAttachmentThumbs.svelte";
-    import {afterUpdate} from "svelte";
     import {getAttachments} from "./helpers";
 
     export let recordPath: DataRecordValuePath
@@ -13,21 +12,10 @@
     let error: string | null = null
     let uploadProgress = 0
     let uploading = false
-    let selectedAttachments: AttachmentReference[] = []
 
     const dataRecordEditorClient = dataRecordEditor.getClient()
 
     $: attachments = getAttachments(systemConfiguration, recordPath, record)
-
-    afterUpdate(() => console.log({attachments, recordPath, record}))
-
-    function toggleSelection(attachment: AttachmentReference) {
-        if (selectedAttachments.includes(attachment)) {
-            selectedAttachments = selectedAttachments.filter(a => a !== attachment)
-        } else {
-            selectedAttachments = [...selectedAttachments, attachment]
-        }
-    }
 
     function uploadProgressUpdate(percentage: number) {
         uploadProgress = percentage
@@ -74,27 +62,6 @@
         } finally {
             uploading = false
         }
-    }
-
-    function onDeleteAttachments(event: CustomEvent<AttachmentReference[]>) {
-        const {detail: attachmentsToDelete} = event
-        const remainingAttachmentReferences = attachments.attachmentReferences.filter(a => !attachmentsToDelete.includes(a))
-        const newAttachments = ({
-            _type: 'attachment.list',
-            attachmentReferences: remainingAttachmentReferences
-        })
-        dataRecordEditorClient.dispatchEditEvent(
-            dataRecordEditEvents.valueChanged(
-                record,
-                recordPath,
-                attachments,
-                newAttachments,
-                "Tab",
-            ),
-        )
-
-        selectedAttachments = selectedAttachments.filter(a => !attachmentsToDelete.includes(a))
-        dataRecordEditorClient.deleteAttachments(attachmentsToDelete.map(a => a.attachmentId))
     }
 
 </script>

@@ -206,7 +206,7 @@
                     {#if $model.nestedModels.length > 0}
                         <tr>
                             <td class="border border-base-300" colspan={$model.slots.length + 2}>
-                                <div class="nested-border border border-2 p-3">
+                                <div class="nested-border p-3">
                                     {#each $model.nestedModels as nestedModel}
                                         <NestedDataRecordsInContext {record} {nestedModel} {options} {parentPath}/>
                                     {/each}
