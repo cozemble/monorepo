@@ -12,9 +12,8 @@
  * The choose file input extends beyond the edge of the cell once an image is uploaded
  * Thumbnails are too small
  * It looks like I can't upload two images (at least upload 1, save record, refresh page, upload another)
-
-
  * When adding a sub-record, pressing enter after entering the record name should submit the form
+
  * Tabbing from a model reference slot does not advance to the next editable slot
  * Deleting an attachment causes an error in stringPropertyDescriptor
 
