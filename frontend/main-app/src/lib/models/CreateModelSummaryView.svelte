@@ -1,7 +1,7 @@
 <script lang="ts">
     import type {ModelId} from "@cozemble/model-core";
     import {modelFns} from "@cozemble/model-api";
-    import {allModels} from "./modelsStore";
+    import {eventSourcedModels} from "./modelsStore";
     import {toastNoticeStoreFns} from "../notices/toastNoticeStore";
     import SummaryViewExplainer from './SummaryViewExplainer.svelte'
     import {createEventDispatcher} from "svelte";
@@ -9,7 +9,7 @@
     export let saveHandler: (template: string) => Promise<void>
     export let template = ""
     export let modelId: ModelId
-    const model = modelFns.findById($allModels.map(e => e.model), modelId)
+    const model = modelFns.findById($eventSourcedModels.map(e => e.model), modelId)
     const dispatch = createEventDispatcher()
     let error = ""
     let saving = false

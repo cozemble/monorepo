@@ -1,11 +1,5 @@
 <script lang="ts">
-    import type {
-        DataRecord,
-        DataRecordValuePath,
-        Model,
-        ModelReference,
-        SystemConfiguration
-    } from "@cozemble/model-core";
+    import type {DataRecord, DataRecordValuePath, SystemConfiguration} from "@cozemble/model-core";
     import {assembleEditorParams, type EditorParams} from "./editorHelper";
     import type {UserInstruction} from "@cozemble/data-editor-sdk";
     import {dataRecordViewer} from "@cozemble/data-editor-sdk";
@@ -13,7 +7,8 @@
     import ModelReferenceViewerInner from "./ModelReferenceViewerInner.svelte";
     import ConfigureViewModal from "./ConfigureViewModal.svelte";
     import {modelFns} from "@cozemble/model-api";
-    import {writable} from "svelte/store";
+    import type {ConfigureViewParams} from "./ConfigureViewParams";
+    import {makeConfigureViewParams} from "./ConfigureViewParams";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord
@@ -25,9 +20,7 @@
     let editorParams: EditorParams | UserInstruction | null = null
     let error: string | null = null
     let containerElement: HTMLDivElement
-    let configureView = false
-    let referencedModel: Model | null = null
-    const sampleRecords = writable([] as DataRecord[])
+    let configureViewParams: ConfigureViewParams | null = null
 
     onMount(() => {
         try {
@@ -45,30 +38,16 @@
     }
 
     async function onConfigureView() {
-        if (recordPath.lastElement._type !== 'model.reference') {
-            throw new Error("Expected last element to be a model reference")
-        }
-        const modelReference = recordPath.lastElement as ModelReference
-        if (modelReference.referencedModels.length !== 1) {
-            throw new Error("Expected model reference to have exactly one referenced model")
-        }
-        const referencedModelId = modelReference.referencedModels[0]
-        referencedModel = modelFns.findById(models, referencedModelId)
-        configureView = true
-        const found = await dataRecordViewerClient.searchRecords(referencedModel.id, "")
-        // take at most three
-        sampleRecords.set(found.slice(0, 3))
+        configureViewParams = await makeConfigureViewParams(dataRecordViewerClient, models, recordPath)
     }
 
     function cancelConfigureViewModal() {
-        configureView = false
-        referencedModel = null
+        configureViewParams = null
     }
 
     function viewConfigured() {
         cancelConfigureViewModal()
         editorParams = assembleEditorParams(dataRecordViewerClient, recordPath)
-        console.log({editorParams})
     }
 </script>
 
@@ -86,7 +65,8 @@
     <p>{error}</p>
 {/if}
 
-{#if configureView && referencedModel}
-    <ConfigureViewModal {models} model={referencedModel} sampleRecords={$sampleRecords} modelViewManager={dataRecordViewerClient}
+{#if configureViewParams}
+    <ConfigureViewModal {configureViewParams}
+                        modelViewManager={dataRecordViewerClient}
                         on:cancel={cancelConfigureViewModal} on:saved={viewConfigured}/>
 {/if}

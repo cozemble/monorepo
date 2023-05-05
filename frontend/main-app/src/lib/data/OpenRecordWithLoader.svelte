@@ -68,7 +68,8 @@
         openRecordViews.close(openRecord.recordId)
     }
 
-    dataRecordViewerHost.setClient(makeDataRecordViewer($systemConfiguration, models, $modelViews, recordSearcher, attachmentsManager, onSaveRecord, onError))
+    const viewClient = makeDataRecordViewer($systemConfiguration, models, $modelViews, recordSearcher, attachmentsManager, onSaveRecord, onError)
+    dataRecordViewerHost.setClient(viewClient)
 
     function onError(e: Error) {
         error = e.message
@@ -99,7 +100,7 @@
     </div>
     {#if tabShowing === 'recordDetails'}
         {#if record}
-            <StackingRecordEditor {recordSearcher} modelViews={$modelViews} {attachmentsManager}
+            <StackingRecordEditor {recordSearcher} modelViewManager={viewClient} {attachmentsManager}
                                   recordEditContext={new RecordEditContext( models, onSaveRecord,eventSourcedDataRecordFns.fromRecord(models, record), onSaveRecord, closeView, `` ,$systemConfiguration)}
                                   cancelButtonText="Close"/>
         {/if}

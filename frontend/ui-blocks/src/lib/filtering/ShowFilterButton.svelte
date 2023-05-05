@@ -10,7 +10,7 @@
     export let rootFilter: FilterGroupList
     $: buttonText = filterGroupListFns.hasFilterInstances(rootFilter) ? `Filters (${filterGroupListFns.filterInstanceCount(rootFilter)})` : 'Add filter'
 
-    const filterablePaths = getFilterablePaths(models, model)
+    $: filterablePaths = getFilterablePaths(models, model)
     const dispatch = createEventDispatcher()
     let showFilters = false
 
@@ -19,6 +19,7 @@
         dispatch('showFilters', showFilters)
     }
 </script>
+
 {#if filterablePaths.length > 0}
     <button class="btn btn-ghost btn-active" on:click={toggleFilters}>{buttonText}</button>
 {/if}

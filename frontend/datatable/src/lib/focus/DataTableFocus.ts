@@ -40,6 +40,18 @@ export class DataTableFocus {
       this.isEditing,
     )
   }
+
+  clearFocus(): DataTableFocus {
+    return new DataTableFocus(this.recordsProvider)
+  }
+
+  ensureNotFocusedOnRow(rowIndex: number): DataTableFocus {
+    console.log({ rowIndex, focus: this })
+    if (this.rowIndex === rowIndex) {
+      return this.clearFocus()
+    }
+    return this
+  }
 }
 
 export function emptyDataTableFocus(recordsProvider: () => DataRecord[]): DataTableFocus {
@@ -54,6 +66,10 @@ export interface DataTableFocusControls {
   moveForward(): void
 
   beginEditing(): void
+
+  clearFocus(): void
+
+  ensureNotFocusedOnRow(rootRecordIndex: number): void
 }
 
 export interface DataTableFocusControls2 {
@@ -63,8 +79,13 @@ export interface DataTableFocusControls2 {
     parentElements: DataRecordPathParentElement[],
   ): void
 
+  clearFocus(): void
+
   keydown(event: KeyboardEvent): void
 
   moveForward(): void
+
   beginEditing(): void
+
+  ensureNotFocusedOnRow(rootRecordIndex: number): void
 }

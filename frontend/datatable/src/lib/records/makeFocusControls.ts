@@ -50,5 +50,13 @@ export function makeFocusControls(
     beginEditing() {
       focus.update((f) => f.beginEditing())
     },
+
+    clearFocus() {
+      focus.update((f) => f.clearFocus())
+    },
+
+    ensureNotFocusedOnRow(rootRecordIndex: number) {
+      focus.update((f) => f.ensureNotFocusedOnRow(rootRecordIndex))
+    },
   }
 }

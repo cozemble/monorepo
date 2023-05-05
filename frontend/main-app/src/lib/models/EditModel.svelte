@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {allModels, host, putAllModels} from "./modelsStore";
+    import {eventSourcedModels, host, putAllModels} from "./modelsStore";
 
     import {ModelEditor} from "@cozemble/model-editor";
     import type {ModelId, ModelViewId} from "@cozemble/model-core";
@@ -16,7 +16,7 @@
     let showModelSaveButtons = true
 
     async function saveModelBeingEdited() {
-        await putAllModels(tenantId, $allModels)
+        await putAllModels(tenantId, $eventSourcedModels)
         dispatch('finished')
     }
 
@@ -53,7 +53,7 @@
 
 <div class="mt-3">
     {#if sectionToShow === 'model'}
-        <ModelEditor systemConfiguration={$systemConfiguration} {allModels} {host} {modelId}
+        <ModelEditor systemConfiguration={$systemConfiguration} allModels={eventSourcedModels} {host} {modelId}
                      {editImmediately}
                      on:editingSomething={editingSomething}/>
         <br/>

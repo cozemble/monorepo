@@ -3,6 +3,7 @@
     import {modelReferenceFns} from "@cozemble/model-core";
     import type {ModelChangeHandler} from "./ModelEditorHost";
     import {modelSlotEvents} from "@cozemble/model-event-sourced";
+    import {naming} from "./namingStore";
 
     export let modelChangeHandler: ModelChangeHandler
     export let models: Model[]
@@ -31,9 +32,9 @@
 </script>
 
 <br/>
-<label class="label" for="referencedModel">Referenced Model</label>
+<label class="label" for="referencedModel">Referenced {$naming.modelNameSingular}</label>
 {#if otherModelIds.length === 0}
-    <div>No other models to link to</div>
+    <div>No other {$naming.modelNamePlural.toLowerCase()} to link to</div>
 {:else}
     <select class="input input-bordered w-full" id="referencedModel" on:change={referencedModelChanged}>
         <option selected={referencedModelId === null}>----</option>

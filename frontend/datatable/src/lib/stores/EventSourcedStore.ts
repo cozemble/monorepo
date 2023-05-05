@@ -24,7 +24,6 @@ export function eventSourcedStore<T, A>(
   const dispatch = (action: A) =>
     innerUpdate((state) => {
       const mutated = reducer(state, action)
-      console.log({ action, mutated })
       _actions.push(action)
       _state.push(mutated)
       return mutated

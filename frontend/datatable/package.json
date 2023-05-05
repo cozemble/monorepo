@@ -55,6 +55,9 @@
     "@cozemble/data-paginated-editor": "workspace:*",
     "@cozemble/data-editor-sdk": "workspace:*",
     "@cozemble/ui-atoms": "workspace:*",
+    "@cozemble/frontend-ui-blocks": "workspace:*",
+    "@cozemble/data-filters-core": "workspace:*",
+    "@cozemble/data-filters-config": "workspace:*",
     "@floating-ui/dom": "^1.2.6",
     "daisyui": "^2.47.0"
   }

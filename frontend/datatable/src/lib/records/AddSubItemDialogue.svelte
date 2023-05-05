@@ -18,5 +18,5 @@
 {#if showIntro}
     <SubItemIntro on:finished={introFinished}/>
 {:else}
-    <AddSubItemSteps on:addNestedRecord on:addNestedTable/>
+    <AddSubItemSteps on:addNestedRecord on:addNestedTable on:close/>
 {/if}

@@ -30,3 +30,8 @@ h6 {
     @apply bg-accent rounded;
 }
 
+.coz-modal {
+    display: flex;
+    position: absolute;
+    z-index: 100;
+}

@@ -1,4 +1,4 @@
-import type { Backend } from './Backend'
+import type { Backend, FilterParams } from './Backend'
 import type { JustErrorMessage } from '@cozemble/lang-util'
 import { uuids } from '@cozemble/lang-util'
 import type { EventSourcedModel } from '@cozemble/model-event-sourced'
@@ -29,9 +29,16 @@ export class InMemoryBackend implements Backend {
     return null
   }
 
-  async getRecords(modelId: ModelId): Promise<DataRecord[]> {
-    const records = this.records.get(modelId.value)
-    return records || []
+  async getRecords(modelId: ModelId, filterParams: FilterParams): Promise<DataRecord[]> {
+    const records = this.records.get(modelId.value) ?? []
+    if (filterParams.search) {
+      return records.filter((record) =>
+        JSON.stringify(record.values)
+          .toLowerCase()
+          .includes((filterParams.search ?? '').toLowerCase()),
+      )
+    }
+    return records
   }
 
   async saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
@@ -56,7 +63,7 @@ export class InMemoryBackend implements Backend {
   async searchRecords(modelId: ModelId, search: string): Promise<DataRecord[]> {
     const records = this.records.get(modelId.value) || []
     if (search.trim().length === 0) return records
-    return records.filter((record) => JSON.stringify(record.id.value).includes(search))
+    return records.filter((record) => JSON.stringify(record.values).includes(search))
   }
 
   async saveModelView(modelView: ModelView): Promise<JustErrorMessage | null> {

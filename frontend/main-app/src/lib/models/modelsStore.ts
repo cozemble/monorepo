@@ -5,12 +5,13 @@ import { writable } from 'svelte/store'
 import type { ModelEditorHost } from '@cozemble/model-editor'
 import type { Model, ModelEvent, ModelId } from '@cozemble/model-core'
 import { mandatory } from '@cozemble/lang-util'
-import { config } from '../config'
-import { cozauth } from '../auth/cozauth'
 import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
 import { backend } from '../backend/backendStore'
+import { gettableWritable } from '@cozemble/frontend-datatable'
+import { derived } from 'svelte/store'
 
-export const allModels: Writable<EventSourcedModel[]> = writable([])
+export const eventSourcedModels = gettableWritable([] as EventSourcedModel[])
+export const models = derived(eventSourcedModels, (ms) => ms.map((m: EventSourcedModel) => m.model))
 
 export interface ModelEditContext {
   context: 'create' | 'edit'
@@ -21,13 +22,13 @@ export const modelBeingEdited: Writable<ModelEditContext | null> = writable(null
 
 export function addNewModel() {
   const newModel = eventSourcedModelFns.newInstance(modelFns.newInstance('Untitled model'))
-  allModels.update((models) => [...models, newModel])
+  eventSourcedModels.update((models) => [...models, newModel])
   modelBeingEdited.set({ modelId: newModel.model.id, context: 'create' })
 }
 
 export const host: ModelEditorHost = {
   modelChanged(id: ModelId, event: ModelEvent) {
-    allModels.update((models) => {
+    eventSourcedModels.update((models) => {
       return models.map((model) => {
         if (modelIdFns.equals(model.model.id, id)) {
           return eventSourcedModelFns.addEvent(model, event)
@@ -39,11 +40,10 @@ export const host: ModelEditorHost = {
   },
 
   modelAdded(model: Model) {
-    allModels.update((models) => [...models, eventSourcedModelFns.newInstance(model)])
+    eventSourcedModels.update((models) => [...models, eventSourcedModelFns.newInstance(model)])
   },
 
   modelWithId(allModels: EventSourcedModel[], id: ModelId): EventSourcedModel {
-    console.log(`Looking for model with id ${id.value} in model of length ${allModels.length}`)
     return mandatory(
       allModels.find((m) => modelIdFns.equals(m.model.id, id)),
       `No model with id ${id.value}, options are ${allModels

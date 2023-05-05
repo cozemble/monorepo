@@ -1,16 +1,18 @@
 <script lang="ts">
     import {createEventDispatcher, onMount} from 'svelte';
     import {ModelViewEditorWithPreview} from "@cozemble/frontend-sdk-components";
-    import type {DataRecord, Model, ModelView} from "@cozemble/model-core";
+    import type {ModelView} from "@cozemble/model-core";
     import {modelViewFns, summaryViewFns} from "@cozemble/model-core";
     import {writable, type Writable} from "svelte/store";
     import type {JustErrorMessage} from "@cozemble/lang-util";
     import type {ModelViewManager} from "@cozemble/data-editor-sdk";
+    import type {ConfigureViewParams} from "./ConfigureViewParams";
 
-    export let model: Model
-    export let models: Model[]
-    export let sampleRecords: DataRecord[]
+    export let configureViewParams: ConfigureViewParams
     export let modelViewManager: ModelViewManager
+    const model = configureViewParams.model
+    const models = configureViewParams.models
+    const sampleRecords = configureViewParams.sampleRecords
     const dispatch = createEventDispatcher()
     let toggleButton: HTMLLabelElement;
     let saveError: JustErrorMessage | null = null
@@ -45,7 +47,7 @@
 <div class="modal">
     <div class="modal-box">
         <h3 class="my-3">Configure view for {model.name.value}</h3>
-        <ModelViewEditorWithPreview {modelView} {models} {sampleRecords}/>
+        <ModelViewEditorWithPreview {modelView} {models} sampleRecords={$sampleRecords}/>
         <p class="text-sm ml-2">Click on the options at the top to include them in the template</p>
         {#if saveError}
             <div class="alert alert-error shadow-lg my-3">

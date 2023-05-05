@@ -20,5 +20,5 @@
         filterActionHandler(filterActions.rhsChanged(filter.id, userSuppliedRhsOptionWithValue(value)))
     }
 </script>
-<svelte:component this={everything.editorComponent} record={everything.record} recordPath={everything.recordPath}
+<svelte:component this={everything.editorComponent} record={everything.record} recordPath={everything.recordPath} inRecord={false}
                   systemConfiguration={$systemConfiguration}/>

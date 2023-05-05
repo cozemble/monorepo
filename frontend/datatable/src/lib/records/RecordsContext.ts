@@ -28,6 +28,7 @@ import {
 } from '../focus/DataTableFocus'
 import { gettableWritable } from '../editors/GettableWritable'
 import { eventSourcedDataRecordFns } from '@cozemble/data-editor-sdk'
+import { emptyFilterParams } from '../backend/Backend'
 
 export type LoadingState = 'loading' | 'loaded'
 
@@ -180,6 +181,10 @@ export class RootRecordsContext implements RecordsContext {
       beginEditing() {
         focus.update((f) => f.beginEditing())
       },
+
+      clearFocus() {},
+
+      ensureNotFocusedOnRow(rootRecordIndex: number) {},
     }
   }
 
@@ -197,7 +202,7 @@ export class RootRecordsContext implements RecordsContext {
 
   async loadRecords(): Promise<void> {
     this._loadingState.set('loading')
-    const loaded = await this.backend.getRecords(this.modelId())
+    const loaded = await this.backend.getRecords(this.modelId(), emptyFilterParams())
     this._records.set(
       loaded.map((r) => eventSourcedDataRecordFns.fromRecord(this._allModelCache, r)),
     )

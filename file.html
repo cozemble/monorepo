@@ -1,17 +1,58 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Decimal Input Validation</title>
-    <script type="text/javascript">
-        function validateInput(input) {
-            input.value = input.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1').replace(/(\.[0-9]{4})./g, '$1');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Child Div and Table Width Example</title>
+    <style>
+        .grid-container {
+            display: grid;
+            grid-template-columns: max-content;
+            width: max-content;
         }
-    </script>
+
+        .child-container {
+            border: 2px solid blue;
+            padding: 10px;
+        }
+
+        .table-container {
+            border: 2px solid green;
+            padding: 10px;
+        }
+
+        .child {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+        }
+
+        .sibling-table td {
+            border: 1px solid black;
+            padding: 5px;
+        }
+    </style>
 </head>
 <body>
-    <form>
-        <label for="decimalInput">Enter a decimal number (up to 2 decimal places):</label><br>
-        <input type="text" id="decimalInput" oninput="validateInput(this)">
-    </form>
+<div class="grid-container">
+    <div class="child-container">
+        <div class="child">
+            <div class="child-element">Element 1</div>
+            <div class="child-element">Element 2</div>
+        </div>
+    </div>
+    <div class="table-container">
+        <table class="sibling-table">
+            <tr>
+                <td>Cell 1</td>
+                <td>Cell 2</td>
+            </tr>
+            <tr>
+                <td>Cell 3</td>
+                <td>Cell </td>
+            </tr>
+        </table>
+    </div>
+</div>
 </body>
 </html>

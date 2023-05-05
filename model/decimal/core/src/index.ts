@@ -14,15 +14,14 @@ import {
   PropertyName,
   propertyNameFns,
   propertyTypeFns,
-  SlotConfiguration,
   SystemConfiguration,
 } from '@cozemble/model-core'
-import { numberOfDecimalPlacesChangeDescriptor } from './events';
+import { numberOfDecimalPlacesChangeDescriptor } from './events'
 
 export const decimalPropertyType = propertyTypeFns.newInstance('decimal.property')
 
 export interface DecimalProperty extends Property {
-  propertyType: { _type: 'property.type'; value: 'decimal.property' },
+  propertyType: { _type: 'property.type'; value: 'decimal.property' }
   numberOfDecimalPlaces: number
 }
 

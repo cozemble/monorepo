@@ -1,4 +1,4 @@
-import type { Backend } from '../backend/Backend'
+import type { Backend, FilterParams } from '../backend/Backend'
 import type { EventSourcedModel } from '@cozemble/model-event-sourced'
 import type { JustErrorMessage } from '@cozemble/lang-util'
 import { allEventSourcedModels } from '../stores/allModels'
@@ -32,8 +32,8 @@ export class StoreSyncBackend implements Backend {
     return await this.delegate.saveModels(models)
   }
 
-  async getRecords(modelId: ModelId): Promise<DataRecord[]> {
-    return await this.delegate.getRecords(modelId)
+  async getRecords(modelId: ModelId, filterParams: FilterParams): Promise<DataRecord[]> {
+    return await this.delegate.getRecords(modelId, filterParams)
   }
 
   async saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
@@ -50,14 +50,15 @@ export class StoreSyncBackend implements Backend {
 
   async saveModelView(modelView: ModelView): Promise<JustErrorMessage | null> {
     const outcome = await this.delegate.saveModelView(modelView)
+    console.log({ outcome })
     if (outcome !== null) {
       return outcome
     }
     allModelViews.update((mvs) => {
-      const maybeExisting = mvs.find((mv) => mv.modelId.value === modelView.modelId.value)
+      const maybeExisting = mvs.find((mv) => mv.id.value === modelView.id.value)
       if (maybeExisting) {
         return mvs.map((mv) => {
-          if (mv.modelId.value === modelView.modelId.value) {
+          if (mv.id.value === modelView.id.value) {
             return modelView
           }
           return mv

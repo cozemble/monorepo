@@ -9,6 +9,7 @@ import type {
 } from '@cozemble/data-editor-sdk'
 import type { DataRecord, Model, ModelId, ModelView } from '@cozemble/model-core'
 import type { DataRecordId } from '@cozemble/model-core'
+import type { JustErrorMessage } from '@cozemble/lang-util/dist/esm'
 
 export function makeDataRecordEditorClient(
   context: RecordsContext,
@@ -30,11 +31,11 @@ export function makeDataRecordEditorClient(
       }
     },
 
-    createNewRecord(modelId: ModelId): Promise<DataRecord | null> {
+    createNewRecord(): Promise<DataRecord | null> {
       throw new Error('Method not implemented.')
     },
 
-    searchRecords(modelId: ModelId, search: string): Promise<DataRecord[]> {
+    searchRecords(): Promise<DataRecord[]> {
       throw new Error('Method not implemented.')
     },
 
@@ -42,26 +43,27 @@ export function makeDataRecordEditorClient(
       throw new Error('Method not implemented.')
     },
 
-    getModelViews(modelId: ModelId): ModelView[] {
+    getModelViews(): ModelView[] {
       throw new Error('Method not implemented.')
     },
 
-    uploadAttachments(
-      files: File[],
-      progressUpdater: (percent: number) => void,
-    ): Promise<UploadedAttachment[]> {
+    saveModelView(): Promise<JustErrorMessage | null> {
+      throw new Error('Not implemented')
+    },
+
+    uploadAttachments(): Promise<UploadedAttachment[]> {
       throw new Error('Method not implemented.')
     },
 
-    deleteAttachments(attachmentIds: string[]): Promise<void> {
+    deleteAttachments(): Promise<void> {
       throw new Error('Method not implemented.')
     },
 
-    getAttachmentViewUrls(attachments: AttachmentIdAndFileName[]): Promise<string[]> {
+    getAttachmentViewUrls(): Promise<string[]> {
       throw new Error('Method not implemented.')
     },
 
-    instructUser(userInstruction: UserInstruction): void {
+    instructUser(): void {
       throw new Error('Method not implemented.')
     },
   }

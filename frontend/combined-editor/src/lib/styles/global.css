@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  @apply h-full;
+}
+
+body {
+  @apply bg-base-200 min-h-full;
+}
+
+@layer components {
+  .table thead th {
+    @apply bg-base-300 capitalize text-lg text-primary;
+  }
+
+  .table tbody:not(:last-child) td {
+    @apply after:h-4 after:block;
+  }
+
+  .btn {
+    @apply font-medium rounded-md capitalize;
+  }
+
+  .btn-primary {
+    @apply text-white bg-secondary border-none;
+  }
+
+  .btn-secondary {
+    @apply text-secondary bg-white border border-secondary;
+  }
+
+  .container {
+    @apply p-4 bg-base-100 rounded-xl flex flex-col gap-4;
+  }
+}

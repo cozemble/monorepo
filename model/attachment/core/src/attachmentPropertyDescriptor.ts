@@ -53,8 +53,9 @@ export const attachmentPropertyDescriptor: PropertyDescriptor<AttachmentProperty
       value: AttachmentList | null,
     ): string[] => {
       const references = value?.attachmentReferences ?? []
-      if (references.length === 0) {
-        return ['Required']
+      const minAttachments = property.minAttachments ?? 0
+      if (references.length < minAttachments) {
+        return [`Requires at least ${minAttachments} attachments`]
       }
       return []
     },

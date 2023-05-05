@@ -1,15 +1,12 @@
 <script lang="ts">
     import type {DataRecord, DataRecordValuePath, SystemConfiguration} from '@cozemble/model-core'
-    import {dataRecordEditor,} from '@cozemble/data-editor-sdk'
+    import {dataRecordControlEvents, dataRecordEditEvents, dataRecordEditor,} from '@cozemble/data-editor-sdk'
     import {dataRecordValuePathFns} from '@cozemble/model-api'
-    import type {DateProperty} from "@cozemble/model-date-core";
-    import {dataRecordEditEvents} from "@cozemble/data-editor-sdk";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord
     export let systemConfiguration: SystemConfiguration
-
-    const property = recordPath.lastElement as DateProperty
+    export let inRecord = true
 
     const dataRecordEditorClient = dataRecordEditor.getClient()
     const initialValue = dataRecordValuePathFns.getValue(systemConfiguration, recordPath, record) ?? null
@@ -26,12 +23,48 @@
                     recordPath,
                     initialValue,
                     newValue,
-                    null
+                    "Tab"
                 ),
             )
         }
     }
+
+    function init(el: HTMLInputElement) {
+        el.focus()
+    }
+
+    $: value = dataRecordValuePathFns.getValue(systemConfiguration, recordPath, record) ?? null
+
+    function handleKeyDownInInput(event: KeyboardEvent) {
+        if (event.key === 'Escape') {
+            dataRecordEditorClient.dispatchControlEvent(
+                dataRecordControlEvents.editAborted(record, recordPath),
+            )
+        }
+        if(event.key === 'Tab') {
+            event.preventDefault()
+            event.stopPropagation()
+            dataRecordEditorClient.dispatchControlEvent(
+                dataRecordControlEvents.moveFocus(record, recordPath, event.shiftKey ? 'left' : 'right'),
+            )
+        }
+    }
 </script>
+{#if inRecord}
+    {#if value}
+        {value}
+    {:else}
+        &nbsp;
+    {/if}
+{/if}
 
-<input class="input input-bordered" type="date" value={editableValue} on:change={dateChanged}/>
+<div class="input-container" class:absolute={inRecord}>
+    <input class="input input-bordered" type="date" value={editableValue} on:change={dateChanged} use:init
+           on:keydown={handleKeyDownInInput}/>
+</div>
 
+<style>
+    .absolute {
+        position: absolute;
+    }
+</style>

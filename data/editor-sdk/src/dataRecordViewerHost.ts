@@ -1,5 +1,5 @@
 import { mandatory } from '@cozemble/lang-util'
-import { DataRecord, DataRecordId, Model, ModelId, ModelView } from '@cozemble/model-core'
+import { DataRecord, DataRecordId, Model, ModelId } from '@cozemble/model-core'
 import { getContext, setContext } from 'svelte'
 import { AttachmentIdAndFileName, UserInstruction } from './dataRecordEditorHost'
 import { DataRecordEditEvent } from './dataRecordEditEvents'

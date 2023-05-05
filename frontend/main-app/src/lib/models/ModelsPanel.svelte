@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {addNewModel, allModels, modelBeingEdited} from "./modelsStore";
+    import {addNewModel, eventSourcedModels, modelBeingEdited} from "./modelsStore";
     import ModelList from "./ModelList.svelte";
     import EditModel from "./EditModel.svelte";
 
@@ -11,7 +11,7 @@
     <EditModel modelId={$modelBeingEdited.modelId} {tenantId} editImmediately={$modelBeingEdited.context === 'create'}
                on:finished={() => modelBeingEdited.set(null)}/>
 {:else}
-    {#if $allModels.length === 0}
+    {#if $eventSourcedModels.length === 0}
         <div class="alert alert-info shadow-lg">
             <div class="flex">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"

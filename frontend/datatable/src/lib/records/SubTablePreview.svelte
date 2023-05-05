@@ -48,8 +48,8 @@
     function focus(el: HTMLElement) {
         el.focus()
     }
-</script>
 
+</script>
 
 <div class="card bg-base-200 shadow-xl pt-2">
     <div class="card-body">

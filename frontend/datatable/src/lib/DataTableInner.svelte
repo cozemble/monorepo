@@ -8,8 +8,10 @@
     import {allEventSourcedModels, allTopLevelEventSourcedModels} from "./stores/allModels";
     import ModelPane from "./models/ModelPane.svelte";
     import ModelTab from "./ModelTab.svelte";
+    import {contextHelper} from "./stores/contextHelper";
 
     export let navbarState: Writable<string | null> = writable(null)
+    const permitModelling = contextHelper.getPermitModelling()
 
     function showModel(modelId: ModelId) {
         navbarState.set(modelId.value)
@@ -17,7 +19,7 @@
 
     function onEditModelClicked(clicked: Event, modelIndex: number) {
         clicked.stopPropagation()
-        const model = $allEventSourcedModels[modelIndex]
+        const model = $allTopLevelEventSourcedModels[modelIndex]
         const anchor = (clicked.target as HTMLElement).closest(`.model-${modelIndex + 1}`) as HTMLElement
         if (model && anchor) {
             modelUi.edit($allEventSourcedModels, model, anchor)
@@ -36,12 +38,14 @@
     {#each $allTopLevelEventSourcedModels as model, index}
         <ModelTab {model} {index} {navbarState} {onEditModelClicked}/>
     {/each}
-    <AddTableNavButton on:added={newTableAdded}/>
+    {#if $permitModelling}
+        <AddTableNavButton on:added={newTableAdded}/>
+    {/if}
 </div>
 
 {#if $navbarState}
     {#key $navbarState}
-        <ModelPane modelId={$navbarState} />
+        <ModelPane modelId={$navbarState}/>
     {/key}
 {/if}
 

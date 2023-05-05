@@ -19,7 +19,6 @@
     function onDeleteAttachments(event: CustomEvent<AttachmentReference[]>) {
         const attachmentReferences = event.detail
         selectedAttachments = selectedAttachments.filter(a => !attachmentReferences.includes(a))
-        console.log({event, selectedAttachments})
         dispatch("deleteAttachments", attachmentReferences)
     }
 </script>

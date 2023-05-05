@@ -5,9 +5,9 @@
     import {createEventDispatcher, onMount} from "svelte";
     import {positionModal} from "./modelUi";
     import {editableTableName} from "./models/editableTableName";
-    import EditableStringInput from "../lib/editors/EditableStringInput.svelte";
     import {allEventSourcedModels} from "./stores/allModels";
     import {modelIdFns} from "@cozemble/model-api";
+    import EditableStringInput from "./editors/EditableStringInput.svelte";
 
     export let anchorElement: HTMLElement;
 

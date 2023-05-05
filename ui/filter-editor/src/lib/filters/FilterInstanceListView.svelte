@@ -69,13 +69,13 @@
             {/if}
         {/if}
         <div class="ml-2 self-center">
-            <button class="btn btn-ghost btn-active btn-xs" title="Delete this {filterAlias}" on:click={() => deleteFilter(filter)}>Delete</button>
+            <button class="btn btn-ghost btn-active btn-sm" title="Delete this {filterAlias}" on:click={() => deleteFilter(filter)}>Delete</button>
         </div>
     </div>
 {/each}
 {#if allowAdding}
     <div class="mt-2 mb-2">
-        <button class="btn btn-ghost btn-active" on:click={addFilter}>Add {filterAlias}</button>
+        <button class="btn btn-ghost btn-active btn-sm" on:click={addFilter}>Add {filterAlias}</button>
         {#if allowGroups}
             <button class="btn btn-ghost btn-active"
                     on:click={() => filterActionHandler(filterActions.convertFilterInstanceGroupToFilterGroup(list.id))}>

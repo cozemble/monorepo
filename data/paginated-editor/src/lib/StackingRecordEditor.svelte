@@ -3,12 +3,13 @@
     import EditRecord from './EditRecord.svelte'
     import type {RecordSearcher} from "./RecordSearcher";
     import type {RecordCreator} from "./RecordCreator";
-    import type {DataRecord, ModelId, ModelView} from "@cozemble/model-core";
+    import type {DataRecord, ModelId} from "@cozemble/model-core";
     import type {AttachmentsManager} from "./AttachmentsManager";
+    import type {ModelViewManager} from "@cozemble/data-editor-sdk";
 
     export let recordEditContext: RecordEditContext
     export let recordSearcher: RecordSearcher
-    export let modelViews: ModelView[]
+    export let modelViewManager: ModelViewManager
     export let attachmentsManager: AttachmentsManager
     export let cancelButtonText = "Cancel"
 
@@ -60,7 +61,7 @@
                         {recordSearcher}
                         {recordCreator}
                         {attachmentsManager}
-                        {modelViews}
+                        {modelViewManager}
                         {pushContext}
                         {popContext}
                         {cancelButtonText}/>

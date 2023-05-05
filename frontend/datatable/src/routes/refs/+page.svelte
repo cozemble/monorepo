@@ -9,11 +9,12 @@
     import {writable} from "svelte/store";
     import DataTable from "../../lib/DataTable.svelte";
     import {backendFns} from "../../lib/appBackend";
-    import {StoreSyncBackend} from "../../lib/app/StoreSyncBackend";
     import {InMemoryBackend} from "../../lib/backend/InMemoryBackend";
     import RecordFilteringPanel from "../../lib/filtering/RecordFilteringPanel.svelte";
+    import {tempRegisterDateFilters} from "../temp";
+    import {eventSourcedModelStore} from "../../lib";
 
-    const modelViews: ModelView[] = []
+    const modelViews = writable([] as ModelView[])
 
     const customerModel = modelFns.newInstance("Customers", modelOptions.withProperties(propertyFns.newInstance("First name", propertyOptions.required), propertyFns.newInstance("Last name")))
     const invoiceModel = modelFns.newInstance("Invoices", modelOptions.withSlot(modelReferenceFns.newInstance([customerModel.id], "Customer")))
@@ -29,16 +30,25 @@
     const recordsMap = new Map<string, DataRecord[]>()
     recordsMap.set(customerModel.id.value, [customerRecord1, customerRecord2])
     recordsMap.set(invoiceModel.id.value, [invoiceRecord1])
-    backendFns.setBackend(new StoreSyncBackend(new InMemoryBackend(modelMap, recordsMap)))
+    backendFns.setBackend(new InMemoryBackend(modelMap, recordsMap))
+    const permitModelling = writable(true)
 
     onMount(() => {
+        tempRegisterDateFilters()
         registerEverything()
     })
 
 </script>
+<div class="flex">
+    <label class="label">Permit modelling</label>
+    <input type="checkbox" bind:checked={$permitModelling}/>
+</div>
+<div class="border border-base-300 mb-2">
+</div>
 
-<DataTable models={eventSourcedModels}
+<DataTable models={eventSourcedModelStore(eventSourcedModels)}
            {modelViews}
            {systemConfiguration}
            userId="test"
-           navbarState={writable(invoiceModel.id.value)} recordFilteringComponent={RecordFilteringPanel}/>
+           {permitModelling}
+           navbarState={writable(customerModel.id.value)} recordFilteringComponent={RecordFilteringPanel}/>
