@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Decimal Input Validation</title>
+    <script type="text/javascript">
+        function validateInput(input) {
+            input.value = input.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1').replace(/(\.[0-9]{4})./g, '$1');
+        }
+    </script>
+</head>
+<body>
+    <form>
+        <label for="decimalInput">Enter a decimal number (up to 2 decimal places):</label><br>
+        <input type="text" id="decimalInput" oninput="validateInput(this)">
+    </form>
+</body>
+</html>

@@ -10,10 +10,12 @@
     export let systemConfiguration: SystemConfiguration
 
     const property = recordPath.lastElement as DecimalProperty
+    const numberOfDecimalPlaces = property.numberOfDecimalPlaces
 
     const dataRecordEditorClient = dataRecordEditor.getClient()
     const initialValue = dataRecordValuePathFns.getValue(systemConfiguration, recordPath, record) ?? null
     let editableValue = initialValue
+    let input: HTMLInputElement
 
     function decimalChanged(event: Event) {
         const target = event.target as HTMLInputElement
@@ -33,10 +35,16 @@
         }
     }
 
+    function validateInput() {
+        input.value = input.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1').replace(/(\.[0-9]{2})./g, '$1');
+    }    
+
 </script>
 
 <input 
     class="input input-bordered" 
-    type="number" 
+    type="number"
     value={editableValue}
+    bind:this={input}
+    on:input={validateInput}
     on:change={decimalChanged}/>
