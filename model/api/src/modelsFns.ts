@@ -29,6 +29,7 @@ import {
   singleCardinalityValuesForModelPathResponse,
 } from './valuesForModelPath'
 import { nestedModelFns } from './nestedModelFns'
+import { LeafModelSlot } from '@cozemble/model-core/dist/esm'
 
 export const modelOptions = {
   withProperty(p: Property | string): ModelOption {
@@ -252,5 +253,10 @@ export const modelFns = {
     return modelFns.allPaths(models, model).filter((path) => {
       return path.lastElement._type === 'property' && path.lastElement.unique
     }) as ModelPath<Property>[]
+  },
+  leafSlots(model: Model): LeafModelSlot[] {
+    return model.slots.filter(
+      (s) => s._type === 'property' || s._type === 'model.reference',
+    ) as LeafModelSlot[]
   },
 }

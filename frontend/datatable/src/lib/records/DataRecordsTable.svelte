@@ -1,12 +1,11 @@
 <script lang="ts">
     import type {NestedRecordsContext, RecordsContext} from "./RecordsContext";
-    import type {Cardinality, DataRecord, Model, ModelSlot, NestedModel} from "@cozemble/model-core";
+    import type {Cardinality, DataRecord, DataRecordId, Model, ModelSlot, NestedModel} from "@cozemble/model-core";
     import {dataRecordIdFns, propertyDescriptors, propertyNameFns} from "@cozemble/model-core";
-    import type {RecordBeingAdded, RecordBeingEdited, SlotBeingEdited} from "./helpers";
+    import type {SlotBeingEdited} from "./helpers";
     import SlotEditModal from "./SlotEditModal.svelte";
     import {tick} from "svelte";
     import NestedDataRecords from "./NestedDataRecords.svelte";
-    import RecordBeingAddedModal from "./RecordBeingAddedModal.svelte";
     import SlotTh from "./SlotTh.svelte";
     import DataTd from "./DataTd.svelte";
     import AddSubItemDialogue from "./AddSubItemDialogue.svelte";
@@ -14,8 +13,6 @@
     import {dataRecordsTableOptions} from "./DataRecordsTableOptions";
     import {systemConfiguration} from "../stores/systemConfiguration";
     import {introductionsState} from "../stores/introductions";
-    import RecordBeingEditedModal from "./RecordBeingEditedModal.svelte";
-    import type {DataRecordId} from "@cozemble/model-core";
     import ExpandCollapseButton from "./ExpandCollapseButton.svelte";
     import {writable} from "svelte/store";
     import WithDataRecordEditorClient from "../models/WithDataRecordEditorClient.svelte";
@@ -33,8 +30,6 @@
     const focus = context.getFocus()
     const focusControls = context.getFocusControls()
     let slotBeingEdited: SlotBeingEdited | null = null
-    let recordBeingAdded: RecordBeingAdded | null = null
-    let recordBeingEdited: RecordBeingEdited | null = null
     let recordHavingSubItemAdded: string | null = null
     let addRecordButton: HTMLElement
 
@@ -74,11 +69,11 @@
     }
 
     function addRecord() {
-        recordBeingAdded = {models: $allModels, model: $model.model, anchorElement: addRecordButton}
+        throw new Error("Not implemented")
     }
 
     async function onNewRecordAdded(_event: CustomEvent) {
-        recordBeingAdded = null
+        throw new Error("Not implemented")
     }
 
     function makeNestedContext(record: DataRecord, nestedModel: NestedModel) {
@@ -106,7 +101,7 @@
     }
 
     async function onNewRecordEdited(_event: CustomEvent) {
-        recordBeingEdited = null
+        throw new Error("Not implemented")
     }
 
     function isDirtyRecord(dirtyRecordIds: DataRecordId[], record: DataRecord) {
@@ -228,12 +223,4 @@
 {#if slotBeingEdited}
     <SlotEditModal {slotBeingEdited}
                    on:close={() => slotBeingEdited = null} on:edited={modelEdited}/>
-{/if}
-{#if recordBeingAdded}
-    <RecordBeingAddedModal recordsContext={context} {recordBeingAdded} on:added={onNewRecordAdded}
-                           on:cancel={() => recordBeingAdded = null}/>
-{/if}
-{#if recordBeingEdited}
-    <RecordBeingEditedModal recordsContext={context} {recordBeingEdited} on:edited={onNewRecordEdited}
-                            on:cancel={() => recordBeingEdited = null}/>
 {/if}

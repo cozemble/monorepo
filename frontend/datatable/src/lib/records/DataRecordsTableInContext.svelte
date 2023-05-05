@@ -82,7 +82,7 @@
         expandRecord(recordControls.addNewRecord())
         await tick()
         const lastRowIndex = $records.length - 1
-        const firstEditableSlot = $model.slots[0]
+        const firstEditableSlot = modelFns.leafSlots($model)[0]
         if (firstEditableSlot) {
             focusControls.setFocus(lastRowIndex, firstEditableSlot, [])
             focusControls.beginEditing()

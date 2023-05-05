@@ -30,12 +30,6 @@
         }
     })
 
-    function instructUser() {
-        if (editorParams && editorParams._type === 'user.instruction') {
-            dataRecordEditorClient.instructUser(editorParams)
-        }
-    }
-
     async function onConfigureView() {
         configureViewParams = await makeConfigureViewParams(dataRecordEditorClient, models, recordPath)
     }
@@ -49,14 +43,16 @@
         editorParams = assembleEditorParams(dataRecordEditorClient, recordPath)
     }
 
+    function takeFocus(el: HTMLElement) {
+        el.focus()
+    }
 </script>
 
 {#if editorParams}
     {#if editorParams._type === 'editor.params'}
         <ModelReferenceEditorInner {systemConfiguration} {editorParams} {record} {recordPath}/>
     {:else if editorParams._type === 'user.instruction'}
-        <p>{editorParams.userContextMessage}</p>
-        <a class="link" href="#!" on:click={instructUser}>Show me how</a>
+        <button class="btn btn-sm" on:click={onConfigureView} use:takeFocus>Configure view</button>
     {/if}
 {/if}
 
