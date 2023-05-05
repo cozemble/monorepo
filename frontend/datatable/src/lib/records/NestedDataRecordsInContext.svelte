@@ -19,8 +19,11 @@
     const oneOnly = nestedModel.cardinality === 'one'
     const records = modelRecordsContextFns.getRecords()
     const nestedRecords = derived(records, records => {
-        const recordLatest = mandatory(records.find(r => r.id.value === record.id.value), `No record found for id ${record.id.value} in ${nestedModel.name.value}`)
-        const maybeValue = recordLatest.values[nestedModel.id.value]
+        const maybeRecordLatest = records.find(r => r.id.value === record.id.value)
+        if(!maybeRecordLatest) {
+            return []
+        }
+        const maybeValue = maybeRecordLatest.values[nestedModel.id.value]
         if (maybeValue) {
             if (Array.isArray(maybeValue)) {
                 return maybeValue
