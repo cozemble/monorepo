@@ -25,6 +25,7 @@
     import {modelFns} from "@cozemble/model-api";
     import SlotEditModal from "./SlotEditModal.svelte";
     import {systemConfiguration} from "../stores/systemConfiguration";
+    import {contextHelper} from "../stores/contextHelper";
 
     export let oneOnly = false
     export let options: DataRecordsTableOptions = dataRecordsTableOptions(true, true, true)
@@ -38,6 +39,8 @@
     const dirtyRecords = modelRecordsContextFns.getDirtyRecords()
     const recordControls = modelRecordsContextFns.getRecordControls()
     const modelControls = modelRecordsContextFns.getModelControls()
+    const permitModelling = contextHelper.getPermitModelling()
+
 
     let slotBeingEdited: SlotBeingEdited | null = null
     let recordHavingSubItemAdded: string | null = null
@@ -131,7 +134,7 @@
         {#each $model.slots as slot, index}
             <SlotTh {slot} {index} {editSlot} permitModelEditing={options.permitModelEditing}/>
         {/each}
-        {#if options.permitModelEditing}
+        {#if options.permitModelEditing && $permitModelling}
             <td class="bg-base-300 px-8">
                 <div class="flex items-center">
                     <label tabindex="0" class="label m-1" on:click={addSlotToModel}>
@@ -164,7 +167,7 @@
                             <td>To do: {slot._type}</td>
                         {/if}
                     {/each}
-                    {#if options.permitModelEditing}
+                    {#if options.permitModelEditing && $permitModelling}
                         <td class="border  border-base-300"></td>
                     {/if}
                     {#if options.showActions}
@@ -185,7 +188,7 @@
                                             Delete
                                         </button>
                                     {/if}
-                                    {#if options.permitSubItemAddition}
+                                    {#if options.permitSubItemAddition && $permitModelling}
                                         <button class="btn btn-ghost btn-active btn-sm mr-2"
                                                 on:click={() => beginSubItem(record)}>
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"

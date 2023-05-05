@@ -13,12 +13,14 @@
     import {recordFilteringComponentStore} from "./stores/recordFilteringComponentStore";
     import type {EventSourcedModelStore} from "./types";
     import {customNaming} from "@cozemble/model-editor";
+    import {contextHelper} from "./stores/contextHelper";
 
     export let models: EventSourcedModelStore
     export let modelViews: Writable<ModelView[]>
     export let systemConfiguration: SystemConfiguration
     export let userId: string
     export let navbarState: Writable<string | null> = writable(null)
+    export let permitModelling = writable(true)
     export let recordFilteringComponent: any | null = null
 
     currentUserId.set(userId)
@@ -26,6 +28,7 @@
     systemConfigurationStore.set(systemConfiguration)
     setAllModelViews(modelViews)
     recordFilteringComponentStore.set(recordFilteringComponent)
+    contextHelper.setPermitModelling(permitModelling)
 
     onMount(() => {
         slotViewerRegistry.register('model.reference', ModelReferenceViewer)

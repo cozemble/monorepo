@@ -11,7 +11,7 @@
     import {IncrementalModelingBackend} from "./IncrementalModelingBackend";
     import type {DataTableBackend} from "@cozemble/frontend-datatable";
     import {backendFns} from "@cozemble/frontend-datatable";
-    import {eventSourcedModels, models} from "./incrementalModelStore";
+    import {eventSourcedModels, models, permitModelling} from "./incrementalModelStore";
     import type {EventSourcedModel} from "@cozemble/model-event-sourced";
     import {toastNoticeStoreFns} from "../notices/toastNoticeStore";
     import {backend} from "../backend/backendStore";
@@ -19,6 +19,7 @@
     export let tenantId: string
     let panelToShow: "data" | "settings" = "data"
     let dataTableBackend: DataTableBackend = backendFns.setBackend(new IncrementalModelingBackend(backend, tenantId, () => $models))
+    let viewAs: "developer" | "user" = "developer"
 
     onMount(() => {
         registerEverything()
@@ -39,7 +40,7 @@
             throw new Error("Backend is null")
         } else {
             const saveOutcome = await dataTableBackend.saveModels(models)
-            if(saveOutcome !== null) {
+            if (saveOutcome !== null) {
                 toastNoticeStoreFns.add(saveOutcome.message, "error")
             }
         }
@@ -48,7 +49,14 @@
     onDestroy(() => {
         unsubModels()
     })
+
+    function viewAsChanged(event: Event) {
+        const target = event.target as HTMLSelectElement
+        console.log({value:target.value})
+        permitModelling.update(p => target.value === 'developer')
+    }
 </script>
+
 <div class="drawer drawer-mobile">
     <input id="my-drawer-2" type="checkbox" class="drawer-toggle"/>
     <div class="drawer-content">
@@ -84,6 +92,12 @@
                 <a>
                     <Cog6ToothIcon/>
                     Settings</a></li>
+
+            <label class="label">View as:</label>
+            <select class="select select-bordered" on:change={viewAsChanged}>
+                <option value="developer" selected={viewAs === 'developer'}>Developer</option>
+                <option value="user" selected={viewAs === 'user'}>User</option>
+            </select>
         </ul>
     </div>
 </div>

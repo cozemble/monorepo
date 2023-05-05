@@ -3,17 +3,19 @@
     import DownCaret from "./icons/DownCaret.svelte";
     import type {Writable} from "svelte/store";
     import type {ModelId} from "@cozemble/model-core";
+    import {contextHelper} from "./stores/contextHelper";
 
-    export let model:EventSourcedModel
-    export let index:number
+    export let model: EventSourcedModel
+    export let index: number
     export let navbarState: Writable<string | null>
-    export let onEditModelClicked:(clicked: Event, modelIndex: number) => void
+    export let onEditModelClicked: (clicked: Event, modelIndex: number) => void
+    const permitModelling = contextHelper.getPermitModelling()
 
     function showModel(modelId: ModelId) {
         navbarState.set(modelId.value)
     }
 
-    function editModelClicked(clicked:Event) {
+    function editModelClicked(clicked: Event) {
         onEditModelClicked(clicked, index)
     }
 </script>
@@ -22,7 +24,9 @@
     <a class="tab tab-lg tab-bordered mr-4 p-0 model-{index + 1}"
        class:tab-active={$navbarState === model.model.id.value}
        on:click={() => showModel(model.model.id)}>{model.model.pluralName.value}
+        {#if $permitModelling}
         <span on:click={editModelClicked} class="ml-2 mt-1">
             <DownCaret/></span>
+        {/if}
     </a>
 </div>

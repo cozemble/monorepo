@@ -1,22 +1,20 @@
 <script lang="ts">
-    import {DataTable, type DataTableBackend} from "@cozemble/frontend-datatable";
+    import {DataTable, type DataTableBackend, RecordFilteringPanel} from "@cozemble/frontend-datatable";
     import {mergeTenantEntities, modelViews, systemConfiguration, type TenantEntity} from "../models/tenantEntityStore";
-    import {eventSourcedModels} from "./incrementalModelStore";
+    import {eventSourcedModels, permitModelling} from "./incrementalModelStore";
     import {writable} from "svelte/store";
     import type {ModelView} from "@cozemble/model-core";
     import {onDestroy} from "svelte";
     import {toastNoticeStoreFns} from "../notices/toastNoticeStore";
     import {arrays} from "@cozemble/lang-util";
-    import {afterUpdate} from "svelte";
-    import {RecordFilteringPanel} from "@cozemble/frontend-datatable";
 
     const writableModelViews = writable($modelViews)
     export let dataTableBackend: DataTableBackend
 
     let lastSavedModelViews: ModelView[] | null = null
     const unsubModelViews = writableModelViews.subscribe((modelViews) => {
-        if(lastSavedModelViews !== null) {
-            const {leftOnly} = arrays.compare(modelViews,lastSavedModelViews, JSON.stringify)
+        if (lastSavedModelViews !== null) {
+            const {leftOnly} = arrays.compare(modelViews, lastSavedModelViews, JSON.stringify)
             saveModelViews(leftOnly)
         }
         lastSavedModelViews = modelViews
@@ -36,11 +34,11 @@
     onDestroy(() => {
         unsubModelViews()
     })
-
-    afterUpdate(() => {
-        console.log({writableModelViews:$writableModelViews})
-    })
 </script>
 
-<DataTable models={eventSourcedModels} modelViews={writableModelViews} systemConfiguration={$systemConfiguration}
-           userId="test" recordFilteringComponent={RecordFilteringPanel}/>
+<DataTable models={eventSourcedModels}
+           modelViews={writableModelViews}
+           systemConfiguration={$systemConfiguration}
+           {permitModelling}
+           userId="test"
+           recordFilteringComponent={RecordFilteringPanel}/>
