@@ -15,7 +15,6 @@
     function dateChanged(event: Event) {
         const target = event.target as HTMLInputElement
         const newValue = target.value
-        console.log({newValue, editableValue})
         if (newValue !== editableValue) {
             editableValue = newValue
             dataRecordEditorClient.dispatchEditEvent(
@@ -36,10 +35,17 @@
 
     $: value = dataRecordValuePathFns.getValue(systemConfiguration, recordPath, record) ?? null
 
-    function handleKeyDown(event: KeyboardEvent) {
+    function handleKeyDownInInput(event: KeyboardEvent) {
         if (event.key === 'Escape') {
             dataRecordEditorClient.dispatchControlEvent(
                 dataRecordControlEvents.editAborted(record, recordPath),
+            )
+        }
+        if(event.key === 'Tab') {
+            event.preventDefault()
+            event.stopPropagation()
+            dataRecordEditorClient.dispatchControlEvent(
+                dataRecordControlEvents.moveFocus(record, recordPath, event.shiftKey ? 'left' : 'right'),
             )
         }
     }
@@ -54,7 +60,7 @@
 
 <div class="input-container" class:absolute={inRecord}>
     <input class="input input-bordered" type="date" value={editableValue} on:change={dateChanged} use:init
-           on:keydown={handleKeyDown}/>
+           on:keydown={handleKeyDownInInput}/>
 </div>
 
 <style>

@@ -17,8 +17,9 @@
  * Tabbing from a model reference slot does not advance to the next editable slot
  * Get a fixture around decimal so Sam can iterate quickly
  * Model reference does not get highlighted if its the first editable slot in a record.  Also pressing enter when the "Configure View" is shown should pop the modal
-
  * Tabbing in a date editor.  If the slot has a value, move on to the next value.  If the slot is empty, swallow the tab event because otherwise it just tabs thru the fields of the date
+
+ * Attachments are always required
  * Add a Workspace selector, single value only for now
  * Add a View as Admin/View as User selector, single value only for now
  * Deleting an attachment causes an error in stringPropertyDescriptor

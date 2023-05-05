@@ -48,7 +48,7 @@
             throw new Error("Not implemented")
         },
 
-        saveModelView(modelView: ModelView): Promise<JustErrorMessage | null> {
+        saveModelView(): Promise<JustErrorMessage | null> {
             throw new Error("Not implemented")
         },
 
