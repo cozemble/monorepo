@@ -11,6 +11,7 @@
         dataRecordEditorHost,
         type UploadedAttachment
     } from "@cozemble/data-editor-sdk";
+    import type {JustErrorMessage} from "@cozemble/lang-util";
 
     registerDateProperty()
     const dateProperty: DateProperty = emptyProperty("Date of birth")
@@ -44,6 +45,10 @@
         },
 
         getModelViews(): ModelView[] {
+            throw new Error("Not implemented")
+        },
+
+        saveModelView(modelView: ModelView): Promise<JustErrorMessage | null> {
             throw new Error("Not implemented")
         },
 

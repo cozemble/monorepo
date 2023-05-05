@@ -6,15 +6,20 @@
     import type {EditorParams} from "./editorHelper";
     import {assembleEditorParams} from "./editorHelper";
     import ModelReferenceEditorInner from "./ModelReferenceEditorInner.svelte";
+    import {type ConfigureViewParams, makeConfigureViewParams} from "./ConfigureViewParams";
+    import ConfigureViewModal from "./ConfigureViewModal.svelte";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord
     export let systemConfiguration: SystemConfiguration
 
-
     const dataRecordEditorClient = dataRecordEditor.getClient()
+    const models = dataRecordEditorClient.getModels()
+
     let editorParams: EditorParams | UserInstruction | null = null
     let error: string | null = null
+    let configureViewParams: ConfigureViewParams | null = null
+
 
     onMount(() => {
         try {
@@ -30,6 +35,20 @@
             dataRecordEditorClient.instructUser(editorParams)
         }
     }
+
+    async function onConfigureView() {
+        configureViewParams = await makeConfigureViewParams(dataRecordEditorClient, models, recordPath)
+    }
+
+    function cancelConfigureViewModal() {
+        configureViewParams = null
+    }
+
+    function viewConfigured() {
+        cancelConfigureViewModal()
+        editorParams = assembleEditorParams(dataRecordEditorClient, recordPath)
+    }
+
 </script>
 
 {#if editorParams}
@@ -44,4 +63,10 @@
 
 {#if error}
     <p>{error}</p>
+{/if}
+
+{#if configureViewParams}
+    <ConfigureViewModal {configureViewParams}
+                        modelViewManager={dataRecordEditorClient}
+                        on:cancel={cancelConfigureViewModal} on:saved={viewConfigured}/>
 {/if}

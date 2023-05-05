@@ -46,6 +46,10 @@
             throw new Error("Not implemented")
         },
 
+        saveModelView(modelView: ModelView): Promise<JustErrorMessage | null> {
+            throw new Error("Not implemented")
+        },
+
         async uploadAttachments(files: File[],
                                 progressUpdater: (percent: number) => void): Promise<UploadedAttachment[]> {
             progressUpdater(100)
@@ -106,7 +110,8 @@
 
     dataRecordViewerHost.setClient(viewer)
 
-    let modelEvents:ModelEvent[] = []
+    let modelEvents: ModelEvent[] = []
+
     function modelChanged(event: CustomEvent<ModelEvent>) {
         const modelEvent = event.detail as ModelEvent
         model = modelEventDescriptors.applyEvent(model, modelEvent)

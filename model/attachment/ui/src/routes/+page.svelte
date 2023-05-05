@@ -45,6 +45,10 @@
             throw new Error("Not implemented")
         },
 
+        saveModelView(): Promise<JustErrorMessage | null> {
+            throw new Error("Not implemented")
+        },
+
         async uploadAttachments(files: File[],
                                 progressUpdater: (percent: number) => void): Promise<UploadedAttachment[]> {
             progressUpdater(100)

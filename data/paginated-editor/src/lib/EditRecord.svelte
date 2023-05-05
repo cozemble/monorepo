@@ -1,6 +1,13 @@
 <script lang="ts">
     import DataRecordEditor from './DataRecordEditor.svelte'
-    import type {DataRecordControlEvent, DataRecordEditEvent, DataRecordEditorClient,} from '@cozemble/data-editor-sdk'
+    import type {
+        AttachmentIdAndFileName,
+        DataRecordControlEvent,
+        DataRecordEditEvent,
+        DataRecordEditorClient,
+        ModelViewManager,
+        UserInstruction,
+    } from '@cozemble/data-editor-sdk'
     import {dataRecordEditorHost, type UploadedAttachment} from '@cozemble/data-editor-sdk'
     import type {RecordEditContext} from './RecordEditContext'
     import {getEditRecordListener} from './EditRecordListener'
@@ -9,15 +16,14 @@
     import type {RecordSearcher} from "./RecordSearcher";
     import type {RecordCreator} from "./RecordCreator";
     import type {AttachmentsManager} from "./AttachmentsManager";
-    import type {AttachmentIdAndFileName} from "@cozemble/data-editor-sdk";
-    import type {UserInstruction} from "@cozemble/data-editor-sdk";
+    import type {JustErrorMessage} from "@cozemble/lang-util";
     import {strings} from "@cozemble/lang-util";
 
     export let recordEditContext: RecordEditContext
     export let recordSearcher: RecordSearcher
     export let recordCreator: RecordCreator
     export let attachmentsManager: AttachmentsManager
-    export let modelViews: ModelView[]
+    export let modelViewManager: ModelViewManager
     export let pushContext: (context: RecordEditContext) => void
     export let popContext: () => void
     export let cancelButtonText = "Cancel"
@@ -48,7 +54,10 @@
             return recordSearcher.searchRecords(modelId, search)
         },
         getModelViews(modelId: ModelId): ModelView[] {
-            return modelViews.filter(modelView => modelView.modelId.value === modelId.value)
+            return modelViewManager.getModelViews(modelId)
+        },
+        saveModelView(modelView: ModelView): Promise<JustErrorMessage | null> {
+            return modelViewManager.saveModelView(modelView)
         },
         getModels(): Model[] {
             return recordEditContext.models
@@ -86,8 +95,12 @@
 
 <br/>
 <div class="buttons my-4 flex">
-    <button type="button" class="btn btn-primary save save-{strings.camelize(recordEditContext.model.name.value)}" on:click={handleSave}>Save</button>
-    <button type="button" class="btn btn-error ml-2 cancel cancel-{strings.camelize(recordEditContext.model.name.value)}" on:click={handleCancel}>{cancelButtonText}</button>
+    <button type="button" class="btn btn-primary save save-{strings.camelize(recordEditContext.model.name.value)}"
+            on:click={handleSave}>Save
+    </button>
+    <button type="button"
+            class="btn btn-error ml-2 cancel cancel-{strings.camelize(recordEditContext.model.name.value)}"
+            on:click={handleCancel}>{cancelButtonText}</button>
 </div>
 
 <style>
