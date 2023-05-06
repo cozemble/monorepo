@@ -30,6 +30,3 @@
         {/if}
     </a>
 </div>
-
-<style>
-</style>

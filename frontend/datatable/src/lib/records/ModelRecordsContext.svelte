@@ -21,14 +21,17 @@
     import {emptyFilterParams, type FilterParams} from "../backend/Backend";
 
     export let modelId: ModelId;
+
     const systemConfigurationProvider = () => $systemConfiguration
     const modelsProvider = () => $allModels
+
     const eventSourcedModel = derived(allEventSourcedModels, models => eventSourcedModelFns.findById(models, modelId))
     const model = derived(eventSourcedModel, model => model.model)
     const eventSourcedRecords = eventSourcedDataRecordsStore(systemConfigurationProvider, modelsProvider, () => $model, $currentUserId)
     const records = derived(eventSourcedRecords, records => records.map(record => record.record))
     const errorVisibilityByRecordId = gettableWritable(new Map() as ErrorVisibilityByRecordId)
     const focus = gettableWritable(emptyDataTableFocus(() => eventSourcedRecords.get().map((r) => r.record)))
+    const focusControls = makeFocusControls(modelsProvider, () => $records, systemConfigurationProvider, focus)
     const lastSavedByRecordId = writable(new Map<string, number>())
     const dirtyRecords = derived([eventSourcedRecords, lastSavedByRecordId], ([records, lastSavedByRecordId]) => {
         return records
@@ -41,7 +44,6 @@
     const loadingState = writable('loading' as LoadingState)
     const filterParams = writable(emptyFilterParams())
     let debounceTimeout: any
-    const focusControls = makeFocusControls(modelsProvider, () => $records, systemConfigurationProvider, focus)
 
     modelRecordsContextFns.setEventSourcedModel(eventSourcedModel)
     modelRecordsContextFns.setModel(model)
@@ -65,7 +67,6 @@
     async function loadRecords(filterParams: FilterParams) {
         loadingState.set('loading')
         const loaded = await getRecordsForModel(modelId, filterParams)
-        console.log({loaded,modelId, filterParams})
         eventSourcedRecords.set(
             loaded.map((r) => eventSourcedDataRecordFns.fromRecord($allModels, r)),
         )
