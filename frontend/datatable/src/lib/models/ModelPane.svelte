@@ -1,7 +1,7 @@
 <script lang="ts">
     import {modelIdFns} from "@cozemble/model-api";
     import DataRecordsTableInContext from "../records/DataRecordsTableInContext.svelte";
-    import ModelRecordsContext from "../records/ModelRecordsContext.svelte"
+    import ModelPaneContext from "../records/ModelRecordsContext.svelte"
     import {recordFilteringComponentStore} from "../stores/recordFilteringComponentStore";
     import {clickOutside} from "@cozemble/ui-atoms";
     import type {DataTableFocusControls2} from "../focus/DataTableFocus";
@@ -14,7 +14,7 @@
 </script>
 
 <div class="mt-2">
-    <ModelRecordsContext modelId={modelIdFns.newInstance(modelId)} let:focusControls>
+    <ModelPaneContext modelId={modelIdFns.newInstance(modelId)} let:focusControls>
         <div class="grid-container">
             <div>
                 <div class="child">
@@ -28,7 +28,7 @@
                 <DataRecordsTableInContext/>
             </div>
         </div>
-    </ModelRecordsContext>
+    </ModelPaneContext>
 </div>
 
 <style>

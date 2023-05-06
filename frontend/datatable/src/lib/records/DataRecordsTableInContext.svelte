@@ -116,6 +116,7 @@
     }
 
     async function save(record: DataRecord, rootRecordIndex: number) {
+        console.log({recordControls})
         const outcome = await recordControls.saveRecord(record.id)
         if (outcome) {
             expandRecord(record.id)
