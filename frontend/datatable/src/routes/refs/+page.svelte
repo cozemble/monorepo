@@ -8,12 +8,13 @@
     import {dataRecordFns, modelFns, modelOptions, propertyFns, propertyOptions} from "@cozemble/model-api";
     import {writable} from "svelte/store";
     import DataTable from "../../lib/DataTable.svelte";
-    import {backendFns} from "../../lib/appBackend";
+    import {backendFns} from "../../lib";
     import {InMemoryBackend} from "../../lib/backend/InMemoryBackend";
     import RecordFilteringPanel from "../../lib/filtering/RecordFilteringPanel.svelte";
     import {tempRegisterDateFilters} from "../temp";
     import {eventSourcedModelStore} from "../../lib";
     import {summaryViewFns} from "@cozemble/model-core";
+    import DevOptions from "../DevOptions.svelte";
 
     const modelViews = writable([] as ModelView[])
 
@@ -34,6 +35,7 @@
     recordsMap.set(invoiceModel.id.value, [invoiceRecord1])
     backendFns.setBackend(new InMemoryBackend(modelMap, recordsMap))
     const permitModelling = writable(true)
+    const showDevConsole = writable(true)
 
     onMount(() => {
         tempRegisterDateFilters()
@@ -41,16 +43,13 @@
     })
 
 </script>
-<div class="flex">
-    <label class="label">Permit modelling</label>
-    <input type="checkbox" bind:checked={$permitModelling}/>
-</div>
-<div class="border border-base-300 mb-2">
-</div>
+
+<DevOptions {permitModelling} {showDevConsole}/>
 
 <DataTable models={eventSourcedModelStore(eventSourcedModels)}
            {modelViews}
            {systemConfiguration}
            userId="test"
            {permitModelling}
+           {showDevConsole}
            navbarState={writable(invoiceModel.id.value)} recordFilteringComponent={RecordFilteringPanel}/>

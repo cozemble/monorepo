@@ -4,12 +4,15 @@
 
     let currentEndpoint = 'prod';
     let currentUi = 'milestone1';
+    let currentShowDevConsole = 'false';
     const endpointConfigItemName = 'cozemble.config.endpoint';
     const uiConfigItemName = 'cozemble.config.ui';
+    const showDevConsoleConfigItemName = 'cozemble.config.showDevConsole';
     onMount(() => {
         if (browser) {
             currentEndpoint = localStorage.getItem(endpointConfigItemName) || 'prod'
             currentUi = localStorage.getItem(uiConfigItemName) || 'milestone1'
+            currentShowDevConsole = localStorage.getItem(showDevConsoleConfigItemName) || 'false'
         }
     })
 
@@ -21,6 +24,11 @@
     function setUi(value: string) {
         currentUi = value;
         localStorage.setItem(uiConfigItemName, currentUi)
+    }
+
+    function setShowDevConsole(value: string) {
+        currentShowDevConsole = value;
+        localStorage.setItem(showDevConsoleConfigItemName, currentShowDevConsole)
     }
 
     function goHome() {
@@ -42,6 +50,13 @@
                on:click={() => setUi('milestone1')}/> Milestone 1
         <input class="checkbox" type="radio" name="ui" value="incremental-modeling" checked={currentUi === "incremental-modeling"}
                on:click={() => setUi('incremental-modeling')}/> Incremental modeling
+    </div>
+    <div class="mt-3">
+        <h4>Show Dev Console</h4>
+        <input class="checkbox" type="radio" name="showDevConsole" value="false" checked={currentShowDevConsole === "false"}
+               on:click={() => setShowDevConsole('false')}/> Hide
+        <input class="checkbox" type="radio" name="showDevConsole" value="true" checked={currentUi === "true"}
+               on:click={() => setShowDevConsole('true')}/> Show
     </div>
     <button class="btn mt-8" on:click={goHome}>Save and restart app</button>
 </div>

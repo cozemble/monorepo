@@ -5,12 +5,18 @@
     import {recordFilteringComponentStore} from "../stores/recordFilteringComponentStore";
     import {clickOutside} from "@cozemble/ui-atoms";
     import type {DataTableFocusControls2} from "../focus/DataTableFocus";
+    import {contextHelper} from "../stores/contextHelper";
+    import {afterUpdate} from "svelte";
+    import ModelDevConsole from "./ModelDevConsole.svelte";
 
     export let modelId: string
+    const showDevConsole = contextHelper.getShowDevConsole()
 
     function clickedOutsideTable(focusControls: DataTableFocusControls2) {
         focusControls.clearFocus()
     }
+
+    afterUpdate(() => console.log({showDevConsole: $showDevConsole}))
 </script>
 
 <div class="mt-2">
@@ -28,6 +34,11 @@
                 <DataRecordsTableInContext/>
             </div>
         </div>
+        {#if $showDevConsole}
+            <div class="mt-4">
+                <ModelDevConsole/>
+            </div>
+        {/if}
     </ModelPaneContext>
 </div>
 

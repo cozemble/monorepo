@@ -22,6 +22,7 @@
     export let navbarState: Writable<string | null> = writable(null)
     export let permitModelling = writable(true)
     export let recordFilteringComponent: any | null = null
+    export let showDevConsole = writable(false)
 
     currentUserId.set(userId)
     setAllEventSourcedModels(models)
@@ -29,6 +30,7 @@
     setAllModelViews(modelViews)
     recordFilteringComponentStore.set(recordFilteringComponent)
     contextHelper.setPermitModelling(permitModelling)
+    contextHelper.setShowDevConsole(showDevConsole)
 
     onMount(() => {
         slotViewerRegistry.register('model.reference', ModelReferenceViewer)

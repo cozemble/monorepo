@@ -7,6 +7,7 @@
     import {onDestroy} from "svelte";
     import {toastNoticeStoreFns} from "../notices/toastNoticeStore";
     import {arrays} from "@cozemble/lang-util";
+    import {showDevConsole} from "../config";
 
     const writableModelViews = writable($modelViews)
     export let dataTableBackend: DataTableBackend
@@ -40,5 +41,6 @@
            modelViews={writableModelViews}
            systemConfiguration={$systemConfiguration}
            {permitModelling}
+           {showDevConsole}
            userId="test"
            recordFilteringComponent={RecordFilteringPanel}/>
