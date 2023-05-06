@@ -22,8 +22,9 @@
  * Add a View as Admin/View as User selector, single value only for now
  * the edit table dropdown gets the wrong table
  * with two expanded bike records in booking records, filtering to show no root records causes an error in a nested viewer
+ * Create customer, create Booking, create subsection Bike, click Apply => dead
 
- * Deleting an attachment causes an error in stringPropertyDescriptor
+ * Can't delete nested attachments
 
  * If I want to fix the text on the button that says "Add Customers", so it reads "Add Customer", it is not obvious to me that that has to be done by editing the table, up top.
     I would expect to be able to edit the button text by clicking on the button.

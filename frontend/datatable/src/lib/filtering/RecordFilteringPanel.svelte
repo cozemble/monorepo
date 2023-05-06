@@ -10,14 +10,13 @@
     import {modelRecordsContextFns} from "../records/modelRecordsContextFns";
     import {allModels} from "../stores/allModels";
 
-    const models = $allModels
     const model = modelRecordsContextFns.getModel()
     const filterParams = modelRecordsContextFns.getFilterParams()
 
     let searchText = ""
     let rootFilter = filterGroupListFns.empty()
     let showFilters = false
-    $: filterLhsOptions = getFilterLhsOptionsForModel(models, $model)
+    $: filterLhsOptions = getFilterLhsOptionsForModel($allModels, $model)
     $: reducer = partiallyAppliedFilterGroupListReducer(filterLhsOptions)
 
     function onShowFilters(event: CustomEvent<boolean>) {
@@ -39,7 +38,7 @@
 
 <div class="mb-2 flex flex-col w-full">
     <div class="flex justify-between">
-        <ShowFilterButton {models} model={$model} {rootFilter} on:showFilters={onShowFilters}/>
+        <ShowFilterButton models={$allModels} model={$model} {rootFilter} on:showFilters={onShowFilters}/>
         <input type="text" class="search-input input input-bordered" placeholder={`Search ${$model.name.value}`}
                on:keyup={searchTextChanged}
                bind:value={searchText}/>
@@ -47,7 +46,7 @@
 
     {#if showFilters}
         <div class="mt-2">
-            <FilterConfigurer {models} model={$model} {rootFilter} {filterActionHandler}
+            <FilterConfigurer models={$allModels} model={$model} {rootFilter} {filterActionHandler}
                               on:showFilters={onShowFilters}/>
         </div>
     {/if}

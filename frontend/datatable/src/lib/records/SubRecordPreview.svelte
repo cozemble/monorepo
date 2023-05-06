@@ -67,7 +67,7 @@
         <div>
             <label class="label">Sub-record name:</label>
             <input type="text" class="input input-bordered w-full" bind:value={model.name.value} use:focus on:keydown={handleKeydown}/>
-            <label class="label text-sm">xGive your sub-record a name, it will update in the preview above</label>
+            <label class="label text-sm">Give your sub-record a name, it will update in the preview above</label>
         </div>
     </div>
 </div>
