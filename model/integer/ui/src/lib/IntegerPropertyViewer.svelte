@@ -1,7 +1,7 @@
 <script lang="ts">
     import type {DataRecord, DataRecordValuePath, SystemConfiguration} from '@cozemble/model-core'
     import type {IntegerProperty} from "@cozemble/model-integer-core";
-    import {propertyDescriptors} from "@cozemble/model-core/dist/esm";
+    import {propertyDescriptors} from "@cozemble/model-core";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord
