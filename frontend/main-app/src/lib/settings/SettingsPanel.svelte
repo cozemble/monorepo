@@ -3,6 +3,7 @@
     import {saveSystemConfiguration, systemConfiguration} from "../models/tenantEntityStore";
     import {writable} from "svelte/store";
     import ErrorMessage from "../util/ErrorMessage.svelte";
+    import ThemeChange from "$lib/settings/ThemeChange.svelte";
 
     export let tenantId: string;
     let error: string | null = null
@@ -22,6 +23,9 @@
     {/await}
 {/each}
 
+<div class="mt-3">
+<ThemeChange />
+</div>
 <div class="mt-3">
     <button class="btn" on:click={save}>Save</button>
 </div>
