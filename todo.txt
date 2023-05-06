@@ -24,7 +24,6 @@
  * with two expanded bike records in booking records, filtering to show no root records causes an error in a nested viewer
  * Create customer, create Booking, create subsection Bike, click Apply => dead
  * Can't delete nested attachments
-
  * all the viewers and editors are getting record paths from the root record, and the actual nested record, so they must use the last element of the path (i.e. the leaf slot) to get the value from the record
 
  * If I want to fix the text on the button that says "Add Customers", so it reads "Add Customer", it is not obvious to me that that has to be done by editing the table, up top.

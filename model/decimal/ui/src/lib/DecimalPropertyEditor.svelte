@@ -1,18 +1,20 @@
 <script lang="ts">
     import type {DataRecord, DataRecordValuePath, SystemConfiguration} from '@cozemble/model-core'
-    import {dataRecordEditor,} from '@cozemble/data-editor-sdk'
-    import {dataRecordValuePathFns} from '@cozemble/model-api'
+    import {dataRecordEditEvents, dataRecordEditor,} from '@cozemble/data-editor-sdk'
     import type {DecimalProperty} from "@cozemble/model-decimal-core";
-    import {dataRecordEditEvents} from "@cozemble/data-editor-sdk";
+    import {propertyDescriptors} from "@cozemble/model-core";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord
     export let systemConfiguration: SystemConfiguration
 
     const property = recordPath.lastElement as DecimalProperty
+    const propertyDescriptor = propertyDescriptors.mandatory(property)
+
+    $: value = propertyDescriptor.getValue(systemConfiguration, property, record) ?? null
 
     const dataRecordEditorClient = dataRecordEditor.getClient()
-    const initialValue = dataRecordValuePathFns.getValue(systemConfiguration, recordPath, record) ?? null
+    const initialValue = propertyDescriptor.getValue(systemConfiguration, property, record) ?? null
     let editableValue = initialValue
 
     function decimalChanged(event: Event) {
@@ -35,8 +37,8 @@
 
 </script>
 
-<input 
-    class="input input-bordered" 
-    type="number" 
-    value={editableValue}
-    on:change={decimalChanged}/>
+<input
+        class="input input-bordered"
+        type="number"
+        value={editableValue}
+        on:change={decimalChanged}/>

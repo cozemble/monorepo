@@ -1,15 +1,19 @@
 <script lang="ts">
     import type {DataRecord, DataRecordValuePath, SystemConfiguration} from '@cozemble/model-core'
+    import {propertyDescriptors} from "@cozemble/model-core";
     import {dataRecordControlEvents, dataRecordEditEvents, dataRecordEditor,} from '@cozemble/data-editor-sdk'
-    import {dataRecordValuePathFns} from '@cozemble/model-api'
+    import type {DateProperty} from "@cozemble/model-date-core";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord
     export let systemConfiguration: SystemConfiguration
     export let inRecord = true
 
+    const property = recordPath.lastElement as DateProperty
+    const propertyDescriptor = propertyDescriptors.mandatory(property)
+
     const dataRecordEditorClient = dataRecordEditor.getClient()
-    const initialValue = dataRecordValuePathFns.getValue(systemConfiguration, recordPath, record) ?? null
+    const initialValue = propertyDescriptor.getValue(systemConfiguration, property, record) ?? null
     let editableValue = initialValue
 
     function dateChanged(event: Event) {
@@ -33,7 +37,7 @@
         el.focus()
     }
 
-    $: value = dataRecordValuePathFns.getValue(systemConfiguration, recordPath, record) ?? null
+    $: value = propertyDescriptor.getValue(systemConfiguration, property, record) ?? null
 
     function handleKeyDownInInput(event: KeyboardEvent) {
         if (event.key === 'Escape') {
@@ -41,7 +45,7 @@
                 dataRecordControlEvents.editAborted(record, recordPath),
             )
         }
-        if(event.key === 'Tab') {
+        if (event.key === 'Tab') {
             event.preventDefault()
             event.stopPropagation()
             dataRecordEditorClient.dispatchControlEvent(
