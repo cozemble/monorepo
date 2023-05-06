@@ -23,7 +23,7 @@
         focusControls.clearFocus()
     }
 </script>
-<div class="mt-3">
+<div class="mt-2">
     <ModelRecordsContext modelId={modelIdFns.newInstance(modelId)} let:focusControls>
         <div class="grid-container">
             <div>
