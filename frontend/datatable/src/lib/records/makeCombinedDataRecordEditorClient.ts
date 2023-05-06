@@ -12,6 +12,7 @@ import type { EventSourcedDataRecordsStore } from './EventSourcedDataRecordsStor
 import type { DataTableFocusControls2 } from '../focus/DataTableFocus'
 import type { JustErrorMessage } from '@cozemble/lang-util'
 import type { Backend } from '../backend/Backend'
+import { createNewRecord as createNewRecordFn } from './creator/recordCreatorStore'
 
 export type CombinedDataRecordEditorClient = DataRecordEditorClient & DataRecordViewerClient
 
@@ -25,7 +26,6 @@ export function makeCombinedDataRecordEditorClient(
 ): CombinedDataRecordEditorClient {
   return {
     dispatchControlEvent(event: DataRecordControlEvent): void {
-      console.log({ event })
       if (event._type === 'data.record.edit.move.focus') {
         if (event.direction === 'right') {
           focusControls.moveForward()
@@ -48,7 +48,17 @@ export function makeCombinedDataRecordEditorClient(
     },
 
     createNewRecord(modelId: ModelId): Promise<DataRecord | null> {
-      throw new Error('Method not implemented.')
+      return new Promise((resolve) => {
+        function onCreated(value: DataRecord): void {
+          resolve(value)
+        }
+
+        function onCancel(): void {
+          resolve(null)
+        }
+
+        createNewRecordFn(modelId, onCreated, onCancel)
+      })
     },
 
     searchRecords(modelId: ModelId, search: string): Promise<DataRecord[]> {

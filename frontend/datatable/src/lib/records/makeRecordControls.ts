@@ -6,9 +6,11 @@ import type { DataRecordId, Model, SystemConfiguration } from '@cozemble/model-c
 import { justErrorMessage, mandatory } from '@cozemble/lang-util'
 import { modelFns } from '@cozemble/model-api'
 import type { ErrorVisibilityByRecordId } from './helpers'
+import type { RecordSaver } from '../backend/Backend'
 
 export function makeRecordControls(
   systemConfigurationProvider: () => SystemConfiguration,
+  recordSaver: RecordSaver,
   modelsProvider: () => Model[],
   errorVisibilityByRecordId: Writable<ErrorVisibilityByRecordId>,
   records: EventSourcedDataRecordsStore,
@@ -38,15 +40,15 @@ export function makeRecordControls(
       if (errors.size > 0) {
         return justErrorMessage(`${errors.size} error(s) when saving record`)
       }
-      const indexOnNewUnsavedRecords = newUnsavedRecords.findIndex(
+      const indexOfNewUnsavedRecords = newUnsavedRecords.findIndex(
         (id) => id.value === recordId.value,
       )
-      if (indexOnNewUnsavedRecords >= 0) {
-        await saveNewRecord(record)
+      if (indexOfNewUnsavedRecords >= 0) {
+        await recordSaver.saveNewRecord(record)
         // remove recordId from newUnsavedRecords
-        newUnsavedRecords.splice(indexOnNewUnsavedRecords, 1)
+        newUnsavedRecords.splice(indexOfNewUnsavedRecords, 1)
       } else {
-        await saveExistingRecord(record)
+        await recordSaver.saveExistingRecord(record)
       }
       lastSavedByRecordId.update((lastSavedByRecordId) => {
         lastSavedByRecordId.set(record.record.id.value, Date.now())

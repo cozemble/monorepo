@@ -3,10 +3,12 @@
     import {slotViewerRegistry} from '@cozemble/model-assembled'
     import {dataRecordValuePathFns} from '@cozemble/model-api'
     import type {SystemConfiguration} from "@cozemble/model-core";
+    import type {DataRecordPathParentElement} from "@cozemble/model-core";
 
     export let modelSlot: LeafModelSlot
     export let record: DataRecord
     export let systemConfiguration:SystemConfiguration
+    export let parentPath: DataRecordPathParentElement[]
 
     $: viewer = slotViewerRegistry.forSlot(modelSlot)
 
@@ -15,7 +17,7 @@
 {#if viewer}
     <svelte:component
             this={viewer}
-            recordPath={dataRecordValuePathFns.newInstance(modelSlot)}
+            recordPath={dataRecordValuePathFns.newInstance(modelSlot, ...parentPath)}
             {systemConfiguration}
             {record}/>
 {:else}

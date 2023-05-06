@@ -29,7 +29,7 @@ import {
   singleCardinalityValuesForModelPathResponse,
 } from './valuesForModelPath'
 import { nestedModelFns } from './nestedModelFns'
-import { LeafModelSlot } from '@cozemble/model-core/dist/esm'
+import { LeafModelSlot } from '@cozemble/model-core'
 
 export const modelOptions = {
   withProperty(p: Property | string): ModelOption {

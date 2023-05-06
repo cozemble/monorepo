@@ -27,25 +27,24 @@
   "dependencies": {
     "@cozemble/backend-tenanted-api-types": "workspace:*",
     "@cozemble/data-editor-sdk": "workspace:*",
+    "@cozemble/data-filters-config": "workspace:*",
+    "@cozemble/data-filters-core": "workspace:*",
     "@cozemble/data-paginated-editor": "workspace:*",
+    "@cozemble/frontend-bff": "workspace:*",
+    "@cozemble/frontend-datatable": "workspace:*",
+    "@cozemble/frontend-incremental-modelling-spike": "workspace:*",
+    "@cozemble/frontend-ui-blocks": "workspace:*",
     "@cozemble/lang-util": "workspace:*",
     "@cozemble/model-api": "workspace:*",
     "@cozemble/model-assembled": "workspace:*",
     "@cozemble/model-core": "workspace:*",
     "@cozemble/model-editor": "workspace:*",
     "@cozemble/model-event-sourced": "workspace:*",
-    "@cozemble/data-filters-core": "workspace:*",
-    "@cozemble/data-filters-config": "workspace:*",
-    "@cozemble/ui-filter-editor": "workspace:*",
     "@cozemble/model-to-json": "workspace:*",
-    "@cozemble/frontend-incremental-modelling-spike": "workspace:*",
-    "@cozemble/frontend-bff": "workspace:*",
-    "@cozemble/frontend-datatable": "workspace:*",
-    "@cozemble/frontend-ui-blocks": "workspace:*",
+    "@cozemble/ui-filter-editor": "workspace:*",
     "@tailwindcss/typography": "^0.5.9",
     "axios": "^1.2.3",
-    "daisyui": "^2.47.0"
+    "daisyui": "^2.47.0",
+    "theme-change": "^2.5.0"
   }
 }
-
-

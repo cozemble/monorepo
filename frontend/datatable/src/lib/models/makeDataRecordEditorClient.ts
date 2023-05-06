@@ -1,15 +1,12 @@
 import type { RecordsContext } from '../records/RecordsContext'
 import type {
-  AttachmentIdAndFileName,
   DataRecordControlEvent,
   DataRecordEditEvent,
   DataRecordEditorClient,
   UploadedAttachment,
-  UserInstruction,
 } from '@cozemble/data-editor-sdk'
-import type { DataRecord, Model, ModelId, ModelView } from '@cozemble/model-core'
-import type { DataRecordId } from '@cozemble/model-core'
-import type { JustErrorMessage } from '@cozemble/lang-util/dist/esm'
+import type { DataRecord, DataRecordId, Model, ModelView } from '@cozemble/model-core'
+import type { JustErrorMessage } from '@cozemble/lang-util'
 
 export function makeDataRecordEditorClient(
   context: RecordsContext,

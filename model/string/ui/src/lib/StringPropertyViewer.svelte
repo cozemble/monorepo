@@ -1,14 +1,15 @@
 <script lang="ts">
     import type {DataRecord, DataRecordValuePath, SystemConfiguration} from '@cozemble/model-core'
-    import {dataRecordValuePathFns} from '@cozemble/model-api'
+    import {propertyDescriptors} from "@cozemble/model-core";
     import type {StringProperty} from "@cozemble/model-string-core";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord
     export let systemConfiguration: SystemConfiguration
     const property = recordPath.lastElement as StringProperty
+    const propertyDescriptor = propertyDescriptors.mandatory(property)
 
-    $: value = (dataRecordValuePathFns.getValue(systemConfiguration, recordPath, record) ?? "") as string
+    $: value = (propertyDescriptor.getValue(systemConfiguration, property, record) ?? '') as string
 </script>
 
 {#if value}

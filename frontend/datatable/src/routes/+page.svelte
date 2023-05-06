@@ -3,7 +3,6 @@
     import {eventSourcedModelFns} from "@cozemble/model-event-sourced";
     import {InMemoryBackend} from "../lib/backend/InMemoryBackend";
     import {backendFns} from "../lib/appBackend";
-    import {StoreSyncBackend} from "../lib/app/StoreSyncBackend";
     import type {DataRecord, ModelView} from "@cozemble/model-core";
     import {systemConfigurationFns} from "@cozemble/model-core";
     import {registerEverything} from "@cozemble/model-assembled";
@@ -19,6 +18,7 @@
     import DataTable from "../lib/DataTable.svelte";
     import {writable} from "svelte/store";
     import {eventSourcedModelStore} from "../lib";
+    import DevOptions from "./DevOptions.svelte";
 
     const modelViews = writable([] as ModelView[])
     const addressModel = modelFns.newInstance("Address", modelOptions.withProperties(propertyFns.newInstance("Street"), propertyFns.newInstance("City"), propertyFns.newInstance("Postal code/Zip code", propertyOptions.required)))
@@ -38,12 +38,21 @@
     recordsMap.set(customer.id.value, [customerRecord1, customerRecord2])
     backendFns.setBackend(new InMemoryBackend(modelMap, recordsMap))
     // backendFns.setBackend(new InMemoryBackend())
+    const permitModelling = writable(true)
+    const showDevConsole = writable(true)
 
     onMount(() => {
         registerEverything()
     })
 
 </script>
+<DevOptions {permitModelling} {showDevConsole}/>
 
-<DataTable models={eventSourcedModelStore(models)} {modelViews} {systemConfiguration} userId="test" navbarState={writable(customer.id.value)}/>
+<DataTable models={eventSourcedModelStore(models)}
+           {modelViews}
+           {systemConfiguration}
+           userId="test"
+           navbarState={writable(customer.id.value)}
+           {showDevConsole}
+           {permitModelling}/>
 <!--<DataTable models={eventSourcedModelStore([])} {modelViews} {systemConfiguration} userId="test"/>-->

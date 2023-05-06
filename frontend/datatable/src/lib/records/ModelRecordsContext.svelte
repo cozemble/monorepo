@@ -1,7 +1,7 @@
 <script lang="ts">
     import {allEventSourcedModels, allModels} from "../stores/allModels";
     import {derived, writable} from "svelte/store";
-    import type {ModelId} from "@cozemble/model-core";
+    import type {DataRecord, ModelId} from "@cozemble/model-core";
     import {eventSourcedModelFns} from "@cozemble/model-event-sourced";
     import {modelRecordsContextFns} from "./modelRecordsContextFns";
     import {eventSourcedDataRecordFns} from "@cozemble/data-editor-sdk";
@@ -10,25 +10,29 @@
     import {makeFocusControls} from "./makeFocusControls";
     import {onDestroy} from "svelte";
     import type {LoadingState} from "./RecordsContext";
-    import {getRecordsForModel} from "../appBackend";
+    import {backend, getRecordsForModel} from "../appBackend";
     import {systemConfiguration} from "../stores/systemConfiguration";
-    import DataRecordEditorContext from "./DataRecordEditorContext.svelte";
     import {eventSourcedDataRecordsStore} from "./EventSourcedDataRecordsStore";
     import {makeRecordControls} from "./makeRecordControls";
     import {currentUserId} from "../stores/currentUserId";
     import {makeModelControls} from "./makeModelControls";
     import type {ErrorVisibilityByRecordId} from "./helpers";
-    import {emptyFilterParams, type FilterParams} from "../backend/Backend";
+    import {emptyFilterParams, type FilterParams, type RecordSaver} from "../backend/Backend";
 
-    export let modelId: ModelId;
     const systemConfigurationProvider = () => $systemConfiguration
     const modelsProvider = () => $allModels
+
+    export let modelId: ModelId
+    export let recordLoader: (modelId: ModelId, filterParams: FilterParams) => Promise<DataRecord[]> = getRecordsForModel
+    export let eventSourcedRecords = eventSourcedDataRecordsStore(systemConfigurationProvider, modelsProvider, () => $model, $currentUserId)
+    export let recordSaver: RecordSaver = backend
+
     const eventSourcedModel = derived(allEventSourcedModels, models => eventSourcedModelFns.findById(models, modelId))
     const model = derived(eventSourcedModel, model => model.model)
-    const eventSourcedRecords = eventSourcedDataRecordsStore(systemConfigurationProvider, modelsProvider, () => $model, $currentUserId)
     const records = derived(eventSourcedRecords, records => records.map(record => record.record))
     const errorVisibilityByRecordId = gettableWritable(new Map() as ErrorVisibilityByRecordId)
     const focus = gettableWritable(emptyDataTableFocus(() => eventSourcedRecords.get().map((r) => r.record)))
+    const focusControls = makeFocusControls(modelsProvider, () => $records, systemConfigurationProvider, focus)
     const lastSavedByRecordId = writable(new Map<string, number>())
     const dirtyRecords = derived([eventSourcedRecords, lastSavedByRecordId], ([records, lastSavedByRecordId]) => {
         return records
@@ -41,7 +45,6 @@
     const loadingState = writable('loading' as LoadingState)
     const filterParams = writable(emptyFilterParams())
     let debounceTimeout: any
-    const focusControls = makeFocusControls(modelsProvider, () => $records, systemConfigurationProvider, focus)
 
     modelRecordsContextFns.setEventSourcedModel(eventSourcedModel)
     modelRecordsContextFns.setModel(model)
@@ -50,7 +53,7 @@
     modelRecordsContextFns.setFocus(focus)
     modelRecordsContextFns.setFocusControls(focusControls)
     modelRecordsContextFns.setDirtyRecords(dirtyRecords)
-    modelRecordsContextFns.setRecordControls(makeRecordControls(systemConfigurationProvider, modelsProvider, errorVisibilityByRecordId, eventSourcedRecords, lastSavedByRecordId))
+    modelRecordsContextFns.setRecordControls(makeRecordControls(systemConfigurationProvider, recordSaver, modelsProvider, errorVisibilityByRecordId, eventSourcedRecords, lastSavedByRecordId))
     modelRecordsContextFns.setModelControls(makeModelControls(allEventSourcedModels))
     modelRecordsContextFns.setErrorVisibilityByRecordId(errorVisibilityByRecordId)
     modelRecordsContextFns.setFilterParams(filterParams)
@@ -64,8 +67,7 @@
 
     async function loadRecords(filterParams: FilterParams) {
         loadingState.set('loading')
-        const loaded = await getRecordsForModel(modelId, filterParams)
-        console.log({loaded,modelId, filterParams})
+        const loaded = await recordLoader(modelId, filterParams)
         eventSourcedRecords.set(
             loaded.map((r) => eventSourcedDataRecordFns.fromRecord($allModels, r)),
         )
@@ -87,6 +89,4 @@
         unsubAllEventSourcedModels()
     })
 </script>
-<DataRecordEditorContext>
-    <slot {focusControls}></slot>
-</DataRecordEditorContext>
+<slot {focusControls}></slot>

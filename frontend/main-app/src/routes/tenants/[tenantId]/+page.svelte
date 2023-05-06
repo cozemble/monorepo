@@ -8,6 +8,7 @@
     import {tempRegisterDateFilters} from "./temp";
     import {browser} from '$app/environment';
     import IncrementalModelingMain from "../../../lib/incrementalModelling/IncrementalModelingMain.svelte";
+    import {showDevConsole} from "../../../lib/config";
 
     let ui = 'milestone1'
     onMount(() => {
@@ -15,6 +16,7 @@
         tempRegisterDateFilters()
         if (browser) {
             ui = localStorage.getItem('cozemble.config.ui') || 'milestone1'
+            showDevConsole.set(localStorage.getItem('cozemble.config.showDevConsole') === 'true')
         }
     })
 

@@ -41,7 +41,6 @@
     const modelControls = modelRecordsContextFns.getModelControls()
     const permitModelling = contextHelper.getPermitModelling()
 
-
     let slotBeingEdited: SlotBeingEdited | null = null
     let recordHavingSubItemAdded: string | null = null
     let addRecordButton: HTMLElement
@@ -117,6 +116,7 @@
     }
 
     async function save(record: DataRecord, rootRecordIndex: number) {
+        console.log({recordControls})
         const outcome = await recordControls.saveRecord(record.id)
         if (outcome) {
             expandRecord(record.id)

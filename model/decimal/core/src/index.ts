@@ -35,7 +35,7 @@ export function emptyProperty(name: string): DecimalProperty {
     name: propertyNameFns.newInstance(name),
     required: false,
     unique: false,
-    numberOfDecimalPlaces: 4,
+    numberOfDecimalPlaces: 2,
   }
 }
 
@@ -83,20 +83,20 @@ export const decimalPropertyDescriptor: PropertyDescriptor<DecimalProperty, numb
     modelId: ModelId,
     propertyName: PropertyName,
     propertyId?: PropertyId,
-  ) => newIntegerPropertyModelEvent(modelId, propertyName, propertyId),
+  ) => newDecimalPropertyModelEvent(modelId, propertyName, propertyId),
 }
 
-export interface NewIntegerPropertyModelEvent extends ModelEvent {
+export interface NewDecimalPropertyModelEvent extends ModelEvent {
   _type: 'new.decimal.property.model.event'
   propertyName: PropertyName
   propertyId: PropertyId
 }
 
-export function newIntegerPropertyModelEvent(
+export function newDecimalPropertyModelEvent(
   modelId: ModelId,
   propertyName: PropertyName,
   propertyId?: PropertyId,
-): NewIntegerPropertyModelEvent {
+): NewDecimalPropertyModelEvent {
   return {
     _type: 'new.decimal.property.model.event',
     ...modelEventFns.coreParts(modelId),
@@ -108,7 +108,7 @@ export function newIntegerPropertyModelEvent(
 export const newDecimalPropertyModelEventDescriptor: ModelEventDescriptor = {
   _type: 'model.event.descriptor',
   modelEventType: 'new.decimal.property.model.event',
-  applyEvent: (model: Model, event: NewIntegerPropertyModelEvent): Model => {
+  applyEvent: (model: Model, event: NewDecimalPropertyModelEvent): Model => {
     let newProperty = {
       ...emptyProperty(`Property`),
       id: event.propertyId,

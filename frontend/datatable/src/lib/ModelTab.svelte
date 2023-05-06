@@ -21,7 +21,7 @@
 </script>
 
 <div class="flex items-center">
-    <a class="tab tab-lg tab-bordered mr-4 p-0 model-{index + 1}"
+    <a class="tab tab-lg model-{index + 1}"
        class:tab-active={$navbarState === model.model.id.value}
        on:click={() => showModel(model.model.id)}>{model.model.pluralName.value}
         {#if $permitModelling}

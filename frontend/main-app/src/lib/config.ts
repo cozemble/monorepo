@@ -15,3 +15,5 @@ export const environment = writable(environmentValue)
 environment.subscribe((value) => {
   environmentValue = value
 })
+
+export const showDevConsole = writable(false)

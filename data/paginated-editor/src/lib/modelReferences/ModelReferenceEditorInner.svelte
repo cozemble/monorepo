@@ -65,6 +65,7 @@
 
     async function createNewRecord() {
         const createdRecord = await dataRecordEditorClient.createNewRecord(editorParams.referencedModelId)
+        console.log({createdRecord})
         if (createdRecord) {
             options.push(createdRecord)
         }

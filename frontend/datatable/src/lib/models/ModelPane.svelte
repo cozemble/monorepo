@@ -1,30 +1,26 @@
 <script lang="ts">
-    import {allEventSourcedModels, allModels} from "../stores/allModels";
-    import {mandatory} from "@cozemble/lang-util";
-    import {defaultOnError, rootRecordsContext} from "../appBackend";
     import {modelIdFns} from "@cozemble/model-api";
-    import {onMount} from "svelte";
-    import {systemConfiguration} from "../stores/systemConfiguration";
     import DataRecordsTableInContext from "../records/DataRecordsTableInContext.svelte";
-    import ModelRecordsContext from "../records/ModelRecordsContext.svelte"
+    import ModelPaneContext from "../records/ModelRecordsContext.svelte"
     import {recordFilteringComponentStore} from "../stores/recordFilteringComponentStore";
     import {clickOutside} from "@cozemble/ui-atoms";
     import type {DataTableFocusControls2} from "../focus/DataTableFocus";
+    import {contextHelper} from "../stores/contextHelper";
+    import {afterUpdate} from "svelte";
+    import ModelDevConsole from "./ModelDevConsole.svelte";
 
     export let modelId: string
-    const model = mandatory($allModels.find(model => model.id.value === modelId), `Model with id ${modelId} not found`)
-    const context = rootRecordsContext(() => $systemConfiguration, defaultOnError, allEventSourcedModels, modelIdFns.newInstance(modelId))
-
-    onMount(async () => {
-        await context.loadRecords()
-    })
+    const showDevConsole = contextHelper.getShowDevConsole()
 
     function clickedOutsideTable(focusControls: DataTableFocusControls2) {
         focusControls.clearFocus()
     }
+
+    afterUpdate(() => console.log({showDevConsole: $showDevConsole}))
 </script>
-<div class="mt-3">
-    <ModelRecordsContext modelId={modelIdFns.newInstance(modelId)} let:focusControls>
+
+<div class="mt-2">
+    <ModelPaneContext modelId={modelIdFns.newInstance(modelId)} let:focusControls>
         <div class="grid-container">
             <div>
                 <div class="child">
@@ -38,7 +34,12 @@
                 <DataRecordsTableInContext/>
             </div>
         </div>
-    </ModelRecordsContext>
+        {#if $showDevConsole}
+            <div class="mt-4">
+                <ModelDevConsole/>
+            </div>
+        {/if}
+    </ModelPaneContext>
 </div>
 
 <style>
