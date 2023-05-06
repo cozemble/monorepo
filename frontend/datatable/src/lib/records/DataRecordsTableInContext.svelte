@@ -41,7 +41,6 @@
     const modelControls = modelRecordsContextFns.getModelControls()
     const permitModelling = contextHelper.getPermitModelling()
 
-
     let slotBeingEdited: SlotBeingEdited | null = null
     let recordHavingSubItemAdded: string | null = null
     let addRecordButton: HTMLElement

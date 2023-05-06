@@ -30,6 +30,11 @@ h6 {
     @apply bg-accent rounded;
 }
 
+.tab-active {
+    @apply bg-accent rounded;
+    border-bottom: 0;
+}
+
 .coz-modal {
     display: flex;
     position: absolute;
