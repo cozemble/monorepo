@@ -45,7 +45,7 @@
     {#if isFocused && isEditing}
         <SlotEdit systemConfiguration={$systemConfiguration} {parentPath} {modelSlot} {record}/>
     {:else}
-        <SlotView systemConfiguration={$systemConfiguration} {record} {modelSlot}/>
+        <SlotView systemConfiguration={$systemConfiguration} {parentPath} {record} {modelSlot}/>
     {/if}
     <MaybeDataTdError errors={$errors} {modelSlot} {parentPath}/>
 </td>

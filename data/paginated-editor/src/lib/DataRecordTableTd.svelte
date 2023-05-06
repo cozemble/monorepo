@@ -35,7 +35,7 @@
     {#if focussed}
         <SlotEdit {systemConfiguration} {parentPath} {modelSlot} {record}/>
     {:else}
-        <SlotView {systemConfiguration} {modelSlot} {record}/>
+        <SlotView {systemConfiguration} {parentPath} {modelSlot} {record}/>
     {/if}
     <MaybeError {parentPath} {modelSlot} {errors} {showErrors}/>
 </td>

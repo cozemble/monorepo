@@ -15,5 +15,5 @@
 </script>
 
 <td class:highlighted={isFocussedCell($focus, rowIndex, colIndex)} data-cell-index="{rowIndex}-{colIndex}">
-    <SlotView {systemConfiguration} {record} {modelSlot}/>
+    <SlotView {systemConfiguration} {record} {modelSlot} parentPath={[]}/>
 </td>

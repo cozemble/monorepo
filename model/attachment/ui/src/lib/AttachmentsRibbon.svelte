@@ -17,13 +17,11 @@
     function deleteClicked() {
         if (selectedAttachments.length === 1) {
             if (confirm("Are you sure you want to delete this attachment?")) {
-                console.log("deleting attachment", selectedAttachments[0])
                 dispatch("deleteAttachments", selectedAttachments)
             }
 
         } else {
             if (confirm("Are you sure you want to delete the selected attachments?")) {
-                console.log("deleting attachments", selectedAttachments)
                 dispatch("deleteAttachments", selectedAttachments)
             }
         }
