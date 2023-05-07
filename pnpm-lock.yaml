@@ -704,6 +704,9 @@ importers:
       autoprefixer:
         specifier: ^10.4.13
         version: 10.4.14(postcss@8.4.21)
+      cypress:
+        specifier: ^12.2.0
+        version: 12.7.0
       postcss:
         specifier: ^8.4.21
         version: 8.4.21
@@ -728,6 +731,9 @@ importers:
       vite:
         specifier: 4.1.4
         version: 4.1.4(@types/node@16.18.16)
+      wait-on:
+        specifier: ^7.0.1
+        version: 7.0.1
 
   frontend/incremental-modelling-spike:
     dependencies:
@@ -3242,7 +3248,7 @@ packages:
     peerDependencies:
       '@sveltejs/kit': ^1.0.0
     dependencies:
-      '@sveltejs/kit': 1.11.0(svelte@3.56.0)(vite@4.3.4)
+      '@sveltejs/kit': 1.11.0(svelte@3.56.0)(vite@4.1.4)
       import-meta-resolve: 2.2.2
     dev: true
 

@@ -9,8 +9,6 @@
     import DataRecordsTableInContext from "../DataRecordsTableInContext.svelte";
     import {eventSourcedDataRecordsStore} from "../EventSourcedDataRecordsStore";
     import {systemConfiguration} from "../../stores/systemConfiguration";
-    import {afterUpdate} from "svelte";
-    import {derived} from "svelte/store";
     import {dataRecordsTableOptions} from "../DataRecordsTableOptions";
     import type {RecordSaver} from "../../backend/Backend";
     import type {EventSourcedDataRecord} from "@cozemble/data-editor-sdk";
@@ -21,8 +19,6 @@
     const model = modelFns.findById($allModels, params.modelId)
     const record = dataRecordFns.newInstance(model, $currentUserId)
     const eventSourcedRecords = eventSourcedDataRecordsStore(() => $systemConfiguration, () => $allModels, () => model, $currentUserId)
-    const latestRecord = derived(eventSourcedRecords, $eventSourcedRecords => $eventSourcedRecords[0])
-    const errors = derived(latestRecord, r => r?.record ? modelFns.validate($systemConfiguration, $allModels, r.record) : new Map())
 
     async function recordLoader(): Promise<DataRecord[]> {
         return [record]
@@ -36,7 +32,7 @@
     const recordSaver: RecordSaver = {
         async saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
             const outcome = await backend.saveNewRecord(newRecord)
-            if(outcome._type === "record.save.succeeded") {
+            if (outcome._type === "record.save.succeeded") {
                 params.onCreated(outcome.record)
                 createNewRecordStore.update(() => null)
             }
@@ -48,13 +44,13 @@
         }
     }
 
-    afterUpdate(() => {
-        console.log({latestRecord: $latestRecord, errors: $errors})
-    })
 </script>
 <ModelRecordsContext modelId={model.id} {recordLoader} {eventSourcedRecords} {recordSaver}>
     <div class="mt-2">
         <h4>Create a new {model.name.value}</h4>
         <DataRecordsTableInContext oneOnly={true} options={dataRecordsTableOptions(false, false, true)}/>
+        <div class="mt-4">
+            <button class="btn btn-secondary" on:click={cancel}>Cancel</button>
+        </div>
     </div>
 </ModelRecordsContext>

@@ -68,3 +68,6 @@ jobs:
 
       - name: Paginated data editor cypress tests
         run: cd data/paginated-editor && ./scripts/run-cypress.sh
+
+      - name: Datatable cypress tests
+        run: cd frontend/datatable && ./scripts/run-cypress.sh

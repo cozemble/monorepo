@@ -15,7 +15,7 @@
         registerEverything()
         tempRegisterDateFilters()
         if (browser) {
-            ui = localStorage.getItem('cozemble.config.ui') || 'milestone1'
+            ui = localStorage.getItem('cozemble.config.ui') || 'incremental-modeling'
             showDevConsole.set(localStorage.getItem('cozemble.config.showDevConsole') === 'true')
         }
     })
