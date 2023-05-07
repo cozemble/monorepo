@@ -55,7 +55,7 @@
         <h4>Show Dev Console</h4>
         <input class="checkbox" type="radio" name="showDevConsole" value="false" checked={currentShowDevConsole === "false"}
                on:click={() => setShowDevConsole('false')}/> Hide
-        <input class="checkbox" type="radio" name="showDevConsole" value="true" checked={currentUi === "true"}
+        <input class="checkbox" type="radio" name="showDevConsole" value="true" checked={currentShowDevConsole === "true"}
                on:click={() => setShowDevConsole('true')}/> Show
     </div>
     <button class="btn mt-8" on:click={goHome}>Save and restart app</button>
