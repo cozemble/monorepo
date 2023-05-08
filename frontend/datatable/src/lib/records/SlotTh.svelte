@@ -17,7 +17,7 @@
 <th class="bg-base-300" id="field-{index + 1}">
     <div class="flex items-center"><span class="mr-1">{slot.name.value}</span>
         {#if permitModelEditing && $globalPermitModelling}
-            <span class="mt-1" on:click={onEditSlot}><DownCaret/></span>
+            <span class="mt-1 edit-field-{index + 1}" on:click={onEditSlot}><DownCaret/></span>
         {/if}
     </div>
 </th>

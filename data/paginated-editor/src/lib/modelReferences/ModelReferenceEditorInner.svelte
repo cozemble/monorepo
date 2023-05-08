@@ -103,7 +103,7 @@
 </script>
 
 <svelte:window on:keydown={handleKeydown}/>
-<select class="input input-bordered" on:change={optionChanged}>
+<select class="input input-bordered reference-selector" on:change={optionChanged}>
     <option selected={initialValue === null}>----</option>
     <option value="create.new.record">Create a new {editorParams.referencedModel.name.value}</option>
     {#each options as option}

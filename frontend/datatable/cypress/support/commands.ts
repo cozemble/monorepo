@@ -35,3 +35,4 @@
 //     }
 //   }
 // }
+import 'cypress-real-events'

@@ -118,10 +118,10 @@
         </div>
     {/each}
     {#if models.length === 0}
-        <a class="tab tab-lg"
+        <a class="tab tab-lg add-table-link"
            on:click={addTable}>+ Add your first table</a>
     {:else}
-        <a class="tab tab-lg"
+        <a class="tab tab-lg add-table-link"
            on:click={addTable}>+ Add table</a>
     {/if}
 </div>

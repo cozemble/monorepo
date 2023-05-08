@@ -707,6 +707,9 @@ importers:
       cypress:
         specifier: ^12.2.0
         version: 12.7.0
+      cypress-real-events:
+        specifier: ^1.7.6
+        version: 1.7.6(cypress@12.7.0)
       postcss:
         specifier: ^8.4.21
         version: 8.4.21
@@ -4822,6 +4825,14 @@ packages:
     resolution: {integrity: sha512-/Tb/JcjK111nNScGob5MNtsntNM1aCNUDipB/TkwZFhyDrrE47SOx/18wF2bbjgc3ZzCSKW1T5nt5EbFoAz/Vg==}
     engines: {node: '>=4'}
     hasBin: true
+
+  /cypress-real-events@1.7.6(cypress@12.7.0):
+    resolution: {integrity: sha512-yP6GnRrbm6HK5q4DH6Nnupz37nOfZu/xn1xFYqsE2o4G73giPWQOdu6375QYpwfU1cvHNCgyD2bQ2hPH9D7NMw==}
+    peerDependencies:
+      cypress: ^4.x || ^5.x || ^6.x || ^7.x || ^8.x || ^9.x || ^10.x || ^11.x || ^12.x
+    dependencies:
+      cypress: 12.7.0
+    dev: true
 
   /cypress@12.7.0:
     resolution: {integrity: sha512-7rq+nmhzz0u6yabCFyPtADU2OOrYt6pvUau9qV7xyifJ/hnsaw/vkr0tnLlcuuQKUAOC1v1M1e4Z0zG7S0IAvA==}

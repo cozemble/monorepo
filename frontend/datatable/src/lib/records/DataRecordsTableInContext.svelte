@@ -116,7 +116,6 @@
     }
 
     async function save(record: DataRecord, rootRecordIndex: number) {
-        console.log({recordControls})
         const outcome = await recordControls.saveRecord(record.id)
         if (outcome) {
             expandRecord(record.id)
@@ -137,7 +136,7 @@
         {#if options.permitModelEditing && $permitModelling}
             <td class="bg-base-300 px-8">
                 <div class="flex items-center">
-                    <label tabindex="0" class="label m-1" on:click={addSlotToModel}>
+                    <label tabindex="0" class="label m-1 add-field" on:click={addSlotToModel}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                              stroke="currentColor" class="w-6 h-6">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
@@ -174,7 +173,7 @@
                         <td class="border  border-base-300">
                             <div class="flex items-center">
                                 {#if isDirtyRecord($dirtyRecords, record)}
-                                    <button class="btn btn-primary btn-sm  mr-2"
+                                    <button class="btn btn-primary btn-sm mr-2 save-record"
                                             on:click={() => save(record, rootRecordIndex)}>Save
                                     </button>
                                     <button class="btn btn-sm  mr-2" on:click={() => alert("to do")}>Cancel
@@ -189,7 +188,7 @@
                                         </button>
                                     {/if}
                                     {#if options.permitSubItemAddition && $permitModelling}
-                                        <button class="btn btn-ghost btn-active btn-sm mr-2"
+                                        <button class="btn btn-ghost btn-active btn-sm mr-2 add-sub-section"
                                                 on:click={() => beginSubItem(record)}>
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                  stroke-width="1.5"
@@ -236,7 +235,7 @@
 
 <div class="mt-2">
     {#if !oneOnly && $model.slots.length > 0}
-        <button class="btn btn-primary" bind:this={addRecordButton} on:click={addRecord}>
+        <button class="btn btn-primary add-record" bind:this={addRecordButton} on:click={addRecord}>
             Add {$model.name.value}</button>
     {/if}
 </div>
