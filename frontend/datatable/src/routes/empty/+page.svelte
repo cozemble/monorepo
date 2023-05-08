@@ -16,7 +16,6 @@
     onMount(() => {
         registerEverything()
     })
-
 </script>
 
 <DataTable models={eventSourcedModelStore(models)}
