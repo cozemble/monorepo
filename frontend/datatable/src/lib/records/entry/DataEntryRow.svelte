@@ -70,7 +70,7 @@
 
 </script>
 <WithSingleRecordContext {record} {rowIndex} let:rootRecordIndex={rootRecordIndex}>
-    <tr>
+    <tr data-row-index={rowIndex}>
         {#each $model.slots as slot, colIndex}
             {#if slot._type === 'property' || slot._type === 'model.reference'}
                 <DataTd {rowIndex} {colIndex} {record} modelSlot={slot}
@@ -82,10 +82,10 @@
             {/if}
         {/each}
         {#if options.permitModelEditing && $permitModelling}
-            <td class="border  border-base-300"></td>
+            <td class="border border-base-300"></td>
         {/if}
         {#if options.showActions}
-            <td class="border  border-base-300">
+            <td class="border border-base-300">
                 <div class="flex items-center">
                     {#if isDirtyRecord($dirtyRecords, record)}
                         <button class="btn btn-primary btn-sm mr-2 save-record"
@@ -102,18 +102,18 @@
                                 Delete
                             </button>
                         {/if}
-                        {#if options.permitSubItemAddition && $permitModelling}
-                            <button class="btn btn-ghost btn-active btn-sm mr-2 add-sub-section"
-                                    on:click={() => beginSubItem(record)}>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                     stroke-width="1.5"
-                                     stroke="currentColor" class="w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                          d="M12 4.5v15m7.5-7.5h-15"/>
-                                </svg>
-                                Add sub-section
-                            </button>
-                        {/if}
+                        <!--{#if options.permitSubItemAddition && $permitModelling}-->
+                        <!--    <button class="btn btn-ghost btn-active btn-sm mr-2 add-sub-section"-->
+                        <!--            on:click={() => beginSubItem(record)}>-->
+                        <!--        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"-->
+                        <!--             stroke-width="1.5"-->
+                        <!--             stroke="currentColor" class="w-6 h-6">-->
+                        <!--            <path stroke-linecap="round" stroke-linejoin="round"-->
+                        <!--                  d="M12 4.5v15m7.5-7.5h-15"/>-->
+                        <!--        </svg>-->
+                        <!--        Add sub-section-->
+                        <!--    </button>-->
+                        <!--{/if}-->
                     {/if}
                 </div>
             </td>

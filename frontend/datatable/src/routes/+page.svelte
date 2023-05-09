@@ -35,7 +35,7 @@
     modelMap.set(customer.id.value, eventSourcedModelFns.newInstance(customer))
     modelMap.set(addressModel.id.value, eventSourcedModelFns.newInstance(addressModel))
     const recordsMap = new Map<string, DataRecord[]>()
-    recordsMap.set(customer.id.value, [customerRecord1, customerRecord2])
+    // recordsMap.set(customer.id.value, [customerRecord1, customerRecord2])
     backendFns.setBackend(new InMemoryBackend(modelMap, recordsMap))
     // backendFns.setBackend(new InMemoryBackend())
     const permitModelling = writable(true)

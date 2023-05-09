@@ -18,6 +18,8 @@
     import {makeModelControls} from "./makeModelControls";
     import type {ErrorVisibilityByRecordId} from "./helpers";
     import {emptyFilterParams, type FilterParams, type RecordSaver} from "../backend/Backend";
+    import type {Model} from "@cozemble/model-core";
+    import {dataRecordFns} from "@cozemble/model-api/dist/esm";
 
     const systemConfigurationProvider = () => $systemConfiguration
     const modelsProvider = () => $allModels
@@ -65,11 +67,16 @@
         })
     })
 
+    function newEmptyRecord(model:Model) {
+        return eventSourcedDataRecordFns.fromRecord($allModels, dataRecordFns.newInstance($model, $currentUserId))
+    }
+
     async function loadRecords(filterParams: FilterParams) {
         loadingState.set('loading')
         const loaded = await recordLoader(modelId, filterParams)
         eventSourcedRecords.set(
-            loaded.map((r) => eventSourcedDataRecordFns.fromRecord($allModels, r)),
+            [newEmptyRecord($model),
+            ...loaded.map((r) => eventSourcedDataRecordFns.fromRecord($allModels, r))],
         )
         someRecordsLoaded = true
         loadingState.set('loaded')

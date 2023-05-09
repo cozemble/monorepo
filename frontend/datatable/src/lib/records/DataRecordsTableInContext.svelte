@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type {DataRecordId, DataRecordPathParentElement, ModelSlot,} from "@cozemble/model-core";
+    import type {DataRecord, DataRecordId, DataRecordPathParentElement, ModelSlot,} from "@cozemble/model-core";
     import {propertyDescriptors, propertyNameFns} from "@cozemble/model-core";
     import type {SlotBeingEdited} from "./helpers";
     import SlotTh from "./SlotTh.svelte";
@@ -76,6 +76,43 @@
     function expandRecord(id: DataRecordId) {
         expandedRecordIds.update((ids: DataRecordId[]) => [...ids, id])
     }
+
+    function collapseRecord(id: DataRecordId) {
+        expandedRecordIds.update((ids: DataRecordId[]) => ids.filter(x => x.value !== id.value))
+    }
+
+    function flashRow(rowIndex: number) {
+        const row = document.querySelector(`tr[data-row-index="${rowIndex}"]`) as HTMLElement
+        const extraClasses = ['border', 'border-primary', 'border-4']
+        if (row) {
+            for (const extraClass of extraClasses) {
+                row.classList.add(extraClass)
+            }
+            setTimeout(() => {
+                for (const extraClass of extraClasses) {
+                    row.classList.remove(extraClass)
+                }
+            }, 1000)
+        }
+    }
+
+    async function save(record: DataRecord, rootRecordIndex: number) {
+        const isExpanded = $expandedRecordIds.find(x => x.value === record.id.value)
+        const outcome = await recordControls.saveNewRecord(record.id)
+        if (outcome) {
+            expandRecord(record.id)
+        } else {
+            collapseRecord(record.id)
+            focusControls.ensureNotFocusedOnRow(rootRecordIndex)
+            flashRow($records.length - 2)
+            if (isExpanded) {
+                expandRecord($records[$records.length - 1].id)
+            }
+        }
+    }
+
+    $: hasModellingColumn = options.permitModelEditing && $permitModelling
+    $: colspan = $model.slots.length + (hasModellingColumn ? 1 : 0) + (options.showActions ? 1 : 0)
 </script>
 
 
@@ -85,7 +122,7 @@
         {#each $model.slots as slot, index}
             <SlotTh {slot} {index} {editSlot} permitModelEditing={options.permitModelEditing}/>
         {/each}
-        {#if options.permitModelEditing && $permitModelling}
+        {#if hasModellingColumn}
             <td class="bg-base-300 px-8">
                 <div class="flex items-center">
                     <label tabindex="0" class="label m-1 add-field" on:click={addSlotToModel}>
@@ -106,18 +143,39 @@
     <tbody>
     {#each $records as record, rowIndex}
         {#key record.id.value}
-            <DataEntryRow {parentPath} {options} {record} {rowIndex} {oneOnly} {expandedRecordIds}/>
+            {#if rowIndex === ($records.length - 1) && parentPath.length === 0}
+                {#if $records.length > 0}
+                    <tr class="bg-accent">
+                        <td {colspan}  class="bg-base-200 w-full text-xs">
+                            <div class="w-ful">Add next record below</div>
+                        </td>
+                    </tr>
+                {/if}
+
+                <DataEntryRow {parentPath} {options} {record} {rowIndex} {oneOnly} {expandedRecordIds}/>
+                <tr>
+                    <td {colspan}>
+                        <div class="flex justify-center">
+                            <button class="btn btn-primary" on:click={() => save(record,($records.length - 1))}>Save
+                                new {$model.name.value}</button>
+                            <button class="btn btn-secondary ml-2">Clear</button>
+                        </div>
+                    </td>
+                </tr>
+            {:else}
+                <DataEntryRow {parentPath} {options} {record} {rowIndex} {oneOnly} {expandedRecordIds}/>
+            {/if}
         {/key}
     {/each}
     </tbody>
 </table>
 
-<div class="mt-2">
-    {#if !oneOnly && $model.slots.length > 0}
-        <button class="btn btn-primary add-record" bind:this={addRecordButton} on:click={addRecord}>
-            Add {$model.name.value}</button>
-    {/if}
-</div>
+<!--<div class="mt-2">-->
+<!--    {#if !oneOnly && $model.slots.length > 0}-->
+<!--        <button class="btn btn-primary add-record" bind:this={addRecordButton} on:click={addRecord}>-->
+<!--            Add {$model.name.value}</button>-->
+<!--    {/if}-->
+<!--</div>-->
 
 
 {#if slotBeingEdited}

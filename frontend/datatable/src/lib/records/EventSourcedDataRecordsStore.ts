@@ -11,6 +11,8 @@ export interface EventSourcedDataRecordsStore extends GettableWritable<EventSour
   updateRecord(recordId: DataRecordId, event: DataRecordEditEvent): void
 
   addNewRecord(): DataRecordId
+
+  appendNewRecord(): DataRecordId
 }
 
 class EventSourcedDataRecordsStoreImpl implements EventSourcedDataRecordsStore {
@@ -54,6 +56,14 @@ class EventSourcedDataRecordsStoreImpl implements EventSourcedDataRecordsStore {
   }
 
   addNewRecord(): DataRecordId {
+    const model = this.modelProvider()
+    const newRecord = dataRecordFns.newInstance(model, this.currentUser)
+    const record = eventSourcedDataRecordFns.fromRecord(this.allModelsProvider(), newRecord)
+    this.update((records) => [...records, record])
+    return newRecord.id
+  }
+
+  appendNewRecord(): DataRecordId {
     const model = this.modelProvider()
     const newRecord = dataRecordFns.newInstance(model, this.currentUser)
     const record = eventSourcedDataRecordFns.fromRecord(this.allModelsProvider(), newRecord)
