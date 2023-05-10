@@ -1,59 +1,52 @@
 <script lang="ts">
-    import type {DataRecord} from "@cozemble/model-core";
-    import {getContext, setContext} from "svelte";
+    import type {DataRecordId} from "@cozemble/model-core";
     import {makeCombinedDataRecordEditorClient} from "./makeCombinedDataRecordEditorClient";
     import {modelRecordsContextFns} from "./modelRecordsContextFns";
     import {derived} from "svelte/store";
-    import {
-        recordEditorClientContext,
-        recordViewerClientContext,
-        singleRecordErrorContext,
-        singleRecordErrorVisibilityContext,
-        singleRecordRootRecordIndexContext
-    } from "./contextHelper";
     import {systemConfiguration} from "../stores/systemConfiguration";
     import {allModels} from "../stores/allModels";
     import {modelFns} from "@cozemble/model-api";
     import {allModelViews} from "../stores/allModelViews";
     import {backend} from "../appBackend";
+    import {singleRecordEditContext} from "./contextHelper";
 
-    export let record: DataRecord
+    export let recordId: DataRecordId
     export let rowIndex: number
     const records = modelRecordsContextFns.getRecords()
     const errorVisibilityByRecordId = modelRecordsContextFns.getErrorVisibilityByRecordId()
 
-    const maybeExistingEditor = getContext(recordEditorClientContext)
+    // const maybeExistingEditor = getContext(recordEditorClientContext)
+    const maybeExistingEditor = singleRecordEditContext.optionalRecordEditorClient()
     if (!maybeExistingEditor) {
-        const records = modelRecordsContextFns.getEventSourcedRecords()
+        const eventSourcedRecords = modelRecordsContextFns.getEventSourcedRecords()
         const modelViewsProvider = () => $allModelViews
         const modelsProvider = () => $allModels
-        const combinedClient = makeCombinedDataRecordEditorClient(backend, modelsProvider, modelViewsProvider, records, modelRecordsContextFns.getFocusControls(), record.id)
-        setContext(recordEditorClientContext, combinedClient)
-        setContext(recordViewerClientContext, combinedClient)
+        const combinedClient = makeCombinedDataRecordEditorClient(backend, modelsProvider, modelViewsProvider, eventSourcedRecords, modelRecordsContextFns.getFocusControls(), recordId)
+        singleRecordEditContext.setCombinedClient(combinedClient)
     }
 
-    let rootRecordIndex = getContext(singleRecordRootRecordIndexContext) as number
-    if (rootRecordIndex === undefined) {
+    let rootRecordIndex = singleRecordEditContext.optionalRootRecordIndex()
+    if (rootRecordIndex === null) {
         rootRecordIndex = rowIndex
-        setContext(singleRecordRootRecordIndexContext, rootRecordIndex)
+        singleRecordEditContext.setRootRecordIndex(rootRecordIndex)
     }
-    let maybeExistingErrorsForRecord = getContext(singleRecordErrorContext)
+    let maybeExistingErrorsForRecord = singleRecordEditContext.optionalErrorsForRecord()
     if (!maybeExistingErrorsForRecord) {
         const errors = derived([records, allModels, systemConfiguration], ([records, models, systemConfiguration]) => {
-            const maybeRecord = records.find(r => r.id.value === record.id.value)
+            const maybeRecord = records.find(r => r.id.value === recordId.value)
             if (maybeRecord) {
                 return modelFns.validate(systemConfiguration, models, maybeRecord)
             }
             return new Map()
         })
-        setContext(singleRecordErrorContext, errors)
+        singleRecordEditContext.setErrorsForRecord(errors)
     }
-    const maybeExistingErrorVisibility = getContext(singleRecordErrorVisibilityContext)
+    const maybeExistingErrorVisibility = singleRecordEditContext.optionalErrorVisibilityForRecord()
     if (!maybeExistingErrorVisibility) {
         const errorVisibility = derived(errorVisibilityByRecordId, errorVisibilityByRecordId => {
-            return errorVisibilityByRecordId.get(record.id.value) ?? false
+            return errorVisibilityByRecordId.get(recordId.value) ?? false
         })
-        setContext(singleRecordErrorVisibilityContext, errorVisibility)
+        singleRecordEditContext.setErrorVisibilityForRecord(errorVisibility)
     }
 </script>
 <slot {rootRecordIndex}></slot>

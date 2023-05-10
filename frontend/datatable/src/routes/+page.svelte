@@ -25,7 +25,7 @@
     const nestedDeliveryAddress = nestedModelFns.newInstance("Delivery Address", addressModel.id, "one")
 
     // let customer = modelFns.newInstance("Customer", modelOptions.withProperties(propertyFns.newInstance("First name", propertyOptions.required), propertyFns.newInstance("Last name")))
-    let customer = modelFns.newInstance("Customer", modelOptions.withProperties(propertyFns.newInstance("First name", propertyOptions.required), propertyFns.newInstance("Last name")), modelOptions.withNestedModels(nestedDeliveryAddress))
+    let customer = modelFns.newInstance("Customer", modelOptions.withProperties(propertyFns.newInstance("First name", propertyOptions.required), propertyFns.newInstance("Last name")))
     addressModel.parentModelId = addressModel.id
     const models = [eventSourcedModelFns.newInstance(customer), eventSourcedModelFns.newInstance(addressModel)] as EventSourcedModel[]
     const systemConfiguration = systemConfigurationFns.empty()
@@ -35,11 +35,11 @@
     modelMap.set(customer.id.value, eventSourcedModelFns.newInstance(customer))
     modelMap.set(addressModel.id.value, eventSourcedModelFns.newInstance(addressModel))
     const recordsMap = new Map<string, DataRecord[]>()
-    recordsMap.set(customer.id.value, [customerRecord1, customerRecord2])
+    // recordsMap.set(customer.id.value, [customerRecord1, customerRecord2])
     backendFns.setBackend(new InMemoryBackend(modelMap, recordsMap))
     // backendFns.setBackend(new InMemoryBackend())
     const permitModelling = writable(true)
-    const showDevConsole = writable(true)
+    const showDevConsole = writable(false)
 
     onMount(() => {
         registerEverything()

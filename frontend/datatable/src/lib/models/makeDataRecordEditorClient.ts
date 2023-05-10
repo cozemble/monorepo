@@ -28,7 +28,7 @@ export function makeDataRecordEditorClient(
       }
     },
 
-    createNewRecord(): Promise<DataRecord | null> {
+    createNewRootRecord(): Promise<DataRecord | null> {
       throw new Error('Method not implemented.')
     },
 

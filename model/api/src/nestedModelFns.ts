@@ -1,19 +1,25 @@
 import type { Cardinality, Model, ModelId } from '@cozemble/model-core'
-import { type DataRecord, NestedModel, NestedModelName } from '@cozemble/model-core'
+import {
+  type DataRecord,
+  NestedModel,
+  NestedModelId,
+  nestedModelIdFns,
+  NestedModelName,
+} from '@cozemble/model-core'
 import { modelFns } from './modelsFns'
-import { uuids } from '@cozemble/lang-util'
 
 export const nestedModelFns = {
   newInstance: (
     name: string | NestedModelName,
     relatedModelId: ModelId,
     cardinality: Cardinality,
+    id: NestedModelId = nestedModelIdFns.newInstance(),
   ): NestedModel => {
     return {
       _type: 'nested.model',
       cardinality,
       modelId: relatedModelId,
-      id: { _type: 'nested.model.id', value: uuids.v4() },
+      id,
       name: typeof name === 'string' ? { _type: 'nested.model.name', value: name } : name,
     }
   },

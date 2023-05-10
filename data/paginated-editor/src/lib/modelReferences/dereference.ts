@@ -7,6 +7,7 @@ export async function dereference(
   referencedRecords: ReferencedRecords | null,
   setter: (value: DataRecord | null) => void,
 ) {
+  console.log('dereference', { referencedRecords })
   if (!referencedRecords) {
     setter(null)
     return
@@ -16,6 +17,7 @@ export async function dereference(
       referencedModelId,
       referencedRecords.referencedRecords[0].referencedRecordId,
     )
+    console.log('dereference', { record })
     setter(record)
   } else {
     setter(null)

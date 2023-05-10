@@ -53,7 +53,7 @@ export interface DataRecordEditorClient extends ModelViewManager {
 
   dispatchEditEvent(event: DataRecordEditEvent): void
 
-  createNewRecord(modelId: ModelId): Promise<DataRecord | null>
+  createNewRootRecord(modelId: ModelId): Promise<DataRecord | null>
 
   searchRecords(modelId: ModelId, search: string): Promise<DataRecord[]>
 

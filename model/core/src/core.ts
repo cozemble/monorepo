@@ -91,6 +91,15 @@ export const nestedModelNameFns = {
   },
 }
 
+export const nestedModelIdFns = {
+  newInstance: (value = uuids.v4()): NestedModelId => {
+    return {
+      _type: 'nested.model.id',
+      value,
+    }
+  },
+}
+
 export interface NestedModel {
   _type: 'nested.model'
   id: NestedModelId
