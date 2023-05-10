@@ -1,3 +1,5 @@
+import { clickAddField } from './helpers'
+
 describe('data table', () => {
   it('supports supports creating a new root record from a model reference slot', () => {
     cy.visit('http://localhost:5173/empty')
@@ -7,8 +9,7 @@ describe('data table', () => {
     cy.get('input.property-name').type('{selectall}First name')
     cy.get('input.required-toggle').click()
     cy.get('button.save-property').click()
-    cy.get('.dropdown.add-model-element').click()
-    cy.get('a.add-field').click()
+    clickAddField()
     cy.get('input.property-name').type('{selectall}Last name{enter}')
 
     cy.get('.add-table-link').click()
