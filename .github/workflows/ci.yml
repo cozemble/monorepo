@@ -64,4 +64,4 @@ jobs:
         run: npx turbo test
 
       - name: Cypress tests
-        run: npx turbo cypress
+        run: npx turbo cypress --concurrency 1 --only
