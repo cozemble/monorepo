@@ -46,6 +46,7 @@
     })
 
 </script>
+
 <DevOptions {permitModelling} {showDevConsole}/>
 
 <DataTable models={eventSourcedModelStore(models)}
