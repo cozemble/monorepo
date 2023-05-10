@@ -149,8 +149,8 @@
             {#if rowIndex === ($records.length - 1) && parentPath.length === 0}
                 {#if $records.length > 1}
                     <tr class="bg-accent">
-                        <td {colspan} class="bg-base-200 w-full text-xs">
-                            <div class="w-ful">Add next record below</div>
+                        <td {colspan} class="bg-base-300 w-full text-xs">
+                            <div>Add next record below</div>
                         </td>
                     </tr>
                 {/if}

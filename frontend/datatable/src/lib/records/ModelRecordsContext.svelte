@@ -83,8 +83,7 @@
             )
         } else {
             eventSourcedRecords.set(
-                [newEmptyRecord($model),
-                    ...loaded.map((r) => eventSourcedDataRecordFns.fromRecord($allModels, r))],
+                [...loaded.map((r) => eventSourcedDataRecordFns.fromRecord($allModels, r)), newEmptyRecord($model)],
             )
 
         }
