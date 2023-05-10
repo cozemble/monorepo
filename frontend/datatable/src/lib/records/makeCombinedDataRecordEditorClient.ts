@@ -12,7 +12,7 @@ import type { EventSourcedDataRecordsStore } from './EventSourcedDataRecordsStor
 import type { DataTableFocusControls2 } from '../focus/DataTableFocus'
 import type { JustErrorMessage } from '@cozemble/lang-util'
 import type { Backend } from '../backend/Backend'
-import { createNewRecord as createNewRecordFn } from './creator/recordCreatorStore'
+import { createNewRootRecord as createNewRootRecordFn } from './creator/recordCreatorStore'
 
 export type CombinedDataRecordEditorClient = DataRecordEditorClient & DataRecordViewerClient
 
@@ -42,23 +42,15 @@ export function makeCombinedDataRecordEditorClient(
         if (event.confirmMethod === 'Tab') {
           focusControls.moveForward()
         }
+      } else if (event._type === 'data.record.has.many.item.added') {
+        records.updateRecord(recordId, event)
       } else {
         throw new Error('Not implemented: ' + event._type)
       }
     },
 
-    createNewRecord(modelId: ModelId): Promise<DataRecord | null> {
-      return new Promise((resolve) => {
-        function onCreated(value: DataRecord): void {
-          resolve(value)
-        }
-
-        function onCancel(): void {
-          resolve(null)
-        }
-
-        createNewRecordFn(modelId, onCreated, onCancel)
-      })
+    createNewRootRecord(modelId: ModelId): Promise<DataRecord | null> {
+      return createNewRootRecordFn(modelId)
     },
 
     searchRecords(modelId: ModelId, search: string): Promise<DataRecord[]> {

@@ -45,6 +45,7 @@
     "@tailwindcss/typography": "^0.5.9",
     "axios": "^1.2.3",
     "daisyui": "^2.47.0",
-    "theme-change": "^2.5.0"
+    "theme-change": "^2.5.0",
+    "ajv": "^8.12.0"
   }
 }

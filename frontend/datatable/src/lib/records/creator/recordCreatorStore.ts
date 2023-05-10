@@ -5,14 +5,41 @@ export interface CreateNewRecord {
   modelId: ModelId
   onCreated: (value: DataRecord) => void
   onCancel: () => void
+  titlePrefix: string
+  isRootRecord: boolean
 }
 
 export const createNewRecordStore = writable<CreateNewRecord | null>(null)
 
-export function createNewRecord(
+export function createNewNestedRecord(
   modelId: ModelId,
   onCreated: (value: DataRecord) => void,
   onCancel: () => void,
-): void {
-  createNewRecordStore.set({ modelId, onCreated, onCancel })
+  titlePrefix = '',
+): Promise<DataRecord | null> {
+  return new Promise((resolve) => {
+    function onCreated(value: DataRecord): void {
+      resolve(value)
+    }
+
+    function onCancel(): void {
+      resolve(null)
+    }
+
+    createNewRecordStore.set({ modelId, onCreated, onCancel, titlePrefix, isRootRecord: false })
+  })
+}
+
+export function createNewRootRecord(modelId: ModelId): Promise<DataRecord | null> {
+  return new Promise((resolve) => {
+    function onCreated(value: DataRecord): void {
+      resolve(value)
+    }
+
+    function onCancel(): void {
+      resolve(null)
+    }
+
+    createNewRecordStore.set({ modelId, onCreated, onCancel, titlePrefix: '', isRootRecord: true })
+  })
 }

@@ -17,11 +17,6 @@ export function makeRecordControls(
   newUnsavedRecords = [] as DataRecordId[],
 ): RecordControls {
   return {
-    addNewRecord(): DataRecordId {
-      const newRecordId = records.addNewRecord()
-      newUnsavedRecords.push(newRecordId)
-      return newRecordId
-    },
     async saveRecord(recordId: DataRecordId) {
       const record = mandatory(
         records.get().find((r) => r.record.id.value === recordId.value),

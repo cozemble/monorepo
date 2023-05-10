@@ -9,11 +9,13 @@
     import {allEventSourcedModels} from "../stores/allModels";
     import {modelRecordsContextFns} from "./modelRecordsContextFns";
     import {tick} from "svelte";
-    import {modelFns} from "@cozemble/model-api";
     import SlotEditModal from "./SlotEditModal.svelte";
     import {systemConfiguration} from "../stores/systemConfiguration";
     import {contextHelper} from "../stores/contextHelper";
     import DataEntryRow from "./entry/DataEntryRow.svelte";
+    import AddModelElementButton from "./modelling/AddModelElementButton.svelte";
+    import {modelFns} from "@cozemble/model-api";
+    import {modelOptions, propertyFns} from "@cozemble/model-api";
 
     export let oneOnly = false
     export let options: DataRecordsTableOptions = dataRecordsTableOptions(true, true, true)
@@ -29,7 +31,6 @@
     const permitModelling = contextHelper.getPermitModelling()
 
     let slotBeingEdited: SlotBeingEdited | null = null
-    let addRecordButton: HTMLElement
 
     function editSlot(clicked: Event, slot: ModelSlot) {
         const anchorElement = (clicked.target as HTMLElement).closest('th')
@@ -37,6 +38,18 @@
             return
         }
         slotBeingEdited = {models: $allEventSourcedModels, model: $eventSourcedModel, slot, anchorElement}
+    }
+
+    async function addInnerTable() {
+        await modelControls.addNestedModel($eventSourcedModel, modelFns.newInstance('Inner table', modelOptions.withSlot(propertyFns.newInstance("Field 1"))), "many")
+        await tick()
+        expandLastRow()
+    }
+
+    async function addInnerRecord() {
+        await modelControls.addNestedModel($eventSourcedModel, modelFns.newInstance('Inner record', modelOptions.withSlot(propertyFns.newInstance("Field 1"))), "one")
+        await tick()
+        expandLastRow()
     }
 
     async function addSlotToModel() {
@@ -62,17 +75,6 @@
         slotBeingEdited = null
     }
 
-    async function addRecord() {
-        expandRecord(recordControls.addNewRecord())
-        await tick()
-        const lastRowIndex = $records.length - 1
-        const firstEditableSlot = modelFns.leafSlots($model)[0]
-        if (firstEditableSlot) {
-            focusControls.setFocus(lastRowIndex, firstEditableSlot, [])
-            focusControls.beginEditing()
-        }
-    }
-
     function expandRecord(id: DataRecordId) {
         expandedRecordIds.update((ids: DataRecordId[]) => [...ids, id])
     }
@@ -96,6 +98,10 @@
         }
     }
 
+    function expandLastRow() {
+        expandRecord($records[$records.length - 1].id)
+    }
+
     async function save(record: DataRecord, rootRecordIndex: number) {
         const isExpanded = $expandedRecordIds.find(x => x.value === record.id.value)
         const outcome = await recordControls.saveNewRecord(record.id)
@@ -106,7 +112,7 @@
             focusControls.ensureNotFocusedOnRow(rootRecordIndex)
             flashRow($records.length - 2)
             if (isExpanded) {
-                expandRecord($records[$records.length - 1].id)
+                expandLastRow()
             }
         }
     }
@@ -125,13 +131,7 @@
         {#if hasModellingColumn}
             <td class="bg-base-300 px-8">
                 <div class="flex items-center">
-                    <label tabindex="0" class="label m-1 add-field" on:click={addSlotToModel}>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                             stroke="currentColor" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
-                        </svg>
-                        <span class="ml-2">Add Field</span>
-                    </label>
+                    <AddModelElementButton {addSlotToModel} {addInnerTable} {addInnerRecord}/>
                 </div>
             </td>
         {/if}
@@ -144,14 +144,13 @@
     {#each $records as record, rowIndex}
         {#key record.id.value}
             {#if rowIndex === ($records.length - 1) && parentPath.length === 0}
-                {#if $records.length > 0}
+                {#if $records.length > 1}
                     <tr class="bg-accent">
-                        <td {colspan}  class="bg-base-200 w-full text-xs">
+                        <td {colspan} class="bg-base-200 w-full text-xs">
                             <div class="w-ful">Add next record below</div>
                         </td>
                     </tr>
                 {/if}
-
                 <DataEntryRow {parentPath} {options} {record} {rowIndex} {oneOnly} {expandedRecordIds}/>
                 <tr>
                     <td {colspan}>
@@ -170,12 +169,6 @@
     </tbody>
 </table>
 
-<!--<div class="mt-2">-->
-<!--    {#if !oneOnly && $model.slots.length > 0}-->
-<!--        <button class="btn btn-primary add-record" bind:this={addRecordButton} on:click={addRecord}>-->
-<!--            Add {$model.name.value}</button>-->
-<!--    {/if}-->
-<!--</div>-->
 
 
 {#if slotBeingEdited}

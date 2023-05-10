@@ -1,7 +1,7 @@
 <script lang="ts">
     import {allEventSourcedModels, allModels} from "../stores/allModels";
     import {derived, writable} from "svelte/store";
-    import type {DataRecord, ModelId} from "@cozemble/model-core";
+    import type {DataRecord, Model, ModelId} from "@cozemble/model-core";
     import {eventSourcedModelFns} from "@cozemble/model-event-sourced";
     import {modelRecordsContextFns} from "./modelRecordsContextFns";
     import {eventSourcedDataRecordFns} from "@cozemble/data-editor-sdk";
@@ -18,8 +18,7 @@
     import {makeModelControls} from "./makeModelControls";
     import type {ErrorVisibilityByRecordId} from "./helpers";
     import {emptyFilterParams, type FilterParams, type RecordSaver} from "../backend/Backend";
-    import type {Model} from "@cozemble/model-core";
-    import {dataRecordFns} from "@cozemble/model-api/dist/esm";
+    import {dataRecordFns} from "@cozemble/model-api";
 
     const systemConfigurationProvider = () => $systemConfiguration
     const modelsProvider = () => $allModels
@@ -28,6 +27,7 @@
     export let recordLoader: (modelId: ModelId, filterParams: FilterParams) => Promise<DataRecord[]> = getRecordsForModel
     export let eventSourcedRecords = eventSourcedDataRecordsStore(systemConfigurationProvider, modelsProvider, () => $model, $currentUserId)
     export let recordSaver: RecordSaver = backend
+    export let oneOnly = false
 
     const eventSourcedModel = derived(allEventSourcedModels, models => eventSourcedModelFns.findById(models, modelId))
     const model = derived(eventSourcedModel, model => model.model)
@@ -67,17 +67,24 @@
         })
     })
 
-    function newEmptyRecord(model:Model) {
+    function newEmptyRecord(model: Model) {
         return eventSourcedDataRecordFns.fromRecord($allModels, dataRecordFns.newInstance($model, $currentUserId))
     }
 
     async function loadRecords(filterParams: FilterParams) {
         loadingState.set('loading')
         const loaded = await recordLoader(modelId, filterParams)
-        eventSourcedRecords.set(
-            [newEmptyRecord($model),
-            ...loaded.map((r) => eventSourcedDataRecordFns.fromRecord($allModels, r))],
-        )
+        if (oneOnly) {
+            eventSourcedRecords.set(
+                [...loaded.map((r) => eventSourcedDataRecordFns.fromRecord($allModels, r))],
+            )
+        } else {
+            eventSourcedRecords.set(
+                [newEmptyRecord($model),
+                    ...loaded.map((r) => eventSourcedDataRecordFns.fromRecord($allModels, r))],
+            )
+
+        }
         someRecordsLoaded = true
         loadingState.set('loaded')
     }

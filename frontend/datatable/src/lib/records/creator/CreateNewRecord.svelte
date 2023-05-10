@@ -6,22 +6,19 @@
     import {currentUserId} from "../../stores/currentUserId";
     import ModelRecordsContext from "../ModelRecordsContext.svelte";
     import type {DataRecord} from "@cozemble/model-core";
-    import DataRecordsTableInContext from "../DataRecordsTableInContext.svelte";
     import {eventSourcedDataRecordsStore} from "../EventSourcedDataRecordsStore";
     import {systemConfiguration} from "../../stores/systemConfiguration";
-    import {dataRecordsTableOptions} from "../DataRecordsTableOptions";
-    import type {RecordSaver} from "../../backend/Backend";
-    import type {EventSourcedDataRecord} from "@cozemble/data-editor-sdk";
-    import type {RecordSaveOutcome} from "@cozemble/data-paginated-editor";
-    import {backend} from "../../appBackend";
+    import {derived} from "svelte/store";
+    import WithSingleRecordContext from "../../records/WithSingleRecordContext.svelte";
+    import SingleRootRecordEditTable from "./SingleRootRecordEditTable.svelte";
 
     export let params: CreateNewRecord
     const model = modelFns.findById($allModels, params.modelId)
-    const record = dataRecordFns.newInstance(model, $currentUserId)
     const eventSourcedRecords = eventSourcedDataRecordsStore(() => $systemConfiguration, () => $allModels, () => model, $currentUserId)
+    const records = derived(eventSourcedRecords, esdrs => esdrs.map(esdr => esdr.record))
 
     async function recordLoader(): Promise<DataRecord[]> {
-        return [record]
+        return [dataRecordFns.newInstance(model, $currentUserId)]
     }
 
     function cancel() {
@@ -29,28 +26,19 @@
         createNewRecordStore.update(() => null)
     }
 
-    const recordSaver: RecordSaver = {
-        async saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
-            const outcome = await backend.saveNewRecord(newRecord)
-            if (outcome._type === "record.save.succeeded") {
-                params.onCreated(outcome.record)
-                createNewRecordStore.update(() => null)
-            }
-            return outcome
-        },
-
-        async saveExistingRecord(record: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
-            return this.saveNewRecord(record)
-        }
+    function save(record: DataRecord) {
+        params.onCreated(record)
+        createNewRecordStore.update(() => null)
     }
-
 </script>
-<ModelRecordsContext modelId={model.id} {recordLoader} {eventSourcedRecords} {recordSaver}>
-    <div class="mt-2">
-        <h4>Create a new {model.name.value}</h4>
-        <DataRecordsTableInContext oneOnly={true} options={dataRecordsTableOptions(false, false, true)}/>
-        <div class="mt-4">
-            <button class="btn btn-secondary" on:click={cancel}>Cancel</button>
-        </div>
-    </div>
+
+<ModelRecordsContext modelId={model.id} {recordLoader} {eventSourcedRecords} oneOnly={true}>
+    {#each $records as record, rowIndex}
+        <WithSingleRecordContext recordId={record.id} {rowIndex}>
+            <div class="mt-2">
+                <h4>Create a new {model.name.value}</h4>
+                <SingleRootRecordEditTable {model} {record} {save} {cancel}/>
+            </div>
+        </WithSingleRecordContext>
+    {/each}
 </ModelRecordsContext>
