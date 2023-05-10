@@ -19,6 +19,7 @@
     import type {ErrorVisibilityByRecordId} from "./helpers";
     import {emptyFilterParams, type FilterParams, type RecordSaver} from "../backend/Backend";
     import {dataRecordFns} from "@cozemble/model-api";
+    import type {NestedModelId} from "@cozemble/model-core";
 
     const systemConfigurationProvider = () => $systemConfiguration
     const modelsProvider = () => $allModels
@@ -59,6 +60,8 @@
     modelRecordsContextFns.setModelControls(makeModelControls(allEventSourcedModels))
     modelRecordsContextFns.setErrorVisibilityByRecordId(errorVisibilityByRecordId)
     modelRecordsContextFns.setFilterParams(filterParams)
+    modelRecordsContextFns.setNestedModelBeingEdited(writable(null as NestedModelId|null))
+
     let someRecordsLoaded = false
 
     const unsubAllEventSourcedModels = allModels.subscribe(models => {

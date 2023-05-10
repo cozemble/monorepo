@@ -28,6 +28,7 @@
     const focusControls = modelRecordsContextFns.getFocusControls()
     const recordControls = modelRecordsContextFns.getRecordControls()
     const modelControls = modelRecordsContextFns.getModelControls()
+    const nestedModelBeingEdited = modelRecordsContextFns.getNestedModelBeingEdited()
     const permitModelling = contextHelper.getPermitModelling()
 
     let slotBeingEdited: SlotBeingEdited | null = null
@@ -41,15 +42,17 @@
     }
 
     async function addInnerTable() {
-        await modelControls.addNestedModel($eventSourcedModel, modelFns.newInstance('Inner table', modelOptions.withSlot(propertyFns.newInstance("Field 1"))), "many")
+        const nestedModelId = await modelControls.addNestedModel($eventSourcedModel, modelFns.newInstance('Inner table', modelOptions.withSlot(propertyFns.newInstance("Field 1"))), "many")
         await tick()
         expandLastRow()
+        nestedModelBeingEdited.set(nestedModelId)
     }
 
     async function addInnerRecord() {
-        await modelControls.addNestedModel($eventSourcedModel, modelFns.newInstance('Inner record', modelOptions.withSlot(propertyFns.newInstance("Field 1"))), "one")
+        const nestedModelId = await modelControls.addNestedModel($eventSourcedModel, modelFns.newInstance('Inner record', modelOptions.withSlot(propertyFns.newInstance("Field 1"))), "one")
         await tick()
         expandLastRow()
+        nestedModelBeingEdited.set(nestedModelId)
     }
 
     async function addSlotToModel() {
@@ -155,7 +158,7 @@
                 <tr>
                     <td {colspan}>
                         <div class="flex justify-center">
-                            <button class="btn btn-primary" on:click={() => save(record,($records.length - 1))}>Save
+                            <button class="btn btn-primary save-root-record" on:click={() => save(record,($records.length - 1))}>Save
                                 new {$model.name.value}</button>
                             <button class="btn btn-secondary ml-2">Clear</button>
                         </div>

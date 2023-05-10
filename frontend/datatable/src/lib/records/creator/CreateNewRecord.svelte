@@ -29,6 +29,7 @@
 
     function save() {
         const firstRecord = mandatory($eventSourcedRecords[0], `Expected to find a record in the event sourced records store`)
+        console.log({firstRecord})
         params.onCreated(firstRecord)
         createNewRecordStore.update(() => null)
     }

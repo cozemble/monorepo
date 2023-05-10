@@ -59,6 +59,7 @@ export {
   modelPluralNameFns,
   ModelPluralName,
   dataRecordIdFns,
+  nestedModelIdFns,
 } from './core'
 
 export { propertyDescriptors } from './propertyDescriptor'
