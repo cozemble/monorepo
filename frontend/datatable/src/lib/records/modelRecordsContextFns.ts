@@ -31,7 +31,7 @@ export const modelRecordsContextFns = {
   setModel: (model: Readable<Model>) => {
     setContext(modelContextKey, model)
   },
-  setEventSourcedRecords: (records: Readable<EventSourcedDataRecord[]>) => {
+  setEventSourcedRecords: (records: EventSourcedDataRecordsStore) => {
     setContext(eventSourcedRecordsContextKey, records)
   },
   setRecords: (records: Readable<DataRecord[]>) => {

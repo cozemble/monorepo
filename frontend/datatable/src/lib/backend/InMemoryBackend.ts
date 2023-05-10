@@ -73,6 +73,7 @@ export class InMemoryBackend implements Backend {
 
   async recordById(modelId: ModelId, recordId: DataRecordId): Promise<DataRecord | null> {
     const records = this.records.get(modelId.value) || []
+    console.log('recordById', { allRecords: this.records, records, modelId, recordId })
     return records.find((record) => record.id.value === recordId.value) || null
   }
 

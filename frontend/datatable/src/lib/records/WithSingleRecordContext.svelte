@@ -18,10 +18,10 @@
     // const maybeExistingEditor = getContext(recordEditorClientContext)
     const maybeExistingEditor = singleRecordEditContext.optionalRecordEditorClient()
     if (!maybeExistingEditor) {
-        const records = modelRecordsContextFns.getEventSourcedRecords()
+        const eventSourcedRecords = modelRecordsContextFns.getEventSourcedRecords()
         const modelViewsProvider = () => $allModelViews
         const modelsProvider = () => $allModels
-        const combinedClient = makeCombinedDataRecordEditorClient(backend, modelsProvider, modelViewsProvider, records, modelRecordsContextFns.getFocusControls(), recordId)
+        const combinedClient = makeCombinedDataRecordEditorClient(backend, modelsProvider, modelViewsProvider, eventSourcedRecords, modelRecordsContextFns.getFocusControls(), recordId)
         singleRecordEditContext.setCombinedClient(combinedClient)
     }
 

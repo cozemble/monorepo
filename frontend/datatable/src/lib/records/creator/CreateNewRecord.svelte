@@ -11,6 +11,7 @@
     import {derived} from "svelte/store";
     import WithSingleRecordContext from "../../records/WithSingleRecordContext.svelte";
     import SingleRootRecordEditTable from "./SingleRootRecordEditTable.svelte";
+    import {mandatory} from "@cozemble/lang-util";
 
     export let params: CreateNewRecord
     const model = modelFns.findById($allModels, params.modelId)
@@ -26,8 +27,9 @@
         createNewRecordStore.update(() => null)
     }
 
-    function save(record: DataRecord) {
-        params.onCreated(record)
+    function save() {
+        const firstRecord = mandatory($eventSourcedRecords[0], `Expected to find a record in the event sourced records store`)
+        params.onCreated(firstRecord)
         createNewRecordStore.update(() => null)
     }
 </script>

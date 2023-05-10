@@ -51,7 +51,9 @@ class EventSourcedDataRecordsStoreImpl implements EventSourcedDataRecordsStore {
         event,
         record,
       )
-      return records.map((r) => (r.record.id.value === recordId.value ? mutated : r))
+      const result = records.map((r) => (r.record.id.value === recordId.value ? mutated : r))
+      console.log({ recordId, event, record, mutated, result })
+      return result
     })
   }
 

@@ -13,7 +13,7 @@
 
     export let model: Model
     export let record: DataRecord
-    export let save: (record: DataRecord) => void
+    export let save: () => void
     export let cancel: () => void
 
     const errors = singleRecordEditContext.getErrorsForRecord()
@@ -28,7 +28,7 @@
         if ($errors.size > 0) {
             errorVisibilityByRecordId.update(viz => viz.set(record.id.value, true))
         } else {
-            save(record)
+            save()
         }
     }
 
