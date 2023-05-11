@@ -29,6 +29,7 @@
     export let eventSourcedRecords = eventSourcedDataRecordsStore(systemConfigurationProvider, modelsProvider, () => $model, $currentUserId)
     export let recordSaver: RecordSaver = backend
     export let oneOnly = false
+    export let permitRecordAdditions = true
 
     const eventSourcedModel = derived(allEventSourcedModels, models => eventSourcedModelFns.findById(models, modelId))
     const model = derived(eventSourcedModel, model => model.model)
@@ -61,6 +62,7 @@
     modelRecordsContextFns.setErrorVisibilityByRecordId(errorVisibilityByRecordId)
     modelRecordsContextFns.setFilterParams(filterParams)
     modelRecordsContextFns.setNestedModelBeingEdited(writable(null as NestedModelId|null))
+    modelRecordsContextFns.setPermitRecordAdditions(writable(permitRecordAdditions))
 
     let someRecordsLoaded = false
 

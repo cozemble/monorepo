@@ -6,7 +6,6 @@
     import {clickOutside} from "@cozemble/ui-atoms";
     import type {DataTableFocusControls2} from "../focus/DataTableFocus";
     import {contextHelper} from "../stores/contextHelper";
-    import {afterUpdate} from "svelte";
     import ModelDevConsole from "./ModelDevConsole.svelte";
 
     export let modelId: string
@@ -15,8 +14,6 @@
     function clickedOutsideTable(focusControls: DataTableFocusControls2) {
         focusControls.clearFocus()
     }
-
-    afterUpdate(() => console.log({showDevConsole: $showDevConsole}))
 </script>
 
 <div class="mt-2">

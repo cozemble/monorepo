@@ -12,7 +12,7 @@
     import {dataRecordEditEvents} from "@cozemble/data-editor-sdk";
     import {singleRecordEditContext} from "./contextHelper";
     import {EditableName} from "@cozemble/ui-atoms";
-    import {modelNameFns} from "@cozemble/model-core/dist/esm";
+    import {modelNameFns} from "@cozemble/model-core";
     import {createNewNestedRecord} from "./creator/recordCreatorStore";
 
     export let options: DataRecordsTableOptions

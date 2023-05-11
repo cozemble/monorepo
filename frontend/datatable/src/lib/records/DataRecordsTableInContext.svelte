@@ -14,8 +14,8 @@
     import {contextHelper} from "../stores/contextHelper";
     import DataEntryRow from "./entry/DataEntryRow.svelte";
     import AddModelElementButton from "./modelling/AddModelElementButton.svelte";
-    import {modelFns} from "@cozemble/model-api";
-    import {modelOptions, propertyFns} from "@cozemble/model-api";
+    import {modelFns, modelOptions, propertyFns} from "@cozemble/model-api";
+    import {afterUpdate} from "svelte";
 
     export let oneOnly = false
     export let options: DataRecordsTableOptions = dataRecordsTableOptions(true, true, true)
@@ -30,6 +30,7 @@
     const modelControls = modelRecordsContextFns.getModelControls()
     const nestedModelBeingEdited = modelRecordsContextFns.getNestedModelBeingEdited()
     const permitModelling = contextHelper.getPermitModelling()
+    const permitRecordAdditions = modelRecordsContextFns.getPermitRecordAdditions()
 
     let slotBeingEdited: SlotBeingEdited | null = null
 
@@ -122,6 +123,8 @@
 
     $: hasModellingColumn = options.permitModelEditing && $permitModelling
     $: colspan = $model.slots.length + (hasModellingColumn ? 1 : 0) + (options.showActions ? 1 : 0)
+
+    afterUpdate(() => console.log({permitRecordAdditions:$permitRecordAdditions}))
 </script>
 
 
@@ -147,23 +150,26 @@
     {#each $records as record, rowIndex}
         {#key record.id.value}
             {#if rowIndex === ($records.length - 1) && parentPath.length === 0}
-                {#if $records.length > 1}
-                    <tr class="bg-accent">
-                        <td {colspan} class="bg-base-300 w-full text-xs">
-                            <div>Add next record below</div>
+                {#if $permitRecordAdditions}
+                    {#if $records.length > 1}
+                        <tr class="bg-accent">
+                            <td {colspan} class="bg-base-300 w-full text-xs">
+                                <div>Add next record below</div>
+                            </td>
+                        </tr>
+                    {/if}
+                    <DataEntryRow {parentPath} {options} {record} {rowIndex} {oneOnly} {expandedRecordIds}/>
+                    <tr>
+                        <td {colspan}>
+                            <div class="flex justify-center">
+                                <button class="btn btn-primary save-root-record"
+                                        on:click={() => save(record,($records.length - 1))}>Save
+                                    new {$model.name.value}</button>
+                                <button class="btn btn-secondary ml-2">Clear</button>
+                            </div>
                         </td>
                     </tr>
                 {/if}
-                <DataEntryRow {parentPath} {options} {record} {rowIndex} {oneOnly} {expandedRecordIds}/>
-                <tr>
-                    <td {colspan}>
-                        <div class="flex justify-center">
-                            <button class="btn btn-primary save-root-record" on:click={() => save(record,($records.length - 1))}>Save
-                                new {$model.name.value}</button>
-                            <button class="btn btn-secondary ml-2">Clear</button>
-                        </div>
-                    </td>
-                </tr>
             {:else}
                 <DataEntryRow {parentPath} {options} {record} {rowIndex} {oneOnly} {expandedRecordIds}/>
             {/if}
@@ -171,7 +177,6 @@
     {/each}
     </tbody>
 </table>
-
 
 
 {#if slotBeingEdited}

@@ -7,7 +7,7 @@ import type { Cardinality, Model, ModelEvent, ModelId } from '@cozemble/model-co
 import { modelIdAndNameFns, nestedModelNameFns } from '@cozemble/model-core'
 import { coreModelEvents } from '@cozemble/model-event-sourced'
 import type { NestedModelId } from '@cozemble/model-core'
-import { nestedModelIdFns } from '@cozemble/model-core/dist/esm'
+import { nestedModelIdFns } from '@cozemble/model-core'
 
 export function makeModelControls(
   eventSourcedModels: Writable<EventSourcedModel[]>,

@@ -1,5 +1,5 @@
 import type { EventSourcedModel } from '@cozemble/model-event-sourced'
-import type { DataRecord, DataRecordId, Model } from '@cozemble/model-core'
+import type { DataRecord, DataRecordId, Model, NestedModelId } from '@cozemble/model-core'
 import { getContext, setContext } from 'svelte'
 import { mandatory } from '@cozemble/lang-util'
 import type { Readable, Writable } from 'svelte/store'
@@ -10,7 +10,7 @@ import type { ModelControls } from './ModelControls'
 import type { ErrorVisibilityByRecordId } from './helpers'
 import type { GettableWritable } from '../editors/GettableWritable'
 import type { FilterParams } from '../backend/Backend'
-import type { NestedModelId } from '@cozemble/model-core'
+import { get } from 'svelte/store'
 
 const eventSourceModelContextKey = 'model.records.context.eventSourcedModel'
 const modelContextKey = 'model.records.context.model'
@@ -24,6 +24,7 @@ const modelControlsContextKey = 'model.records.context.modelControls'
 const errorVisibilityByRecordIdContextKey = 'model.records.context.errorVisibilityByRecordId'
 const filterParamsContextKey = 'model.records.context.filterParams'
 const nestedModelBeingEditedContextKey = 'model.records.context.nestedModelBeingEdited'
+const permitRecordAdditionsContextKey = 'model.records.context.permitRecordAdditions'
 
 export const modelRecordsContextFns = {
   setEventSourcedModel: (model: Readable<EventSourcedModel>) => {
@@ -108,6 +109,17 @@ export const modelRecordsContextFns = {
     return mandatory(
       getContext(nestedModelBeingEditedContextKey),
       `No nested model being edited found in context`,
+    )
+  },
+  setPermitRecordAdditions(writable: Writable<boolean>) {
+    if (getContext(permitRecordAdditionsContextKey) === undefined) {
+      setContext(permitRecordAdditionsContextKey, writable)
+    }
+  },
+  getPermitRecordAdditions(): Writable<boolean> {
+    return mandatory(
+      getContext(permitRecordAdditionsContextKey),
+      `No permit record additions found in context`,
     )
   },
 }
