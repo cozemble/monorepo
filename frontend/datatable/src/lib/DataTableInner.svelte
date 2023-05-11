@@ -10,9 +10,11 @@
     import ModelTab from "./ModelTab.svelte";
     import {contextHelper} from "./stores/contextHelper";
     import RecordCreatorContext from "./records/creator/RecordCreatorContext.svelte";
+    import DataModellingExplainer from "./explainer/DataModellingExplainer.svelte";
 
     export let navbarState: Writable<string | null> = writable(null)
     const permitModelling = contextHelper.getPermitModelling()
+    let dataModellingExplainerShown = false
 
     function showModel(modelId: ModelId) {
         navbarState.set(modelId.value)
@@ -34,15 +36,25 @@
         }
     }
 
+    function dataModellingExplainerFinished() {
+        dataModellingExplainerShown = true
+    }
+
 </script>
-<div class="tabs bg-base-200 rounded pb-1 pl-2">
-    {#each $allTopLevelEventSourcedModels as model, index}
-        <ModelTab {model} {index} {navbarState} {onEditModelClicked}/>
-    {/each}
-    {#if $permitModelling}
-        <AddTableNavButton on:added={newTableAdded}/>
-    {/if}
-</div>
+
+
+{#if $allTopLevelEventSourcedModels.length === 0 && !dataModellingExplainerShown}
+    <DataModellingExplainer on:finish={dataModellingExplainerFinished}/>
+{:else}
+    <div class="tabs bg-base-200 rounded pb-1 pl-2">
+        {#each $allTopLevelEventSourcedModels as model, index}
+            <ModelTab {model} {index} {navbarState} {onEditModelClicked}/>
+        {/each}
+        {#if $permitModelling}
+            <AddTableNavButton on:added={newTableAdded}/>
+        {/if}
+    </div>
+{/if}
 
 {#if $navbarState}
     {#key $navbarState}

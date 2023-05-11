@@ -10,6 +10,7 @@
     <button class="btn btn-primary" on:click={next}>Next</button>
 {:else if step === lastStep}
     <button class="btn btn-primary" on:click={finish}>Finish</button>
+    <button class="btn btn-secondary" on:click={previous}>Previous</button>
 {:else}
     <button class="btn btn-primary" on:click={next}>Next</button>
     <button class="btn btn-secondary" on:click={previous}>Previous</button>
