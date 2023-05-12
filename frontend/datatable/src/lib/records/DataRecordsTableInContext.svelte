@@ -8,7 +8,7 @@
     import {writable} from "svelte/store";
     import {allEventSourcedModels} from "../stores/allModels";
     import {modelRecordsContextFns} from "./modelRecordsContextFns";
-    import {afterUpdate, tick} from "svelte";
+    import {tick} from "svelte";
     import SlotEditModal from "./SlotEditModal.svelte";
     import {systemConfiguration} from "../stores/systemConfiguration";
     import {contextHelper} from "../stores/contextHelper";
@@ -122,8 +122,6 @@
 
     $: hasModellingColumn = options.permitModelEditing && $permitModelling
     $: colspan = $model.slots.length + (hasModellingColumn ? 1 : 0) + (options.showActions ? 1 : 0)
-
-    afterUpdate(() => console.log({permitRecordAdditions: $permitRecordAdditions}))
 </script>
 
 

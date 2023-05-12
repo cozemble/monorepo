@@ -6,7 +6,6 @@
     import {dereference} from "./dereference";
     import {renderReference} from "./renderReference";
     import type {SystemConfiguration} from "@cozemble/model-core";
-    import {afterUpdate} from "svelte";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord
@@ -21,9 +20,6 @@
     $: dereference(dataRecordViewerClient, editorParams.referencedModelId, referencedRecords, (record) => referencedRecord = record)
     $: htmlRender = renderReference(referencedRecord, editorParams)
 
-    afterUpdate(() => {
-      console.log({referencedRecords,referencedRecord})
-    })
 </script>
 
 {#if htmlRender}
