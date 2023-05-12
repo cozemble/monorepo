@@ -61,7 +61,7 @@
     <div class="modal-box mx-8">
         <h3 class="font-bold text-lg">Add new table</h3>
         <div class="mt-2">
-            <label class="label">Table name (should be plural)</label>
+            <label class="label">Table name</label>
             <EditableStringInput value={tableName} {showErrors} extraClasses="first table-name"/>
         </div>
         <div class="modal-action justify-center">

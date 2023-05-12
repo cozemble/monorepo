@@ -8,6 +8,7 @@
     import {modelFns} from "@cozemble/model-api";
     import {positionModal} from "../modelUi";
     import {systemConfiguration} from "../stores/systemConfiguration";
+    import {clickOutside} from "@cozemble/ui-atoms";
 
     export let slotBeingEdited: SlotBeingEdited
     let model = slotBeingEdited.model
@@ -42,7 +43,8 @@
 
 <svelte:window on:keyup={onKeyup}/>
 
-<div class="coz-modal" bind:this={modal}>
+<div class="coz-modal" bind:this={modal} use:clickOutside
+     on:click_outside={close}>
     <div class="modal-box mx-2">
         <h3 class="font-bold text-lg">Edit {slot.name.value}</h3>
         <ModelSlotEditor systemConfiguration={$systemConfiguration} {models} model={model.model} {modelChangeHandler}
