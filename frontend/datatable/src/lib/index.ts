@@ -4,3 +4,4 @@ export { type GettableWritable, gettableWritable } from './editors/GettableWrita
 export { backendFns } from './appBackend'
 export { eventSourcedModelStore } from './stores/allModels'
 export { default as RecordFilteringPanel } from './filtering/RecordFilteringPanel.svelte'
+export { default as DataModellingExplainer } from './explainer/DataModellingExplainer.svelte'

@@ -9,6 +9,7 @@
     import {browser} from '$app/environment';
     import IncrementalModelingMain from "../../../lib/incrementalModelling/IncrementalModelingMain.svelte";
     import {showDevConsole} from "../../../lib/config";
+    import ShowDataModellingExplainer from "../../../lib/incrementalModelling/ShowDataModellingExplainer.svelte";
 
     let ui = 'milestone1'
     onMount(() => {
@@ -27,7 +28,9 @@
 {:then session}
     {#if session && $tenantStore}
         {#if ui === 'incremental-modeling'}
-            <IncrementalModelingMain tenantId={$page.params.tenantId}/>
+            <ShowDataModellingExplainer>
+                <IncrementalModelingMain tenantId={$page.params.tenantId}/>
+            </ShowDataModellingExplainer>
         {:else}
             <MainPanel tenantId={$page.params.tenantId}/>
         {/if}

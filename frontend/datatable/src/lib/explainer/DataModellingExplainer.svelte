@@ -1,15 +1,14 @@
 <script lang="ts">
-    import {onMount} from "svelte";
+    import {createEventDispatcher, onMount} from "svelte";
     import {registerEverything} from "@cozemble/model-assembled";
     import ExplainerButtons from "./ExplainerButtons.svelte";
     import SimpleCustomerTable from "./SimpleCustomerTable.svelte";
     import SimpleInvoiceTable from "./SimpleInvoiceTable.svelte";
     import SimpleCustomerWithAddressTable from "./SimpleCustomerWithAddressTable.svelte";
-    import {createEventDispatcher} from "svelte";
     import {allEventSourcedModels} from "../stores/allModels";
 
     let step = 1
-    const lastStep = 3
+    const lastStep = 4
     const dispatch = createEventDispatcher()
 
     function next() {
@@ -21,12 +20,13 @@
     }
 
     function finish() {
+        console.log("Finishing")
         dispatch('finish')
     }
 
     let mounted = false
     onMount(() => {
-        if($allEventSourcedModels.length > 0) {
+        if ($allEventSourcedModels.length > 0) {
             console.error("Calling explainer with models in store")
             finish()
         } else {
@@ -37,44 +37,52 @@
 </script>
 
 {#if mounted}
-    {#if step === 1}
-        <div>This is where you create tables to store your data. There is an example below - a table of Customer
-            records
-        </div>
-        <div class="mt-4">
-            <ExplainerButtons {next} {previous} {finish} {step} {lastStep}/>
-        </div>
-        <div class="mt-8 disabled">
-            <SimpleCustomerTable/>
-        </div>
-    {/if}
-    {#if step === 2}
-        <div>Data can be structured by adding <strong><em>Inner Tables</em></strong>. For example, here is an Invoice
-            table, with the first record expanded to show
-            an inner table of Line Items
-        </div>
-        <div class="mt-4">
-            <ExplainerButtons {next} {previous} {finish} {step} {lastStep}/>
-        </div>
-        <div class="mt-8 disabled">
-            <SimpleInvoiceTable/>
-        </div>
-    {/if}
-    {#if step === 3}
-        <div>And here is an example of a Customer with an <strong><em>Inner Record</em></strong> to keep the address
-            data
-            neatly tucked away
-        </div>
-        <div class="mt-2">Use <strong><em>Inner Tables</em></strong> and <strong><em>Inner Records</em></strong> to add
-            structure to your tables
-        </div>
-        <div class="mt-4">
-            <ExplainerButtons {next} {previous} {finish} {step} {lastStep}/>
-        </div>
-        <div class="mt-8 disabled">
-            <SimpleCustomerWithAddressTable/>
-        </div>
-    {/if}
+    <div>
+        {#if step === 1}
+            <div class="flex items-center flex-col">
+                <div>Welcome to Cozemble. Let's take a quick tour</div>
+                <div class="mt-4">
+                    <ExplainerButtons {next} {previous} {finish} {step} {lastStep}/>
+                </div>
+            </div>
+        {/if}
+        {#if step === 2}
+            <div class="flex items-center flex-col">
+                <div>Use tables to store your data</div>
+                <div class="mt-2">Here's a table of Customers</div>
+                <div class="mt-4">
+                    <ExplainerButtons {next} {previous} {finish} {step} {lastStep}/>
+                </div>
+                <div class="mt-8 disabled">
+                    <SimpleCustomerTable/>
+                </div>
+            </div>
+        {/if}
+        {#if step === 3}
+            <div class="flex items-center flex-col">
+                <div>Data can be structured using <strong><em>Inner Records</em></strong></div>
+                <div class="mt-2">Here's a Customer with an inner Address record</div>
+                <div class="mt-4">
+                    <ExplainerButtons {next} {previous} {finish} {step} {lastStep}/>
+                </div>
+                <div class="mt-8 disabled">
+                    <SimpleCustomerWithAddressTable/>
+                </div>
+            </div>
+        {/if}
+        {#if step === 4}
+            <div class="flex items-center flex-col">
+                <div>Use an <strong><em>Inner Table</em></strong> to store multiple inner records</div>
+                <div class="mt-2">Here's an Invoice with an inner table of line items</div>
+                <div class="mt-4">
+                    <ExplainerButtons {next} {previous} {finish} {step} {lastStep}/>
+                </div>
+                <div class="mt-8 disabled">
+                    <SimpleInvoiceTable/>
+                </div>
+            </div>
+        {/if}
+    </div>
 {/if}
 
 <style>
