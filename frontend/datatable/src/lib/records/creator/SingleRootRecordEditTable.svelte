@@ -60,6 +60,6 @@
     </tbody>
 </table>
 <div class="mt-4">
-    <button class="btn btn-primary save" on:click={saveClicked}>Save new {model.name.value}</button>
+    <button class="btn btn-primary save" on:click={saveClicked}>Save {model.name.value}</button>
     <button class="btn btn-secondary ml-2 cancel" on:click={cancel}>Cancel</button>
 </div>

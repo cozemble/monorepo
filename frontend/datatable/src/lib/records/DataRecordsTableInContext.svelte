@@ -8,14 +8,13 @@
     import {writable} from "svelte/store";
     import {allEventSourcedModels} from "../stores/allModels";
     import {modelRecordsContextFns} from "./modelRecordsContextFns";
-    import {tick} from "svelte";
+    import {afterUpdate, tick} from "svelte";
     import SlotEditModal from "./SlotEditModal.svelte";
     import {systemConfiguration} from "../stores/systemConfiguration";
     import {contextHelper} from "../stores/contextHelper";
     import DataEntryRow from "./entry/DataEntryRow.svelte";
     import AddModelElementButton from "./modelling/AddModelElementButton.svelte";
     import {modelFns, modelOptions, propertyFns} from "@cozemble/model-api";
-    import {afterUpdate} from "svelte";
 
     export let oneOnly = false
     export let options: DataRecordsTableOptions = dataRecordsTableOptions(true, true, true)
@@ -124,7 +123,7 @@
     $: hasModellingColumn = options.permitModelEditing && $permitModelling
     $: colspan = $model.slots.length + (hasModellingColumn ? 1 : 0) + (options.showActions ? 1 : 0)
 
-    afterUpdate(() => console.log({permitRecordAdditions:$permitRecordAdditions}))
+    afterUpdate(() => console.log({permitRecordAdditions: $permitRecordAdditions}))
 </script>
 
 
@@ -163,8 +162,8 @@
                         <td {colspan}>
                             <div class="flex justify-center">
                                 <button class="btn btn-primary save-root-record"
-                                        on:click={() => save(record,($records.length - 1))}>Save
-                                    new {$model.name.value}</button>
+                                        on:click={() => save(record,($records.length - 1))}>
+                                    Save {$model.name.value}</button>
                                 <button class="btn btn-secondary ml-2">Clear</button>
                             </div>
                         </td>
