@@ -10,11 +10,9 @@
       "outputs": [],
       "inputs": []
     },
-    "lint": {
-      "outputs": []
-    },
-    "deploy": {
-      "dependsOn": ["build", "test", "lint"],
+    "cypress": {
+      "dependsOn": ["build", "test"],
+      "inputs": ["cypress/**"],
       "outputs": []
     }
   }

@@ -36,7 +36,7 @@
 {#if otherModelIds.length === 0}
     <div>No other {$naming.modelNamePlural.toLowerCase()} to link to</div>
 {:else}
-    <select class="input input-bordered w-full" id="referencedModel" on:change={referencedModelChanged}>
+    <select class="input input-bordered w-full referenced-model" id="referencedModel" on:change={referencedModelChanged}>
         <option selected={referencedModelId === null}>----</option>
         {#each otherModels as model}
             <option value={model.id.value}

@@ -6,6 +6,8 @@ import type { JustErrorMessage } from '@cozemble/lang-util'
 import type { Cardinality, Model, ModelEvent, ModelId } from '@cozemble/model-core'
 import { modelIdAndNameFns, nestedModelNameFns } from '@cozemble/model-core'
 import { coreModelEvents } from '@cozemble/model-event-sourced'
+import type { NestedModelId } from '@cozemble/model-core'
+import { nestedModelIdFns } from '@cozemble/model-core'
 
 export function makeModelControls(
   eventSourcedModels: Writable<EventSourcedModel[]>,
@@ -28,7 +30,7 @@ export function makeModelControls(
       parentModel: EventSourcedModel,
       childModel: Model,
       cardinality: Cardinality,
-    ): Promise<void> {
+    ): Promise<NestedModelId> {
       childModel.parentModelId = parentModel.model.id
       eventSourcedModels.update((models) => {
         const newEventSourcedModel = eventSourcedModelFns.newInstance(childModel)
@@ -40,8 +42,16 @@ export function makeModelControls(
         cardinality === 'one'
           ? nestedModelNameFns.newInstance(childModel.name.value)
           : nestedModelNameFns.newInstance(childModel.pluralName.value)
-      const event = coreModelEvents.nestedModelAdded(parent, child, cardinality, name)
+      const nestedModelId = nestedModelIdFns.newInstance()
+      const event = coreModelEvents.nestedModelAdded(
+        parent,
+        child,
+        cardinality,
+        name,
+        nestedModelId,
+      )
       await this.updateModel(parentModel.model.id, event)
+      return nestedModelId
     },
   }
 }

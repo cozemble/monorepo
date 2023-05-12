@@ -62,7 +62,7 @@
         <h3 class="font-bold text-lg">Add new table</h3>
         <div class="mt-2">
             <label class="label">Table name (should be plural)</label>
-            <EditableStringInput value={tableName} {showErrors} extraClasses="first"/>
+            <EditableStringInput value={tableName} {showErrors} extraClasses="first table-name"/>
         </div>
         <div class="modal-action justify-center">
             <label class="btn btn-primary" on:click={saveNewTable}>Add table</label>

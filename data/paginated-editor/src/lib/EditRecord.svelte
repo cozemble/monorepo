@@ -39,7 +39,7 @@
     }
 
     const dataRecordEditorClient: DataRecordEditorClient = {
-        createNewRecord(modelId: ModelId): Promise<DataRecord | null> {
+        createNewRootRecord(modelId: ModelId): Promise<DataRecord | null> {
             return recordCreator.createNewRecord(modelId)
         },
 

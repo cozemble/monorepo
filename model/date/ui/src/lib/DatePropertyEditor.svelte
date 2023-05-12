@@ -63,7 +63,7 @@
 {/if}
 
 <div class="input-container" class:absolute={inRecord}>
-    <input class="input input-bordered" type="date" value={editableValue} on:change={dateChanged} use:init
+    <input class="input input-bordered date-input" type="date" value={editableValue} on:change={dateChanged} use:init
            on:keydown={handleKeyDownInInput}/>
 </div>
 

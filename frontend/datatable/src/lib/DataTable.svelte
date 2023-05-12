@@ -32,11 +32,15 @@
     contextHelper.setPermitModelling(permitModelling)
     contextHelper.setShowDevConsole(showDevConsole)
 
+    let mounted = false
     onMount(() => {
         slotViewerRegistry.register('model.reference', ModelReferenceViewer)
         slotEditorRegistry.register('model.reference', ModelReferenceEditor)
         customNaming("Table", "Tables")
+        mounted = true
     })
 </script>
 
-<DataTableInner {navbarState}/>
+{#if mounted}
+    <DataTableInner {navbarState}/>
+{/if}

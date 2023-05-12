@@ -63,11 +63,5 @@ jobs:
       - name: Test
         run: npx turbo test
 
-      - name: Model editor cypress tests
-        run: cd model/editor && ./scripts/run-cypress.sh
-
-      - name: Paginated data editor cypress tests
-        run: cd data/paginated-editor && ./scripts/run-cypress.sh
-
-      - name: Datatable cypress tests
-        run: cd frontend/datatable && ./scripts/run-cypress.sh
+      - name: Cypress tests
+        run: npx turbo cypress --concurrency 1

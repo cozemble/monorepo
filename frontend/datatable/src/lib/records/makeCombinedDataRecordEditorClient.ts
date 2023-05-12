@@ -5,14 +5,13 @@ import type {
   DataRecordEditorClient,
   DataRecordViewerClient,
   UploadedAttachment,
-  UserInstruction,
 } from '@cozemble/data-editor-sdk'
 import type { DataRecord, DataRecordId, Model, ModelId, ModelView } from '@cozemble/model-core'
 import type { EventSourcedDataRecordsStore } from './EventSourcedDataRecordsStore'
 import type { DataTableFocusControls2 } from '../focus/DataTableFocus'
 import type { JustErrorMessage } from '@cozemble/lang-util'
 import type { Backend } from '../backend/Backend'
-import { createNewRecord as createNewRecordFn } from './creator/recordCreatorStore'
+import { createNewRootRecord as createNewRootRecordFn } from './creator/recordCreatorStore'
 
 export type CombinedDataRecordEditorClient = DataRecordEditorClient & DataRecordViewerClient
 
@@ -37,28 +36,29 @@ export function makeCombinedDataRecordEditorClient(
     },
 
     dispatchEditEvent(event: DataRecordEditEvent): void {
+      console.log({ event })
       if (event._type === 'data.record.value.changed') {
         records.updateRecord(recordId, event)
         if (event.confirmMethod === 'Tab') {
           focusControls.moveForward()
         }
+      } else if (event._type === 'data.record.has.many.item.added') {
+        records.updateRecord(recordId, event)
       } else {
         throw new Error('Not implemented: ' + event._type)
       }
     },
 
-    createNewRecord(modelId: ModelId): Promise<DataRecord | null> {
-      return new Promise((resolve) => {
-        function onCreated(value: DataRecord): void {
-          resolve(value)
-        }
-
-        function onCancel(): void {
-          resolve(null)
-        }
-
-        createNewRecordFn(modelId, onCreated, onCancel)
-      })
+    async createNewRootRecord(modelId: ModelId): Promise<DataRecord | null> {
+      const newRecord = await createNewRootRecordFn(modelId)
+      if (!newRecord) {
+        return null
+      }
+      const outcome = await backend.saveNewRecord(newRecord)
+      if (outcome._type === 'record.save.succeeded') {
+        return outcome.record
+      }
+      return null
     },
 
     searchRecords(modelId: ModelId, search: string): Promise<DataRecord[]> {
@@ -92,7 +92,7 @@ export function makeCombinedDataRecordEditorClient(
       return backend.getAttachmentViewUrls(attachments)
     },
 
-    instructUser(userInstruction: UserInstruction): void {
+    instructUser(): void {
       throw new Error('Method not implemented.')
     },
 

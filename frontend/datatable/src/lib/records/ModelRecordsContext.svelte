@@ -1,7 +1,7 @@
 <script lang="ts">
     import {allEventSourcedModels, allModels} from "../stores/allModels";
     import {derived, writable} from "svelte/store";
-    import type {DataRecord, ModelId} from "@cozemble/model-core";
+    import type {DataRecord, Model, ModelId} from "@cozemble/model-core";
     import {eventSourcedModelFns} from "@cozemble/model-event-sourced";
     import {modelRecordsContextFns} from "./modelRecordsContextFns";
     import {eventSourcedDataRecordFns} from "@cozemble/data-editor-sdk";
@@ -18,6 +18,8 @@
     import {makeModelControls} from "./makeModelControls";
     import type {ErrorVisibilityByRecordId} from "./helpers";
     import {emptyFilterParams, type FilterParams, type RecordSaver} from "../backend/Backend";
+    import {dataRecordFns} from "@cozemble/model-api";
+    import type {NestedModelId} from "@cozemble/model-core";
 
     const systemConfigurationProvider = () => $systemConfiguration
     const modelsProvider = () => $allModels
@@ -26,6 +28,8 @@
     export let recordLoader: (modelId: ModelId, filterParams: FilterParams) => Promise<DataRecord[]> = getRecordsForModel
     export let eventSourcedRecords = eventSourcedDataRecordsStore(systemConfigurationProvider, modelsProvider, () => $model, $currentUserId)
     export let recordSaver: RecordSaver = backend
+    export let oneOnly = false
+    export let permitRecordAdditions = true
 
     const eventSourcedModel = derived(allEventSourcedModels, models => eventSourcedModelFns.findById(models, modelId))
     const model = derived(eventSourcedModel, model => model.model)
@@ -57,6 +61,9 @@
     modelRecordsContextFns.setModelControls(makeModelControls(allEventSourcedModels))
     modelRecordsContextFns.setErrorVisibilityByRecordId(errorVisibilityByRecordId)
     modelRecordsContextFns.setFilterParams(filterParams)
+    modelRecordsContextFns.setNestedModelBeingEdited(writable(null as NestedModelId|null))
+    modelRecordsContextFns.setPermitRecordAdditions(writable(permitRecordAdditions))
+
     let someRecordsLoaded = false
 
     const unsubAllEventSourcedModels = allModels.subscribe(models => {
@@ -65,12 +72,23 @@
         })
     })
 
+    function newEmptyRecord(model: Model) {
+        return eventSourcedDataRecordFns.fromRecord($allModels, dataRecordFns.newInstance($model, $currentUserId))
+    }
+
     async function loadRecords(filterParams: FilterParams) {
         loadingState.set('loading')
         const loaded = await recordLoader(modelId, filterParams)
-        eventSourcedRecords.set(
-            loaded.map((r) => eventSourcedDataRecordFns.fromRecord($allModels, r)),
-        )
+        if (oneOnly) {
+            eventSourcedRecords.set(
+                [...loaded.map((r) => eventSourcedDataRecordFns.fromRecord($allModels, r))],
+            )
+        } else {
+            eventSourcedRecords.set(
+                [...loaded.map((r) => eventSourcedDataRecordFns.fromRecord($allModels, r)), newEmptyRecord($model)],
+            )
+
+        }
         someRecordsLoaded = true
         loadingState.set('loaded')
     }

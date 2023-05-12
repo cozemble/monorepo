@@ -32,7 +32,7 @@
         dispatchEditEvent(): void {
         },
 
-        createNewRecord(): Promise<DataRecord | null> {
+        createNewRootRecord(): Promise<DataRecord | null> {
             throw new Error("Not implemented")
         },
 

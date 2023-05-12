@@ -62,7 +62,7 @@
             </div>
         {/if}
         <div class="mt-3">
-            <button class="btn btn-primary" on:click={save}>Save view</button>
+            <button class="btn btn-primary save-view" on:click={save}>Save view</button>
             <button class="btn" on:click={clearTemplate}>Clear</button>
             <button class="btn" on:click={cancel}>Cancel</button>
         </div>

@@ -8,6 +8,7 @@
     const dispatch = createEventDispatcher()
 
     async function addTable() {
+        console.log("adding table")
         addingTable = true
     }
 
@@ -23,10 +24,10 @@
 
 <div bind:this={rootDiv}>
     {#if $allEventSourcedModels.length === 0}
-        <a class="tab tab-lg"
+        <a class="tab tab-lg add-table-link"
            on:click={addTable}>+ Add your first table</a>
     {:else}
-        <a class="tab tab-lg"
+        <a class="tab tab-lg add-table-link"
            on:click={addTable}>+ Add table</a>
     {/if}
 </div>

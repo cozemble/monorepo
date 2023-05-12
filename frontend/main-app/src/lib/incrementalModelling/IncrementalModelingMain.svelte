@@ -52,7 +52,6 @@
 
     function viewAsChanged(event: Event) {
         const target = event.target as HTMLSelectElement
-        console.log({value:target.value})
         permitModelling.update(p => target.value === 'developer')
     }
 </script>

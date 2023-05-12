@@ -178,6 +178,9 @@ export const dataRecordValuePathFns = {
         if (e._type === 'nested.model') {
           return e.id.value
         }
+        if (e._type === 'nested.record.array.path.element') {
+          return `${e.nestedModel.id.value}.${e.recordReference.index}`
+        }
         throw new Error(`Invalid element in path: ${e._type}`)
       })
       const parts = [...parentIds, path.lastElement.id.value]

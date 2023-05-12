@@ -17,11 +17,14 @@ npx cypress run
 TEST_EXIT_CODE=$?
 
 # Find the PID of the Svelte app process
-SVELTE_PID=$(lsof -ti :5173)
-echo
-# Kill the Svelte app process
-if [ -n "$SVELTE_PID" ]; then
-  kill "$SVELTE_PID"
-fi
+SVELTE_PIDS=$(lsof -ti :5173)
+
+# Kill the Svelte app processes
+for PID in $SVELTE_PIDS
+do
+  if [ -n "$PID" ]; then
+    kill "$PID"
+  fi
+done
 # Exit with the test exit code
 exit $TEST_EXIT_CODE

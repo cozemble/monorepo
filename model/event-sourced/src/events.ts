@@ -10,13 +10,15 @@ import type {
 import {
   modelEventDescriptors,
   modelEventFns,
+  ModelPluralName,
   ModelSlotId,
   ModelSlotName,
+  NestedModelId,
+  nestedModelIdFns,
   NestedModelName,
   PropertyName,
 } from '@cozemble/model-core'
 import { modelIdFns, nestedModelFns } from '@cozemble/model-api'
-import { ModelPluralName } from '@cozemble/model-core'
 
 export interface ModelRenamed extends ModelEvent {
   _type: 'model.renamed.event'
@@ -114,6 +116,7 @@ export interface NestedModelAdded extends ModelEvent {
   parentModel: ModelIdAndName
   childModel: ModelIdAndName
   nestedModelName: NestedModelName
+  nestedModelId: NestedModelId
 }
 
 function nestedModelAdded(
@@ -121,6 +124,7 @@ function nestedModelAdded(
   childModel: ModelIdAndName,
   cardinality: Cardinality,
   nestedModelName: NestedModelName,
+  nestedModelId = nestedModelIdFns.newInstance(),
 ): NestedModelAdded {
   return {
     _type: 'nested.model.added.event',
@@ -129,6 +133,7 @@ function nestedModelAdded(
     childModel,
     cardinality,
     nestedModelName,
+    nestedModelId,
   }
 }
 
@@ -140,10 +145,52 @@ const nestedModelAddedDescriptor: ModelEventDescriptor<NestedModelAdded> = {
       event.nestedModelName,
       event.childModel.id,
       event.cardinality,
+      event.nestedModelId,
     )
     return {
       ...model,
       nestedModels: [...model.nestedModels, newNestedModel],
+    }
+  },
+}
+
+export interface NestedModelRenamed extends ModelEvent {
+  _type: 'nested.model.renamed.event'
+  parentModelId: ModelId
+  nestedModelId: NestedModelId
+  newName: NestedModelName
+}
+
+function nestedModelRenamed(
+  parentModelId: ModelId,
+  nestedModelId: NestedModelId,
+  newName: NestedModelName,
+): NestedModelRenamed {
+  return {
+    _type: 'nested.model.renamed.event',
+    ...modelEventFns.coreParts(parentModelId),
+    parentModelId,
+    nestedModelId,
+    newName,
+  }
+}
+
+const nestedModelRenamedDescriptor: ModelEventDescriptor<NestedModelRenamed> = {
+  _type: 'model.event.descriptor',
+  modelEventType: 'nested.model.renamed.event',
+  applyEvent: (model, event) => {
+    return {
+      ...model,
+      nestedModels: model.nestedModels.map((nestedModel) => {
+        if (nestedModel.id.value === event.nestedModelId.value) {
+          return {
+            ...nestedModel,
+            name: event.newName,
+          }
+        } else {
+          return nestedModel
+        }
+      }),
     }
   },
 }
@@ -207,6 +254,7 @@ modelEventDescriptors.register(modelRenamedDescriptor)
 modelEventDescriptors.register(modelPluralRenamedDescriptor)
 modelEventDescriptors.register(modelSlotRenamedDescriptor)
 modelEventDescriptors.register(nestedModelAddedDescriptor)
+modelEventDescriptors.register(nestedModelRenamedDescriptor)
 modelEventDescriptors.register(booleanPropertyChangeDescriptor)
 
 export const coreModelEvents = {
@@ -214,6 +262,7 @@ export const coreModelEvents = {
   modelPluralRenamed,
   slotRenamed,
   nestedModelAdded,
+  nestedModelRenamed,
   modelCreated,
   booleanPropertyChanged,
 }

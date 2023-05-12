@@ -12,7 +12,9 @@
     "prepublishOnly": "echo 'Did you mean to publish `./package/`, instead of `./`?' && exit 1",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-    "test": "svelte-check --tsconfig ./tsconfig.json --threshold error"
+    "test": "svelte-check --tsconfig ./tsconfig.json --threshold error",
+    "cypress": "./scripts/run-cypress.sh"
+
   },
   "devDependencies": {
     "@originjs/vite-plugin-commonjs": "^1.0.3",

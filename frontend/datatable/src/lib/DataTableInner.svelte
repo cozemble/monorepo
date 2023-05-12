@@ -35,6 +35,8 @@
     }
 
 </script>
+
+
 <div class="tabs bg-base-200 rounded pb-1 pl-2">
     {#each $allTopLevelEventSourcedModels as model, index}
         <ModelTab {model} {index} {navbarState} {onEditModelClicked}/>
