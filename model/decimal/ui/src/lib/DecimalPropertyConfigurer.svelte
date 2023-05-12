@@ -1,7 +1,7 @@
 <script lang="ts">
     import type {Model} from "@cozemble/model-core";
     import {numberOfDecimalPlacesChanged, type DecimalProperty} from "@cozemble/model-decimal-core";
-import { createEventDispatcher } from "svelte"
+    import { createEventDispatcher } from "svelte"
 
     export let model: Model
     export let property: DecimalProperty

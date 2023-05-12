@@ -38,11 +38,12 @@
     }
 
     function validateInput() {
-        input.value = input.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1').replace(/(\.[0-9]{2})./g, '$1');
+        let re = new RegExp("(\\.[0-9]{" + numberOfDecimalPlaces + "}).", 'g');
+        input.value = input.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1').replace(re, '$1');
     }    
 
 </script>
-<!--
+
 <input 
     class="input input-bordered" 
     type="number"
@@ -50,9 +51,11 @@
     bind:this={input}
     on:input={validateInput}
     on:change={decimalChanged}/>
--->    
-<input
-    class="input input-bordered"
-    type="number"
-    value={editableValue}
-    on:change={decimalChanged}/>
+
+<!--
+    <input
+        class="input input-bordered"
+        type="number"
+        value={editableValue}
+        on:change={decimalChanged}/>
+-->
