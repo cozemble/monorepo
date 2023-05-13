@@ -166,7 +166,7 @@
                             </td>
                         </tr>
                     {/if}
-                    <DataEntryRow {parentPath} {options} {record} {rowIndex} {oneOnly} {expandedRecordIds}/>
+                    <DataEntryRow {parentPath} {options} {record} {rowIndex} oneOnly={true} {expandedRecordIds}/>
                     {#if isDataEntryRow(rowIndex, $records) && recordHasEvents(rowIndex, $eventSourcedRecords)}
                         <tr>
                             <td {colspan}>

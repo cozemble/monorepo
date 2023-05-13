@@ -5,8 +5,9 @@
  * When I make an inner table called "Line Items", the button remains as "Add Inner Table" instead of "Add Line Item"
  * Then with I click the "Add Inner Table" button, the editor that appears also has the "Inner table language"
  * Model reference editor makes the slot visually jump when activated, make this also an absolutely positioned editor
-
- * https://github.com/cozemble/monorepo/issues/68
  * No delete button for the last slot in a table
+
  * Support to delete inner records and tables
  * Some UI means of indicating whether an inner thing is a record or table
+
+  * https://github.com/cozemble/monorepo/issues/68
