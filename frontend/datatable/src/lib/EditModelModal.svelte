@@ -12,6 +12,7 @@
     import {editableValueFns} from "./editors/editableValue";
     import {dispatchChange} from "./editors/dispatchChange";
     import {onMount} from "svelte";
+    import {clickOutside} from "@cozemble/ui-atoms";
 
     export let state: EditModelModalState
     const eventSourcedModel = eventSourcedStore(modelReducer, saveModel, mandatory($editModelModal, `Edit model not configured`).model)
@@ -44,13 +45,18 @@
         }
     }
 
+    function close() {
+        modelUi.closeEditModelModal()
+    }
+
     onMount(() => positionModal(modal, state.anchorElement))
 
 </script>
 
 <svelte:window on:keyup={onKeyUp}/>
 
-<div class="coz-modal" bind:this={modal}>
+<div class="coz-modal" bind:this={modal} use:clickOutside
+     on:click_outside={close}>
     <div class="modal-box mx-8">
         <h3 class="font-bold text-lg">Edit table</h3>
         <div class="form-control">
@@ -63,7 +69,7 @@
         </div>
         <div class="modal-action justify-center">
             <label class="btn btn-primary" on:click={save}>Save</label>
-            <label class="btn btn-secondary">Cancel</label>
+            <label class="btn btn-secondary" on:click={close}>Cancel</label>
         </div>
     </div>
 </div>
