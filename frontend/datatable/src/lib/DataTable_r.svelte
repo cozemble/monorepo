@@ -1,4 +1,4 @@
-<!-- TODO (refactor): move into '$lib/components/Editor.svelte' -->
+<!-- TODO (refactor): move into '$lib/components/EditorWrapper.svelte' -->
 <script lang="ts">
 import type { Writable } from 'svelte/store'
 import { writable } from 'svelte/store'
@@ -20,7 +20,7 @@ import { setAllModelViews } from './stores/allModelViews'
 import { setAllEventSourcedModels } from './stores/allModels'
 import { currentUserId } from './stores/currentUserId'
 import { systemConfiguration as systemConfigurationStore } from './stores/systemConfiguration'
-import DataTableInner from './DataTableInner.svelte'
+import DataTableInner from './DataTableInner_r.svelte'
 import { recordFilteringComponentStore } from './stores/recordFilteringComponentStore'
 import type { EventSourcedModelStore } from './types'
 import { contextHelper } from './stores/contextHelper'
