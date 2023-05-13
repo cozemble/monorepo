@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type {ModelEvent} from "@cozemble/model-core";
+    import type {DataRecordId, ModelEvent, ModelId} from "@cozemble/model-core";
     import {
         type DataRecord, type Model, modelEventDescriptors, type
             ModelView, systemConfigurationFns
@@ -24,6 +24,10 @@
     }
 
     const dataRecordEditorClient: DataRecordEditorClient = {
+        recordById(): Promise<DataRecord | null> {
+            throw new Error("Not implemented")
+        },
+
         dispatchControlEvent(): void {
         },
 

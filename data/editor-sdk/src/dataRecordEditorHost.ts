@@ -1,5 +1,12 @@
 import { mandatory } from '@cozemble/lang-util'
-import { DataRecord, Model, ModelId, ModelName, ModelView } from '@cozemble/model-core'
+import {
+  DataRecord,
+  DataRecordId,
+  Model,
+  ModelId,
+  ModelName,
+  ModelView,
+} from '@cozemble/model-core'
 import { DataRecordControlEvent, DataRecordEditEvent } from './dataRecordEditEvents'
 import { getContext, setContext } from 'svelte'
 import { ModelViewManager } from './ModelViewManager'
@@ -49,6 +56,8 @@ export const userInstructionFns = {
 }
 
 export interface DataRecordEditorClient extends ModelViewManager {
+  recordById(modelId: ModelId, recordId: DataRecordId): Promise<DataRecord | null>
+
   dispatchControlEvent(event: DataRecordControlEvent): void
 
   dispatchEditEvent(event: DataRecordEditEvent): void

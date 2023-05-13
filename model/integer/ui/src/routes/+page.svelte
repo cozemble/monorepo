@@ -24,6 +24,10 @@
     }
 
     const dataRecordEditorClient: DataRecordEditorClient = {
+        recordById(): Promise<DataRecord | null> {
+            throw new Error("Not implemented")
+        },
+
         dispatchControlEvent(): void {
         },
 

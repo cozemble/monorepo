@@ -4,6 +4,8 @@
     import {dataRecordControlEvents, dataRecordEditEvents, dataRecordEditor} from "@cozemble/data-editor-sdk";
     import {onMount} from "svelte";
     import {type EditorParams, makeSummaryView} from "./editorHelper";
+    import {dereference} from "$lib/modelReferences/dereference";
+    import {renderReference} from "$lib/modelReferences/renderReference";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord
@@ -17,6 +19,12 @@
     const dataRecordEditorClient = dataRecordEditor.getClient()
     let options: DataRecord[] = []
     let searchTerm = ""
+
+    let referencedRecord: DataRecord | null = null
+
+    $: referencedRecords = dataRecordValuePathFns.getValue(systemConfiguration, recordPath, record) as ReferencedRecords ?? null
+    $: dereference(dataRecordEditorClient, editorParams.referencedModelId, referencedRecords, (record) => referencedRecord = record)
+    $: htmlRender = renderReference(referencedRecord, editorParams)
 
     function cancel(event: MouseEvent) {
         event.preventDefault()
@@ -43,7 +51,7 @@
                     recordPath,
                     initialValue,
                     newValue,
-                    null,
+                    'Tab',
                 ),
             )
             initialValue = newValue
@@ -54,7 +62,7 @@
                     recordPath,
                     initialValue,
                     null,
-                    null,
+                    'Tab',
                 ),
             )
             initialValue = null
@@ -101,11 +109,26 @@
 </script>
 
 <svelte:window on:keydown={handleKeydown}/>
-<select class="input input-bordered reference-selector" on:change={optionChanged}>
-    <option selected={initialValue === null}>----</option>
-    <option value="create.new.record">Create a new {editorParams.referencedModel.name.value}</option>
-    {#each options as option}
-        {@const view = makeSummaryView(option, editorParams)}
-        <option value={option.id.value} selected={selectedRecordId === option.id.value}>{view}</option>
-    {/each}
-</select>
+<div>
+    {#if htmlRender}
+        {@html htmlRender}
+    {:else}
+        ----
+    {/if}
+    <div class="editor">
+        <select class="input input-bordered reference-selector" on:change={optionChanged}>
+            <option selected={initialValue === null}>----</option>
+            <option value="create.new.record">Create a new {editorParams.referencedModel.name.value}</option>
+            {#each options as option}
+                {@const view = makeSummaryView(option, editorParams)}
+                <option value={option.id.value} selected={selectedRecordId === option.id.value}>{view}</option>
+            {/each}
+        </select>
+    </div>
+</div>
+
+<style>
+    .editor {
+        position: absolute;
+    }
+</style>

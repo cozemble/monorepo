@@ -18,6 +18,7 @@
     import type {AttachmentsManager} from "./AttachmentsManager";
     import type {JustErrorMessage} from "@cozemble/lang-util";
     import {strings} from "@cozemble/lang-util";
+    import type {DataRecordId} from "@cozemble/model-core";
 
     export let recordEditContext: RecordEditContext
     export let recordSearcher: RecordSearcher
@@ -39,6 +40,10 @@
     }
 
     const dataRecordEditorClient: DataRecordEditorClient = {
+        async recordById(modelId: ModelId, recordId: DataRecordId): Promise<DataRecord | null> {
+            return recordSearcher.recordById(modelId, recordId)
+        },
+
         createNewRootRecord(modelId: ModelId): Promise<DataRecord | null> {
             return recordCreator.createNewRecord(modelId)
         },
