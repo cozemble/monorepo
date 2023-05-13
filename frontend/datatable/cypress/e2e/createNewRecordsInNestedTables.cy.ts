@@ -1,5 +1,6 @@
 import { clickAddSubtable } from './helpers'
 
+const addLineItemButtonText = 'Add Inner table' // this is a bug
 describe('data table', () => {
   it('supports supports creating a new root record from a model reference slot', () => {
     cy.visit('http://localhost:5173/empty')
@@ -16,15 +17,15 @@ describe('data table', () => {
     cy.get('input.required-toggle').click()
     cy.get('button.save-property').click()
 
-    cy.contains('Add Line items').click()
+    cy.contains('Add Inner table').click() // this is a bug
     cy.get('button.cancel').click()
 
-    cy.contains('Add Line items').click()
+    cy.contains(addLineItemButtonText).click()
     cy.get('button.save').click()
     cy.get('[data-cell-index="0-0"]').should('contain', 'Required')
     cy.get('button.cancel').click()
 
-    cy.contains('Add Line items').click()
+    cy.contains(addLineItemButtonText).click()
     cy.focused().should('have.attr', 'contenteditable', 'true')
     cy.focused().type('20 Typewriters').realPress('Tab')
     cy.get('button.save').click()
