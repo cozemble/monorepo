@@ -6,14 +6,18 @@
     import {onMount} from 'svelte'
     import {writable} from "svelte/store";
     import {backendFns, DataTable, eventSourcedModelStore} from "../../lib";
-    import {InMemoryBackend} from "../../lib/backend/InMemoryBackend";
     import {testModelsLocalStorageKey} from "./testModels";
     import {testRecordsLocalStorageKey} from "./testModels.js";
     import type {DataRecord} from "@cozemble/model-core/dist/esm";
+    import {InMemoryBackend} from "../../lib/backend/InMemoryBackend";
+    import DevOptions from "../DevOptions.svelte";
 
     const modelViews = writable([] as ModelView[])
     let models = [] as EventSourcedModel[]
     const systemConfiguration = systemConfigurationFns.empty()
+    const permitModelling = writable(true)
+    const showDevConsole = writable(false)
+
 
     let mounted = false
     onMount(() => {
@@ -23,7 +27,7 @@
         models = JSON.parse(storedModelJson)
         const modelMap = new Map<string, EventSourcedModel>()
         for (const model of models) {
-            modelMap.set(model.id, model)
+            modelMap.set(model.model.id.value, model)
         }
         const records = JSON.parse(storedRecordsJson) as DataRecord[]
         const recordMap = new Map<string, DataRecord[]>()
@@ -38,8 +42,11 @@
 </script>
 
 {#if mounted}
+    <DevOptions {permitModelling} {showDevConsole}/>
     <DataTable models={eventSourcedModelStore(models)}
                {modelViews}
                {systemConfiguration}
-               userId="test"/>
+               userId="test"
+               {showDevConsole}
+               {permitModelling}/>
 {/if}

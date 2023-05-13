@@ -29,7 +29,6 @@ export function makeFocusControls(
         systemConfigurationProvider(),
         dataRecordValuePathFns.newInstance(slot, ...parentElements),
       )
-      console.log({ newFocus })
       focus.update((currentFocus) => {
         return currentFocus.setFocus(rowIndex, newFocus)
       })

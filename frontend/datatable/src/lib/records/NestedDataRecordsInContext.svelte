@@ -1,7 +1,6 @@
 <script lang="ts">
     import type {DataRecordsTableOptions} from "./DataRecordsTableOptions";
     import type {DataRecord, DataRecordPathParentElement, ModelId, NestedModel} from "@cozemble/model-core";
-    import {modelNameFns, modelPluralNameFns} from "@cozemble/model-core";
     import DataRecordsTableInContext from "./DataRecordsTableInContext.svelte";
     import {modelRecordsContextFns} from "./modelRecordsContextFns";
     import {derived} from "svelte/store";
@@ -9,11 +8,11 @@
     import WithNestedRecordsContext from "./WithNestedRecordsContext.svelte";
     import {allEventSourcedModels} from "../stores/allModels";
     import {dataRecordFns} from "@cozemble/model-api";
-    import {coreModelEvents, eventSourcedModelFns} from "@cozemble/model-event-sourced";
+    import {eventSourcedModelFns} from "@cozemble/model-event-sourced";
     import {dataRecordEditEvents} from "@cozemble/data-editor-sdk";
     import {singleRecordEditContext} from "./contextHelper";
-    import {EditableName} from "@cozemble/ui-atoms";
     import {createNewNestedRecord} from "./creator/recordCreatorStore";
+    import NestedModelName from "$lib/records/NestedModelName.svelte";
 
     export let options: DataRecordsTableOptions
     export let record: DataRecord
@@ -26,14 +25,6 @@
     const oneOnly = nestedModel.cardinality === 'one'
     const records = modelRecordsContextFns.getRecords()
     const rootRecordEditorClient = singleRecordEditContext.getRecordEditorClient()
-    const nestedModelBeingEdited = modelRecordsContextFns.getNestedModelBeingEdited()
-    const modelControls = modelRecordsContextFns.getModelControls()
-    $: nameable = {
-        name: $model.name.value
-    }
-    $: pluralNameable = {
-        name: $model.pluralName.value
-    }
     const nestedRecords = derived(records, records => {
         const maybeRecordLatest = records.find(r => r.id.value === record.id.value)
         if (!maybeRecordLatest) {
@@ -59,31 +50,17 @@
         }
     }
 
-    function onNameChange(newName: string) {
-        if (nestedModel.cardinality === "one") {
-            modelControls.updateModel($model.id, coreModelEvents.modelRenamed($model.id, modelNameFns.newInstance(newName)))
-        } else {
-            modelControls.updateModel($model.id, coreModelEvents.modelPluralRenamed($model.id, modelPluralNameFns.newInstance(newName)))
-        }
-        $nestedModelBeingEdited = null
-    }
 
 </script>
 
 <WithNestedRecordsContext records={nestedRecords} {eventSourcedModel} {model}>
     <div class="mb-2">
-        {#if nestedModel.cardinality === "one"}
-            <EditableName {nameable} {onNameChange} extraClass="nested-model-name"
-                          editImmediately={$nestedModelBeingEdited?.value === nestedModel.id.value}/>
-        {:else}
-            <EditableName nameable={pluralNameable} {onNameChange} extraClass="nested-model-name"
-                          editImmediately={$nestedModelBeingEdited?.value === nestedModel.id.value}/>
-        {/if}
+        <NestedModelName model={$model} {nestedModel}/>
     </div>
     <DataRecordsTableInContext {options} {oneOnly} parentPath={nestedParentPath}/>
     <div class="mt-2">
         {#if !oneOnly && $model.slots.length > 0}
-            <button class="btn btn-primary btn-sm" on:click={addRecord}>
+            <button class="btn btn-primary btn-sm add-nested-item" on:click={addRecord}>
                 Add {$model.name.value}</button>
         {/if}
     </div>

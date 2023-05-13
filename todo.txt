@@ -2,8 +2,8 @@
  * Can't cancel the table editor modal (by clicking the cancel button)
  * Clicking outside the edit slot modal should close it
  * Can't click on Booking.Bike.Make to begin editing there
-
  * When I make an inner table called "Line Items", the button remains as "Add Inner Table" instead of "Add Line Item"
  * Then with I click the "Add Inner Table" button, the editor that appears also has the "Inner table language"
+
  * Model reference editor makes the slot visually jump when activated, make this also an absolutely positioned editor
  * https://github.com/cozemble/monorepo/issues/68

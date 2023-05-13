@@ -38,11 +38,11 @@ export async function positionModal(modalElement: HTMLDivElement, anchorElement:
       })
     })
     await tick()
-    focusFirstInput(modalElement, 'edit-model-modal')
+    focusFirstInput(modalElement)
   }
 }
 
-function focusFirstInput(parent: HTMLDivElement, divId: string) {
+function focusFirstInput(parent: HTMLDivElement) {
   const firstInput = parent.querySelector(`input.first`)
   if (firstInput && firstInput instanceof HTMLInputElement) {
     firstInput.focus()

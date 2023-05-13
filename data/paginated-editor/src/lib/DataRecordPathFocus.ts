@@ -93,7 +93,6 @@ export class DataRecordPathFocus {
   }
 
   isPropertyFocussed(slot: LeafModelSlot, parentPath: DataRecordPathParentElement[]): boolean {
-    console.log({ slot, parentPath, focus: this.focus })
     if (this.focus === null) {
       return false
     }
@@ -101,7 +100,6 @@ export class DataRecordPathFocus {
       dataRecordValuePathFns.newInstance(slot, ...parentPath),
     )
     const focusPath = dataRecordValuePathFns.toDottedPath(this.focus)
-    console.log({ propertyPath, focusPath })
     return dottedPathFns.equals(propertyPath, focusPath)
   }
 
