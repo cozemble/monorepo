@@ -686,6 +686,9 @@ importers:
         specifier: ^2.47.0
         version: 2.51.3(autoprefixer@10.4.14)(postcss@8.4.21)
     devDependencies:
+      '@cozemble/model-string-core':
+        specifier: workspace:*
+        version: link:../../model/string/core
       '@originjs/vite-plugin-commonjs':
         specifier: ^1.0.3
         version: 1.0.3
@@ -1518,6 +1521,9 @@ importers:
         specifier: workspace:*
         version: link:../core
     devDependencies:
+      '@originjs/vite-plugin-commonjs':
+        specifier: ^1.0.3
+        version: 1.0.3
       '@sveltejs/adapter-auto':
         specifier: ^1.0.0
         version: 1.0.3(@sveltejs/kit@1.11.0)

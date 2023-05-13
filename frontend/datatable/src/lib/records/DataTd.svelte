@@ -6,6 +6,7 @@
     import MaybeDataTdError from "./MaybeDataTdError.svelte";
     import {singleRecordEditContext} from "./contextHelper";
 
+    export let rootRecordIndex: number
     export let rowIndex: number
     export let colIndex: number
     export let record: DataRecord
@@ -18,8 +19,9 @@
     const errors = singleRecordEditContext.getErrorsForRecord()
 
     function setFocus() {
+        console.log("setFocus", {rowIndex, modelSlot, parentPath,isFocused})
         if (!isFocused) {
-            focusControls.setFocus(rowIndex, modelSlot, parentPath)
+            focusControls.setFocus(rootRecordIndex, modelSlot, parentPath)
         }
     }
 

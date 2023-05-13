@@ -46,7 +46,6 @@ export class DataTableFocus {
   }
 
   ensureNotFocusedOnRow(rowIndex: number): DataTableFocus {
-    console.log({ rowIndex, focus: this })
     if (this.rowIndex === rowIndex) {
       return this.clearFocus()
     }

@@ -4,6 +4,7 @@
 
     import {modelRecordsContextFns} from '../records/modelRecordsContextFns'
     import ModelDevConsoleOption from './ModelDevConsoleOption.svelte'
+    import {allModels} from "$lib/stores/allModels";
 
     const eventSourcedModel = modelRecordsContextFns.getEventSourcedModel()
     const model = modelRecordsContextFns.getModel()
@@ -14,7 +15,9 @@
     const tab = writable('model' as string)
 
     $: json =
-        $tab === 'model'
+        $tab === 'models'
+            ? $allModels
+            :$tab === 'model'
             ? $model
             : $tab === 'eventSourcedModel'
                 ? $eventSourcedModel
@@ -38,6 +41,7 @@
 <h6>Dev console</h6>
 <div class="tabs">
     <ModelDevConsoleOption id="model" label="Model" {tab}/>
+    <ModelDevConsoleOption id="models" label="Models" {tab}/>
     <ModelDevConsoleOption
             id="eventSourcedModel"
             label="Event sourced model"

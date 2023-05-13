@@ -140,7 +140,7 @@
             <tr>
                 {#each $model.model.slots as slot, colIndex}
                     {#if slot._type === 'property' || slot._type === 'model.reference'}
-                        <DataTd {rowIndex} {colIndex} {record} modelSlot={slot}
+                        <DataTd {rowIndex} {colIndex} {record} modelSlot={slot} rootRecordIndex={rowIndex}
                                 parentPath={context.getDataRecordPathParentElements()}
                                 isFocused={$focus.isFocused(rowIndex, context.getDataRecordPathParentElements(), slot)}
                                 isEditing={$focus.isEditing} {focusControls}/>

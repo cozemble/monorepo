@@ -120,4 +120,6 @@
 
 </script>
 
-<DecimalRepl {model} {property} {recordPath} {modelEvents} on:modelChanged={modelChanged} {record}/>
+{#key modelEvents.length}
+    <DecimalRepl {model} {property} {recordPath} {modelEvents} on:modelChanged={modelChanged} {record}/>
+{/key}

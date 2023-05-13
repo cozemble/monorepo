@@ -10,7 +10,6 @@
     export let editorParams: EditorParams
     export let systemConfiguration: SystemConfiguration
 
-
     let initialValue: ReferencedRecords | null = dataRecordValuePathFns.getValue(systemConfiguration, recordPath, record) ?? null
 
     $:selectedRecordId = initialValue?.referencedRecords[0]?.referencedRecordId.value ?? null;

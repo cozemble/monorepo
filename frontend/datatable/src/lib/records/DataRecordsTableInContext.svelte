@@ -15,6 +15,8 @@
     import DataEntryRow from "./entry/DataEntryRow.svelte";
     import AddModelElementButton from "./modelling/AddModelElementButton.svelte";
     import {modelFns, modelOptions, propertyFns} from "@cozemble/model-api";
+    import type {EventSourcedDataRecord} from "@cozemble/data-editor-sdk/dist/esm";
+    import {mandatory} from "@cozemble/lang-util/dist/esm";
 
     export let oneOnly = false
     export let options: DataRecordsTableOptions = dataRecordsTableOptions(true, true, true)
@@ -22,6 +24,7 @@
     export let parentPath: DataRecordPathParentElement[] = []
     const eventSourcedModel = modelRecordsContextFns.getEventSourcedModel()
     const model = modelRecordsContextFns.getModel()
+    const eventSourcedRecords = modelRecordsContextFns.getEventSourcedRecords()
     const records = modelRecordsContextFns.getRecords()
     const focus = modelRecordsContextFns.getFocus()
     const focusControls = modelRecordsContextFns.getFocusControls()
@@ -120,6 +123,14 @@
         }
     }
 
+    function isDataEntryRow(rowIndex: number, records: DataRecord[]) {
+        return rowIndex === (records.length - 1)
+    }
+
+    function recordHasEvents(rowIndex: number, records: EventSourcedDataRecord[]) {
+        return mandatory(records[rowIndex], `No event sourced record at index ${rowIndex}`).events.length > 0
+    }
+
     $: hasModellingColumn = options.permitModelEditing && $permitModelling
     $: colspan = $model.slots.length + (hasModellingColumn ? 1 : 0) + (options.showActions ? 1 : 0)
 </script>
@@ -156,16 +167,18 @@
                         </tr>
                     {/if}
                     <DataEntryRow {parentPath} {options} {record} {rowIndex} {oneOnly} {expandedRecordIds}/>
-                    <tr>
-                        <td {colspan}>
-                            <div class="flex justify-center">
-                                <button class="btn btn-primary save-root-record"
-                                        on:click={() => save(record,($records.length - 1))}>
-                                    Save {$model.name.value}</button>
-                                <button class="btn btn-secondary ml-2">Clear</button>
-                            </div>
-                        </td>
-                    </tr>
+                    {#if isDataEntryRow(rowIndex, $records) && recordHasEvents(rowIndex, $eventSourcedRecords)}
+                        <tr>
+                            <td {colspan}>
+                                <div class="flex justify-center">
+                                    <button class="btn btn-primary save-root-record"
+                                            on:click={() => save(record,($records.length - 1))}>
+                                        Save {$model.name.value}</button>
+                                    <button class="btn btn-secondary ml-2">Clear</button>
+                                </div>
+                            </td>
+                        </tr>
+                    {/if}
                 {/if}
             {:else}
                 <DataEntryRow {parentPath} {options} {record} {rowIndex} {oneOnly} {expandedRecordIds}/>
