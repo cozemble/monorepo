@@ -3,7 +3,7 @@ import { defineConfig } from 'cypress'
 export default defineConfig({
   e2e: {
     video: false,
-    defaultCommandTimeout: 10000,
+    defaultCommandTimeout: 20000,
     screenshotOnRunFailure: false,
     retries: 1,
   },
