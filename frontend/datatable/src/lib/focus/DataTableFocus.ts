@@ -18,6 +18,7 @@ export class DataTableFocus {
     parentElements: DataRecordPathParentElement[],
     slot: LeafModelSlot,
   ): boolean {
+    console.log({ rowIndex, focus: this, parentElements, slot })
     return (
       this.dataRecordPathFocus !== null &&
       this.rowIndex === rowIndex &&

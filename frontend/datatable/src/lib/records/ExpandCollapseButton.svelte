@@ -16,7 +16,7 @@
 </script>
 
 {#if model.nestedModels.length > 0}
-    <button class="btn btn-ghost btn-active btn-sm mr-2"
+    <button class="btn btn-ghost btn-active btn-sm mr-2 expand-collapse"
             on:click={() => toggleRecordExpand(record)}>
         {#if $expandedRecordIds.some(id => id.value  === record.id.value)}
             Collapse
