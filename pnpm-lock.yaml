@@ -1521,6 +1521,9 @@ importers:
         specifier: workspace:*
         version: link:../core
     devDependencies:
+      '@originjs/vite-plugin-commonjs':
+        specifier: ^1.0.3
+        version: 1.0.3
       '@sveltejs/adapter-auto':
         specifier: ^1.0.0
         version: 1.0.3(@sveltejs/kit@1.11.0)
