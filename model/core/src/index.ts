@@ -95,3 +95,14 @@ export {
   slotConfigurationFns,
   systemConfigurationFns,
 } from './systemConfiguration'
+
+export {
+  ModelEdge,
+  ModelGraph,
+  DataRecordEdge,
+  dataRecordEdgeFns,
+  modelGraphFns,
+  ModelNode,
+  linkedRecordsEdgeType,
+  ModelEdgeType,
+} from './graph'

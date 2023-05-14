@@ -1,10 +1,7 @@
 import { clock, type Option, uuids } from '@cozemble/lang-util'
 import { propertyDescriptors } from './propertyDescriptor'
 import { SystemConfiguration } from './systemConfiguration'
-
-interface TinyValue<T = string> {
-  value: T
-}
+import { TinyValue } from './tinyTypes'
 
 export interface PropertyType extends TinyValue {
   _type: 'property.type'
@@ -448,6 +445,10 @@ export function emptyModel(name: string | ModelName): Model {
 export interface DottedPath extends TinyValue {
   _type: 'dotted.path'
   partType: 'id' | 'name'
+}
+
+export interface DottedIdPath extends DottedPath {
+  partType: 'id'
 }
 
 export const dottedPathFns = {
