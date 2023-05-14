@@ -6,6 +6,7 @@
  * Then with I click the "Add Inner Table" button, the editor that appears also has the "Inner table language"
  * Model reference editor makes the slot visually jump when activated, make this also an absolutely positioned editor
  * No delete button for the last slot in a table
+ * Click outside model reference editor should dismiss it
 
  * Implement save and cancel buttons for edit of existing records!
  * Support to delete inner records and tables

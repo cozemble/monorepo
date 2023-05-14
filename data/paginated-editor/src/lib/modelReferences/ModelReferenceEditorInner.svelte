@@ -6,6 +6,7 @@
     import {type EditorParams, makeSummaryView} from "./editorHelper";
     import {dereference} from "$lib/modelReferences/dereference";
     import {renderReference} from "$lib/modelReferences/renderReference";
+    import {clickOutside} from "@cozemble/ui-atoms";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord
@@ -30,6 +31,10 @@
         event.preventDefault()
         event.stopPropagation()
 
+        close()
+    }
+
+    function close() {
         dataRecordEditorClient.dispatchControlEvent(
             dataRecordControlEvents.editAborted(record, recordPath),
         )
@@ -109,7 +114,8 @@
 </script>
 
 <svelte:window on:keydown={handleKeydown}/>
-<div>
+<div use:clickOutside
+     on:click_outside={close}>
     {#if htmlRender}
         {@html htmlRender}
     {:else}
