@@ -27,10 +27,14 @@
     })
 </script>
 
-{#if mounted}
-    <h1>Welcome friend</h1>
-    <button class="btn" on:click={loginWithGithub}>Login with Github</button>
-    <br/>
-{:else}
-    <p>loading...</p>
-{/if}
+<div class="grid h-screen place-items-center">
+    {#if mounted}
+        <div class="flex items-center flex-col">
+            <h1>Welcome to Cozemble</h1>
+            <button class="btn btn-primary mt-4 btn-lg" on:click={loginWithGithub}>Login with Github</button>
+            <br/>
+        </div>
+    {:else}
+        <p>loading...</p>
+    {/if}
+</div>
