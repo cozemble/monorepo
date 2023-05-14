@@ -7,6 +7,7 @@
  * Model reference editor makes the slot visually jump when activated, make this also an absolutely positioned editor
  * No delete button for the last slot in a table
 
+ * Implement save and cancel buttons for edit of existing records!
  * Support to delete inner records and tables
  * Some UI means of indicating whether an inner thing is a record or table
 

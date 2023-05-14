@@ -16,5 +16,6 @@ export function clickAddSubrecord() {
 export function editCell(cellIndex = '0-0', eq = 0) {
   const selector = `[data-cell-index="${cellIndex}"]`
   cy.get(selector).eq(eq).click()
+  cy.get(selector).eq(eq).should('have.class', 'focused')
   cy.get(selector).eq(eq).realPress('Enter')
 }

@@ -30,6 +30,7 @@
     const focusControls = modelRecordsContextFns.getFocusControls()
     const recordControls = modelRecordsContextFns.getRecordControls()
     const modelControls = modelRecordsContextFns.getModelControls()
+    const dirtyRecords = modelRecordsContextFns.getDirtyRecords()
     const nestedModelBeingEdited = modelRecordsContextFns.getNestedModelBeingEdited()
     const permitModelling = contextHelper.getPermitModelling()
     const permitRecordAdditions = modelRecordsContextFns.getPermitRecordAdditions()
@@ -108,7 +109,7 @@
         expandRecord($records[$records.length - 1].id)
     }
 
-    async function save(record: DataRecord, rootRecordIndex: number) {
+    async function saveNewRecord(record: DataRecord, rootRecordIndex: number) {
         const isExpanded = $expandedRecordIds.find(x => x.value === record.id.value)
         const outcome = await recordControls.saveNewRecord(record.id)
         if (outcome) {
@@ -123,12 +124,16 @@
         }
     }
 
-    function isDataEntryRow(rowIndex: number, records: DataRecord[]) {
-        return rowIndex === (records.length - 1)
-    }
-
     function recordHasEvents(rowIndex: number, records: EventSourcedDataRecord[]) {
         return mandatory(records[rowIndex], `No event sourced record at index ${rowIndex}`).events.length > 0
+    }
+
+    function isDirtyRecord(record: DataRecord, dirtyRecords:DataRecordId[]) {
+        return dirtyRecords.some(x => x.value === record.id.value)
+    }
+
+    function onSaveExistingRecord(recordId: DataRecordId) {
+        recordControls.saveRecord(recordId)
     }
 
     $: hasModellingColumn = options.permitModelEditing && $permitModelling
@@ -167,12 +172,12 @@
                         </tr>
                     {/if}
                     <DataEntryRow {parentPath} {options} {record} {rowIndex} oneOnly={true} {expandedRecordIds}/>
-                    {#if isDataEntryRow(rowIndex, $records) && recordHasEvents(rowIndex, $eventSourcedRecords)}
+                    {#if recordHasEvents(rowIndex, $eventSourcedRecords)}
                         <tr>
                             <td {colspan}>
                                 <div class="flex justify-center">
                                     <button class="btn btn-primary save-root-record"
-                                            on:click={() => save(record,($records.length - 1))}>
+                                            on:click={() => saveNewRecord(record,($records.length - 1))}>
                                         Save {$model.name.value}</button>
                                     <button class="btn btn-secondary ml-2">Clear</button>
                                 </div>
@@ -182,6 +187,18 @@
                 {/if}
             {:else}
                 <DataEntryRow {parentPath} {options} {record} {rowIndex} {oneOnly} {expandedRecordIds}/>
+                {#if isDirtyRecord(record, $dirtyRecords) && parentPath.length === 0}
+                    <tr>
+                        <td {colspan}>
+                            <div class="flex justify-center">
+                                <button class="btn btn-primary save-root-record"
+                                        on:click={() => onSaveExistingRecord(record.id)}>
+                                    Save {$model.name.value}</button>
+                                <button class="btn btn-secondary ml-2" on:click={() => alert("to do")}>Cancel</button>
+                            </div>
+                        </td>
+                    </tr>
+                {/if}
             {/if}
         {/key}
     {/each}

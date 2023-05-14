@@ -13,6 +13,10 @@ export function makeDataRecordEditorClient(
   recordId: DataRecordId,
 ): DataRecordEditorClient {
   return {
+    recordById(): Promise<DataRecord | null> {
+      throw new Error('Not implemented')
+    },
+
     dispatchControlEvent(event: DataRecordControlEvent): void {
       console.log({ event })
     },
