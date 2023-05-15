@@ -34,7 +34,12 @@ function replaceSlot(model: Model, event: NewModelReference) {
     ...model,
     slots: model.slots.map((s) => {
       if (s.id.value === event.modelReferenceId.value) {
-        return modelReferenceFns.newInstance([], event.modelReferenceName, event.modelReferenceId)
+        return modelReferenceFns.newInstance(
+          [],
+          event.modelReferenceName,
+          'from',
+          event.modelReferenceId,
+        )
       }
       return s
     }),
@@ -46,7 +51,7 @@ function addSlot(model: Model, event: NewModelReference) {
     ...model,
     slots: [
       ...model.slots,
-      modelReferenceFns.newInstance([], event.modelReferenceName, event.modelReferenceId),
+      modelReferenceFns.newInstance([], event.modelReferenceName, 'from', event.modelReferenceId),
     ],
   }
 }

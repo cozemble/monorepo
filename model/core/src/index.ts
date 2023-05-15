@@ -60,6 +60,7 @@ export {
   ModelPluralName,
   dataRecordIdFns,
   nestedModelIdFns,
+  LeafModelSlotId,
 } from './core'
 
 export { propertyDescriptors } from './propertyDescriptor'

@@ -5,3 +5,8 @@ export interface EventSourcedModel {
   model: Model
   events: ModelEvent[]
 }
+
+export interface EventSourcedModelList {
+  _type: 'event.sourced.model.list'
+  models: EventSourcedModel[]
+}

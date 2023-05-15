@@ -172,9 +172,9 @@ export interface ModelReference {
   _type: 'model.reference'
   id: ModelReferenceId
   name: ModelReferenceName
+  side: 'from' | 'to'
   referencedModels: ModelId[]
   cardinality: Cardinality
-  inverseName?: ModelReferenceName
 }
 
 export interface ReferencedRecord {
@@ -230,6 +230,7 @@ export const modelReferenceFns = {
   newInstance: (
     referencedModels: ModelId[],
     referenceName: ModelReferenceName | string,
+    side: 'from' | 'to' = 'from',
     id = modelReferenceIdFns.newInstance(uuids.v4()),
     cardinality: Cardinality = 'one',
   ): ModelReference => {
@@ -241,6 +242,7 @@ export const modelReferenceFns = {
       _type: 'model.reference',
       id,
       name,
+      side,
       referencedModels,
       cardinality,
     }
@@ -418,6 +420,7 @@ export type DataRecordPathParentElement =
   | InlinedModelReference
 
 export type LeafModelSlot = Property | ModelReference
+export type LeafModelSlotId = PropertyId | ModelReferenceId
 
 export interface DataRecordValuePath {
   _type: 'data.record.value.path'
