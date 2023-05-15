@@ -8,13 +8,15 @@
     import type {EventSourcedModel} from '@cozemble/model-event-sourced'
     import {coreModelEvents} from '@cozemble/model-event-sourced'
     import {createEventDispatcher} from "svelte";
+    import type {EventSourcedModelGraph} from "@cozemble/model-event-sourced";
+    import type {Writable} from "svelte/store";
 
     export let host: ModelEditorHost
-    export let allModels: EventSourcedModel[]
+    export let modelGraph: Writable<EventSourcedModelGraph>
     export let eventSourced: EventSourcedModel
     export let systemConfiguration: SystemConfiguration
 
-    $: allCoreModels = allModels.map((m) => m.model)
+    $: allCoreModels = $modelGraph.models.map((m) => m.model)
     $: model = eventSourced.model
     let slotIdBeingEdited: ModelSlotId | null = null
     $: slotBeingEdited = modelFns.maybeSlotWithId(model, slotIdBeingEdited)
@@ -84,7 +86,7 @@
     <ModelSlotEditor
             {systemConfiguration}
             modelChangeHandler={host}
-            models={allCoreModels}
+            {modelGraph}
             {model}
             modelSlot={slotBeingEdited}
             on:save={slotEdited}/>
@@ -122,10 +124,10 @@
 {/if}
 
 {#each model.nestedModels as nestedModel}
-    {@const eventSourced = host.modelWithId(allModels, nestedModel.modelId)}
+    {@const eventSourced = host.modelWithId($modelGraph, nestedModel.modelId)}
     <div class="nested-model-container mt-2">
         <h5>{nestedModel.name.value}</h5>
-        <svelte:self {allModels} {eventSourced} {host}/>
+        <svelte:self {modelGraph} {eventSourced} {host}/>
     </div>
 {/each}
 

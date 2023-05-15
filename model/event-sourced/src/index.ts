@@ -13,7 +13,7 @@ export { modelSlotEvents } from './modelSlotEvents'
 
 export {
   ModelGraphEvent,
-  AddModelGraphEdgeEvent,
+  AddModelEdgeEvent,
   EventSourcedModelGraph,
   EventSourcedModelEdge,
   eventSourcedModelGraphFns,

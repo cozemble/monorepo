@@ -4,17 +4,17 @@
     import ModelStructureEditor from './ModelStructureEditor.svelte'
     import type {ModelId, SystemConfiguration} from '@cozemble/model-core'
     import {modelNameFns} from '@cozemble/model-core'
-    import type {EventSourcedModel} from '@cozemble/model-event-sourced'
+    import type {EventSourcedModelGraph} from "@cozemble/model-event-sourced";
     import {coreModelEvents} from '@cozemble/model-event-sourced'
     import type {Writable} from 'svelte/store'
 
     export let modelId: ModelId
     export let host: ModelEditorHost
-    export let allModels: Writable<EventSourcedModel[]>
+    export let modelGraph: Writable<EventSourcedModelGraph>
     export let systemConfiguration: SystemConfiguration
     export let editImmediately = false
 
-    $: eventSourced = host.modelWithId($allModels, modelId)
+    $: eventSourced = host.modelWithId($modelGraph, modelId)
 
     function onNameChange(name: string) {
         host.modelChanged(
@@ -40,7 +40,7 @@
     </div>
 
     <div class="mt-2">
-        <ModelStructureEditor {systemConfiguration} {eventSourced} {host} allModels={$allModels} on:editingSomething/>
+        <ModelStructureEditor {systemConfiguration} {eventSourced} {host} {modelGraph} on:editingSomething/>
     </div>
 {/if}
 

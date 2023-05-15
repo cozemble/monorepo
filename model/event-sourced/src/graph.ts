@@ -1,6 +1,7 @@
 import { EventSourcedModel } from './EventSourcedModel'
 import { ModelEdge, ModelEvent } from '@cozemble/model-core'
 import { eventSourcedModelFns } from './eventSourcedModelFns'
+import { Model } from '@cozemble/model-core/dist/esm'
 
 export type ModelEdgeEvent = any
 
@@ -16,17 +17,54 @@ export interface EventSourcedModelGraph {
   edges: EventSourcedModelEdge[]
 }
 
-export interface AddModelGraphEdgeEvent {
-  _type: 'add.model.graph.edge.event'
+export interface AddModelEdgeEvent {
+  _type: 'add.model.edge.event'
   edge: ModelEdge
 }
 
-export type ModelGraphEvent = AddModelGraphEdgeEvent
+export interface AddModelEvent {
+  _type: 'add.model.event'
+  model: Model
+}
+
+export type ModelGraphEvent = AddModelEdgeEvent | AddModelEvent
+
+function modelGraphReducer(
+  graph: EventSourcedModelGraph,
+  event: ModelGraphEvent,
+): EventSourcedModelGraph {
+  switch (event._type) {
+    case 'add.model.edge.event':
+      return {
+        ...graph,
+        edges: [
+          ...graph.edges,
+          {
+            _type: 'event.sourced.model.edge',
+            edge: event.edge,
+            events: [],
+          },
+        ],
+      }
+    case 'add.model.event':
+      return {
+        ...graph,
+        models: [
+          ...graph.models,
+          {
+            _type: 'event.sourced.model',
+            model: event.model,
+            events: [],
+          },
+        ],
+      }
+  }
+}
 
 export const eventSourcedModelGraphFns = {
   newInstance: (
-    models: EventSourcedModel[],
-    edges: EventSourcedModelEdge[],
+    models: EventSourcedModel[] = [],
+    edges: EventSourcedModelEdge[] = [],
   ): EventSourcedModelGraph => ({
     _type: 'event.sourced.model.graph',
     models,
@@ -36,7 +74,7 @@ export const eventSourcedModelGraphFns = {
     graph: EventSourcedModelGraph,
     event: ModelGraphEvent,
   ): EventSourcedModelGraph => {
-    return graph
+    return modelGraphReducer(graph, event)
   },
   applyModelEvent: (graph: EventSourcedModelGraph, event: ModelEvent): EventSourcedModelGraph => {
     return {
@@ -53,8 +91,12 @@ export const eventSourcedModelGraphFns = {
 }
 
 export const modelGraphEvents = {
-  addModelGraphEdge: (edge: ModelEdge): AddModelGraphEdgeEvent => ({
-    _type: 'add.model.graph.edge.event',
+  addModelEdge: (edge: ModelEdge): AddModelEdgeEvent => ({
+    _type: 'add.model.edge.event',
     edge,
+  }),
+  addModel: (model: Model): AddModelEvent => ({
+    _type: 'add.model.event',
+    model,
   }),
 }

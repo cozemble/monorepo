@@ -10,28 +10,34 @@
         propertyTypeFns,
     } from '@cozemble/model-core'
     import {editorHost, emptyFormErrorState} from '@cozemble/model-editor-sdk'
-    import {readable, writable} from 'svelte/store'
-    import {createEventDispatcher} from 'svelte'
+    import type {Writable} from "svelte/store";
+    import {derived, writable} from 'svelte/store'
+    import {createEventDispatcher, tick} from 'svelte'
     import type {ModelChangeHandler} from './ModelEditorHost'
+    import type {EventSourcedModelGraph} from "@cozemble/model-event-sourced";
     import {coreModelEvents, modelSlotEvents} from '@cozemble/model-event-sourced'
     import PropertyEditor from "./PropertyEditor.svelte";
     import {validateSlot} from "./validateSlot";
     import ModelReferenceEditor from "./ModelReferenceEditor.svelte";
-    import {tick} from "svelte";
 
     export let modelChangeHandler: ModelChangeHandler
     export let model: Model
-    export let models: Model[]
+    export let modelGraph: Writable<EventSourcedModelGraph>
     export let modelSlot: ModelSlot
     export let systemConfiguration: SystemConfiguration
     export let slotNoun = 'Property'
+    const models = derived(modelGraph, $modelGraph => $modelGraph.models.map(m => m.model))
 
     const formSectionErrorState = writable(emptyFormErrorState())
     editorHost.setErrorState(formSectionErrorState)
-    editorHost.setModels(readable(models))
+    editorHost.setModels(models)
 
     function slotTypeChanged(event: Event) {
         const target = event.target as HTMLSelectElement
+        if (target.value === 'model.edge') {
+            isEdgeSlot = true
+            return
+        }
         if (target.value === 'model.reference') {
             return modelChangeHandler.modelChanged(
                 model.id,
@@ -90,13 +96,14 @@
 
     async function onKeyDown(event: KeyboardEvent) {
         if (event.key === 'Enter') {
-            if(document.activeElement instanceof HTMLInputElement) {
+            if (document.activeElement instanceof HTMLInputElement) {
                 document.activeElement.blur()
             }
             await tick()
             saveClicked()
         }
     }
+
 </script>
 
 <svelte:window on:keydown={onKeyDown}/>
@@ -128,7 +135,7 @@
         <ModelReferenceEditor
                 modelReference={modelSlot}
                 {modelChangeHandler}
-                {models}
+                models={$models}
                 {model}/>
     {:else}
         <p>To do ${modelSlot._type}</p>
