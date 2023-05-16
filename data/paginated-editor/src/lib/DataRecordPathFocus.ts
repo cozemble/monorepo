@@ -56,21 +56,21 @@ export class DataRecordPathFocus {
     const record = this.recordProvider()
     const models = this.models
     const model = modelFns.findById(models, record.modelId)
-    const allPaths = modelFns
+    const allModelElementPaths = modelFns
       .allPaths(models, model)
       .filter((p) => modelPathElementFns.isLeafSlot(p.lastElement)) as ModelPath<LeafModelSlot>[]
-    const allValues = allPaths.flatMap((p) =>
+    const allRecordPaths = allModelElementPaths.flatMap((p) =>
       valuesForModelPathFns.flatten(
         modelPathFns.getValues(this.systemConfiguration, models, p, record),
       ),
     )
-    const indexOfFocus = allValues.findIndex(
+    const indexOfFocus = allRecordPaths.findIndex(
       (v) => v.path && dataRecordValuePathFns.sameDottedPaths(v.path, focus),
     )
     if (indexOfFocus === -1) {
       return this._newFocus(null)
     }
-    const nextValue = allValues[indexOfFocus + delta]
+    const nextValue = allRecordPaths[indexOfFocus + delta]
     return this._newFocus(nextValue ? nextValue.path : null)
   }
 

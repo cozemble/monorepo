@@ -1,10 +1,8 @@
 import { clock, type Option, uuids } from '@cozemble/lang-util'
 import { propertyDescriptors } from './propertyDescriptor'
 import { SystemConfiguration } from './systemConfiguration'
-
-interface TinyValue<T = string> {
-  value: T
-}
+import { TinyValue } from './TinyValue'
+import { DataNode, dataRecordEdgeFns } from './graph'
 
 export interface PropertyType extends TinyValue {
   _type: 'property.type'
@@ -173,8 +171,12 @@ export interface ModelReference {
   id: ModelReferenceId
   name: ModelReferenceName
   side: 'from' | 'to'
-  referencedModels: ModelId[]
+  referencedModelIds: ModelId[]
   cardinality: Cardinality
+}
+
+export const modelReferenceValuePlaceholder = {
+  _type: 'model.reference.value.placeholder',
 }
 
 export interface ReferencedRecord {
@@ -228,11 +230,11 @@ export const referencedRecordsFns = {
 
 export const modelReferenceFns = {
   newInstance: (
-    referencedModels: ModelId[],
+    referencedModelIds: ModelId[],
     referenceName: ModelReferenceName | string,
     side: 'from' | 'to' = 'from',
     id = modelReferenceIdFns.newInstance(uuids.v4()),
-    cardinality: Cardinality = 'one',
+    cardinality: Cardinality = 'many',
   ): ModelReference => {
     const name =
       typeof referenceName === 'string'
@@ -243,42 +245,64 @@ export const modelReferenceFns = {
       id,
       name,
       side,
-      referencedModels,
+      referencedModelIds,
       cardinality,
     }
   },
   validate: (modelReference: ModelReference): Map<string, string> => {
     const errors = new Map<string, string>()
-    if (modelReference.referencedModels.length === 0) {
-      errors.set('referencedModels', 'Required')
+    if (modelReference.referencedModelIds.length === 0) {
+      errors.set('referencedModelIds', 'Required')
     }
     return errors
   },
+  getReferencedRecords: (modelReference: ModelReference, node: DataNode): ReferencedRecords => {
+    const id = modelReference.id
+    const filtered = dataRecordEdgeFns.forModelReference(node.edges, id)
+    return filtered.reduce((acc, edge) => {
+      if (modelReference.side === 'from' && edge.fromRecordId.value === node.record.id.value) {
+        // from record - like from customer to booking
+        const recordId = edge.toRecordId
+        const modelId = modelReferenceFns.mandatoryReferencedModelId(modelReference)
+        return referencedRecordsFns.addReference(acc, modelId, recordId)
+      } else if (modelReference.side === 'to' && edge.toRecordId.value === node.record.id.value) {
+        // to record - like from booking to customer
+        const recordId = edge.fromRecordId
+        const modelId = modelReferenceFns.mandatoryReferencedModelId(modelReference)
+        return referencedRecordsFns.addReference(acc, modelId, recordId)
+      }
+      return acc
+    }, referencedRecordsFns.empty())
+  },
+  mandatoryReferencedModelId: (modelReference: ModelReference): ModelId => {
+    const modelId = modelReference.referencedModelIds[0]
+    if (!modelId) {
+      throw new Error('No referenced model id')
+    }
+    return modelId
+  },
   oneReference: (reference: ModelReference): ModelId | null => {
-    if (reference.cardinality !== 'one') {
-      throw new Error('Cannot get one reference from many reference')
-    }
-    return reference.referencedModels[0] ?? null
+    return reference.referencedModelIds[0] ?? null
   },
-  dereferenceOne: (reference: ModelReference, record: DataRecord): ReferencedRecords | null => {
-    if (reference.cardinality !== 'one') {
-      throw new Error('Cannot get one reference from many reference')
-    }
-    return (record.values[reference.id.value] ?? null) as ReferencedRecords
-  },
-  setReferences: (
-    reference: ModelReference,
-    record: DataRecord,
-    referencedRecords: ReferencedRecords,
-  ): DataRecord => {
-    return {
-      ...record,
-      values: {
-        ...record.values,
-        [reference.id.value]: referencedRecords,
-      },
-    }
-  },
+  // dereferenceOne: (reference: ModelReference, record: DataRecord): ReferencedRecords | null => {
+  //   if (reference.cardinality !== 'one') {
+  //     throw new Error('Cannot get one reference from many reference')
+  //   }
+  //   return (record.values[reference.id.value] ?? null) as ReferencedRecords
+  // },
+  // setReferences: (
+  //   reference: ModelReference,
+  //   record: DataRecord,
+  //   referencedRecords: ReferencedRecords,
+  // ): DataRecord => {
+  //   return {
+  //     ...record,
+  //     values: {
+  //       ...record.values,
+  //       [reference.id.value]: referencedRecords,
+  //     },
+  //   }
+  // },
 }
 
 export interface InlinedModelReference {
@@ -305,7 +329,7 @@ export const modelSlotFns = {
         .getValue(systemConfiguration, slot, record)
     }
     if (slot._type === 'model.reference') {
-      return modelReferenceFns.dereferenceOne(slot, record)
+      return modelReferenceValuePlaceholder
     }
     throw new Error(`Can't get a value from model slot type: ${slot._type}`)
   },

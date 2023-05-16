@@ -229,7 +229,7 @@ export const modelFns = {
       const paths = modelFns.allPaths(models, m)
       return paths.some((p) => {
         if (p.lastElement._type === 'model.reference') {
-          return p.lastElement.referencedModels.some((id) => id.value === model.id.value)
+          return p.lastElement.referencedModelIds.some((id) => id.value === model.id.value)
         }
         return false
       })
@@ -245,7 +245,7 @@ export const modelFns = {
       const lastElement = path.lastElement
       return (
         lastElement._type === 'model.reference' &&
-        lastElement.referencedModels.some((m) => m.value === targetModelId.value)
+        lastElement.referencedModelIds.some((m) => m.value === targetModelId.value)
       )
     })
   },

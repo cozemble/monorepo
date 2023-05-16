@@ -1,7 +1,14 @@
 import { EventSourcedModel, EventSourcedModelList } from './EventSourcedModel'
-import { Model, ModelId, ModelReferenceId, ModelReferenceName } from '@cozemble/model-core'
+import {
+  Cardinality,
+  Model,
+  ModelId,
+  ModelReference,
+  modelReferenceFns,
+  ModelReferenceId,
+  ModelReferenceName,
+} from '@cozemble/model-core'
 import { eventSourcedModelFns } from './eventSourcedModelFns'
-import { Cardinality, ModelReference, modelReferenceFns } from '@cozemble/model-core'
 import { modelSlotEvents } from './modelSlotEvents'
 
 interface AddModelEvent {
@@ -123,12 +130,34 @@ function addToModelReferenceSlot(
   }
 }
 
+function setToModelReferenceInModel(
+  m: EventSourcedModel,
+  modelReferenceId: ModelReferenceId,
+  toModelId: ModelId,
+) {
+  return {
+    ...m,
+    model: {
+      ...m.model,
+      slots: m.model.slots.map((s) => {
+        if (s.id.value === modelReferenceId.value) {
+          return {
+            ...s,
+            referencedModelIds: [toModelId],
+          }
+        }
+        return s
+      }),
+    },
+  }
+}
+
 function setToModelReference(list: EventSourcedModelList, event: SetToModelReferenceEvent) {
   const fromModel = eventSourcedModelFns.findById(list.models, event.fromModelId)
   const toModel = eventSourcedModelFns.findById(list.models, event.toModelId)
   const mutatedModels = list.models.map((m) => {
     if (m.model.id.value === fromModel.model.id.value) {
-      return m
+      return setToModelReferenceInModel(m, event.id, event.toModelId)
     }
     if (m.model.id.value === toModel.model.id.value) {
       return addToModelReferenceSlot(m, fromModel, event)
@@ -159,8 +188,57 @@ function eventSourceModelListReducer(
   }
 }
 
+export const eventSourcedModelListEvents = {
+  addModel: (model: EventSourcedModel | Model): AddModelEvent => {
+    return {
+      _type: 'add.model.event',
+      model,
+    }
+  },
+  removeModel: (modelId: ModelId): RemoveModelEvent => {
+    return {
+      _type: 'remove.model.event',
+      modelId,
+    }
+  },
+  addModelReferenceSlot: (
+    id: ModelReferenceId,
+    name: ModelReferenceName,
+    fromModelId: ModelId,
+    cardinality: Cardinality,
+  ): AddModelReferenceSlotEvent => {
+    return {
+      _type: 'add.model.reference.slot.event',
+      id,
+      name,
+      fromModelId,
+      cardinality,
+    }
+  },
+  setToModelReference: (
+    id: ModelReferenceId,
+    fromModelId: ModelId,
+    toModelId: ModelId,
+    cardinality: Cardinality,
+  ): SetToModelReferenceEvent => {
+    return {
+      _type: 'set.to.model.reference.event',
+      id,
+      fromModelId,
+      toModelId,
+      cardinality,
+    }
+  },
+  removeModelReferenceSlot: (id: ModelReferenceId): RemoveModelReferenceSlotEvent => {
+    return {
+      _type: 'remove.model.reference.slot.event',
+      id,
+    }
+  },
+}
+
 export const eventSourcedModelListFns = {
-  newInstance: (models: EventSourcedModel[] = []) => {
+  newInstance: (models: EventSourcedModel[] = []): EventSourcedModelList => {
     return {
       _type: 'event.sourced.model.list',
       models,

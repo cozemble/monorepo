@@ -97,11 +97,6 @@ const modelReferenceChangedDescriptor: ModelEventDescriptor<ModelReferenceChange
           if (s._type !== 'model.reference') {
             throw new Error(`Slot ${event.modelReferenceId.value} is not a model reference`)
           }
-          if (s.cardinality !== 'one') {
-            throw new Error(
-              `Slot ${event.modelReferenceId.value} is not a one cardinality model reference`,
-            )
-          }
           if (event.referencedModelId === null) {
             return {
               ...s,
@@ -124,5 +119,5 @@ modelEventDescriptors.register(modelReferenceChangedDescriptor)
 
 export const modelSlotEvents = {
   newModelReference,
-  modelReferenceChanged,
+  // modelReferenceChanged,
 }

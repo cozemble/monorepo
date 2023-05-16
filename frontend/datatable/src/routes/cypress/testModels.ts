@@ -1,7 +1,7 @@
 import { modelFns, modelOptions, nestedModelFns, propertyFns } from '@cozemble/model-api'
 import type { Model } from '@cozemble/model-core'
 import { eventSourcedModelFns } from '@cozemble/model-event-sourced'
-import type { DataRecord } from '@cozemble/model-core/dist/esm'
+import type { DataRecord } from '@cozemble/model-core'
 
 export const testModelsLocalStorageKey = 'com.cozemble.datatable.cypress.models'
 export const testRecordsLocalStorageKey = 'com.cozemble.datatable.cypress.records'

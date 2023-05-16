@@ -1,0 +1,22 @@
+ * No longer setting model references into DataRecord.values.  Maintaining a lost of DataRecordEdges instead
+ * So any setting or getting of model reference values needs the list of edges to be passed in.
+ * ModelReferences will be paired, one on the from side and the inverse on the to side.  But they will have the same ID
+ * So ModelReferences will only be edited during modelling
+ * ModelReferences can be in model paths
+ * ModelReferences can also be in data paths, but will return null
+ * There are other potential high cardinality slot types, like a multi-select.  So the model will have the cardinality and
+    * the data will have the values as an array.  Get value in that case should then return an array.
+ * So when you find a ModelElement slot, you will not be dealing there after with DataRecord.values, but with DataRecordEdges
+ * Wrapping a DataRecord and its edges as a DataNode should help with this.
+ * Some behaviour depends on being able to get a data record value for model reference slots - like the focus
+    * behaviour of the data entry grid
+ * The reason I am thinking to keep record references out of a data record is that they apply to two records, so deleting one side deletes the edge
+    * and updating one side updates the edge.  So the edge is the thing that needs to be maintained.
+ * One issue is that something like valuesForModelPath takes in a single data node, but as it recurses down thru nested records, they might have edges
+    * that are not in the original data node.  When I load a record with nested records, can I be sure to load all edges, including those rooted in a
+    * slot of a nested record?  I am storing referencedRecords, so I think it should be possible.  I should be able to load a record, all edges its involved in
+    * and all records those edges point to.  I think that should be enough to get all edges for a record.
+
+
+----------------------
+ * it seems simpler to just return a placeholder value for model reference slots, lets see how that pans out

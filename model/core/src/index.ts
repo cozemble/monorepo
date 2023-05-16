@@ -61,6 +61,7 @@ export {
   dataRecordIdFns,
   nestedModelIdFns,
   LeafModelSlotId,
+  modelReferenceValuePlaceholder,
 } from './core'
 
 export { propertyDescriptors } from './propertyDescriptor'
@@ -96,3 +97,5 @@ export {
   slotConfigurationFns,
   systemConfigurationFns,
 } from './systemConfiguration'
+
+export { dataRecordEdgeFns, DataRecordEdge, DataNode, dataNodeFns } from './graph'

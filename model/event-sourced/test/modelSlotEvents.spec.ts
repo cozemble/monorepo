@@ -43,29 +43,29 @@ describe('given a model with a property', () => {
   })
 })
 
-describe('given a model with a model.reference', () => {
-  let model: Model
-  let modelReference: ModelReference
-
-  beforeEach(() => {
-    modelReference = modelReferenceFns.newInstance([], modelReferenceNameFns.newInstance('name'))
-    model = modelFns.newInstance('Person', modelOptions.withSlot(modelReference))
-  })
-
-  test('can set the model.reference id', () => {
-    const expectedId = modelIdFns.newInstance()
-    const event = modelSlotEvents.modelReferenceChanged(model.id, modelReference.id, expectedId)
-    const mutatedModel = modelEventDescriptors.applyEvent(model, event)
-    expect(mutatedModel.slots[0]).toEqual(
-      modelReferenceFns.newInstance([expectedId], modelReference.name, 'from', modelReference.id),
-    )
-  })
-
-  test('can clear the model.reference id', () => {
-    const event = modelSlotEvents.modelReferenceChanged(model.id, modelReference.id, null)
-    const mutatedModel = modelEventDescriptors.applyEvent(model, event)
-    expect(mutatedModel.slots[0]).toEqual(
-      modelReferenceFns.newInstance([], modelReference.name, 'from', modelReference.id),
-    )
-  })
-})
+// describe('given a model with a model.reference', () => {
+//   let model: Model
+//   let modelReference: ModelReference
+//
+//   beforeEach(() => {
+//     modelReference = modelReferenceFns.newInstance([], modelReferenceNameFns.newInstance('name'))
+//     model = modelFns.newInstance('Person', modelOptions.withSlot(modelReference))
+//   })
+//
+//   test('can set the model.reference id', () => {
+//     const expectedId = modelIdFns.newInstance()
+//     const event = modelSlotEvents.modelReferenceChanged(model.id, modelReference.id, expectedId)
+//     const mutatedModel = modelEventDescriptors.applyEvent(model, event)
+//     expect(mutatedModel.slots[0]).toEqual(
+//       modelReferenceFns.newInstance([expectedId], modelReference.name, 'from', modelReference.id),
+//     )
+//   })
+//
+//   test('can clear the model.reference id', () => {
+//     const event = modelSlotEvents.modelReferenceChanged(model.id, modelReference.id, null)
+//     const mutatedModel = modelEventDescriptors.applyEvent(model, event)
+//     expect(mutatedModel.slots[0]).toEqual(
+//       modelReferenceFns.newInstance([], modelReference.name, 'from', modelReference.id),
+//     )
+//   })
+// })
