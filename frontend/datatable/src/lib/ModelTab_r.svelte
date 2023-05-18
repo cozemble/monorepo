@@ -27,14 +27,13 @@ function onEdit(clicked: Event) {
   <button
     class="tab tab-lg model-{index + 1}"
     class:tab-active={$navbarState === esModel.model.id.value}
-    on:click={() => onShow(esModel.model.id)}
-  >
+    on:click={() => onShow(esModel.model.id)}>
     {esModel.model.pluralName.value}
 
     {#if $isModellingPermitted}
       <span on:click={onEdit} on:keydown={onEdit} class="ml-2 mt-1">
-        <DownCaret /></span
-      >
+        <DownCaret />
+      </span>
     {/if}
   </button>
 </div>

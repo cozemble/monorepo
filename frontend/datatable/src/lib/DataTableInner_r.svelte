@@ -6,7 +6,7 @@ import { writable } from 'svelte/store'
 // Cozemble
 import type { ModelId } from '@cozemble/model-core'
 
-import AddTableNavButton from './AddTableNavButton.svelte'
+import AddTableNavButton from './AddTableNavButton_r.svelte'
 import Modals from './Modals.svelte'
 import { modelUi } from './modelUi'
 import {
