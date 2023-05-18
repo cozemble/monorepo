@@ -15,9 +15,11 @@
     import {clickOutside} from "@cozemble/ui-atoms";
 
     export let state: EditModelModalState
+    const modelList = state.modelList
+
     const eventSourcedModel = eventSourcedStore(modelReducer, saveModel, mandatory($editModelModal, `Edit model not configured`).model)
-    const tableName = editableTableName(state.model.model.name.value, state.allModels)
-    const pluralTableName = editablePluralTableName(state.model.model.pluralName.value, state.allModels)
+    const tableName = editableTableName(state.model.model.name.value, $modelList.models)
+    const pluralTableName = editablePluralTableName(state.model.model.pluralName.value, $modelList.models)
     const showErrors = writable(false)
     let modal: HTMLDivElement
 

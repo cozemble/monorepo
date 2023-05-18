@@ -2,7 +2,15 @@ import type { DataTableBackend, FilterParams } from '@cozemble/frontend-datatabl
 import type { EventSourcedModel } from '@cozemble/model-event-sourced'
 import type { JustErrorMessage } from '@cozemble/lang-util'
 import { justErrorMessage } from '@cozemble/lang-util'
-import type { DataRecord, DataRecordId, Model, ModelId, ModelView } from '@cozemble/model-core'
+import type {
+  DataRecord,
+  DataRecordId,
+  Model,
+  ModelId,
+  ModelView,
+  RecordGraph,
+} from '@cozemble/model-core'
+import { recordGraphFns } from '@cozemble/model-core'
 import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import type {
   AttachmentIdAndFileName,
@@ -12,6 +20,7 @@ import type {
 import type { Backend } from '@cozemble/frontend-bff'
 import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
 import { toFilledFilterInstanceGroup } from '@cozemble/frontend-ui-blocks'
+import { recordGraphNodeFns } from '@cozemble/model-core/dist/esm'
 
 export class IncrementalModelingBackend implements DataTableBackend {
   constructor(
@@ -25,7 +34,6 @@ export class IncrementalModelingBackend implements DataTableBackend {
   }
 
   async saveModels(models: EventSourcedModel[]): Promise<JustErrorMessage | null> {
-    console.log({ savingModels: models })
     try {
       const backendModels: BackendModel[] = models.map((m) => ({
         _type: 'backend.model',
@@ -39,7 +47,7 @@ export class IncrementalModelingBackend implements DataTableBackend {
     }
   }
 
-  async getRecords(modelId: ModelId, filterParams: FilterParams): Promise<DataRecord[]> {
+  async getRecords(modelId: ModelId, filterParams: FilterParams): Promise<RecordGraph> {
     const filled = toFilledFilterInstanceGroup(filterParams.filters)
     const fetched = await this.backend.fetchRecords(
       this.tenantId,
@@ -47,7 +55,9 @@ export class IncrementalModelingBackend implements DataTableBackend {
       filterParams.search,
       filled,
     )
-    return fetched.records
+    return recordGraphFns.newInstance(
+      fetched.records.map((r) => recordGraphNodeFns.newInstance(r, [])),
+    )
   }
 
   saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {

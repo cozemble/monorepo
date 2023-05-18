@@ -8,6 +8,7 @@ import type { EventSourcedDataRecord } from '@cozemble/data-editor-sdk'
 import type { DataRecordId, ModelView } from '@cozemble/model-core'
 import { allModelViews } from '../stores/allModelViews'
 import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
+import type { RecordGraph } from '@cozemble/model-core/dist/esm'
 
 export class StoreSyncBackend implements Backend {
   constructor(private readonly delegate: Backend) {}
@@ -15,14 +16,14 @@ export class StoreSyncBackend implements Backend {
   async saveModel(model: EventSourcedModel): Promise<JustErrorMessage | null> {
     const result = await this.delegate.saveModel(model)
     if (result === null) {
-      allEventSourcedModels.update((ms) => {
-        const index = ms.findIndex((m) => m.model.id.value === model.model.id.value)
+      allEventSourcedModels.update((list) => {
+        const index = list.models.findIndex((m) => m.model.id.value === model.model.id.value)
         if (index === -1) {
-          return [...ms, model]
+          return { ...list, models: [...list.models, model] }
         }
-        const newMs = [...ms]
-        newMs[index] = model
-        return newMs
+        const newModels = [...list.models]
+        newModels[index] = model
+        return { ...list, models: newModels }
       })
     }
     return result
@@ -32,7 +33,7 @@ export class StoreSyncBackend implements Backend {
     return await this.delegate.saveModels(models)
   }
 
-  async getRecords(modelId: ModelId, filterParams: FilterParams): Promise<DataRecord[]> {
+  async getRecords(modelId: ModelId, filterParams: FilterParams): Promise<RecordGraph> {
     return await this.delegate.getRecords(modelId, filterParams)
   }
 

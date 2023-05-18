@@ -4,26 +4,23 @@
     import ModelStructureEditor from './ModelStructureEditor.svelte'
     import type {ModelId, SystemConfiguration} from '@cozemble/model-core'
     import {modelNameFns} from '@cozemble/model-core'
-    import type {EventSourcedModel} from '@cozemble/model-event-sourced'
-    import {coreModelEvents} from '@cozemble/model-event-sourced'
+    import type {EventSourcedModelList} from "@cozemble/model-event-sourced";
+    import {coreModelEvents, eventSourcedModelListFns} from '@cozemble/model-event-sourced'
     import type {Writable} from 'svelte/store'
 
     export let modelId: ModelId
     export let host: ModelEditorHost
-    export let allModels: Writable<EventSourcedModel[]>
+    export let modelList: Writable<EventSourcedModelList>
     export let systemConfiguration: SystemConfiguration
     export let editImmediately = false
 
-    $: eventSourced = host.modelWithId($allModels, modelId)
+    $: eventSourced = eventSourcedModelListFns.modelWithId($modelList, modelId)
 
     function onNameChange(name: string) {
-        host.modelChanged(
-            modelId,
-            coreModelEvents.modelRenamed(
-                eventSourced.model.id,
-                modelNameFns.newInstance(name),
-            ),
-        )
+        modelList.update(list => eventSourcedModelListFns.addModelEvent(list, coreModelEvents.modelRenamed(
+            eventSourced.model.id,
+            modelNameFns.newInstance(name),
+        )))
     }
 
 </script>
@@ -40,7 +37,7 @@
     </div>
 
     <div class="mt-2">
-        <ModelStructureEditor {systemConfiguration} {eventSourced} {host} allModels={$allModels} on:editingSomething/>
+        <ModelStructureEditor {systemConfiguration} {eventSourced} {host} {modelList} on:editingSomething/>
     </div>
 {/if}
 

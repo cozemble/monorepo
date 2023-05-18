@@ -23,7 +23,7 @@
 
 
 <div bind:this={rootDiv}>
-    {#if $allEventSourcedModels.length === 0}
+    {#if $allEventSourcedModels.models.length === 0}
         <a class="tab tab-lg add-table-link"
            on:click={addTable}>+ Add your first table</a>
     {:else}

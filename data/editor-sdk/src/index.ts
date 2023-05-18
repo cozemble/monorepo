@@ -33,3 +33,9 @@ export {
 } from './dataRecordViewerHost'
 
 export { ModelViewManager } from './ModelViewManager'
+
+export { EventSourcedRecordGraph, eventSourcedRecordGraphFns } from './EventSourcedRecordGraph'
+export {
+  EventSourcedRecordGraphNode,
+  eventSourcedRecordGraphNodeFns,
+} from './EventSourcedRecordGraphNode'

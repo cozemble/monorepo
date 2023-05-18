@@ -1,6 +1,6 @@
 <script lang="ts">
     import type {EventSourcedModel} from "@cozemble/model-event-sourced";
-    import type {ModelView} from "@cozemble/model-core";
+    import type {DataRecord, ModelView} from "@cozemble/model-core";
     import {systemConfigurationFns} from "@cozemble/model-core";
     import {registerEverything} from "@cozemble/model-assembled";
     import {onMount} from 'svelte'
@@ -8,7 +8,6 @@
     import {backendFns, DataTable, eventSourcedModelStore} from "../../lib";
     import {testModelsLocalStorageKey} from "./testModels";
     import {testRecordsLocalStorageKey} from "./testModels.js";
-    import type {DataRecord} from "@cozemble/model-core/dist/esm";
     import {InMemoryBackend} from "../../lib/backend/InMemoryBackend";
     import DevOptions from "../DevOptions.svelte";
 

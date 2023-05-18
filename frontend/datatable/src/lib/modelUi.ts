@@ -1,11 +1,12 @@
 import { writable } from 'svelte/store'
 import { computePosition } from '@floating-ui/dom'
 import { tick } from 'svelte'
-import type { EventSourcedModel } from '@cozemble/model-event-sourced'
+import type { EventSourcedModel, EventSourcedModelList } from '@cozemble/model-event-sourced'
 import type { JustErrorMessage } from '@cozemble/lang-util'
+import type { Writable } from 'svelte/store'
 
 export interface EditModelModalState {
-  allModels: EventSourcedModel[]
+  modelList: Writable<EventSourcedModelList>
   model: EventSourcedModel
   anchorElement: HTMLElement
 }
@@ -13,8 +14,12 @@ export interface EditModelModalState {
 export const editModelModal = writable<EditModelModalState | null>(null)
 
 export const modelUi = {
-  edit(allModels: EventSourcedModel[], model: EventSourcedModel, anchorElement: HTMLElement) {
-    editModelModal.set({ allModels, model, anchorElement })
+  edit(
+    modelList: Writable<EventSourcedModelList>,
+    model: EventSourcedModel,
+    anchorElement: HTMLElement,
+  ) {
+    editModelModal.set({ modelList, model, anchorElement })
   },
   handleSaveOutcome(saveOutcome: JustErrorMessage | null) {
     if (saveOutcome === null) {

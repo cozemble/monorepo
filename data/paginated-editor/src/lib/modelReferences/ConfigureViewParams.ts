@@ -20,10 +20,10 @@ export async function makeConfigureViewParams(
     throw new Error('Expected last element to be a model reference')
   }
   const modelReference = recordPath.lastElement as ModelReference
-  if (modelReference.referencedModels.length !== 1) {
+  if (modelReference.referencedModelIds.length !== 1) {
     throw new Error('Expected model reference to have exactly one referenced model')
   }
-  const referencedModelId = modelReference.referencedModels[0]
+  const referencedModelId = modelReference.referencedModelIds[0]
   const referencedModel = modelFns.findById(models, referencedModelId)
   const sampleRecords = writable<DataRecord[]>([])
   client.searchRecords(referencedModel.id, '').then((found) => {

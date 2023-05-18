@@ -20,7 +20,7 @@
     export let parentPath: DataRecordPathParentElement[]
     export let parentModelId: ModelId
     const nestedParentPath = [...parentPath, nestedModel]
-    const eventSourcedModel = derived(allEventSourcedModels, allModels => mandatory(eventSourcedModelFns.findById(allModels, nestedModel.modelId), `No model found for ${nestedModel.modelId.value}`))
+    const eventSourcedModel = derived(allEventSourcedModels, list => mandatory(eventSourcedModelFns.findById(list.models, nestedModel.modelId), `No model found for ${nestedModel.modelId.value}`))
     const model = derived(eventSourcedModel, esm => esm.model)
     const oneOnly = nestedModel.cardinality === 'one'
     const records = modelRecordsContextFns.getRecords()

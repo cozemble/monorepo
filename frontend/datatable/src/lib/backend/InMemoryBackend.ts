@@ -2,7 +2,14 @@ import type { Backend, FilterParams } from './Backend'
 import type { JustErrorMessage } from '@cozemble/lang-util'
 import { uuids } from '@cozemble/lang-util'
 import type { EventSourcedModel } from '@cozemble/model-event-sourced'
-import type { DataRecord, DataRecordId, ModelId, ModelView } from '@cozemble/model-core'
+import type {
+  DataRecord,
+  DataRecordId,
+  ModelId,
+  ModelView,
+  RecordGraph,
+} from '@cozemble/model-core'
+import { recordGraphNodeFns } from '@cozemble/model-core'
 import type {
   AttachmentIdAndFileName,
   EventSourcedDataRecord,
@@ -10,6 +17,7 @@ import type {
 } from '@cozemble/data-editor-sdk'
 import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import { recordSaveSucceeded } from '@cozemble/data-paginated-editor'
+import { recordGraphFns } from '@cozemble/model-core/dist/esm'
 
 export class InMemoryBackend implements Backend {
   constructor(
@@ -29,16 +37,21 @@ export class InMemoryBackend implements Backend {
     return null
   }
 
-  async getRecords(modelId: ModelId, filterParams: FilterParams): Promise<DataRecord[]> {
+  async getRecords(modelId: ModelId, filterParams: FilterParams): Promise<RecordGraph> {
     const records = this.records.get(modelId.value) ?? []
     if (filterParams.search) {
-      return records.filter((record) =>
-        JSON.stringify(record.values)
-          .toLowerCase()
-          .includes((filterParams.search ?? '').toLowerCase()),
-      )
+      const nodes = records
+        .filter((record) =>
+          JSON.stringify(record.values)
+            .toLowerCase()
+            .includes((filterParams.search ?? '').toLowerCase()),
+        )
+        .map((record) => recordGraphNodeFns.newInstance(record, []))
+      return recordGraphFns.newInstance(nodes)
     }
-    return records
+    return recordGraphFns.newInstance(
+      records.map((record) => recordGraphNodeFns.newInstance(record, [])),
+    )
   }
 
   async saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
@@ -73,7 +86,6 @@ export class InMemoryBackend implements Backend {
 
   async recordById(modelId: ModelId, recordId: DataRecordId): Promise<DataRecord | null> {
     const records = this.records.get(modelId.value) || []
-    console.log('recordById', { allRecords: this.records, records, modelId, recordId })
     return records.find((record) => record.id.value === recordId.value) || null
   }
 

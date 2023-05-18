@@ -7,7 +7,7 @@ import type {
   UploadedAttachment,
 } from '@cozemble/data-editor-sdk'
 import type { DataRecord, DataRecordId, Model, ModelId, ModelView } from '@cozemble/model-core'
-import type { EventSourcedDataRecordsStore } from './EventSourcedDataRecordsStore'
+import type { EventSourcedRecordGraphStore } from './EventSourcedRecordGraphStore'
 import type { DataTableFocusControls2 } from '../focus/DataTableFocus'
 import type { JustErrorMessage } from '@cozemble/lang-util'
 import type { Backend } from '../backend/Backend'
@@ -19,7 +19,7 @@ export function makeCombinedDataRecordEditorClient(
   backend: Backend,
   modelsProvider: () => Model[],
   modelViewsProvider: () => ModelView[],
-  records: EventSourcedDataRecordsStore,
+  records: EventSourcedRecordGraphStore,
   focusControls: DataTableFocusControls2,
   recordId: DataRecordId,
 ): CombinedDataRecordEditorClient {

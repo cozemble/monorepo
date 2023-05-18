@@ -15,8 +15,10 @@
     import DataEntryRow from "./entry/DataEntryRow.svelte";
     import AddModelElementButton from "./modelling/AddModelElementButton.svelte";
     import {modelFns, modelOptions, propertyFns} from "@cozemble/model-api";
-    import type {EventSourcedDataRecord} from "@cozemble/data-editor-sdk/dist/esm";
-    import {mandatory} from "@cozemble/lang-util/dist/esm";
+    import type {EventSourcedDataRecord} from "@cozemble/data-editor-sdk";
+    import {mandatory} from "@cozemble/lang-util";
+    import type {EventSourcedRecordGraph} from "@cozemble/data-editor-sdk/dist/esm/index.js";
+    import {eventSourcedRecordGraphFns} from "@cozemble/data-editor-sdk/dist/esm/index.js";
 
     export let oneOnly = false
     export let options: DataRecordsTableOptions = dataRecordsTableOptions(true, true, true)
@@ -42,7 +44,7 @@
         if (!anchorElement) {
             return
         }
-        slotBeingEdited = {models: $allEventSourcedModels, model: $eventSourcedModel, slot, anchorElement}
+        slotBeingEdited = {modelList: allEventSourcedModels, model: $eventSourcedModel, slot, anchorElement}
     }
 
     async function addInnerTable() {
@@ -72,13 +74,13 @@
         const element = document.querySelector(`th#field-${$model.slots.length}`) as HTMLElement
         if (element) {
             const slot = $model.slots[$model.slots.length - 1]
-            slotBeingEdited = {models: $allEventSourcedModels, model: $eventSourcedModel, slot, anchorElement: element}
+            slotBeingEdited = {modelList: allEventSourcedModels, model: $eventSourcedModel, slot, anchorElement: element}
         }
     }
 
-    async function modelEdited(event: CustomEvent) {
-        const edited = event.detail.model
-        await modelControls.modelEdited(edited)
+    async function modelEdited() {
+        // const edited = event.detail.model
+        // await modelControls.modelEdited(edited)
         slotBeingEdited = null
     }
 
@@ -124,7 +126,8 @@
         }
     }
 
-    function recordHasEvents(rowIndex: number, records: EventSourcedDataRecord[]) {
+    function recordHasEvents(rowIndex: number, graph: EventSourcedRecordGraph) {
+        const records = eventSourcedRecordGraphFns.getRecords(graph)
         return mandatory(records[rowIndex], `No event sourced record at index ${rowIndex}`).events.length > 0
     }
 

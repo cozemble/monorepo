@@ -4,7 +4,7 @@ import { getContext, setContext } from 'svelte'
 import { mandatory } from '@cozemble/lang-util'
 import type { Readable, Writable } from 'svelte/store'
 import type { DataTableFocus, DataTableFocusControls2 } from '../focus/DataTableFocus'
-import type { EventSourcedDataRecordsStore } from './EventSourcedDataRecordsStore'
+import type { EventSourcedRecordGraphStore } from './EventSourcedRecordGraphStore'
 import type { RecordControls } from './RecordControls'
 import type { ModelControls } from './ModelControls'
 import type { ErrorVisibilityByRecordId } from './helpers'
@@ -33,7 +33,7 @@ export const modelRecordsContextFns = {
   setModel: (model: Readable<Model>) => {
     setContext(modelContextKey, model)
   },
-  setEventSourcedRecords: (records: EventSourcedDataRecordsStore) => {
+  setEventSourcedRecords: (records: EventSourcedRecordGraphStore) => {
     setContext(eventSourcedRecordsContextKey, records)
   },
   setRecords: (records: Readable<DataRecord[]>) => {
@@ -69,7 +69,7 @@ export const modelRecordsContextFns = {
   getModel: (): Readable<Model> => {
     return mandatory(getContext(modelContextKey), `No model found in context`)
   },
-  getEventSourcedRecords: (): EventSourcedDataRecordsStore => {
+  getEventSourcedRecords: (): EventSourcedRecordGraphStore => {
     return mandatory(
       getContext(eventSourcedRecordsContextKey),
       `No records event sourced records found in context`,

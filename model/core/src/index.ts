@@ -98,4 +98,11 @@ export {
   systemConfigurationFns,
 } from './systemConfiguration'
 
-export { dataRecordEdgeFns, DataRecordEdge, DataNode, dataNodeFns } from './graph'
+export {
+  recordGraphEdgeFns,
+  RecordGraphEdge,
+  RecordGraphNode,
+  recordGraphNodeFns,
+  RecordGraph,
+  recordGraphFns,
+} from './graph'

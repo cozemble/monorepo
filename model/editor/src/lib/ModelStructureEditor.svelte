@@ -5,16 +5,16 @@
     import AddNestedModelDialog from './AddNestedModelDialog.svelte'
     import type {ModelEditorHost} from './ModelEditorHost'
     import {modelFns, modelOptions} from '@cozemble/model-api'
-    import type {EventSourcedModel} from '@cozemble/model-event-sourced'
-    import {coreModelEvents} from '@cozemble/model-event-sourced'
+    import type {EventSourcedModel, EventSourcedModelList} from '@cozemble/model-event-sourced'
+    import {coreModelEvents, eventSourcedModelListEvents, eventSourcedModelListFns} from '@cozemble/model-event-sourced'
     import {createEventDispatcher} from "svelte";
+    import type {Writable} from "svelte/store";
 
     export let host: ModelEditorHost
-    export let allModels: EventSourcedModel[]
+    export let modelList: Writable<EventSourcedModelList>
     export let eventSourced: EventSourcedModel
     export let systemConfiguration: SystemConfiguration
 
-    $: allCoreModels = allModels.map((m) => m.model)
     $: model = eventSourced.model
     let slotIdBeingEdited: ModelSlotId | null = null
     $: slotBeingEdited = modelFns.maybeSlotWithId(model, slotIdBeingEdited)
@@ -23,12 +23,10 @@
 
     function addProperty() {
         const propertyName = `Property ${model.slots.length + 1}`
-        host.modelChanged(
-            model.id,
+        modelList.update(list => eventSourcedModelListFns.addModelEvent(list,
             propertyDescriptors
                 .getDefault()
-                .newProperty(systemConfiguration, model.id, propertyNameFns.newInstance(propertyName)),
-        )
+                .newProperty(systemConfiguration, model.id, propertyNameFns.newInstance(propertyName))))
     }
 
     function editSlot(slot: ModelSlot) {
@@ -60,16 +58,17 @@
             nestdeModel.name,
         )
 
-        host.modelAdded(nestdeModel)
-        host.modelChanged(
-            model.id,
-            coreModelEvents.nestedModelAdded(
-                parentModel,
-                childModel,
-                cardinality,
-                nestedModelNameFns.newInstance(relationshipName),
-            ),
+        modelList.update((list) => {
+                list = eventSourcedModelListFns.addEvent(list, eventSourcedModelListEvents.addModel(nestdeModel))
+                return eventSourcedModelListFns.addModelEvent(list, coreModelEvents.nestedModelAdded(
+                    parentModel,
+                    childModel,
+                    cardinality,
+                    nestedModelNameFns.newInstance(relationshipName),
+                ))
+            },
         )
+
         addingNestedModel = false
         dispatch("editingSomething", false)
     }
@@ -83,10 +82,9 @@
 {:else if slotBeingEdited}
     <ModelSlotEditor
             {systemConfiguration}
-            modelChangeHandler={host}
-            models={allCoreModels}
-            {model}
-            modelSlot={slotBeingEdited}
+            {modelList}
+            modelId={model.id}
+            slotId={slotBeingEdited.id.value}
             on:save={slotEdited}/>
 {:else}
     <div data-model-name={model.name.value}>
@@ -122,10 +120,10 @@
 {/if}
 
 {#each model.nestedModels as nestedModel}
-    {@const eventSourced = host.modelWithId(allModels, nestedModel.modelId)}
+    {@const eventSourced = eventSourcedModelListFns.modelWithId($modelList, nestedModel.modelId)}
     <div class="nested-model-container mt-2">
         <h5>{nestedModel.name.value}</h5>
-        <svelte:self {allModels} {eventSourced} {host}/>
+        <svelte:self {modelList} {eventSourced} {host}/>
     </div>
 {/each}
 

@@ -2,7 +2,7 @@ import { clock, type Option, uuids } from '@cozemble/lang-util'
 import { propertyDescriptors } from './propertyDescriptor'
 import { SystemConfiguration } from './systemConfiguration'
 import { TinyValue } from './TinyValue'
-import { DataNode, dataRecordEdgeFns } from './graph'
+import { RecordGraphNode, recordGraphEdgeFns } from './graph'
 
 export interface PropertyType extends TinyValue {
   _type: 'property.type'
@@ -256,9 +256,12 @@ export const modelReferenceFns = {
     }
     return errors
   },
-  getReferencedRecords: (modelReference: ModelReference, node: DataNode): ReferencedRecords => {
+  getReferencedRecords: (
+    modelReference: ModelReference,
+    node: RecordGraphNode,
+  ): ReferencedRecords => {
     const id = modelReference.id
-    const filtered = dataRecordEdgeFns.forModelReference(node.edges, id)
+    const filtered = recordGraphEdgeFns.forModelReference(node.edges, id)
     return filtered.reduce((acc, edge) => {
       if (modelReference.side === 'from' && edge.fromRecordId.value === node.record.id.value) {
         // from record - like from customer to booking

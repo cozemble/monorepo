@@ -76,4 +76,7 @@ export const eventSourcedDataRecordFns = {
   ): EventSourcedDataRecord {
     return options.reduce((r, o) => o(r), record)
   },
+  updateModels(models: Model[], record: EventSourcedDataRecord): EventSourcedDataRecord {
+    return { ...record, models }
+  },
 }

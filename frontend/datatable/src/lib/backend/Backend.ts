@@ -1,6 +1,12 @@
 import type { EventSourcedModel } from '@cozemble/model-event-sourced'
 import type { JustErrorMessage } from '@cozemble/lang-util'
-import type { DataRecord, DataRecordId, ModelId, ModelView } from '@cozemble/model-core'
+import type {
+  DataRecord,
+  DataRecordId,
+  ModelId,
+  ModelView,
+  RecordGraph,
+} from '@cozemble/model-core'
 import type { AttachmentsManager, RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import type {
   AttachmentIdAndFileName,
@@ -30,7 +36,7 @@ export interface Backend extends AttachmentsManager, RecordSaver {
 
   saveModels(model: EventSourcedModel[]): Promise<JustErrorMessage | null>
 
-  getRecords(modelId: ModelId, filterParams: FilterParams): Promise<DataRecord[]>
+  getRecords(modelId: ModelId, filterParams: FilterParams): Promise<RecordGraph>
 
   searchRecords(modelId: ModelId, search: string): Promise<DataRecord[]>
 

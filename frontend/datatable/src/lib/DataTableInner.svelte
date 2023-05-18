@@ -23,7 +23,7 @@
         const model = $allTopLevelEventSourcedModels[modelIndex]
         const anchor = (clicked.target as HTMLElement).closest(`.model-${modelIndex + 1}`) as HTMLElement
         if (model && anchor) {
-            modelUi.edit($allEventSourcedModels, model, anchor)
+            modelUi.edit(allEventSourcedModels, model, anchor)
         }
     }
 

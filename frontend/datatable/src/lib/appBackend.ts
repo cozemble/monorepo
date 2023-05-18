@@ -2,7 +2,13 @@ import { type Backend, type FilterParams, notImplementedBackend } from './backen
 import type { EventSourcedModel } from '@cozemble/model-event-sourced'
 import type { JustErrorMessage } from '@cozemble/lang-util'
 import { RootRecordsContext } from './records/RecordsContext'
-import type { DataRecord, DataRecordId, ModelId, SystemConfiguration } from '@cozemble/model-core'
+import type {
+  DataRecord,
+  DataRecordId,
+  ModelId,
+  RecordGraph,
+  SystemConfiguration,
+} from '@cozemble/model-core'
 import type { Writable } from 'svelte/store'
 import type {
   AttachmentsManager,
@@ -38,7 +44,7 @@ export async function saveExistingRecord(
 export async function getRecordsForModel(
   modelId: ModelId,
   filterParams: FilterParams,
-): Promise<DataRecord[]> {
+): Promise<RecordGraph> {
   return backend.getRecords(modelId, filterParams)
 }
 
@@ -47,6 +53,7 @@ export async function saveModel(model: EventSourcedModel): Promise<JustErrorMess
 }
 
 export async function saveModels(models: EventSourcedModel[]): Promise<JustErrorMessage | null> {
+  console.log({ models })
   return backend.saveModels(models)
 }
 

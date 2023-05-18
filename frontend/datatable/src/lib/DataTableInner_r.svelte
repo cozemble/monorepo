@@ -35,7 +35,7 @@ const onEditModel = (clicked: Event, modelIndex: number) => {
   ) as HTMLElement
 
   if (model && anchor) {
-    modelUi.edit($allEventSourcedModels, model, anchor)
+    modelUi.edit(allEventSourcedModels, model, anchor)
   }
 }
 

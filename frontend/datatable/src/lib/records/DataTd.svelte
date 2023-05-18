@@ -19,7 +19,6 @@
     const errors = singleRecordEditContext.getErrorsForRecord()
 
     function setFocus() {
-        console.log("setFocus", {rowIndex, modelSlot, parentPath,isFocused})
         if (!isFocused) {
             focusControls.setFocus(rootRecordIndex, modelSlot, parentPath)
         }

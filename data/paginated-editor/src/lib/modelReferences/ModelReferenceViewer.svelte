@@ -3,12 +3,13 @@
     import {assembleEditorParams, type EditorParams} from "./editorHelper";
     import type {UserInstruction} from "@cozemble/data-editor-sdk";
     import {dataRecordViewer} from "@cozemble/data-editor-sdk";
-    import {onMount} from "svelte";
+    import {afterUpdate} from "svelte";
     import ModelReferenceViewerInner from "./ModelReferenceViewerInner.svelte";
     import ConfigureViewModal from "./ConfigureViewModal.svelte";
     import {modelFns} from "@cozemble/model-api";
     import type {ConfigureViewParams} from "./ConfigureViewParams";
     import {makeConfigureViewParams} from "./ConfigureViewParams";
+    import type {DataRecordViewerClient} from "@cozemble/data-editor-sdk";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord
@@ -22,14 +23,18 @@
     let containerElement: HTMLDivElement
     let configureViewParams: ConfigureViewParams | null = null
 
-    onMount(() => {
+    $: fetchEditorParams(dataRecordViewerClient, recordPath)
+
+    function fetchEditorParams(client: DataRecordViewerClient, recordPath: DataRecordValuePath) {
+        error = null
         try {
             editorParams = assembleEditorParams(dataRecordViewerClient, recordPath)
         } catch (e: any) {
             console.error(e)
             error = e.message
         }
-    })
+
+    }
 
     function instructUser() {
         if (editorParams && editorParams._type === 'user.instruction') {
@@ -47,8 +52,10 @@
 
     function viewConfigured() {
         cancelConfigureViewModal()
-        editorParams = assembleEditorParams(dataRecordViewerClient, recordPath)
+        // editorParams = assembleEditorParams(dataRecordViewerClient, recordPath)
     }
+
+    afterUpdate(() => console.log({editorParams, recordPath, record, systemConfiguration}))
 </script>
 
 <div bind:this={containerElement}>

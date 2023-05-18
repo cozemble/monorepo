@@ -29,6 +29,7 @@ import {
 import { gettableWritable } from '../editors/GettableWritable'
 import { eventSourcedDataRecordFns } from '@cozemble/data-editor-sdk'
 import { emptyFilterParams } from '../backend/Backend'
+import { recordGraphFns } from '@cozemble/model-core/dist/esm'
 
 export type LoadingState = 'loading' | 'loaded'
 
@@ -202,9 +203,9 @@ export class RootRecordsContext implements RecordsContext {
 
   async loadRecords(): Promise<void> {
     this._loadingState.set('loading')
-    const loaded = await this.backend.getRecords(this.modelId(), emptyFilterParams())
+    const graph = await this.backend.getRecords(this.modelId(), emptyFilterParams())
     this._records.set(
-      loaded.map((r) => eventSourcedDataRecordFns.fromRecord(this._allModelCache, r)),
+      graph.nodes.map((n) => eventSourcedDataRecordFns.fromRecord(this._allModelCache, n.record)),
     )
     this._loadingState.set('loaded')
   }

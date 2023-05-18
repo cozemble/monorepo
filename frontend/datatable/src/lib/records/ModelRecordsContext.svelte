@@ -1,10 +1,10 @@
 <script lang="ts">
     import {allEventSourcedModels, allModels} from "../stores/allModels";
     import {derived, writable} from "svelte/store";
-    import type {DataRecord, Model, ModelId} from "@cozemble/model-core";
+    import type {Model, ModelId, NestedModelId} from "@cozemble/model-core";
     import {eventSourcedModelFns} from "@cozemble/model-event-sourced";
     import {modelRecordsContextFns} from "./modelRecordsContextFns";
-    import {eventSourcedDataRecordFns} from "@cozemble/data-editor-sdk";
+    import {eventSourcedRecordGraphFns} from "@cozemble/data-editor-sdk";
     import {emptyDataTableFocus} from "../focus/DataTableFocus";
     import {gettableWritable} from "../editors/GettableWritable";
     import {makeFocusControls} from "./makeFocusControls";
@@ -12,30 +12,32 @@
     import type {LoadingState} from "./RecordsContext";
     import {backend, getRecordsForModel} from "../appBackend";
     import {systemConfiguration} from "../stores/systemConfiguration";
-    import {eventSourcedDataRecordsStore} from "./EventSourcedDataRecordsStore";
+    import {eventSourcedRecordGraphStore} from "./EventSourcedRecordGraphStore";
     import {makeRecordControls} from "./makeRecordControls";
     import {currentUserId} from "../stores/currentUserId";
     import {makeModelControls} from "./makeModelControls";
     import type {ErrorVisibilityByRecordId} from "./helpers";
     import {emptyFilterParams, type FilterParams, type RecordSaver} from "../backend/Backend";
     import {dataRecordFns} from "@cozemble/model-api";
-    import type {NestedModelId} from "@cozemble/model-core";
+    import type {RecordGraphLoader} from "$lib/records/RecordGraphLoader";
+    import {recordGraphFns, recordGraphNodeFns} from "@cozemble/model-core";
 
     const systemConfigurationProvider = () => $systemConfiguration
     const modelsProvider = () => $allModels
 
     export let modelId: ModelId
-    export let recordLoader: (modelId: ModelId, filterParams: FilterParams) => Promise<DataRecord[]> = getRecordsForModel
-    export let eventSourcedRecords = eventSourcedDataRecordsStore(systemConfigurationProvider, modelsProvider, () => $model, $currentUserId)
+    export let graphLoader: RecordGraphLoader = getRecordsForModel
+    export let eventSourcedRecordGraph = eventSourcedRecordGraphStore(systemConfigurationProvider, modelsProvider, () => $model, $currentUserId)
     export let recordSaver: RecordSaver = backend
     export let oneOnly = false
     export let permitRecordAdditions = true
 
-    const eventSourcedModel = derived(allEventSourcedModels, models => eventSourcedModelFns.findById(models, modelId))
+    const eventSourcedModel = derived(allEventSourcedModels, list => eventSourcedModelFns.findById(list.models, modelId))
     const model = derived(eventSourcedModel, model => model.model)
-    const records = derived(eventSourcedRecords, records => records.map(record => record.record))
+    const eventSourcedRecords = derived(eventSourcedRecordGraph, graph => eventSourcedRecordGraphFns.getRecords(graph))
+    const records = derived(eventSourcedRecords, records => records.map(r => r.record))
     const errorVisibilityByRecordId = gettableWritable(new Map() as ErrorVisibilityByRecordId)
-    const focus = gettableWritable(emptyDataTableFocus(() => eventSourcedRecords.get().map((r) => r.record)))
+    const focus = gettableWritable(emptyDataTableFocus(() => $records))
     const focusControls = makeFocusControls(modelsProvider, () => $records, systemConfigurationProvider, focus)
     const lastSavedByRecordId = writable(new Map<string, number>())
     const dirtyRecords = derived([eventSourcedRecords, lastSavedByRecordId], ([records, lastSavedByRecordId]) => {
@@ -52,42 +54,42 @@
 
     modelRecordsContextFns.setEventSourcedModel(eventSourcedModel)
     modelRecordsContextFns.setModel(model)
-    modelRecordsContextFns.setEventSourcedRecords(eventSourcedRecords)
+    modelRecordsContextFns.setEventSourcedRecords(eventSourcedRecordGraph)
     modelRecordsContextFns.setRecords(records)
     modelRecordsContextFns.setFocus(focus)
     modelRecordsContextFns.setFocusControls(focusControls)
     modelRecordsContextFns.setDirtyRecords(dirtyRecords)
-    modelRecordsContextFns.setRecordControls(makeRecordControls(systemConfigurationProvider, recordSaver, modelsProvider, errorVisibilityByRecordId, eventSourcedRecords, lastSavedByRecordId))
+    modelRecordsContextFns.setRecordControls(makeRecordControls(systemConfigurationProvider, recordSaver, modelsProvider, errorVisibilityByRecordId, eventSourcedRecordGraph, lastSavedByRecordId))
     modelRecordsContextFns.setModelControls(makeModelControls(allEventSourcedModels))
     modelRecordsContextFns.setErrorVisibilityByRecordId(errorVisibilityByRecordId)
     modelRecordsContextFns.setFilterParams(filterParams)
-    modelRecordsContextFns.setNestedModelBeingEdited(writable(null as NestedModelId|null))
+    modelRecordsContextFns.setNestedModelBeingEdited(writable(null as NestedModelId | null))
     modelRecordsContextFns.setPermitRecordAdditions(writable(permitRecordAdditions))
 
     let someRecordsLoaded = false
 
     const unsubAllEventSourcedModels = allModels.subscribe(models => {
-        eventSourcedRecords.update(records => {
-            return records.map(r => ({...r, models}))
+        eventSourcedRecordGraph.update(graph => {
+            return eventSourcedRecordGraphFns.updateModelsInDataRecords(graph, models)
         })
     })
 
     function newEmptyRecord(model: Model) {
-        return eventSourcedDataRecordFns.fromRecord($allModels, dataRecordFns.newInstance($model, $currentUserId))
+        return dataRecordFns.newInstance(model, $currentUserId)
     }
 
     async function loadRecords(filterParams: FilterParams) {
         loadingState.set('loading')
-        const loaded = await recordLoader(modelId, filterParams)
+        let loadedGraph = await graphLoader(modelId, filterParams)
         if (oneOnly) {
-            eventSourcedRecords.set(
-                [...loaded.map((r) => eventSourcedDataRecordFns.fromRecord($allModels, r))],
+            eventSourcedRecordGraph.set(
+                eventSourcedRecordGraphFns.fromRecordGraph($allModels, loadedGraph),
             )
         } else {
-            eventSourcedRecords.set(
-                [...loaded.map((r) => eventSourcedDataRecordFns.fromRecord($allModels, r)), newEmptyRecord($model)],
+            loadedGraph = recordGraphFns.appendRecord(loadedGraph, newEmptyRecord($model))
+            eventSourcedRecordGraph.set(
+                eventSourcedRecordGraphFns.fromRecordGraph($allModels, loadedGraph),
             )
-
         }
         someRecordsLoaded = true
         loadingState.set('loaded')

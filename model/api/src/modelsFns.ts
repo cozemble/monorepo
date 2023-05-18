@@ -32,6 +32,9 @@ import { nestedModelFns } from './nestedModelFns'
 import { LeafModelSlot } from '@cozemble/model-core'
 
 export const modelOptions = {
+  withId(id: ModelId): ModelOption {
+    return (model) => ({ ...model, id })
+  },
   withProperty(p: Property | string): ModelOption {
     if (typeof p === 'string') {
       p = propertyFns.newInstance(p)
