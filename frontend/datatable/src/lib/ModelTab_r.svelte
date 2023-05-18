@@ -14,9 +14,13 @@ export let onEditModel: (clicked: Event, modelIndex: number) => void
 
 const isModellingPermitted = contextHelper.getPermitModelling()
 
-const onShow = (modelId: ModelId) => navbarState.set(modelId.value)
+function onShow(modelId: ModelId) {
+  navbarState.set(modelId.value)
+}
 
-const onEdit = (clicked: Event) => onEditModel(clicked, index)
+function onEdit(clicked: Event) {
+  onEditModel(clicked, index)
+}
 </script>
 
 <div class="flex items-center">

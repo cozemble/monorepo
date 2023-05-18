@@ -24,9 +24,11 @@ const isModellingPermitted = contextHelper.getPermitModelling()
 
 //
 
-const onShowModel = (modelId: ModelId) => navbarState.set(modelId.value)
+function onShowModel(modelId: ModelId) {
+  navbarState.set(modelId.value)
+}
 
-const onEditModel = (clicked: Event, modelIndex: number) => {
+function onEditModel(clicked: Event, modelIndex: number) {
   clicked.stopPropagation()
 
   const model = $allTopLevelEventSourcedModels[modelIndex]
@@ -39,9 +41,9 @@ const onEditModel = (clicked: Event, modelIndex: number) => {
   }
 }
 
-const onAddModel = (event: CustomEvent) =>
+function onAddModel(event: CustomEvent) {
   event.detail.modelId && onShowModel(event.detail.modelId)
-
+}
 //
 </script>
 
