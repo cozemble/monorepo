@@ -9,7 +9,7 @@ import type {
   ModelView,
   RecordGraph,
 } from '@cozemble/model-core'
-import { recordGraphNodeFns } from '@cozemble/model-core'
+import { recordGraphFns } from '@cozemble/model-core'
 import type {
   AttachmentIdAndFileName,
   EventSourcedDataRecord,
@@ -17,7 +17,6 @@ import type {
 } from '@cozemble/data-editor-sdk'
 import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import { recordSaveSucceeded } from '@cozemble/data-paginated-editor'
-import { recordGraphFns } from '@cozemble/model-core/dist/esm'
 
 export class InMemoryBackend implements Backend {
   constructor(
@@ -40,18 +39,14 @@ export class InMemoryBackend implements Backend {
   async getRecords(modelId: ModelId, filterParams: FilterParams): Promise<RecordGraph> {
     const records = this.records.get(modelId.value) ?? []
     if (filterParams.search) {
-      const nodes = records
-        .filter((record) =>
-          JSON.stringify(record.values)
-            .toLowerCase()
-            .includes((filterParams.search ?? '').toLowerCase()),
-        )
-        .map((record) => recordGraphNodeFns.newInstance(record, []))
-      return recordGraphFns.newInstance(nodes)
+      const filtered = records.filter((record) =>
+        JSON.stringify(record.values)
+          .toLowerCase()
+          .includes((filterParams.search ?? '').toLowerCase()),
+      )
+      return recordGraphFns.newInstance(filtered, [])
     }
-    return recordGraphFns.newInstance(
-      records.map((record) => recordGraphNodeFns.newInstance(record, [])),
-    )
+    return recordGraphFns.newInstance(records, [])
   }
 
   async saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {

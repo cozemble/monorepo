@@ -1,13 +1,13 @@
 <script lang="ts">
     import {dataRecordsTableOptions} from "../DataRecordsTableOptions";
     import type {DataRecord, DataRecordId, Model} from "@cozemble/model-core";
-    import SlotTh from "../SlotTh.svelte";
     import DataEntryRow from "../entry/DataEntryRow.svelte";
     import {writable} from "svelte/store";
     import {singleRecordEditContext} from "../contextHelper";
     import {modelRecordsContextFns} from "../modelRecordsContextFns";
     import {onMount} from "svelte";
     import {modelFns} from "@cozemble/model-api";
+    import SlotTh from "$lib/records/cells/SlotTh.svelte";
 
     const expandedRecordIds = writable([] as DataRecordId[])
 

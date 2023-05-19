@@ -5,7 +5,7 @@ import {
   eventSourcedModelFns,
   ModelCreated,
   ModelRenamed,
-} from '../src'
+} from '../../src'
 import {
   type Model,
   type ModelEvent,

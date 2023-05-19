@@ -36,38 +36,28 @@ export const recordGraphEdgeFns = {
   },
 }
 
-export interface RecordGraphNode {
-  _type: 'record.graph.node'
-  record: DataRecord
-  edges: RecordGraphEdge[]
-}
-
-export const recordGraphNodeFns = {
-  newInstance: (record: DataRecord, edges: RecordGraphEdge[]): RecordGraphNode => ({
-    _type: 'record.graph.node',
-    record,
-    edges,
-  }),
-}
-
 export interface RecordGraph {
   _type: 'record.graph'
-  nodes: RecordGraphNode[]
+  records: DataRecord[]
+  edges: RecordGraphEdge[]
   relatedRecords: DataRecord[]
 }
 
 export const recordGraphFns = {
-  newInstance: (nodes: RecordGraphNode[] = [], relatedRecords: DataRecord[] = []): RecordGraph => ({
+  newInstance: (
+    records: DataRecord[] = [],
+    edges: RecordGraphEdge[],
+    relatedRecords: DataRecord[] = [],
+  ): RecordGraph => ({
     _type: 'record.graph',
-    nodes,
+    records,
+    edges,
     relatedRecords,
   }),
-  appendRecord: (graph: RecordGraph, record: RecordGraphNode | DataRecord): RecordGraph => {
-    const newNode =
-      record._type === 'record.graph.node' ? record : recordGraphNodeFns.newInstance(record, [])
+  appendRecord: (graph: RecordGraph, record: DataRecord): RecordGraph => {
     return {
       ...graph,
-      nodes: [...graph.nodes, newNode],
+      records: [...graph.records, record],
     }
   },
 }

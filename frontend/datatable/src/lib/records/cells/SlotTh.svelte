@@ -1,7 +1,7 @@
 <script lang="ts">
     import type {ModelSlot} from "@cozemble/model-core";
-    import DownCaret from "../icons/DownCaret.svelte";
-    import {contextHelper} from "../stores/contextHelper";
+    import {contextHelper} from "$lib/stores/contextHelper";
+    import DownCaret from "$lib/icons/DownCaret.svelte";
 
     export let slot: ModelSlot
     export let index: number

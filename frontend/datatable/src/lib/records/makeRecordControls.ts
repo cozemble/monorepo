@@ -2,11 +2,11 @@ import type { EventSourcedRecordGraphStore } from './EventSourcedRecordGraphStor
 import type { RecordControls } from './RecordControls'
 import type { Writable } from 'svelte/store'
 import type { DataRecordId, Model, SystemConfiguration } from '@cozemble/model-core'
-import { justErrorMessage, mandatory } from '@cozemble/lang-util'
+import { justErrorMessage } from '@cozemble/lang-util'
 import { modelFns } from '@cozemble/model-api'
 import type { ErrorVisibilityByRecordId } from './helpers'
 import type { RecordSaver } from '../backend/Backend'
-import { eventSourcedRecordGraphFns } from '@cozemble/data-editor-sdk/dist/esm'
+import { eventSourcedRecordGraphFns } from '@cozemble/model-event-sourced'
 
 export function makeRecordControls(
   systemConfigurationProvider: () => SystemConfiguration,

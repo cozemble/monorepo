@@ -2,7 +2,6 @@ import { clock, type Option, uuids } from '@cozemble/lang-util'
 import { propertyDescriptors } from './propertyDescriptor'
 import { SystemConfiguration } from './systemConfiguration'
 import { TinyValue } from './TinyValue'
-import { RecordGraphNode, recordGraphEdgeFns } from './graph'
 
 export interface PropertyType extends TinyValue {
   _type: 'property.type'
@@ -166,11 +165,13 @@ export interface InlinedModelReferenceName extends TinyValue {
   _type: 'inlined.model.reference.name'
 }
 
+export type ModelReferenceDirection = 'forward' | 'inverse'
+
 export interface ModelReference {
   _type: 'model.reference'
   id: ModelReferenceId
   name: ModelReferenceName
-  side: 'from' | 'to'
+  direction: ModelReferenceDirection
   referencedModelIds: ModelId[]
   cardinality: Cardinality
 }
@@ -232,7 +233,7 @@ export const modelReferenceFns = {
   newInstance: (
     referencedModelIds: ModelId[],
     referenceName: ModelReferenceName | string,
-    side: 'from' | 'to' = 'from',
+    direction: ModelReferenceDirection = 'forward',
     id = modelReferenceIdFns.newInstance(uuids.v4()),
     cardinality: Cardinality = 'many',
   ): ModelReference => {
@@ -244,7 +245,7 @@ export const modelReferenceFns = {
       _type: 'model.reference',
       id,
       name,
-      side,
+      direction,
       referencedModelIds,
       cardinality,
     }
@@ -256,27 +257,6 @@ export const modelReferenceFns = {
     }
     return errors
   },
-  getReferencedRecords: (
-    modelReference: ModelReference,
-    node: RecordGraphNode,
-  ): ReferencedRecords => {
-    const id = modelReference.id
-    const filtered = recordGraphEdgeFns.forModelReference(node.edges, id)
-    return filtered.reduce((acc, edge) => {
-      if (modelReference.side === 'from' && edge.fromRecordId.value === node.record.id.value) {
-        // from record - like from customer to booking
-        const recordId = edge.toRecordId
-        const modelId = modelReferenceFns.mandatoryReferencedModelId(modelReference)
-        return referencedRecordsFns.addReference(acc, modelId, recordId)
-      } else if (modelReference.side === 'to' && edge.toRecordId.value === node.record.id.value) {
-        // to record - like from booking to customer
-        const recordId = edge.fromRecordId
-        const modelId = modelReferenceFns.mandatoryReferencedModelId(modelReference)
-        return referencedRecordsFns.addReference(acc, modelId, recordId)
-      }
-      return acc
-    }, referencedRecordsFns.empty())
-  },
   mandatoryReferencedModelId: (modelReference: ModelReference): ModelId => {
     const modelId = modelReference.referencedModelIds[0]
     if (!modelId) {
@@ -287,25 +267,32 @@ export const modelReferenceFns = {
   oneReference: (reference: ModelReference): ModelId | null => {
     return reference.referencedModelIds[0] ?? null
   },
-  // dereferenceOne: (reference: ModelReference, record: DataRecord): ReferencedRecords | null => {
-  //   if (reference.cardinality !== 'one') {
-  //     throw new Error('Cannot get one reference from many reference')
-  //   }
-  //   return (record.values[reference.id.value] ?? null) as ReferencedRecords
-  // },
-  // setReferences: (
-  //   reference: ModelReference,
-  //   record: DataRecord,
-  //   referencedRecords: ReferencedRecords,
-  // ): DataRecord => {
-  //   return {
-  //     ...record,
-  //     values: {
-  //       ...record.values,
-  //       [reference.id.value]: referencedRecords,
-  //     },
-  //   }
-  // },
+  forwardToModel: (
+    model: Model,
+    id = modelReferenceIdFns.newInstance(),
+    cardinality: Cardinality = 'many',
+  ): ModelReference => {
+    return modelReferenceFns.newInstance(
+      [model.id],
+      modelReferenceNameFns.newInstance(model.name.value),
+      'forward',
+      id,
+      cardinality,
+    )
+  },
+  inverseToModel: (
+    model: Model,
+    id = modelReferenceIdFns.newInstance(),
+    cardinality: Cardinality = 'many',
+  ): ModelReference => {
+    return modelReferenceFns.newInstance(
+      [model.id],
+      modelReferenceNameFns.newInstance(model.name.value),
+      'inverse',
+      id,
+      cardinality,
+    )
+  },
 }
 
 export interface InlinedModelReference {

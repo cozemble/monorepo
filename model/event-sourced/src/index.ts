@@ -5,13 +5,30 @@ export {
   NestedModelAdded,
   ModelRenamed,
   BooleanPropertyChanged,
-} from './events'
+} from './models/events'
 
-export { eventSourcedModelFns } from './eventSourcedModelFns'
-export { EventSourcedModel, EventSourcedModelList } from './EventSourcedModel'
-export { modelSlotEvents } from './modelSlotEvents'
+export { eventSourcedModelFns } from './models/eventSourcedModelFns'
+export { EventSourcedModel, EventSourcedModelList } from './models/EventSourcedModel'
+export { modelSlotEvents } from './models/modelSlotEvents'
 export {
   EventSourcedModelListEvent,
   eventSourcedModelListFns,
   eventSourcedModelListEvents,
-} from './eventSourcedModelListFns'
+} from './models/eventSourcedModelListFns'
+
+export {
+  EventSourcedRecordGraph,
+  eventSourcedRecordGraphFns,
+} from './records/EventSourcedRecordGraph'
+
+export {
+  EventSourcedDataRecord,
+  eventSourcedDataRecordFns,
+  EventSourcedDataRecordOption,
+} from './records/EventSourcedDataRecord'
+
+export {
+  RecordGraphEvent,
+  RecordReferencesChangedEvent,
+  recordGraphEvents,
+} from './records/recordGraphEvents'

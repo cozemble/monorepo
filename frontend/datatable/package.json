@@ -65,6 +65,8 @@
     "@cozemble/model-editor-sdk": "workspace:*",
     "@cozemble/model-event-sourced": "workspace:*",
     "@cozemble/ui-atoms": "workspace:*",
+    "@cozemble/frontend-sdk-components": "workspace:*",
+    "@cozemble/model-to-json": "workspace:*",
     "@floating-ui/dom": "^1.2.6",
     "daisyui": "^2.47.0"
   }

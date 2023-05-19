@@ -2,6 +2,7 @@ import { EventSourcedModel, EventSourcedModelList } from './EventSourcedModel'
 import {
   Cardinality,
   Model,
+  ModelEvent,
   ModelId,
   ModelReference,
   modelReferenceFns,
@@ -10,7 +11,6 @@ import {
 } from '@cozemble/model-core'
 import { eventSourcedModelFns } from './eventSourcedModelFns'
 import { modelSlotEvents } from './modelSlotEvents'
-import { ModelEvent } from '@cozemble/model-core/dist/esm'
 
 interface AddModelEvent {
   _type: 'add.model.event'
@@ -105,19 +105,19 @@ function removeModelReferenceSlot(
   }
 }
 
-function newToModelReferenceSlot(
+function newInverseModelReferenceSlot(
   fromModel: EventSourcedModel,
   event: SetToModelReferenceEvent,
 ): ModelReference {
   return modelReferenceFns.newInstance(
     [event.fromModelId],
     fromModel.model.name.value,
-    'to',
+    'inverse',
     event.id,
   )
 }
 
-function addToModelReferenceSlot(
+function addInverseModelReferenceSlot(
   m: EventSourcedModel,
   fromModel: EventSourcedModel,
   event: SetToModelReferenceEvent,
@@ -126,7 +126,7 @@ function addToModelReferenceSlot(
     ...m,
     model: {
       ...m.model,
-      slots: [...m.model.slots, newToModelReferenceSlot(fromModel, event)],
+      slots: [...m.model.slots, newInverseModelReferenceSlot(fromModel, event)],
     },
   }
 }
@@ -165,7 +165,7 @@ function setToModelReferenceValue(
       return setToModelReferenceInModel(m, event.id, toModelId)
     }
     if (m.model.id.value === toModel.model.id.value) {
-      return addToModelReferenceSlot(m, fromModel, event)
+      return addInverseModelReferenceSlot(m, fromModel, event)
     }
     return removeModelReferenceSlotFromModel(m, event.id)
   })

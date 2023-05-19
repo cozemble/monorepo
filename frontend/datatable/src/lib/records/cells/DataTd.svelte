@@ -1,10 +1,11 @@
 <script lang="ts">
     import type {DataRecord, DataRecordPathParentElement, LeafModelSlot} from '@cozemble/model-core'
-    import {SlotEdit, SlotView} from "@cozemble/data-paginated-editor";
-    import {systemConfiguration} from "../stores/systemConfiguration";
-    import type {DataTableFocusControls2} from "../focus/DataTableFocus";
-    import MaybeDataTdError from "./MaybeDataTdError.svelte";
-    import {singleRecordEditContext} from "./contextHelper";
+    import type {DataTableFocusControls2} from "$lib/focus/DataTableFocus";
+    import {singleRecordEditContext} from "$lib/records/contextHelper";
+    import SlotEdit from "$lib/records/cells/SlotEdit.svelte";
+    import {systemConfiguration} from "$lib/stores/systemConfiguration";
+    import SlotView from "$lib/records/cells/SlotView.svelte";
+    import MaybeDataTdError from "$lib/records/MaybeDataTdError.svelte";
 
     export let rootRecordIndex: number
     export let rowIndex: number

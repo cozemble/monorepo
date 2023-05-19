@@ -1,6 +1,6 @@
 import { modelFns, modelOptions, propertyFns, nestedModelFns } from '@cozemble/model-api'
 import { expect, test } from 'vitest'
-import { coreModelEvents } from '../src'
+import { coreModelEvents } from '../../src'
 import {
   modelEventDescriptors,
   modelIdAndNameFns,

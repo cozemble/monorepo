@@ -9,7 +9,7 @@
     const eventSourcedModel = modelRecordsContextFns.getEventSourcedModel()
     const model = modelRecordsContextFns.getModel()
     const records = modelRecordsContextFns.getRecords()
-    const eventSourcedRecords = modelRecordsContextFns.getEventSourcedRecords()
+    const eventSourcedRecords = modelRecordsContextFns.getEventSourcedRecordGraph()
     const filterParams = modelRecordsContextFns.getFilterParams()
     const focus = modelRecordsContextFns.getFocus()
     const tab = writable('model' as string)

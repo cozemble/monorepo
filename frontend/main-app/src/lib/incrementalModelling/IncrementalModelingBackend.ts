@@ -20,7 +20,6 @@ import type {
 import type { Backend } from '@cozemble/frontend-bff'
 import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
 import { toFilledFilterInstanceGroup } from '@cozemble/frontend-ui-blocks'
-import { recordGraphNodeFns } from '@cozemble/model-core/dist/esm'
 
 export class IncrementalModelingBackend implements DataTableBackend {
   constructor(
@@ -55,9 +54,7 @@ export class IncrementalModelingBackend implements DataTableBackend {
       filterParams.search,
       filled,
     )
-    return recordGraphFns.newInstance(
-      fetched.records.map((r) => recordGraphNodeFns.newInstance(r, [])),
-    )
+    return recordGraphFns.newInstance(fetched.records, [], [])
   }
 
   saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {

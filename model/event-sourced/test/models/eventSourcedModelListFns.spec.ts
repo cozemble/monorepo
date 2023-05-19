@@ -1,13 +1,17 @@
 import { beforeEach, describe, expect, test } from 'vitest'
 import { modelFns } from '@cozemble/model-api'
-import { EventSourcedModelList } from '../src/EventSourcedModel'
 import {
+  eventSourcedModelFns,
+  EventSourcedModelList,
   eventSourcedModelListEvents,
   eventSourcedModelListFns,
-} from '../src/eventSourcedModelListFns'
-import { eventSourcedModelFns } from '../src'
-import { ModelReference, modelReferenceIdFns, modelReferenceNameFns } from '@cozemble/model-core'
-import { modelReferenceFns } from '@cozemble/model-core/dist/esm'
+} from '../../src'
+import {
+  ModelReference,
+  modelReferenceFns,
+  modelReferenceIdFns,
+  modelReferenceNameFns,
+} from '@cozemble/model-core'
 
 describe('given a customer and ticket model', () => {
   const customerModel = eventSourcedModelFns.newInstance(modelFns.newInstance('Customers'))
@@ -45,13 +49,13 @@ describe('given a customer and ticket model', () => {
     const latestCustomerModel = list.models[1]
     expect(latestTicketModel).toEqual(ticketModel)
     expect(latestCustomerModel.model.slots[0]).toBeDefined()
-    const slot = latestCustomerModel.model.slots[0] as ModelReference
-    expect(slot._type).toEqual('model.reference')
-    expect(slot.cardinality).toEqual('many')
-    expect(slot.name.value).toEqual(addTicketsToCustomerEvent.name.value)
-    expect(slot.id.value).toEqual(addTicketsToCustomerEvent.id.value)
-    expect(slot.side).toEqual('from')
-    expect(slot.referencedModelIds).toHaveLength(0)
+    const customerTicketsSlot = latestCustomerModel.model.slots[0] as ModelReference
+    expect(customerTicketsSlot._type).toEqual('model.reference')
+    expect(customerTicketsSlot.cardinality).toEqual('many')
+    expect(customerTicketsSlot.name.value).toEqual(addTicketsToCustomerEvent.name.value)
+    expect(customerTicketsSlot.id.value).toEqual(addTicketsToCustomerEvent.id.value)
+    expect(customerTicketsSlot.direction).toEqual('forward')
+    expect(customerTicketsSlot.referencedModelIds).toHaveLength(0)
   })
 
   test("setting the target of an empty 'Tickets' reference slot to a ticket model updates the customer model and adds an inverse reference to the ticket model", () => {
@@ -65,7 +69,7 @@ describe('given a customer and ticket model', () => {
       modelReferenceFns.newInstance(
         [customerModel.model.id],
         modelReferenceNameFns.newInstance('Customers'),
-        'to',
+        'inverse',
         modelReferenceId,
         'many',
       ),

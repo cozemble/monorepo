@@ -655,6 +655,9 @@ importers:
       '@cozemble/frontend-bff':
         specifier: workspace:*
         version: link:../bff
+      '@cozemble/frontend-sdk-components':
+        specifier: workspace:*
+        version: link:../sdk-components
       '@cozemble/frontend-ui-blocks':
         specifier: workspace:*
         version: link:../ui-blocks
@@ -679,6 +682,9 @@ importers:
       '@cozemble/model-event-sourced':
         specifier: workspace:*
         version: link:../../model/event-sourced
+      '@cozemble/model-to-json':
+        specifier: workspace:*
+        version: link:../../model/to-json
       '@cozemble/ui-atoms':
         specifier: workspace:*
         version: link:../../ui/atoms

@@ -6,8 +6,6 @@
     import SlotEditModal from "./SlotEditModal.svelte";
     import {tick} from "svelte";
     import NestedDataRecords from "./NestedDataRecords.svelte";
-    import SlotTh from "./SlotTh.svelte";
-    import DataTd from "./DataTd.svelte";
     import AddSubItemDialogue from "./AddSubItemDialogue.svelte";
     import type {DataRecordsTableOptions} from "./DataRecordsTableOptions";
     import {dataRecordsTableOptions} from "./DataRecordsTableOptions";
@@ -17,6 +15,8 @@
     import {writable} from "svelte/store";
     import WithDataRecordEditorClient from "../models/WithDataRecordEditorClient.svelte";
     import {allEventSourcedModels} from "$lib/stores/allModels";
+    import SlotTh from "$lib/records/cells/SlotTh.svelte";
+    import DataTd from "$lib/records/cells/DataTd.svelte";
 
     export let context: RecordsContext
     export let oneOnly = false

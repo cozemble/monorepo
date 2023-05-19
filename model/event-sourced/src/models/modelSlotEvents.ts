@@ -37,7 +37,7 @@ function replaceSlot(model: Model, event: NewModelReference) {
         return modelReferenceFns.newInstance(
           [],
           event.modelReferenceName,
-          'from',
+          'forward',
           event.modelReferenceId,
         )
       }
@@ -51,7 +51,12 @@ function addSlot(model: Model, event: NewModelReference) {
     ...model,
     slots: [
       ...model.slots,
-      modelReferenceFns.newInstance([], event.modelReferenceName, 'from', event.modelReferenceId),
+      modelReferenceFns.newInstance(
+        [],
+        event.modelReferenceName,
+        'forward',
+        event.modelReferenceId,
+      ),
     ],
   }
 }

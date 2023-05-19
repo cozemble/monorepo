@@ -12,6 +12,7 @@ import type {
 } from '@cozemble/model-core'
 import { modelIdAndNameFns, nestedModelNameFns } from '@cozemble/model-core'
 import type { Backend } from '../backend/Backend'
+import { emptyFilterParams } from '../backend/Backend'
 import { derived, type Readable, type Writable, writable } from 'svelte/store'
 import type { EventSourcedModel } from '@cozemble/model-event-sourced'
 import { coreModelEvents, eventSourcedModelFns } from '@cozemble/model-event-sourced'
@@ -20,6 +21,7 @@ import { mandatory } from '@cozemble/lang-util'
 import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import { DataRecordPathFocus, recordSaveSucceeded } from '@cozemble/data-paginated-editor'
 import type { DataRecordEditEvent, EventSourcedDataRecord } from '@cozemble/data-editor-sdk'
+import { eventSourcedDataRecordFns } from '@cozemble/data-editor-sdk'
 import { dataRecordFns, dataRecordValuePathFns, modelFns } from '@cozemble/model-api'
 import {
   DataTableFocus,
@@ -27,9 +29,6 @@ import {
   emptyDataTableFocus,
 } from '../focus/DataTableFocus'
 import { gettableWritable } from '../editors/GettableWritable'
-import { eventSourcedDataRecordFns } from '@cozemble/data-editor-sdk'
-import { emptyFilterParams } from '../backend/Backend'
-import { recordGraphFns } from '@cozemble/model-core/dist/esm'
 
 export type LoadingState = 'loading' | 'loaded'
 
@@ -205,7 +204,9 @@ export class RootRecordsContext implements RecordsContext {
     this._loadingState.set('loading')
     const graph = await this.backend.getRecords(this.modelId(), emptyFilterParams())
     this._records.set(
-      graph.nodes.map((n) => eventSourcedDataRecordFns.fromRecord(this._allModelCache, n.record)),
+      graph.records.map((record) =>
+        eventSourcedDataRecordFns.fromRecord(this._allModelCache, record),
+      ),
     )
     this._loadingState.set('loaded')
   }

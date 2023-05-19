@@ -15,6 +15,7 @@
     import type {EventSourcedModel} from "@cozemble/model-event-sourced";
     import {toastNoticeStoreFns} from "../notices/toastNoticeStore";
     import {backend} from "../backend/backendStore";
+    import type {EventSourcedModelList} from "@cozemble/model-event-sourced/dist/esm";
 
     export let tenantId: string
     let panelToShow: "data" | "settings" = "data"
@@ -26,7 +27,8 @@
     })
 
     let lastSavedModels: EventSourcedModel[] = []
-    const unsubModels = eventSourcedModels.subscribe(async (models: EventSourcedModel[]) => {
+    const unsubModels = eventSourcedModels.subscribe(async (list: EventSourcedModelList) => {
+        const models = list.models
         if (lastSavedModels.length === 0) {
             lastSavedModels = models
         } else {

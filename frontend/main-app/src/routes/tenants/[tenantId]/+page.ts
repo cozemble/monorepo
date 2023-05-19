@@ -9,6 +9,7 @@ import { backend, setBackend } from '../../../lib/backend/backendStore'
 import { LocalStorageBackend, RestBackend } from '@cozemble/frontend-bff'
 import { accessTokenProvider, backendUrlProvider } from '../../../lib/backend/adapters'
 import { eventSourcedModels as incrementalEventSourcedModels } from '../../../lib/incrementalModelling/incrementalModelStore'
+import { eventSourcedModelListFns } from '@cozemble/model-event-sourced/dist/esm'
 
 export const load: PageLoad = async ({ params, url }) => {
   if (browser) {
@@ -23,7 +24,9 @@ export const load: PageLoad = async ({ params, url }) => {
       const tenantData = await backend.getTenantDetails(params.tenantId)
       eventSourcedModels.set(tenantData.models.map((m: any) => eventSourcedModelFns.newInstance(m)))
       incrementalEventSourcedModels.set(
-        tenantData.models.map((m: any) => eventSourcedModelFns.newInstance(m)),
+        eventSourcedModelListFns.newInstance(
+          tenantData.models.map((m: any) => eventSourcedModelFns.newInstance(m)),
+        ),
       )
       tenantEntities.set(tenantData.entities)
       tenantStore.set({ _type: 'tenant', id: params.tenantId, name: tenantData.name })

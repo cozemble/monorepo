@@ -1,10 +1,17 @@
 import type { GettableWritable } from '../editors/GettableWritable'
 import { gettableWritable } from '../editors/GettableWritable'
-import type { DataRecordEditEvent, EventSourcedRecordGraph } from '@cozemble/data-editor-sdk'
-import { eventSourcedDataRecordFns, eventSourcedRecordGraphFns } from '@cozemble/data-editor-sdk'
-import type { DataRecordId, Model, SystemConfiguration } from '@cozemble/model-core'
+import type { DataRecordEditEvent, EventSourcedDataRecord } from '@cozemble/data-editor-sdk'
+import { eventSourcedDataRecordFns } from '@cozemble/data-editor-sdk'
+import type {
+  DataRecord,
+  DataRecordId,
+  Model,
+  ModelReference,
+  SystemConfiguration,
+} from '@cozemble/model-core'
 import { dataRecordFns } from '@cozemble/model-api'
-import type { EventSourcedRecordGraphNode } from '@cozemble/data-editor-sdk'
+import type { EventSourcedRecordGraph } from '@cozemble/model-event-sourced'
+import { eventSourcedRecordGraphFns, recordGraphEvents } from '@cozemble/model-event-sourced'
 
 export interface EventSourcedRecordGraphStore extends GettableWritable<EventSourcedRecordGraph> {
   updateRecord(recordId: DataRecordId, event: DataRecordEditEvent): void
@@ -41,6 +48,17 @@ class EventSourcedRecordGraphStoreImpl implements EventSourcedRecordGraphStore {
 
   updateRecord(recordId: DataRecordId, event: DataRecordEditEvent): void {
     this.update((graph) => {
+      if (
+        event._type === 'data.record.value.changed' &&
+        event.path.lastElement._type === 'model.reference'
+      ) {
+        return this.modelReferenceSelected(
+          graph,
+          event.record,
+          event.path.lastElement,
+          event.newValue,
+        )
+      }
       return eventSourcedRecordGraphFns.addRecordEditEvent(
         this.systemConfigurationProvider(),
         graph,
@@ -63,6 +81,22 @@ class EventSourcedRecordGraphStoreImpl implements EventSourcedRecordGraphStore {
   appendNewRecord(): DataRecordId {
     return this.addNewRecord()
   }
+
+  modelReferenceSelected(
+    graph: EventSourcedRecordGraph,
+    recordBeingEdited: DataRecord,
+    modelReference: ModelReference,
+    selectedValue: DataRecord | null,
+  ): EventSourcedRecordGraph {
+    return eventSourcedRecordGraphFns.addEvent(
+      graph,
+      recordGraphEvents.recordReferencesChanged(
+        recordBeingEdited,
+        modelReference,
+        selectedValue ? [selectedValue] : [],
+      ),
+    )
+  }
 }
 
 export function eventSourcedRecordGraphStore(
@@ -70,13 +104,13 @@ export function eventSourcedRecordGraphStore(
   allModelsProvider: () => Model[],
   modelProvider: () => Model,
   currentUser: string,
-  initialNodes: EventSourcedRecordGraphNode[] = [],
+  initialRecords: EventSourcedDataRecord[] = [],
 ): EventSourcedRecordGraphStore {
   return new EventSourcedRecordGraphStoreImpl(
     systemConfigurationProvider,
     allModelsProvider,
     modelProvider,
     currentUser,
-    gettableWritable(eventSourcedRecordGraphFns.newInstance(initialNodes, [])),
+    gettableWritable(eventSourcedRecordGraphFns.newInstance(initialRecords, [], [])),
   )
 }

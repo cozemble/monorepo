@@ -33,7 +33,7 @@ export const modelRecordsContextFns = {
   setModel: (model: Readable<Model>) => {
     setContext(modelContextKey, model)
   },
-  setEventSourcedRecords: (records: EventSourcedRecordGraphStore) => {
+  setEventSourcedRecordGraph: (records: EventSourcedRecordGraphStore) => {
     setContext(eventSourcedRecordsContextKey, records)
   },
   setRecords: (records: Readable<DataRecord[]>) => {
@@ -69,7 +69,7 @@ export const modelRecordsContextFns = {
   getModel: (): Readable<Model> => {
     return mandatory(getContext(modelContextKey), `No model found in context`)
   },
-  getEventSourcedRecords: (): EventSourcedRecordGraphStore => {
+  getEventSourcedRecordGraph: (): EventSourcedRecordGraphStore => {
     return mandatory(
       getContext(eventSourcedRecordsContextKey),
       `No records event sourced records found in context`,

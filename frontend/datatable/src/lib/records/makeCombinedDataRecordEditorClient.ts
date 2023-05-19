@@ -36,7 +36,6 @@ export function makeCombinedDataRecordEditorClient(
     },
 
     dispatchEditEvent(event: DataRecordEditEvent): void {
-      console.log({ event })
       if (event._type === 'data.record.value.changed') {
         records.updateRecord(recordId, event)
         if (event.confirmMethod === 'Tab') {

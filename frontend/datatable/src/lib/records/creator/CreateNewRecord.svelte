@@ -12,15 +12,15 @@
     import SingleRootRecordEditTable from "./SingleRootRecordEditTable.svelte";
     import {mandatory} from "@cozemble/lang-util";
     import type {RecordGraph} from "@cozemble/model-core";
-    import {recordGraphFns, recordGraphNodeFns} from "@cozemble/model-core";
+    import {recordGraphFns} from "@cozemble/model-core";
 
     export let params: CreateNewRecord
     const model = modelFns.findById($allModels, params.modelId)
     const eventSourcedRecordGraph = eventSourcedRecordGraphStore(() => $systemConfiguration, () => $allModels, () => model, $currentUserId)
-    const eventSourcedRecords = derived(eventSourcedRecordGraph, graph => graph.nodes.map(node => node.record))
+    const eventSourcedRecords = derived(eventSourcedRecordGraph, graph => graph.records)
 
     async function graphLoader(): Promise<RecordGraph> {
-        return recordGraphFns.newInstance([recordGraphNodeFns.newInstance(dataRecordFns.newInstance(model, $currentUserId),[])])
+        return recordGraphFns.newInstance([dataRecordFns.newInstance(model, $currentUserId)], [])
     }
 
     function cancel() {
@@ -29,7 +29,7 @@
     }
 
     function save() {
-        const firstRecord = mandatory($eventSourcedRecordGraph.nodes[0].record, `Expected to find a record in the event sourced records store`)
+        const firstRecord = mandatory($eventSourcedRecordGraph.records[0], `Expected to find a record in the event sourced records store`)
         params.onCreated(firstRecord)
         createNewRecordStore.update(() => null)
     }

@@ -14,7 +14,7 @@ const customerModel = modelFns.newInstance(
   modelOptions.withProperties(
     stringPropertyFns.newInstance('First name', stringPropertyOptions.required),
   ),
-  modelOptions.withSlot(modelReferenceFns.newInstance([addressModel.id], 'Address', 'from')),
+  modelOptions.withSlot(modelReferenceFns.newInstance([addressModel.id], 'Address', 'forward')),
 )
 
 const invoiceModel = modelFns.newInstance(
@@ -22,7 +22,7 @@ const invoiceModel = modelFns.newInstance(
   modelOptions.withProperties(
     stringPropertyFns.newInstance('Invoice ID', stringPropertyOptions.required),
   ),
-  modelOptions.withSlot(modelReferenceFns.newInstance([customerModel.id], 'Customer', 'from')),
+  modelOptions.withSlot(modelReferenceFns.newInstance([customerModel.id], 'Customer', 'forward')),
 )
 
 export const modelsWithReferences = {

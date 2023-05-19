@@ -2,9 +2,9 @@
     import {allEventSourcedModels, allModels} from "../stores/allModels";
     import {derived, writable} from "svelte/store";
     import type {Model, ModelId, NestedModelId} from "@cozemble/model-core";
-    import {eventSourcedModelFns} from "@cozemble/model-event-sourced";
+    import {recordGraphFns} from "@cozemble/model-core";
+    import {eventSourcedModelFns, eventSourcedRecordGraphFns} from "@cozemble/model-event-sourced";
     import {modelRecordsContextFns} from "./modelRecordsContextFns";
-    import {eventSourcedRecordGraphFns} from "@cozemble/data-editor-sdk";
     import {emptyDataTableFocus} from "../focus/DataTableFocus";
     import {gettableWritable} from "../editors/GettableWritable";
     import {makeFocusControls} from "./makeFocusControls";
@@ -20,7 +20,6 @@
     import {emptyFilterParams, type FilterParams, type RecordSaver} from "../backend/Backend";
     import {dataRecordFns} from "@cozemble/model-api";
     import type {RecordGraphLoader} from "$lib/records/RecordGraphLoader";
-    import {recordGraphFns, recordGraphNodeFns} from "@cozemble/model-core";
 
     const systemConfigurationProvider = () => $systemConfiguration
     const modelsProvider = () => $allModels
@@ -34,7 +33,7 @@
 
     const eventSourcedModel = derived(allEventSourcedModels, list => eventSourcedModelFns.findById(list.models, modelId))
     const model = derived(eventSourcedModel, model => model.model)
-    const eventSourcedRecords = derived(eventSourcedRecordGraph, graph => eventSourcedRecordGraphFns.getRecords(graph))
+    const eventSourcedRecords = derived(eventSourcedRecordGraph, graph => graph.records)
     const records = derived(eventSourcedRecords, records => records.map(r => r.record))
     const errorVisibilityByRecordId = gettableWritable(new Map() as ErrorVisibilityByRecordId)
     const focus = gettableWritable(emptyDataTableFocus(() => $records))
@@ -54,7 +53,7 @@
 
     modelRecordsContextFns.setEventSourcedModel(eventSourcedModel)
     modelRecordsContextFns.setModel(model)
-    modelRecordsContextFns.setEventSourcedRecords(eventSourcedRecordGraph)
+    modelRecordsContextFns.setEventSourcedRecordGraph(eventSourcedRecordGraph)
     modelRecordsContextFns.setRecords(records)
     modelRecordsContextFns.setFocus(focus)
     modelRecordsContextFns.setFocusControls(focusControls)
