@@ -15,12 +15,9 @@ import type {
   RecordSaveOutcome,
   RecordSearcher,
 } from '@cozemble/data-paginated-editor'
-import type {
-  AttachmentIdAndFileName,
-  EventSourcedDataRecord,
-  UploadedAttachment,
-} from '@cozemble/data-editor-sdk'
+import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import { StoreSyncBackend } from './app/StoreSyncBackend'
+import type { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
 
 export let backend = notImplementedBackend
 

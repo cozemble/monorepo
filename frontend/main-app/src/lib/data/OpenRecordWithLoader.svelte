@@ -8,8 +8,8 @@
     import {RecordEditContext, StackingRecordEditor} from "@cozemble/data-paginated-editor";
     import {modelViews, systemConfiguration} from "../models/tenantEntityStore";
     import {saveRecord} from "./recordBackendHelper";
-    import type {AttachmentIdAndFileName, EventSourcedDataRecord, UploadedAttachment} from "@cozemble/data-editor-sdk";
-    import {dataRecordViewerHost, eventSourcedDataRecordFns} from "@cozemble/data-editor-sdk";
+    import type {AttachmentIdAndFileName, UploadedAttachment} from "@cozemble/data-editor-sdk";
+    import {dataRecordViewerHost} from "@cozemble/data-editor-sdk";
     import {makeDataRecordViewer} from "./makeDataRecordViewer";
     import {
         deleteAttachments as deleteAttachmentsFn,
@@ -18,6 +18,8 @@
     } from "./attachments";
     import {modelFns} from "@cozemble/model-api";
     import InboundReferences from "./InboundReferences.svelte";
+    import {eventSourcedDataRecordFns} from "@cozemble/model-event-sourced";
+    import type {EventSourcedDataRecord} from "@cozemble/model-event-sourced";
 
     export let models: Model[]
     export let openRecord: OpenRecordView //a Customer record for example

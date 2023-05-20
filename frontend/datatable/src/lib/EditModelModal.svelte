@@ -63,11 +63,11 @@
         <h3 class="font-bold text-lg">Edit table</h3>
         <div class="form-control">
             <label class="label">Table name (singular)</label>
-            <EditableStringInput value={tableName} {showErrors} extraClasses="first"/>
+            <EditableStringInput value={tableName} {showErrors} extraClasses="first singular"/>
         </div>
         <div class="form-control mt-2">
             <label class="label">Table name (plural)</label>
-            <EditableStringInput value={pluralTableName} {showErrors}/>
+            <EditableStringInput value={pluralTableName} {showErrors} extraClasses="plural"/>
         </div>
         <div class="modal-action justify-center">
             <label class="btn btn-primary" on:click={save}>Save</label>

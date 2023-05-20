@@ -13,7 +13,7 @@ import type {
   SystemConfiguration,
 } from '@cozemble/model-core'
 import { dottedPathFns, type LeafModelSlot, modelPathElementFns } from '@cozemble/model-core'
-import type { DataRecordValueChanged } from '@cozemble/data-editor-sdk'
+import type { DataRecordValueChanged } from '@cozemble/model-event-sourced'
 
 export class DataRecordPathFocus {
   constructor(

@@ -12,6 +12,9 @@ import { type UserInstruction, userInstructionFns } from '@cozemble/data-editor-
 import { applyTemplate, modelToJson } from '@cozemble/model-to-json'
 import { modelFns } from '@cozemble/model-api'
 import { strings } from '@cozemble/lang-util'
+import type { ModelReferenceId } from '@cozemble/model-core'
+import type { DataRecordEditEventMaker } from '@cozemble/data-editor-sdk'
+import type { DataRecordEditEvent } from '@cozemble/model-event-sourced'
 
 export interface EditorParams {
   _type: 'editor.params'
@@ -68,4 +71,13 @@ export function makeSummaryView(record: DataRecord, params: EditorParams): strin
   return strings.stripHtml(
     applyTemplate(params.summaryView.template, modelToJson(params.models, record)),
   )
+}
+
+export function inverseReferenceEventMaker(
+  targetModelId: ModelId,
+  modelReferenceId: ModelReferenceId,
+): DataRecordEditEventMaker {
+  return (record: DataRecord): DataRecordEditEvent[] => {
+    return []
+  }
 }

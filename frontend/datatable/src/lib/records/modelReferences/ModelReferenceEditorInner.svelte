@@ -6,12 +6,13 @@
         ModelReference,
         SystemConfiguration
     } from "@cozemble/model-core";
-    import {dataRecordControlEvents, dataRecordEditEvents, dataRecordEditor} from "@cozemble/data-editor-sdk";
+    import {dataRecordEditor} from "@cozemble/data-editor-sdk";
     import {afterUpdate, onMount} from "svelte";
-    import {type EditorParams, makeSummaryView} from "./editorHelper";
+    import {type EditorParams, inverseReferenceEventMaker, makeSummaryView} from "./editorHelper";
     import {clickOutside} from "@cozemble/ui-atoms";
     import {modelRecordsContextFns} from "$lib/records/modelRecordsContextFns";
     import {eventSourcedRecordGraphFns} from "@cozemble/model-event-sourced";
+    import {dataRecordControlEvents, dataRecordEditEvents} from "@cozemble/model-event-sourced";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord
@@ -23,21 +24,11 @@
 
     $: selectedRecordIds = eventSourcedRecordGraphFns.referencedRecordIds($recordGraph, record.id, modelReference)
 
-
-    // let initialValue: ReferencedRecords | null = dataRecordValuePathFns.getValue(systemConfiguration, recordPath, record) ?? null
-    //
-    // $:selectedRecordId = initialValue?.referencedRecords[0]?.referencedRecordId.value ?? null;
-
     const dataRecordEditorClient = dataRecordEditor.getClient()
     let options: DataRecord[] = []
     let searchTerm = ""
 
     let htmlRender: string | null = null
-    // let referencedRecord: DataRecord | null = null
-    //
-    // $: referencedRecords = dataRecordValuePathFns.getValue(systemConfiguration, recordPath, record) as ReferencedRecords ?? null
-    // $: dereference(dataRecordEditorClient, editorParams.referencedModelId, referencedRecords, (record) => referencedRecord = record)
-    // $: htmlRender = renderReference(referencedRecord, editorParams)
 
     function cancel(event: MouseEvent) {
         event.preventDefault()
@@ -66,7 +57,7 @@
 
 
     async function createNewRecord() {
-        const createdRecord = await dataRecordEditorClient.createNewRootRecord(editorParams.referencedModelId)
+        const createdRecord = await dataRecordEditorClient.createNewRootRecord(editorParams.referencedModelId, inverseReferenceEventMaker(editorParams.referencedModelId, modelReference.id))
         if (createdRecord) {
             options.push(createdRecord)
         }
@@ -103,7 +94,6 @@
     }
 
     function isSelected(selectedRecordIds: DataRecordId[], recordId: DataRecordId | null): boolean {
-        // return false
         return recordId !== null && selectedRecordIds.some(id => id.value === recordId.value)
     }
 

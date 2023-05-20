@@ -1,22 +1,32 @@
 import type {
   AttachmentIdAndFileName,
-  DataRecordControlEvent,
-  DataRecordEditEvent,
+  DataRecordEditEventMaker,
   DataRecordEditorClient,
   DataRecordViewerClient,
   UploadedAttachment,
 } from '@cozemble/data-editor-sdk'
-import type { DataRecord, DataRecordId, Model, ModelId, ModelView } from '@cozemble/model-core'
+import type {
+  DataRecord,
+  DataRecordId,
+  Model,
+  ModelId,
+  ModelView,
+  SystemConfiguration,
+} from '@cozemble/model-core'
 import type { EventSourcedRecordGraphStore } from './EventSourcedRecordGraphStore'
 import type { DataTableFocusControls2 } from '../focus/DataTableFocus'
 import type { JustErrorMessage } from '@cozemble/lang-util'
 import type { Backend } from '../backend/Backend'
 import { createNewRootRecord as createNewRootRecordFn } from './creator/recordCreatorStore'
+import type { DataRecordControlEvent, DataRecordEditEvent } from '@cozemble/model-event-sourced'
+import { eventSourcedDataRecordFns } from '@cozemble/model-event-sourced'
+import { mandatory } from '@cozemble/lang-util/dist/esm'
 
 export type CombinedDataRecordEditorClient = DataRecordEditorClient & DataRecordViewerClient
 
 export function makeCombinedDataRecordEditorClient(
   backend: Backend,
+  systemConfigProvider: () => SystemConfiguration,
   modelsProvider: () => Model[],
   modelViewsProvider: () => ModelView[],
   records: EventSourcedRecordGraphStore,
@@ -48,11 +58,17 @@ export function makeCombinedDataRecordEditorClient(
       }
     },
 
-    async createNewRootRecord(modelId: ModelId): Promise<DataRecord | null> {
-      const newRecord = await createNewRootRecordFn(modelId)
+    async createNewRootRecord(
+      modelId: ModelId,
+      ...eventMakers: DataRecordEditEventMaker[]
+    ): Promise<DataRecord | null> {
+      let newRecord = await createNewRootRecordFn(modelId)
       if (!newRecord) {
         return null
       }
+      const record = mandatory(newRecord.record, `newRecord.record`)
+      const events = eventMakers.flatMap((eventMaker) => eventMaker(record))
+      newRecord = eventSourcedDataRecordFns.addEvents(systemConfigProvider(), newRecord, ...events)
       const outcome = await backend.saveNewRecord(newRecord)
       if (outcome._type === 'record.save.succeeded') {
         return outcome.record

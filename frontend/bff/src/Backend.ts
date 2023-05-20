@@ -1,11 +1,8 @@
 import type { DataRecord, DataRecordId, Model, ModelEvent, ModelId } from '@cozemble/model-core'
-import type {
-  AttachmentIdAndFileName,
-  EventSourcedDataRecord,
-  UploadedAttachment,
-} from '@cozemble/data-editor-sdk'
+import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import type { RecordDeleteOutcome, RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
+import { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
 
 export interface TenantEntity {
   _type: string

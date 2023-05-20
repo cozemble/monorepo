@@ -12,16 +12,13 @@ import type {
   RecordDeleteOutcome,
   RecordSaveOutcome,
 } from '@cozemble/data-paginated-editor'
-import type {
-  AttachmentIdAndFileName,
-  EventSourcedDataRecord,
-  UploadedAttachment,
-} from '@cozemble/data-editor-sdk'
+import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import type { Writable } from 'svelte/store'
 import type { UserInstruction } from '@cozemble/data-editor-sdk'
 import { userInstructionStoreFns } from '../notices/userInstructionStore'
 import type { ModelView } from '@cozemble/model-core'
 import type { JustErrorMessage } from '@cozemble/lang-util'
+import type { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
 
 export function makePaginatedEditorHost(
   tenantId: string,

@@ -3,12 +3,9 @@ import type { DataRecord, DataRecordId, Model, ModelId } from '@cozemble/model-c
 import type { RecordDeleteOutcome, RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import { recordSaveSucceeded } from '@cozemble/data-paginated-editor'
 import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
-import type {
-  AttachmentIdAndFileName,
-  EventSourcedDataRecord,
-  UploadedAttachment,
-} from '@cozemble/data-editor-sdk'
+import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import { uuids } from '@cozemble/lang-util'
+import { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
 
 const storageKey = 'cozemble.localstorage.backend'
 

@@ -20,8 +20,6 @@ import type { JustErrorMessage } from '@cozemble/lang-util'
 import { mandatory } from '@cozemble/lang-util'
 import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import { DataRecordPathFocus, recordSaveSucceeded } from '@cozemble/data-paginated-editor'
-import type { DataRecordEditEvent, EventSourcedDataRecord } from '@cozemble/data-editor-sdk'
-import { eventSourcedDataRecordFns } from '@cozemble/data-editor-sdk'
 import { dataRecordFns, dataRecordValuePathFns, modelFns } from '@cozemble/model-api'
 import {
   DataTableFocus,
@@ -29,6 +27,8 @@ import {
   emptyDataTableFocus,
 } from '../focus/DataTableFocus'
 import { gettableWritable } from '../editors/GettableWritable'
+import type { DataRecordEditEvent, EventSourcedDataRecord } from '@cozemble/model-event-sourced'
+import { eventSourcedDataRecordFns } from '@cozemble/model-event-sourced'
 
 export type LoadingState = 'loading' | 'loaded'
 

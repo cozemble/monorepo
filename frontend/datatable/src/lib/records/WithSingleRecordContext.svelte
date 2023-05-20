@@ -21,7 +21,7 @@
         const eventSourcedRecords = modelRecordsContextFns.getEventSourcedRecordGraph()
         const modelViewsProvider = () => $allModelViews
         const modelsProvider = () => $allModels
-        const combinedClient = makeCombinedDataRecordEditorClient(backend, modelsProvider, modelViewsProvider, eventSourcedRecords, modelRecordsContextFns.getFocusControls(), recordId)
+        const combinedClient = makeCombinedDataRecordEditorClient(backend, () => $systemConfiguration, modelsProvider, modelViewsProvider, eventSourcedRecords, modelRecordsContextFns.getFocusControls(), recordId)
         singleRecordEditContext.setCombinedClient(combinedClient)
     }
 

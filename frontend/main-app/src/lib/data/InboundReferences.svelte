@@ -8,7 +8,7 @@
     import {PaginatedEditor} from "@cozemble/data-paginated-editor";
     import {type Writable, writable} from "svelte/store";
     import {makePaginatedEditorHost} from "./paginatedEditorHost";
-    import type {EventSourcedDataRecordOption} from "@cozemble/data-editor-sdk";
+    import type {EventSourcedDataRecordOption} from "@cozemble/model-event-sourced";
 
     export let tenantId: string
     export let models: Model[]

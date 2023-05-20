@@ -1,6 +1,6 @@
 import type { ModelId } from '@cozemble/model-core'
 import { writable } from 'svelte/store'
-import type { EventSourcedDataRecord } from '@cozemble/data-editor-sdk'
+import type { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
 
 export interface CreateNewRecord {
   modelId: ModelId

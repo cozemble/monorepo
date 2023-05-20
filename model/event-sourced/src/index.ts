@@ -32,3 +32,17 @@ export {
   RecordReferencesChangedEvent,
   recordGraphEvents,
 } from './records/recordGraphEvents'
+
+export {
+  DataRecordEditEvent,
+  DataRecordEditAborted,
+  dataRecordEditEvents,
+  HasManyItemAdded,
+  DataRecordValueChanged,
+  dataRecordControlEvents,
+  DataRecordCreatedEvent,
+  DataRecordControlEvent,
+  DataRecordDeletedEvent,
+  DataRecordEditMoveFocus,
+  dataRecordDeletedEvent,
+} from './records/dataRecordEditEvents'

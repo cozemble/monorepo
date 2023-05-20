@@ -1,14 +1,13 @@
 <script lang="ts">
     import type {DataRecord, DataRecordValuePath, SystemConfiguration} from "@cozemble/model-core";
     import {assembleEditorParams, type EditorParams} from "./editorHelper";
-    import type {UserInstruction} from "@cozemble/data-editor-sdk";
+    import type {DataRecordViewerClient, UserInstruction} from "@cozemble/data-editor-sdk";
     import {dataRecordViewer} from "@cozemble/data-editor-sdk";
     import ModelReferenceViewerInner from "./ModelReferenceViewerInner.svelte";
     import ConfigureViewModal from "./ConfigureViewModal.svelte";
     import {modelFns} from "@cozemble/model-api";
     import type {ConfigureViewParams} from "./ConfigureViewParams";
     import {makeConfigureViewParams} from "./ConfigureViewParams";
-    import type {DataRecordViewerClient} from "@cozemble/data-editor-sdk";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord
@@ -51,7 +50,7 @@
 
     function viewConfigured() {
         cancelConfigureViewModal()
-        // editorParams = assembleEditorParams(dataRecordViewerClient, recordPath)
+        editorParams = assembleEditorParams(dataRecordViewerClient, recordPath)
     }
 </script>
 

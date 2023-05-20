@@ -1,4 +1,4 @@
-import type { EventSourcedDataRecord } from '@cozemble/data-editor-sdk'
+import type { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
 import type { RecordDeleteOutcome } from '@cozemble/data-paginated-editor'
 import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import type { DataRecord, Model } from '@cozemble/model-core'

@@ -10,13 +10,10 @@ import type {
   RecordGraph,
 } from '@cozemble/model-core'
 import { recordGraphFns } from '@cozemble/model-core'
-import type {
-  AttachmentIdAndFileName,
-  EventSourcedDataRecord,
-  UploadedAttachment,
-} from '@cozemble/data-editor-sdk'
+import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import { recordSaveSucceeded } from '@cozemble/data-paginated-editor'
+import type { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
 
 export class InMemoryBackend implements Backend {
   constructor(

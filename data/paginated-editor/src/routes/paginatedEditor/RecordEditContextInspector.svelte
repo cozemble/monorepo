@@ -1,8 +1,8 @@
 <script lang="ts">
 import type { RecordEditContext } from '../../lib/RecordEditContext'
 import DataRecordEditEventInspector from './DataRecordEditEventInspector.svelte'
-import type { DataRecordEditEvent } from '@cozemble/data-editor-sdk'
 import { dataRecordEditEventSummariser } from './dataRecordEditEventSummariser'
+import type {DataRecordEditEvent} from "@cozemble/model-event-sourced";
 
 export let editContext: RecordEditContext
 export let index: number

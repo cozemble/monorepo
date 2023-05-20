@@ -316,6 +316,9 @@ importers:
       '@cozemble/model-core':
         specifier: workspace:*
         version: link:../../model/core
+      '@cozemble/model-event-sourced':
+        specifier: workspace:*
+        version: link:../../model/event-sourced
     devDependencies:
       svelte:
         specifier: ^3.54.0
@@ -379,6 +382,9 @@ importers:
       '@cozemble/model-core':
         specifier: workspace:*
         version: link:../../model/core
+      '@cozemble/model-event-sourced':
+        specifier: workspace:*
+        version: link:../../model/event-sourced
       '@cozemble/model-to-json':
         specifier: workspace:*
         version: link:../../model/to-json
@@ -455,6 +461,9 @@ importers:
       '@cozemble/model-core':
         specifier: workspace:*
         version: link:../../model/core
+      '@cozemble/model-event-sourced':
+        specifier: workspace:*
+        version: link:../../model/event-sourced
       axios:
         specifier: ^1.2.3
         version: 1.3.4
@@ -1149,6 +1158,9 @@ importers:
       '@cozemble/model-editor-sdk':
         specifier: workspace:*
         version: link:../../editor-sdk
+      '@cozemble/model-event-sourced':
+        specifier: workspace:*
+        version: link:../../event-sourced
     devDependencies:
       '@originjs/vite-plugin-commonjs':
         specifier: ^1.0.3
@@ -1233,6 +1245,9 @@ importers:
       '@cozemble/model-editor-sdk':
         specifier: workspace:*
         version: link:../../editor-sdk
+      '@cozemble/model-event-sourced':
+        specifier: workspace:*
+        version: link:../../event-sourced
     devDependencies:
       '@originjs/vite-plugin-commonjs':
         specifier: ^1.0.3
@@ -1301,6 +1316,9 @@ importers:
       '@cozemble/model-editor-sdk':
         specifier: workspace:*
         version: link:../../editor-sdk
+      '@cozemble/model-event-sourced':
+        specifier: workspace:*
+        version: link:../../event-sourced
     devDependencies:
       '@originjs/vite-plugin-commonjs':
         specifier: ^1.0.3
@@ -1465,6 +1483,9 @@ importers:
       '@cozemble/model-editor-sdk':
         specifier: workspace:*
         version: link:../../editor-sdk
+      '@cozemble/model-event-sourced':
+        specifier: workspace:*
+        version: link:../../event-sourced
       '@cozemble/model-integer-core':
         specifier: workspace:*
         version: link:../core
@@ -1530,6 +1551,9 @@ importers:
       '@cozemble/model-editor-sdk':
         specifier: workspace:*
         version: link:../../editor-sdk
+      '@cozemble/model-event-sourced':
+        specifier: workspace:*
+        version: link:../../event-sourced
       '@cozemble/model-string-core':
         specifier: workspace:*
         version: link:../core

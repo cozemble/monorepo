@@ -70,6 +70,16 @@ export const eventSourcedDataRecordFns = {
       events: [...record.events, event],
     }
   },
+  addEvents(
+    systemConfiguration: SystemConfiguration,
+    record: EventSourcedDataRecord,
+    ...events: DataRecordEditEvent[]
+  ) {
+    return events.reduce(
+      (r, e) => eventSourcedDataRecordFns.addEvent(systemConfiguration, e, r),
+      record,
+    )
+  },
   applyOptions(
     record: EventSourcedDataRecord,
     ...options: EventSourcedDataRecordOption[]

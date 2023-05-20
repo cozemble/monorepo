@@ -4,8 +4,9 @@
     import {modelFns} from '@cozemble/model-api'
     import DataRecordTableTd from './DataRecordTableTd.svelte'
     import {RecordEditContext, recordSaveSucceeded} from './RecordEditContext'
-    import type {EventSourcedDataRecord} from '@cozemble/data-editor-sdk'
-    import {dataRecordEditEvents, dataRecordEditor, eventSourcedDataRecordFns,} from '@cozemble/data-editor-sdk'
+    import type {EventSourcedDataRecord} from '@cozemble/model-event-sourced'
+    import {dataRecordEditor} from '@cozemble/data-editor-sdk'
+    import {dataRecordEditEvents, eventSourcedDataRecordFns} from "@cozemble/model-event-sourced";
 
     export let recordEditContext: RecordEditContext
     export let parentPath: DataRecordPathParentElement[]

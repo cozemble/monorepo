@@ -1,9 +1,6 @@
-import type {
-  DataRecordEditEvent,
-  DataRecordViewerClient,
-  EventSourcedDataRecord,
-} from '@cozemble/data-editor-sdk'
-import { eventSourcedDataRecordFns } from '@cozemble/data-editor-sdk'
+import type { DataRecordViewerClient } from '@cozemble/data-editor-sdk'
+import type { DataRecordEditEvent, EventSourcedDataRecord } from '@cozemble/model-event-sourced'
+import { eventSourcedDataRecordFns } from '@cozemble/model-event-sourced'
 import type { Model, ModelView, SystemConfiguration } from '@cozemble/model-core'
 import type {
   AttachmentsManager,

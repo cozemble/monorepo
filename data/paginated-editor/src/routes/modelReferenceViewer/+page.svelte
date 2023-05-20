@@ -7,7 +7,6 @@
     import {
         type AttachmentIdAndFileName,
         dataRecordViewerHost,
-        type EventSourcedDataRecord,
         type UploadedAttachment
     } from "@cozemble/data-editor-sdk";
     import type {PaginatedEditorHost, RecordDeleteOutcome, RecordSaveOutcome} from "../../lib";
@@ -20,6 +19,7 @@
         propertyOptions
     } from "@cozemble/model-api";
     import type {JustErrorMessage} from "@cozemble/lang-util";
+    import type {EventSourcedDataRecord} from "@cozemble/model-event-sourced";
 
     const systemConfiguration = systemConfigurationFns.empty()
     const customerModel = modelFns.newInstance("Customers", modelOptions.withProperties(propertyFns.newInstance("First name", propertyOptions.required), propertyFns.newInstance("Last name")))

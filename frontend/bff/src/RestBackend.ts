@@ -1,9 +1,5 @@
 import type { Backend, FetchRecordsResponse, FetchTenantResponse, TenantEntity } from './Backend'
-import type {
-  AttachmentIdAndFileName,
-  EventSourcedDataRecord,
-  UploadedAttachment,
-} from '@cozemble/data-editor-sdk'
+import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import axios from 'axios'
 import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
 import {
@@ -22,6 +18,7 @@ import type { RecordDeleteOutcome, RecordSaveOutcome } from '@cozemble/data-pagi
 import { recordSaveFailed, recordSaveSucceeded } from '@cozemble/data-paginated-editor'
 import { justErrorMessage, mandatory } from '@cozemble/lang-util'
 import { dataRecordValuePathFns, modelFns } from '@cozemble/model-api'
+import { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
 
 const axiosInstance = axios.create({
   validateStatus: function () {

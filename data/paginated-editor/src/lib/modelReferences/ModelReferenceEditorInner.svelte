@@ -1,12 +1,13 @@
 <script lang="ts">
     import type {DataRecord, DataRecordValuePath, ReferencedRecords, SystemConfiguration} from "@cozemble/model-core";
     import {dataRecordValuePathFns} from "@cozemble/model-api";
-    import {dataRecordControlEvents, dataRecordEditEvents, dataRecordEditor} from "@cozemble/data-editor-sdk";
+    import {dataRecordEditor} from "@cozemble/data-editor-sdk";
     import {onMount} from "svelte";
     import {type EditorParams, makeSummaryView} from "./editorHelper";
     import {dereference} from "$lib/modelReferences/dereference";
     import {renderReference} from "$lib/modelReferences/renderReference";
     import {clickOutside} from "@cozemble/ui-atoms";
+    import {dataRecordControlEvents, dataRecordEditEvents} from "@cozemble/model-event-sourced";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord

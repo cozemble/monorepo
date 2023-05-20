@@ -12,14 +12,11 @@ import type {
 } from '@cozemble/model-core'
 import { recordGraphFns } from '@cozemble/model-core'
 import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
-import type {
-  AttachmentIdAndFileName,
-  EventSourcedDataRecord,
-  UploadedAttachment,
-} from '@cozemble/data-editor-sdk'
+import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import type { Backend } from '@cozemble/frontend-bff'
 import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
 import { toFilledFilterInstanceGroup } from '@cozemble/frontend-ui-blocks'
+import type { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
 
 export class IncrementalModelingBackend implements DataTableBackend {
   constructor(

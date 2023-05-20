@@ -1,7 +1,5 @@
 import type { GettableWritable } from '../editors/GettableWritable'
 import { gettableWritable } from '../editors/GettableWritable'
-import type { DataRecordEditEvent, EventSourcedDataRecord } from '@cozemble/data-editor-sdk'
-import { eventSourcedDataRecordFns } from '@cozemble/data-editor-sdk'
 import type {
   DataRecord,
   DataRecordId,
@@ -10,8 +8,16 @@ import type {
   SystemConfiguration,
 } from '@cozemble/model-core'
 import { dataRecordFns } from '@cozemble/model-api'
-import type { EventSourcedRecordGraph } from '@cozemble/model-event-sourced'
-import { eventSourcedRecordGraphFns, recordGraphEvents } from '@cozemble/model-event-sourced'
+import type {
+  DataRecordEditEvent,
+  EventSourcedDataRecord,
+  EventSourcedRecordGraph,
+} from '@cozemble/model-event-sourced'
+import {
+  eventSourcedDataRecordFns,
+  eventSourcedRecordGraphFns,
+  recordGraphEvents,
+} from '@cozemble/model-event-sourced'
 
 export interface EventSourcedRecordGraphStore extends GettableWritable<EventSourcedRecordGraph> {
   updateRecord(recordId: DataRecordId, event: DataRecordEditEvent): void

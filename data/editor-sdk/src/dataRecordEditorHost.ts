@@ -7,9 +7,9 @@ import {
   ModelName,
   ModelView,
 } from '@cozemble/model-core'
-import { DataRecordControlEvent, DataRecordEditEvent } from './dataRecordEditEvents'
 import { getContext, setContext } from 'svelte'
 import { ModelViewManager } from './ModelViewManager'
+import { DataRecordControlEvent, DataRecordEditEvent } from '@cozemble/model-event-sourced'
 
 const dataRecordEditorClientContext = 'com.cozemble.data.record.editor.client.context'
 
@@ -55,6 +55,8 @@ export const userInstructionFns = {
   },
 }
 
+export type DataRecordEditEventMaker = (record: DataRecord) => DataRecordEditEvent[]
+
 export interface DataRecordEditorClient extends ModelViewManager {
   recordById(modelId: ModelId, recordId: DataRecordId): Promise<DataRecord | null>
 
@@ -62,7 +64,10 @@ export interface DataRecordEditorClient extends ModelViewManager {
 
   dispatchEditEvent(event: DataRecordEditEvent): void
 
-  createNewRootRecord(modelId: ModelId): Promise<DataRecord | null>
+  createNewRootRecord(
+    modelId: ModelId,
+    ...eventMakers: DataRecordEditEventMaker[]
+  ): Promise<DataRecord | null>
 
   searchRecords(modelId: ModelId, search: string): Promise<DataRecord[]>
 

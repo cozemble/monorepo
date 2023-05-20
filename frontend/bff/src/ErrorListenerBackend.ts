@@ -1,12 +1,9 @@
 import { Backend, FetchRecordsResponse, FetchTenantResponse, TenantEntity } from './Backend'
 import { DataRecord, DataRecordId, Model, ModelId } from '@cozemble/model-core'
 import { RecordDeleteOutcome, RecordSaveOutcome } from '@cozemble/data-paginated-editor'
-import {
-  AttachmentIdAndFileName,
-  EventSourcedDataRecord,
-  UploadedAttachment,
-} from '@cozemble/data-editor-sdk'
+import { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import { BackendModel } from '@cozemble/backend-tenanted-api-types'
+import { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
 
 export type ErrorListener = (e: any) => void
 

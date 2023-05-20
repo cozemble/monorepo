@@ -4,11 +4,11 @@ import type { JustErrorMessage } from '@cozemble/lang-util'
 import { allEventSourcedModels } from '../stores/allModels'
 import type { DataRecord, ModelId } from '@cozemble/model-core'
 import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
-import type { EventSourcedDataRecord } from '@cozemble/data-editor-sdk'
 import type { DataRecordId, ModelView } from '@cozemble/model-core'
 import { allModelViews } from '../stores/allModelViews'
 import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import type { RecordGraph } from '@cozemble/model-core'
+import type { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
 
 export class StoreSyncBackend implements Backend {
   constructor(private readonly delegate: Backend) {}

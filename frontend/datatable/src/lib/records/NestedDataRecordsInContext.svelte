@@ -9,10 +9,10 @@
     import {allEventSourcedModels} from "../stores/allModels";
     import {dataRecordFns} from "@cozemble/model-api";
     import {eventSourcedModelFns} from "@cozemble/model-event-sourced";
-    import {dataRecordEditEvents} from "@cozemble/data-editor-sdk";
     import {singleRecordEditContext} from "./contextHelper";
     import {createNewNestedRecord} from "./creator/recordCreatorStore";
     import NestedModelName from "$lib/records/NestedModelName.svelte";
+    import {dataRecordEditEvents} from "@cozemble/model-event-sourced";
 
     export let options: DataRecordsTableOptions
     export let record: DataRecord

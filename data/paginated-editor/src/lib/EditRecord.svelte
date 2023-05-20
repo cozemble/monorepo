@@ -2,8 +2,6 @@
     import DataRecordEditor from './DataRecordEditor.svelte'
     import type {
         AttachmentIdAndFileName,
-        DataRecordControlEvent,
-        DataRecordEditEvent,
         DataRecordEditorClient,
         ModelViewManager,
         UserInstruction,
@@ -19,6 +17,7 @@
     import type {JustErrorMessage} from "@cozemble/lang-util";
     import {strings} from "@cozemble/lang-util";
     import type {DataRecordId} from "@cozemble/model-core";
+    import type {DataRecordControlEvent, DataRecordEditEvent} from "@cozemble/model-event-sourced";
 
     export let recordEditContext: RecordEditContext
     export let recordSearcher: RecordSearcher

@@ -1,12 +1,8 @@
 import type { RecordsContext } from '../records/RecordsContext'
-import type {
-  DataRecordControlEvent,
-  DataRecordEditEvent,
-  DataRecordEditorClient,
-  UploadedAttachment,
-} from '@cozemble/data-editor-sdk'
+import type { DataRecordEditorClient, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import type { DataRecord, DataRecordId, Model, ModelView } from '@cozemble/model-core'
 import type { JustErrorMessage } from '@cozemble/lang-util'
+import type { DataRecordControlEvent, DataRecordEditEvent } from '@cozemble/model-event-sourced'
 
 export function makeDataRecordEditorClient(
   context: RecordsContext,
