@@ -18,6 +18,7 @@
     import {strings} from "@cozemble/lang-util";
     import type {DataRecordId} from "@cozemble/model-core";
     import type {DataRecordControlEvent, DataRecordEditEvent} from "@cozemble/model-event-sourced";
+    import type {EventSourcedRecordGraph} from "@cozemble/model-event-sourced";
 
     export let recordEditContext: RecordEditContext
     export let recordSearcher: RecordSearcher
@@ -43,7 +44,7 @@
             return recordSearcher.recordById(modelId, recordId)
         },
 
-        createNewRootRecord(modelId: ModelId): Promise<DataRecord | null> {
+        createNewRootRecord(modelId: ModelId): Promise<EventSourcedRecordGraph | null> {
             return recordCreator.createNewRecord(modelId)
         },
 

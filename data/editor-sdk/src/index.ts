@@ -1,8 +1,4 @@
-export {
-  dataRecordEditorHost,
-  AttachmentIdAndFileName,
-  DataRecordEditEventMaker,
-} from './dataRecordEditorHost'
+export { dataRecordEditorHost, AttachmentIdAndFileName } from './dataRecordEditorHost'
 export { dataRecordEditor } from './dataRecordEditorHost'
 export {
   DataRecordEditorClient,
@@ -11,6 +7,7 @@ export {
   userInstructionFns,
   UserInstruction,
   SetupSummaryViewUserInstruction,
+  RecordGraphModifier,
 } from './dataRecordEditorHost'
 
 export {

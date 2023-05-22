@@ -10,6 +10,7 @@
     import type {JustErrorMessage} from "@cozemble/lang-util";
     import {type IntegerProperty, emptyProperty, registerIntegerProperty} from "@cozemble/model-integer-core";
     import IntegerRepl from "./IntegerRepl.svelte";
+    import type {EventSourcedRecordGraph} from "@cozemble/model-event-sourced";
 
     registerIntegerProperty()
     const systemConfiguration = systemConfigurationFns.empty()
@@ -34,7 +35,7 @@
         dispatchEditEvent(): void {
         },
 
-        createNewRootRecord(): Promise<DataRecord | null> {
+        createNewRootRecord(): Promise<EventSourcedRecordGraph | null> {
             throw new Error("Not implemented")
         },
 

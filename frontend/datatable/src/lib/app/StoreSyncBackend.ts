@@ -1,17 +1,27 @@
 import type { Backend, FilterParams } from '../backend/Backend'
-import type { EventSourcedModel } from '@cozemble/model-event-sourced'
-import type { JustErrorMessage } from '@cozemble/lang-util'
+import type {
+  EventSourcedDataRecord,
+  EventSourcedModel,
+  EventSourcedRecordGraph,
+} from '@cozemble/model-event-sourced'
+import type { JustErrorMessage, Outcome } from '@cozemble/lang-util'
 import { allEventSourcedModels } from '../stores/allModels'
-import type { DataRecord, ModelId } from '@cozemble/model-core'
+import type { DataRecord, DataRecordId, ModelId, ModelView } from '@cozemble/model-core'
 import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
-import type { DataRecordId, ModelView } from '@cozemble/model-core'
 import { allModelViews } from '../stores/allModelViews'
 import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
-import type { RecordGraph } from '@cozemble/model-core'
-import type { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
+import type { RecordGraphEdge } from '@cozemble/model-core'
 
 export class StoreSyncBackend implements Backend {
   constructor(private readonly delegate: Backend) {}
+
+  async saveNewGraph(graph: EventSourcedRecordGraph): Promise<Outcome<EventSourcedRecordGraph>> {
+    return await this.delegate.saveNewGraph(graph)
+  }
+
+  async saveNewEdges(edges: RecordGraphEdge[]): Promise<Outcome<RecordGraphEdge[]>> {
+    return await this.delegate.saveNewEdges(edges)
+  }
 
   async saveModel(model: EventSourcedModel): Promise<JustErrorMessage | null> {
     const result = await this.delegate.saveModel(model)
@@ -33,7 +43,7 @@ export class StoreSyncBackend implements Backend {
     return await this.delegate.saveModels(models)
   }
 
-  async getRecords(modelId: ModelId, filterParams: FilterParams): Promise<RecordGraph> {
+  async getRecords(modelId: ModelId, filterParams: FilterParams): Promise<EventSourcedRecordGraph> {
     return await this.delegate.getRecords(modelId, filterParams)
   }
 
@@ -51,7 +61,6 @@ export class StoreSyncBackend implements Backend {
 
   async saveModelView(modelView: ModelView): Promise<JustErrorMessage | null> {
     const outcome = await this.delegate.saveModelView(modelView)
-    console.log({ outcome })
     if (outcome !== null) {
       return outcome
     }

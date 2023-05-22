@@ -77,11 +77,15 @@
 
 
     async function createNewRecord() {
-        const createdRecord = await dataRecordEditorClient.createNewRootRecord(editorParams.referencedModelId)
-        if (createdRecord) {
-            options.push(createdRecord)
+        const createdGraph = await dataRecordEditorClient.createNewRootRecord(editorParams.referencedModelId)
+        if(!createdGraph) {
+            return
         }
-        setSelectedRecord(createdRecord)
+        const createdRecord = createdGraph.records[0] ?? null
+        if (createdRecord) {
+            options.push(createdRecord.record)
+        }
+        setSelectedRecord(createdRecord.record)
     }
 
 

@@ -13,6 +13,7 @@
     import {createNewNestedRecord} from "./creator/recordCreatorStore";
     import NestedModelName from "$lib/records/NestedModelName.svelte";
     import {dataRecordEditEvents} from "@cozemble/model-event-sourced";
+    import {getCreatedRecord} from "$lib/records/modelReferences/editorHelper";
 
     export let options: DataRecordsTableOptions
     export let record: DataRecord
@@ -44,9 +45,13 @@
     })
 
     async function addRecord() {
-        const newRecord = await createNewNestedRecord($model.id, '')
+        const graph = await createNewNestedRecord($model.id, '')
+        if(!graph) {
+            return
+        }
+        const newRecord = getCreatedRecord(graph, $model.id)
         if (newRecord) {
-            rootRecordEditorClient.dispatchEditEvent(dataRecordEditEvents.hasManyItemAdded(record, parentPath, nestedModel, newRecord.record))
+            rootRecordEditorClient.dispatchEditEvent(dataRecordEditEvents.hasManyItemAdded(record, parentPath, nestedModel, newRecord))
         }
     }
 

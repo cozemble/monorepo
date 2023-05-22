@@ -8,11 +8,15 @@
     } from "@cozemble/model-core";
     import {dataRecordEditor} from "@cozemble/data-editor-sdk";
     import {afterUpdate, onMount} from "svelte";
-    import {type EditorParams, inverseReferenceEventMaker, makeSummaryView} from "./editorHelper";
+    import {type EditorParams, getCreatedRecord, makeSummaryView} from "./editorHelper";
     import {clickOutside} from "@cozemble/ui-atoms";
     import {modelRecordsContextFns} from "$lib/records/modelRecordsContextFns";
-    import {eventSourcedRecordGraphFns} from "@cozemble/model-event-sourced";
-    import {dataRecordControlEvents, dataRecordEditEvents} from "@cozemble/model-event-sourced";
+    import {
+        dataRecordControlEvents,
+        dataRecordEditEvents,
+        eventSourcedRecordGraphFns
+    } from "@cozemble/model-event-sourced";
+    import {inverseReferenceSetter} from "$lib/records/modelReferences/editorHelper";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord
@@ -57,7 +61,11 @@
 
 
     async function createNewRecord() {
-        const createdRecord = await dataRecordEditorClient.createNewRootRecord(editorParams.referencedModelId, inverseReferenceEventMaker(editorParams.referencedModelId, modelReference.id))
+        const createdGraph = await dataRecordEditorClient.createNewRootRecord(editorParams.referencedModelId, inverseReferenceSetter(editorParams.referencedModelId, modelReference.id, record))
+        if (createdGraph === null) {
+            return
+        }
+        const createdRecord = getCreatedRecord(createdGraph, editorParams.referencedModelId)
         if (createdRecord) {
             options.push(createdRecord)
         }
@@ -97,7 +105,7 @@
         return recordId !== null && selectedRecordIds.some(id => id.value === recordId.value)
     }
 
-    afterUpdate(() => console.log({recordGraph: $recordGraph, selectedRecordIds}))
+    afterUpdate(() => console.log({recordGraph: $recordGraph, selectedRecordIds, record, modelReference}))
 </script>
 
 <svelte:window on:keydown={handleKeydown}/>

@@ -3,6 +3,8 @@ import type { DataRecordEditorClient, UploadedAttachment } from '@cozemble/data-
 import type { DataRecord, DataRecordId, Model, ModelView } from '@cozemble/model-core'
 import type { JustErrorMessage } from '@cozemble/lang-util'
 import type { DataRecordControlEvent, DataRecordEditEvent } from '@cozemble/model-event-sourced'
+import type { RecordGraph } from '@cozemble/model-core'
+import type { EventSourcedRecordGraph } from '@cozemble/model-event-sourced/dist/esm'
 
 export function makeDataRecordEditorClient(
   context: RecordsContext,
@@ -28,7 +30,7 @@ export function makeDataRecordEditorClient(
       }
     },
 
-    createNewRootRecord(): Promise<DataRecord | null> {
+    createNewRootRecord(): Promise<EventSourcedRecordGraph | null> {
       throw new Error('Method not implemented.')
     },
 

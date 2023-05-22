@@ -1,8 +1,8 @@
 import type {
   AttachmentIdAndFileName,
-  DataRecordEditEventMaker,
   DataRecordEditorClient,
   DataRecordViewerClient,
+  RecordGraphModifier,
   UploadedAttachment,
 } from '@cozemble/data-editor-sdk'
 import type {
@@ -18,9 +18,11 @@ import type { DataTableFocusControls2 } from '../focus/DataTableFocus'
 import type { JustErrorMessage } from '@cozemble/lang-util'
 import type { Backend } from '../backend/Backend'
 import { createNewRootRecord as createNewRootRecordFn } from './creator/recordCreatorStore'
-import type { DataRecordControlEvent, DataRecordEditEvent } from '@cozemble/model-event-sourced'
-import { eventSourcedDataRecordFns } from '@cozemble/model-event-sourced'
-import { mandatory } from '@cozemble/lang-util/dist/esm'
+import type {
+  DataRecordControlEvent,
+  DataRecordEditEvent,
+  EventSourcedRecordGraph,
+} from '@cozemble/model-event-sourced'
 
 export type CombinedDataRecordEditorClient = DataRecordEditorClient & DataRecordViewerClient
 
@@ -60,20 +62,20 @@ export function makeCombinedDataRecordEditorClient(
 
     async createNewRootRecord(
       modelId: ModelId,
-      ...eventMakers: DataRecordEditEventMaker[]
-    ): Promise<DataRecord | null> {
-      let newRecord = await createNewRootRecordFn(modelId)
-      if (!newRecord) {
+      ...modifiers: RecordGraphModifier[]
+    ): Promise<EventSourcedRecordGraph | null> {
+      const newGraph = await createNewRootRecordFn(modelId, ...modifiers)
+      console.log('newGraph', newGraph)
+      if (!newGraph) {
         return null
       }
-      const record = mandatory(newRecord.record, `newRecord.record`)
-      const events = eventMakers.flatMap((eventMaker) => eventMaker(record))
-      newRecord = eventSourcedDataRecordFns.addEvents(systemConfigProvider(), newRecord, ...events)
-      const outcome = await backend.saveNewRecord(newRecord)
-      if (outcome._type === 'record.save.succeeded') {
-        return outcome.record
+      const outcome = await backend.saveNewGraph(newGraph)
+      console.log('outcome', outcome)
+      if (outcome._type === 'successful.outcome') {
+        return outcome.value
+      } else {
+        throw new Error('Failed to save new record: ' + outcome.error.message)
       }
-      return null
     },
 
     searchRecords(modelId: ModelId, search: string): Promise<DataRecord[]> {

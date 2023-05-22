@@ -5,16 +5,19 @@ import type {
   ModelHtmlTemplate,
   ModelId,
   ModelReference,
+  ModelReferenceId,
 } from '@cozemble/model-core'
-import { modelReferenceFns } from '@cozemble/model-core'
-import type { DataRecordEditorClient, DataRecordViewerClient } from '@cozemble/data-editor-sdk'
+import { modelReferenceFns, recordGraphEdgeFns } from '@cozemble/model-core'
+import type {
+  DataRecordEditorClient,
+  DataRecordViewerClient,
+  RecordGraphModifier,
+} from '@cozemble/data-editor-sdk'
 import { type UserInstruction, userInstructionFns } from '@cozemble/data-editor-sdk'
 import { applyTemplate, modelToJson } from '@cozemble/model-to-json'
 import { modelFns } from '@cozemble/model-api'
 import { strings } from '@cozemble/lang-util'
-import type { ModelReferenceId } from '@cozemble/model-core'
-import type { DataRecordEditEventMaker } from '@cozemble/data-editor-sdk'
-import type { DataRecordEditEvent } from '@cozemble/model-event-sourced'
+import type { EventSourcedRecordGraph } from '@cozemble/model-event-sourced/dist/esm'
 
 export interface EditorParams {
   _type: 'editor.params'
@@ -73,11 +76,34 @@ export function makeSummaryView(record: DataRecord, params: EditorParams): strin
   )
 }
 
-export function inverseReferenceEventMaker(
-  targetModelId: ModelId,
-  modelReferenceId: ModelReferenceId,
-): DataRecordEditEventMaker {
-  return (record: DataRecord): DataRecordEditEvent[] => {
-    return []
+export function inverseReferenceSetter(
+  targetModelId: ModelId, // e.g.booking
+  modelReferenceId: ModelReferenceId, // the reference binding the two models
+  originatingRecord: DataRecord, // customer
+): RecordGraphModifier {
+  return (graph: EventSourcedRecordGraph): EventSourcedRecordGraph => {
+    const createdRecord = getCreatedRecord(graph, targetModelId)
+    return {
+      ...graph,
+      relatedRecords: [originatingRecord],
+      edges: [
+        recordGraphEdgeFns.newInstance(modelReferenceId, originatingRecord.id, createdRecord.id),
+      ],
+    }
   }
+}
+
+export function getCreatedRecord(
+  graph: EventSourcedRecordGraph,
+  targetModelId: ModelId,
+): DataRecord {
+  const recordsOfReferencedModel = graph.records.filter(
+    (r) => r.record.modelId.value === targetModelId.value,
+  )
+  if (recordsOfReferencedModel.length !== 1) {
+    throw new Error(
+      `Expected to find exactly one record of model ${targetModelId.value} but found ${recordsOfReferencedModel.length}`,
+    )
+  }
+  return recordsOfReferencedModel[0].record
 }

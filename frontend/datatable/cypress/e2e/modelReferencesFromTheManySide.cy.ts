@@ -1,4 +1,4 @@
-import { clickAddField, editCell } from './helpers'
+import { cellSelector, clickAddField, editCell } from './helpers'
 
 function clickTable(index: number) {
   cy.get('a.model-' + index).click()
@@ -49,5 +49,10 @@ describe('data table', () => {
     cy.contains('First name').click()
     cy.contains('Last name').click()
     cy.get('button.save-view').click()
+    cy.contains('Create a new Booking').click()
+    cy.get(cellSelector('0-1')).should('contain', 'John Smith')
+    cy.get('button.save').click()
+
+    cy.get(cellSelector('0-2')).should('contain', 'Booking #11')
   })
 })

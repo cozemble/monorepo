@@ -18,6 +18,7 @@ import type {
 import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import { StoreSyncBackend } from './app/StoreSyncBackend'
 import type { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
+import type { EventSourcedRecordGraph } from '@cozemble/model-event-sourced/dist/esm'
 
 export let backend = notImplementedBackend
 
@@ -41,7 +42,7 @@ export async function saveExistingRecord(
 export async function getRecordsForModel(
   modelId: ModelId,
   filterParams: FilterParams,
-): Promise<RecordGraph> {
+): Promise<EventSourcedRecordGraph> {
   return backend.getRecords(modelId, filterParams)
 }
 

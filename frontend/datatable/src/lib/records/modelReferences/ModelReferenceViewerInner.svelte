@@ -21,7 +21,7 @@
     let referencedRecord: DataRecord | null = null
     let htmlRender: string | null = null
 
-    $: dereference(dataRecordViewerClient, editorParams.referencedModelId, selectedRecordIds, (record) => referencedRecord = record)
+    $: dereference(dataRecordViewerClient, $recordGraph,editorParams.referencedModelId, selectedRecordIds, (record) => referencedRecord = record)
     $: htmlRender = renderReference(referencedRecord, editorParams)
 
 </script>

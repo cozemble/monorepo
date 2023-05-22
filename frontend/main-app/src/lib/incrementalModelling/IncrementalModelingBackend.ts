@@ -1,22 +1,25 @@
 import type { DataTableBackend, FilterParams } from '@cozemble/frontend-datatable'
-import type { EventSourcedModel } from '@cozemble/model-event-sourced'
-import type { JustErrorMessage } from '@cozemble/lang-util'
-import { justErrorMessage } from '@cozemble/lang-util'
+import type { EventSourcedDataRecord, EventSourcedModel } from '@cozemble/model-event-sourced'
+import {
+  eventSourcedDataRecordFns,
+  type EventSourcedRecordGraph,
+  eventSourcedRecordGraphFns,
+} from '@cozemble/model-event-sourced'
+import type { JustErrorMessage, Outcome } from '@cozemble/lang-util'
+import { justErrorMessage, outcomeFns } from '@cozemble/lang-util'
 import type {
   DataRecord,
   DataRecordId,
   Model,
   ModelId,
   ModelView,
-  RecordGraph,
+  RecordGraphEdge,
 } from '@cozemble/model-core'
-import { recordGraphFns } from '@cozemble/model-core'
 import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import type { Backend } from '@cozemble/frontend-bff'
 import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
 import { toFilledFilterInstanceGroup } from '@cozemble/frontend-ui-blocks'
-import type { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
 
 export class IncrementalModelingBackend implements DataTableBackend {
   constructor(
@@ -27,6 +30,18 @@ export class IncrementalModelingBackend implements DataTableBackend {
 
   async saveModel(model: EventSourcedModel): Promise<JustErrorMessage | null> {
     return this.saveModels([model])
+  }
+
+  async saveNewGraph(graph: EventSourcedRecordGraph): Promise<Outcome<EventSourcedRecordGraph>> {
+    for (const record of graph.records) {
+      await this.saveNewRecord(record)
+    }
+    await this.saveNewEdges(graph.edges)
+    return outcomeFns.successful(graph)
+  }
+
+  async saveNewEdges(edges: RecordGraphEdge[]): Promise<Outcome<RecordGraphEdge[]>> {
+    throw new Error('Not implemented')
   }
 
   async saveModels(models: EventSourcedModel[]): Promise<JustErrorMessage | null> {
@@ -43,7 +58,7 @@ export class IncrementalModelingBackend implements DataTableBackend {
     }
   }
 
-  async getRecords(modelId: ModelId, filterParams: FilterParams): Promise<RecordGraph> {
+  async getRecords(modelId: ModelId, filterParams: FilterParams): Promise<EventSourcedRecordGraph> {
     const filled = toFilledFilterInstanceGroup(filterParams.filters)
     const fetched = await this.backend.fetchRecords(
       this.tenantId,
@@ -51,7 +66,11 @@ export class IncrementalModelingBackend implements DataTableBackend {
       filterParams.search,
       filled,
     )
-    return recordGraphFns.newInstance(fetched.records, [], [])
+    return eventSourcedRecordGraphFns.newInstance(
+      fetched.records.map((r) => eventSourcedDataRecordFns.fromRecord(this.modelsProvider(), r)),
+      [],
+      [],
+    )
   }
 
   saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {

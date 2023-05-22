@@ -10,17 +10,19 @@
     import {derived} from "svelte/store";
     import WithSingleRecordContext from "../../records/WithSingleRecordContext.svelte";
     import SingleRootRecordEditTable from "./SingleRootRecordEditTable.svelte";
-    import {mandatory} from "@cozemble/lang-util";
-    import type {RecordGraph} from "@cozemble/model-core";
-    import {recordGraphFns} from "@cozemble/model-core";
+    import type {EventSourcedRecordGraph} from "@cozemble/model-event-sourced";
+    import {eventSourcedDataRecordFns, eventSourcedRecordGraphFns} from "@cozemble/model-event-sourced";
 
     export let params: CreateNewRecord
     const model = modelFns.findById($allModels, params.modelId)
     const eventSourcedRecordGraph = eventSourcedRecordGraphStore(() => $systemConfiguration, () => $allModels, () => model, $currentUserId)
     const eventSourcedRecords = derived(eventSourcedRecordGraph, graph => graph.records)
 
-    async function graphLoader(): Promise<RecordGraph> {
-        return recordGraphFns.newInstance([dataRecordFns.newInstance(model, $currentUserId)], [])
+    async function graphLoader(): Promise<EventSourcedRecordGraph> {
+        const newRecord = eventSourcedDataRecordFns.fromRecord($allModels, dataRecordFns.newInstance(model, $currentUserId))
+        const graph = eventSourcedRecordGraphFns.newInstance([newRecord], [], [])
+
+        return params.modifiers.reduce((acc, modifier) => modifier(acc), graph)
     }
 
     function cancel() {
@@ -29,8 +31,7 @@
     }
 
     function save() {
-        const firstRecord = mandatory($eventSourcedRecordGraph.records[0], `Expected to find a record in the event sourced records store`)
-        params.onCreated(firstRecord)
+        params.onCreated($eventSourcedRecordGraph)
         createNewRecordStore.update(() => null)
     }
 </script>

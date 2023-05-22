@@ -2,7 +2,6 @@
     import {allEventSourcedModels, allModels} from "../stores/allModels";
     import {derived, writable} from "svelte/store";
     import type {Model, ModelId, NestedModelId} from "@cozemble/model-core";
-    import {recordGraphFns} from "@cozemble/model-core";
     import {eventSourcedModelFns, eventSourcedRecordGraphFns} from "@cozemble/model-event-sourced";
     import {modelRecordsContextFns} from "./modelRecordsContextFns";
     import {emptyDataTableFocus} from "../focus/DataTableFocus";
@@ -20,6 +19,8 @@
     import {emptyFilterParams, type FilterParams, type RecordSaver} from "../backend/Backend";
     import {dataRecordFns} from "@cozemble/model-api";
     import type {RecordGraphLoader} from "$lib/records/RecordGraphLoader";
+    import type {EventSourcedDataRecord} from "@cozemble/model-event-sourced";
+    import {eventSourcedDataRecordFns} from "@cozemble/model-event-sourced";
 
     const systemConfigurationProvider = () => $systemConfiguration
     const modelsProvider = () => $allModels
@@ -73,8 +74,8 @@
         })
     })
 
-    function newEmptyRecord(model: Model) {
-        return dataRecordFns.newInstance(model, $currentUserId)
+    function newEmptyRecord(model: Model): EventSourcedDataRecord {
+        return eventSourcedDataRecordFns.fromRecord($allModels, dataRecordFns.newInstance(model, $currentUserId))
     }
 
     async function loadRecords(filterParams: FilterParams) {
@@ -82,12 +83,12 @@
         let loadedGraph = await graphLoader(modelId, filterParams)
         if (oneOnly) {
             eventSourcedRecordGraph.set(
-                eventSourcedRecordGraphFns.fromRecordGraph($allModels, loadedGraph),
+                loadedGraph,
             )
         } else {
-            loadedGraph = recordGraphFns.appendRecord(loadedGraph, newEmptyRecord($model))
+            loadedGraph = eventSourcedRecordGraphFns.appendRecord(loadedGraph, newEmptyRecord($model))
             eventSourcedRecordGraph.set(
-                eventSourcedRecordGraphFns.fromRecordGraph($allModels, loadedGraph),
+                loadedGraph,
             )
         }
         someRecordsLoaded = true

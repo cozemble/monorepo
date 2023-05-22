@@ -293,3 +293,5 @@ export { HeadAndTail, headAndTailFns } from './HeadAndTail'
 export { Value, value } from './value'
 
 export { nanoids } from './nanoids'
+
+export { UnsuccessfulOutcome, Outcome, SuccessfulOutcome, outcomeFns } from './outcomes'

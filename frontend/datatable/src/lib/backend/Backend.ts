@@ -1,17 +1,12 @@
-import type { EventSourcedModel } from '@cozemble/model-event-sourced'
-import type { JustErrorMessage } from '@cozemble/lang-util'
-import type {
-  DataRecord,
-  DataRecordId,
-  ModelId,
-  ModelView,
-  RecordGraph,
-} from '@cozemble/model-core'
+import type { EventSourcedDataRecord, EventSourcedModel } from '@cozemble/model-event-sourced'
+import type { JustErrorMessage, Outcome } from '@cozemble/lang-util'
+import type { DataRecord, DataRecordId, ModelId, ModelView } from '@cozemble/model-core'
 import type { AttachmentsManager, RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import type { FilterGroupList } from '@cozemble/data-filters-core'
 import { filterGroupListFns } from '@cozemble/data-filters-core'
-import type { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
+import type { EventSourcedRecordGraph } from '@cozemble/model-event-sourced/dist/esm'
+import type { RecordGraphEdge } from '@cozemble/model-core/dist/esm'
 
 export interface FilterParams {
   search: string | null
@@ -29,11 +24,15 @@ export interface RecordSaver {
 }
 
 export interface Backend extends AttachmentsManager, RecordSaver {
+  saveNewGraph(graph: EventSourcedRecordGraph): Promise<Outcome<EventSourcedRecordGraph>>
+
+  saveNewEdges(edges: RecordGraphEdge[]): Promise<Outcome<RecordGraphEdge[]>>
+
   saveModel(model: EventSourcedModel): Promise<JustErrorMessage | null>
 
   saveModels(model: EventSourcedModel[]): Promise<JustErrorMessage | null>
 
-  getRecords(modelId: ModelId, filterParams: FilterParams): Promise<RecordGraph>
+  getRecords(modelId: ModelId, filterParams: FilterParams): Promise<EventSourcedRecordGraph>
 
   searchRecords(modelId: ModelId, search: string): Promise<DataRecord[]>
 
@@ -43,6 +42,14 @@ export interface Backend extends AttachmentsManager, RecordSaver {
 }
 
 export const notImplementedBackend: Backend = {
+  async saveNewGraph(): Promise<Outcome<EventSourcedRecordGraph>> {
+    throw new Error('Not implemented')
+  },
+
+  async saveNewEdges(): Promise<Outcome<RecordGraphEdge[]>> {
+    throw new Error('Not implemented')
+  },
+
   saveNewRecord(): Promise<RecordSaveOutcome> {
     throw new Error('Not implemented')
   },

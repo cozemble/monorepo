@@ -10,6 +10,7 @@
     import type {JustErrorMessage} from "@cozemble/lang-util";
     import {type DecimalProperty, emptyProperty, registerDecimalProperty} from "@cozemble/model-decimal-core";
     import DecimalRepl from "./DecimalRepl.svelte";
+    import type {EventSourcedRecordGraph} from "@cozemble/model-event-sourced";
 
     registerDecimalProperty()
     const systemConfiguration = systemConfigurationFns.empty()
@@ -34,7 +35,7 @@
         dispatchEditEvent(): void {
         },
 
-        createNewRootRecord(): Promise<DataRecord | null> {
+        createNewRootRecord(): Promise<EventSourcedRecordGraph | null> {
             throw new Error("Not implemented")
         },
 

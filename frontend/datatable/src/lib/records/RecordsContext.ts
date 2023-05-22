@@ -14,8 +14,16 @@ import { modelIdAndNameFns, nestedModelNameFns } from '@cozemble/model-core'
 import type { Backend } from '../backend/Backend'
 import { emptyFilterParams } from '../backend/Backend'
 import { derived, type Readable, type Writable, writable } from 'svelte/store'
-import type { EventSourcedModel } from '@cozemble/model-event-sourced'
-import { coreModelEvents, eventSourcedModelFns } from '@cozemble/model-event-sourced'
+import type {
+  DataRecordEditEvent,
+  EventSourcedDataRecord,
+  EventSourcedModel,
+} from '@cozemble/model-event-sourced'
+import {
+  coreModelEvents,
+  eventSourcedDataRecordFns,
+  eventSourcedModelFns,
+} from '@cozemble/model-event-sourced'
 import type { JustErrorMessage } from '@cozemble/lang-util'
 import { mandatory } from '@cozemble/lang-util'
 import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
@@ -27,8 +35,6 @@ import {
   emptyDataTableFocus,
 } from '../focus/DataTableFocus'
 import { gettableWritable } from '../editors/GettableWritable'
-import type { DataRecordEditEvent, EventSourcedDataRecord } from '@cozemble/model-event-sourced'
-import { eventSourcedDataRecordFns } from '@cozemble/model-event-sourced'
 
 export type LoadingState = 'loading' | 'loaded'
 
@@ -203,11 +209,7 @@ export class RootRecordsContext implements RecordsContext {
   async loadRecords(): Promise<void> {
     this._loadingState.set('loading')
     const graph = await this.backend.getRecords(this.modelId(), emptyFilterParams())
-    this._records.set(
-      graph.records.map((record) =>
-        eventSourcedDataRecordFns.fromRecord(this._allModelCache, record),
-      ),
-    )
+    this._records.set(graph.records)
     this._loadingState.set('loaded')
   }
 

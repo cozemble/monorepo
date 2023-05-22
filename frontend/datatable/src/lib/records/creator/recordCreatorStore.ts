@@ -1,13 +1,20 @@
-import type { ModelId } from '@cozemble/model-core'
+import type { DataRecord, ModelId, RecordGraph } from '@cozemble/model-core'
 import { writable } from 'svelte/store'
-import type { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
+import type { EventSourcedRecordGraph } from '@cozemble/model-event-sourced'
+import type { RecordGraphModifier } from '@cozemble/data-editor-sdk'
+
+export type NewRecordModifier = (
+  graph: RecordGraph,
+  record: DataRecord,
+) => { record: DataRecord; graph: RecordGraph }
 
 export interface CreateNewRecord {
   modelId: ModelId
-  onCreated: (value: EventSourcedDataRecord) => void
+  onCreated: (graph: EventSourcedRecordGraph) => void
   onCancel: () => void
   titlePrefix: string
   isRootRecord: boolean
+  modifiers: RecordGraphModifier[]
 }
 
 export const createNewRecordStore = writable<CreateNewRecord | null>(null)
@@ -15,9 +22,12 @@ export const createNewRecordStore = writable<CreateNewRecord | null>(null)
 export function createNewNestedRecord(
   modelId: ModelId,
   titlePrefix = '',
-): Promise<EventSourcedDataRecord | null> {
+): Promise<EventSourcedRecordGraph | null> {
   return new Promise((resolve) => {
-    function onCreated(value: EventSourcedDataRecord): void {
+    function onCreated(value: EventSourcedRecordGraph): void {
+      if (value.records.length !== 1) {
+        throw new Error('Expected exactly one record')
+      }
       resolve(value)
     }
 
@@ -25,13 +35,23 @@ export function createNewNestedRecord(
       resolve(null)
     }
 
-    createNewRecordStore.set({ modelId, onCreated, onCancel, titlePrefix, isRootRecord: false })
+    createNewRecordStore.set({
+      modelId,
+      onCreated,
+      onCancel,
+      titlePrefix,
+      isRootRecord: false,
+      modifiers: [],
+    })
   })
 }
 
-export function createNewRootRecord(modelId: ModelId): Promise<EventSourcedDataRecord | null> {
+export function createNewRootRecord(
+  modelId: ModelId,
+  ...modifiers: RecordGraphModifier[]
+): Promise<EventSourcedRecordGraph | null> {
   return new Promise((resolve) => {
-    function onCreated(value: EventSourcedDataRecord): void {
+    function onCreated(value: EventSourcedRecordGraph): void {
       resolve(value)
     }
 
@@ -39,6 +59,13 @@ export function createNewRootRecord(modelId: ModelId): Promise<EventSourcedDataR
       resolve(null)
     }
 
-    createNewRecordStore.set({ modelId, onCreated, onCancel, titlePrefix: '', isRootRecord: true })
+    createNewRecordStore.set({
+      modelId,
+      onCreated,
+      onCancel,
+      titlePrefix: '',
+      isRootRecord: true,
+      modifiers,
+    })
   })
 }

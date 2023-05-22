@@ -20,6 +20,7 @@
         propertyFns,
         propertyOptions
     } from "@cozemble/model-api";
+    import type {EventSourcedRecordGraph} from "@cozemble/model-event-sourced";
 
     const systemConfiguration = systemConfigurationFns.empty()
     const customerModel = modelFns.newInstance("Customers", modelOptions.withProperties(propertyFns.newInstance("First name", propertyOptions.required), propertyFns.newInstance("Last name")))
@@ -35,7 +36,7 @@
             return null
         },
 
-        createNewRootRecord(): Promise<DataRecord | null> {
+        createNewRootRecord(): Promise<EventSourcedRecordGraph | null> {
             throw new Error("Not implemented")
         },
 

@@ -1,5 +1,6 @@
 import { DataRecord, DataRecordId, ModelReferenceId } from './core'
 import { Id, tinyValueFns } from './TinyValue'
+import { Option } from '@cozemble/lang-util'
 
 export interface RecordGraphEdge {
   _type: 'record.graph.edge'
@@ -42,6 +43,8 @@ export interface RecordGraph {
   edges: RecordGraphEdge[]
   relatedRecords: DataRecord[]
 }
+
+export type RecordGraphOption = Option<RecordGraph>
 
 export const recordGraphFns = {
   newInstance: (

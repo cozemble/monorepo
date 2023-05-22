@@ -12,6 +12,7 @@
         type UploadedAttachment
     } from "@cozemble/data-editor-sdk";
     import type {JustErrorMessage} from "@cozemble/lang-util";
+    import type {EventSourcedRecordGraph} from "@cozemble/model-event-sourced";
 
     registerDateProperty()
     const dateProperty: DateProperty = emptyProperty("Date of birth")
@@ -36,7 +37,7 @@
         dispatchEditEvent(): void {
         },
 
-        createNewRootRecord(): Promise<DataRecord | null> {
+        createNewRootRecord(): Promise<EventSourcedRecordGraph | null> {
             throw new Error("Not implemented")
         },
 
