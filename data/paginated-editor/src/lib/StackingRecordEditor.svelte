@@ -3,14 +3,11 @@
     import EditRecord from './EditRecord.svelte'
     import type {RecordSearcher} from "./RecordSearcher";
     import type {RecordCreator} from "./RecordCreator";
-    import type {DataRecord, ModelId} from "@cozemble/model-core";
+    import type {ModelId} from "@cozemble/model-core";
     import type {AttachmentsManager} from "./AttachmentsManager";
     import type {ModelViewManager} from "@cozemble/data-editor-sdk";
-    import type {EventSourcedRecordGraph} from "@cozemble/model-event-sourced/dist/esm/index.js";
-    import {
-        eventSourcedDataRecordFns,
-        eventSourcedRecordGraphFns
-    } from "@cozemble/model-event-sourced/dist/esm/index.js";
+    import type {EventSourcedRecordGraph} from "@cozemble/model-event-sourced";
+    import {eventSourcedDataRecordFns, eventSourcedRecordGraphFns} from "@cozemble/model-event-sourced";
 
     export let recordEditContext: RecordEditContext
     export let recordSearcher: RecordSearcher
@@ -42,7 +39,7 @@
                     const outcome = await recordEditContext.saveNewRecord(record);
                     if (outcome._type === "record.save.succeeded") {
                         popContext()
-                        resolve(eventSourcedRecordGraphFns.newInstance([eventSourcedDataRecordFns.fromRecord(recordEditContext.models, outcome.record)],[],[]))
+                        resolve(eventSourcedRecordGraphFns.newInstance([eventSourcedDataRecordFns.fromRecord(recordEditContext.models, outcome.record)], [], []))
                     } else {
                         popContext()
                         reject(outcome.errors.join(", "))

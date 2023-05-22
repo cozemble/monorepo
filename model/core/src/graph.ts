@@ -1,4 +1,4 @@
-import { DataRecord, DataRecordId, ModelReferenceId } from './core'
+import { DataRecord, DataRecordId, ModelId, ModelReferenceId } from './core'
 import { Id, tinyValueFns } from './TinyValue'
 import { Option } from '@cozemble/lang-util'
 
@@ -6,22 +6,28 @@ export interface RecordGraphEdge {
   _type: 'record.graph.edge'
   id: Id
   modelReferenceId: ModelReferenceId
-  fromRecordId: DataRecordId
-  toRecordId: DataRecordId
+  originModelId: ModelId
+  referenceModelId: ModelId
+  originRecordId: DataRecordId
+  referenceRecordId: DataRecordId
 }
 
 export const recordGraphEdgeFns = {
   newInstance: (
     modelReferenceId: ModelReferenceId,
-    fromRecordId: DataRecordId,
-    toRecordId: DataRecordId,
+    originModelId: ModelId,
+    referenceModelId: ModelId,
+    originRecordId: DataRecordId,
+    referenceRecordId: DataRecordId,
     id: Id = tinyValueFns.id(),
   ): RecordGraphEdge => ({
     _type: 'record.graph.edge',
     id,
     modelReferenceId,
-    fromRecordId,
-    toRecordId,
+    originModelId,
+    referenceModelId,
+    originRecordId,
+    referenceRecordId,
   }),
   forModelReference(
     edges: RecordGraphEdge[],
@@ -32,7 +38,8 @@ export const recordGraphEdgeFns = {
   forRecord(edges: RecordGraphEdge[], recordId: DataRecordId): RecordGraphEdge[] {
     return edges.filter(
       (edge) =>
-        edge.fromRecordId.value === recordId.value || edge.toRecordId.value === recordId.value,
+        edge.originRecordId.value === recordId.value ||
+        edge.referenceRecordId.value === recordId.value,
     )
   },
 }

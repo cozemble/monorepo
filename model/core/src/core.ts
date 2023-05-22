@@ -165,14 +165,13 @@ export interface InlinedModelReferenceName extends TinyValue {
   _type: 'inlined.model.reference.name'
 }
 
-export type ModelReferenceDirection = 'forward' | 'inverse'
-
 export interface ModelReference {
   _type: 'model.reference'
   id: ModelReferenceId
   name: ModelReferenceName
-  direction: ModelReferenceDirection
+  originModelId: ModelId
   referencedModelIds: ModelId[]
+  inverse: boolean
   cardinality: Cardinality
 }
 
@@ -231,9 +230,10 @@ export const referencedRecordsFns = {
 
 export const modelReferenceFns = {
   newInstance: (
+    originModelId: ModelId,
     referencedModelIds: ModelId[],
     referenceName: ModelReferenceName | string,
-    direction: ModelReferenceDirection = 'forward',
+    inverse = false,
     id = modelReferenceIdFns.newInstance(uuids.v4()),
     cardinality: Cardinality = 'many',
   ): ModelReference => {
@@ -245,7 +245,8 @@ export const modelReferenceFns = {
       _type: 'model.reference',
       id,
       name,
-      direction,
+      originModelId,
+      inverse,
       referencedModelIds,
       cardinality,
     }
@@ -267,28 +268,32 @@ export const modelReferenceFns = {
   oneReference: (reference: ModelReference): ModelId | null => {
     return reference.referencedModelIds[0] ?? null
   },
-  forwardToModel: (
-    model: Model,
+  forwardModelReference: (
+    originModelId: ModelId,
+    toModel: Model,
     id = modelReferenceIdFns.newInstance(),
     cardinality: Cardinality = 'many',
   ): ModelReference => {
     return modelReferenceFns.newInstance(
-      [model.id],
-      modelReferenceNameFns.newInstance(model.name.value),
-      'forward',
+      originModelId,
+      [toModel.id],
+      modelReferenceNameFns.newInstance(toModel.name.value),
+      false,
       id,
       cardinality,
     )
   },
-  inverseToModel: (
-    model: Model,
+  inverseModelReference: (
+    originModel: Model,
+    toModel: Model,
     id = modelReferenceIdFns.newInstance(),
     cardinality: Cardinality = 'many',
   ): ModelReference => {
     return modelReferenceFns.newInstance(
-      [model.id],
-      modelReferenceNameFns.newInstance(model.name.value),
-      'inverse',
+      originModel.id,
+      [toModel.id],
+      modelReferenceNameFns.newInstance(originModel.name.value),
+      true,
       id,
       cardinality,
     )

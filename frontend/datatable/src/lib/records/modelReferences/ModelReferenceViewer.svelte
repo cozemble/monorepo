@@ -8,6 +8,9 @@
     import {modelFns} from "@cozemble/model-api";
     import type {ConfigureViewParams} from "./ConfigureViewParams";
     import {makeConfigureViewParams} from "./ConfigureViewParams";
+    import {afterUpdate} from "svelte";
+    import {allModelViews} from "$lib/stores/allModelViews";
+    import type {ModelView} from "@cozemble/model-core";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord
@@ -21,12 +24,12 @@
     let containerElement: HTMLDivElement
     let configureViewParams: ConfigureViewParams | null = null
 
-    $: fetchEditorParams(dataRecordViewerClient, recordPath)
+    $: fetchEditorParams(dataRecordViewerClient, recordPath, $allModelViews)
 
-    function fetchEditorParams(client: DataRecordViewerClient, recordPath: DataRecordValuePath) {
+    function fetchEditorParams(client: DataRecordViewerClient, recordPath: DataRecordValuePath, modelViews:ModelView[]) {
         error = null
         try {
-            editorParams = assembleEditorParams(dataRecordViewerClient, recordPath)
+            editorParams = assembleEditorParams(dataRecordViewerClient, recordPath, modelViews)
         } catch (e: any) {
             console.error(e)
             error = e.message
@@ -50,8 +53,10 @@
 
     function viewConfigured() {
         cancelConfigureViewModal()
-        editorParams = assembleEditorParams(dataRecordViewerClient, recordPath)
+        editorParams = assembleEditorParams(dataRecordViewerClient, recordPath, $allModelViews)
     }
+
+    afterUpdate(() => console.log({editorParams, record}))
 </script>
 
 <div bind:this={containerElement}>

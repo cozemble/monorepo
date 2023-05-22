@@ -19,84 +19,6 @@ export interface EventSourcedRecordGraph {
   relatedRecords: DataRecord[]
 }
 
-// function updateFromInEditedRecord(
-//   node: EventSourcedDataRecord, // any record type, customer, booking, invoice
-//   event: RecordReferencesChangedEvent, // setting the customer field of a booking: from booking to customer
-// ): RecordGraphEdge[] {
-//   if (node.record.record.id.value !== event.recordBeingEdited.id.value) {
-//     return node.edges
-//   }
-//   const newFromEdges = event.selection.map((selectedRecord) => {
-//     return recordGraphEdgeFns.newInstance(
-//       event.modelReference.id,
-//       node.record.record.id,
-//       selectedRecord.id,
-//     )
-//   })
-//   const retainedEdges = node.edges.filter(
-//     (edge) => edge.fromRecordId.value !== event.recordBeingEdited.id.value,
-//   )
-//   return [...retainedEdges, ...newFromEdges]
-// }
-//
-// function updateFromInTargetModel(
-//   node: EventSourcedRecordGraphNode,
-//   event: RecordReferencesChangedEvent,
-// ): RecordGraphEdge[] {
-//   const isImpliedToSide = event.selection.some(
-//     (selected) => selected.id.value === node.record.record.id.value,
-//   )
-//   if (isImpliedToSide) {
-//     return [
-//       recordGraphEdgeFns.newInstance(
-//         event.modelReference.id,
-//         node.record.record.id,
-//         event.recordBeingEdited.id,
-//       ),
-//     ]
-//   }
-//   return []
-// }
-//
-// function updateToInTargetModel(
-//   node: EventSourcedRecordGraphNode,
-//   event: RecordReferencesChangedEvent,
-// ): RecordGraphEdge[] {
-//   const isImpliedToSide = event.selection.some(
-//     (selected) => selected.id.value === node.record.record.id.value,
-//   )
-//   if (isImpliedToSide) {
-//     return [
-//       recordGraphEdgeFns.newInstance(
-//         event.modelReference.id,
-//         node.record.record.id,
-//         event.recordBeingEdited.id,
-//       ),
-//     ]
-//   }
-//   return []
-// }
-//
-// function updateToInEditedRecord(
-//   node: EventSourcedRecordGraphNode,
-//   event: RecordReferencesChangedEvent,
-// ): RecordGraphEdge[] {
-//   if (node.record.record.id.value !== event.recordBeingEdited.id.value) {
-//     return node.edges
-//   }
-//   const newToEdges = event.selection.map((selectedRecord) => {
-//     return recordGraphEdgeFns.newInstance(
-//       event.modelReference.id,
-//       node.record.record.id,
-//       selectedRecord.id,
-//     )
-//   })
-//   const retainedEdges = node.edges.filter(
-//     (edge) => edge.toRecordId.value !== event.recordBeingEdited.id.value,
-//   )
-//   return [...retainedEdges, ...newToEdges]
-// }
-
 function addReferencesChangedEventForward(
   graph: EventSourcedRecordGraph,
   event: RecordReferencesChangedEvent,
@@ -104,11 +26,13 @@ function addReferencesChangedEventForward(
   const relevantEdges = graph.edges.filter(
     (edge) =>
       edge.modelReferenceId.value === event.modelReference.id.value &&
-      edge.fromRecordId.value === event.recordBeingEdited.id.value,
+      edge.originRecordId.value === event.recordBeingEdited.id.value,
   )
   const newEdges = event.selection.map((selectedRecord) => {
     return recordGraphEdgeFns.newInstance(
       event.modelReference.id,
+      event.modelReference.originModelId,
+      selectedRecord.modelId,
       event.recordBeingEdited.id,
       selectedRecord.id,
     )
@@ -124,11 +48,13 @@ function addReferencesChangedEventInverse(
   const relevantEdges = graph.edges.filter(
     (edge) =>
       edge.modelReferenceId.value === event.modelReference.id.value &&
-      edge.toRecordId.value === event.recordBeingEdited.id.value,
+      edge.referenceRecordId.value === event.recordBeingEdited.id.value,
   )
   const newEdges = event.selection.map((selectedRecord) => {
     return recordGraphEdgeFns.newInstance(
       event.modelReference.id,
+      selectedRecord.modelId,
+      event.recordBeingEdited.modelId,
       selectedRecord.id,
       event.recordBeingEdited.id,
     )
@@ -137,33 +63,6 @@ function addReferencesChangedEventInverse(
   return { ...graph, edges: [...retainedEdges, ...newEdges] }
 }
 
-/**
- * Given a one to many customer to booking relationship, this can be updated from either side.
- * When editing a customer, you can make 0 or more references to bookings
- * When editing a booking, you can make 0 or 1 reference to a customer
- */
-// function updateEdges(
-//   node: EventSourcedRecordGraphNode,
-//   event: RecordReferencesChangedEvent,
-//   targetModelId: ModelId,
-// ): RecordGraphEdge[] {
-//   if (node.record.record.modelId.value === event.recordBeingEdited.modelId.value) {
-//     if (event.modelReference.side === 'from') {
-//       return updateFromInEditedRecord(node, event)
-//     } else {
-//       return updateToInEditedRecord(node, event)
-//     }
-//   }
-//   if (node.record.record.modelId.value === targetModelId.value) {
-//     if (event.modelReference.side === 'from') {
-//       return updateToInTargetModel(node, event)
-//     } else {
-//       return updateFromInTargetModel(node, event)
-//     }
-//   }
-//   return node.edges
-// }
-
 function addReferencesChangedEvent(
   graph: EventSourcedRecordGraph,
   event: RecordReferencesChangedEvent,
@@ -171,10 +70,10 @@ function addReferencesChangedEvent(
   if (event.modelReference.cardinality === 'one' && event.selection.length > 1) {
     throw new Error(`Cannot add multiple references to a one to one relationship`)
   }
-  if (event.modelReference.direction === 'forward') {
-    return addReferencesChangedEventForward(graph, event)
-  } else {
+  if (event.modelReference.inverse) {
     return addReferencesChangedEventInverse(graph, event)
+  } else {
+    return addReferencesChangedEventForward(graph, event)
   }
 }
 
@@ -183,10 +82,10 @@ function recordIdMatches(
   edge: RecordGraphEdge,
   recordId: DataRecordId,
 ) {
-  if (modelReference.direction === 'forward') {
-    return edge.fromRecordId.value === recordId.value
+  if (modelReference.inverse) {
+    return edge.originRecordId.value === recordId.value
   }
-  return edge.toRecordId.value === recordId.value
+  return edge.referenceRecordId.value === recordId.value
 }
 
 export const eventSourcedRecordGraphFns = {
@@ -261,10 +160,10 @@ export const eventSourcedRecordGraphFns = {
         edge.modelReferenceId.value === modelReference.id.value &&
         recordIdMatches(modelReference, edge, recordId),
     )
-    if (modelReference.direction === 'forward') {
-      return edges.map((edge) => edge.toRecordId)
+    if (modelReference.inverse) {
+      return edges.map((edge) => edge.originRecordId)
     }
-    return edges.map((edge) => edge.fromRecordId)
+    return edges.map((edge) => edge.referenceRecordId)
   },
   addEvent(graph: EventSourcedRecordGraph, event: RecordGraphEvent): EventSourcedRecordGraph {
     if (event._type === 'record.references.changed.event') {

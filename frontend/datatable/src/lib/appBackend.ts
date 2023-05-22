@@ -1,14 +1,12 @@
 import { type Backend, type FilterParams, notImplementedBackend } from './backend/Backend'
-import type { EventSourcedModel } from '@cozemble/model-event-sourced'
+import type {
+  EventSourcedDataRecord,
+  EventSourcedModel,
+  EventSourcedRecordGraph,
+} from '@cozemble/model-event-sourced'
 import type { JustErrorMessage } from '@cozemble/lang-util'
 import { RootRecordsContext } from './records/RecordsContext'
-import type {
-  DataRecord,
-  DataRecordId,
-  ModelId,
-  RecordGraph,
-  SystemConfiguration,
-} from '@cozemble/model-core'
+import type { DataRecord, DataRecordId, ModelId, SystemConfiguration } from '@cozemble/model-core'
 import type { Writable } from 'svelte/store'
 import type {
   AttachmentsManager,
@@ -17,8 +15,6 @@ import type {
 } from '@cozemble/data-paginated-editor'
 import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import { StoreSyncBackend } from './app/StoreSyncBackend'
-import type { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
-import type { EventSourcedRecordGraph } from '@cozemble/model-event-sourced/dist/esm'
 
 export let backend = notImplementedBackend
 

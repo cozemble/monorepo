@@ -13,9 +13,11 @@
     import {eventSourcedModelStore} from "../lib";
     import DevOptions from "./DevOptions.svelte";
     import {modelViewFns, summaryViewFns} from "@cozemble/model-core";
+    import {modelIdFns} from "@cozemble/model-api";
 
     let customer = modelFns.newInstance("Customer", modelOptions.withProperties(propertyFns.newInstance("First name", propertyOptions.required), propertyFns.newInstance("Last name")))
-    let invoice = modelFns.newInstance("Invoice", modelOptions.withProperties(propertyFns.newInstance("Invoice number", propertyOptions.required)), modelOptions.withSlot(modelReferenceFns.forwardToModel(customer, modelReferenceIdFns.newInstance(), "one")))
+    const invoiceModelId = modelIdFns.newInstance('invoices')
+    let invoice = modelFns.newInstance("Invoice",modelOptions.withId(invoiceModelId), modelOptions.withProperties(propertyFns.newInstance("Invoice number", propertyOptions.required)), modelOptions.withSlot(modelReferenceFns.forwardModelReference(invoiceModelId,customer, modelReferenceIdFns.newInstance(), "one")))
     const modelViews = writable([modelViewFns.newInstance("Summary View", customer.id, summaryViewFns.withHtmlTemplate('{{First name}} {{Last name}}'))] as ModelView[])
     const models = [customer, invoice]
     const eventSourcedModels = models.map(m => eventSourcedModelFns.newInstance(m))

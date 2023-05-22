@@ -27,7 +27,7 @@ function onAdded(event: CustomEvent) {
 
 <div bind:this={rootDiv}>
   <button class="tab tab-lg add-table-link" on:click={addModel}>
-    {#if $allEventSourcedModels.length === 0}
+    {#if $allEventSourcedModels.models.length === 0}
       + Add your first table
     {:else}
       + Add table

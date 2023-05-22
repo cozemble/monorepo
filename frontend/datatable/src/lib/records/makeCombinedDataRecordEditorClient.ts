@@ -31,7 +31,7 @@ export function makeCombinedDataRecordEditorClient(
   systemConfigProvider: () => SystemConfiguration,
   modelsProvider: () => Model[],
   modelViewsProvider: () => ModelView[],
-  records: EventSourcedRecordGraphStore,
+  recordGraph: EventSourcedRecordGraphStore,
   focusControls: DataTableFocusControls2,
   recordId: DataRecordId,
 ): CombinedDataRecordEditorClient {
@@ -49,12 +49,12 @@ export function makeCombinedDataRecordEditorClient(
 
     dispatchEditEvent(event: DataRecordEditEvent): void {
       if (event._type === 'data.record.value.changed') {
-        records.updateRecord(recordId, event)
+        recordGraph.updateRecord(recordId, event)
         if (event.confirmMethod === 'Tab') {
           focusControls.moveForward()
         }
       } else if (event._type === 'data.record.has.many.item.added') {
-        records.updateRecord(recordId, event)
+        recordGraph.updateRecord(recordId, event)
       } else {
         throw new Error('Not implemented: ' + event._type)
       }
@@ -65,12 +65,10 @@ export function makeCombinedDataRecordEditorClient(
       ...modifiers: RecordGraphModifier[]
     ): Promise<EventSourcedRecordGraph | null> {
       const newGraph = await createNewRootRecordFn(modelId, ...modifiers)
-      console.log('newGraph', newGraph)
       if (!newGraph) {
         return null
       }
       const outcome = await backend.saveNewGraph(newGraph)
-      console.log('outcome', outcome)
       if (outcome._type === 'successful.outcome') {
         return outcome.value
       } else {

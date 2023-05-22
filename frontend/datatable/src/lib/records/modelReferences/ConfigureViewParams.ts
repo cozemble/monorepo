@@ -4,6 +4,7 @@ import { writable } from 'svelte/store'
 import { modelFns } from '@cozemble/model-api'
 import type { DataRecordViewerClient } from '@cozemble/data-editor-sdk'
 import type { DataRecordEditorClient } from '@cozemble/data-editor-sdk'
+import { getReferencedModelId } from '$lib/records/modelReferences/editorHelper'
 
 export interface ConfigureViewParams {
   models: Model[]
@@ -20,10 +21,10 @@ export async function makeConfigureViewParams(
     throw new Error('Expected last element to be a model reference')
   }
   const modelReference = recordPath.lastElement as ModelReference
-  if (modelReference.referencedModelIds.length !== 1) {
-    throw new Error('Expected model reference to have exactly one referenced model')
+  const referencedModelId = getReferencedModelId(modelReference)
+  if (referencedModelId === null) {
+    throw new Error(`No referenced model id for ${modelReference.name.value}`)
   }
-  const referencedModelId = modelReference.referencedModelIds[0]
   const referencedModel = modelFns.findById(models, referencedModelId)
   const sampleRecords = writable<DataRecord[]>([])
   client.searchRecords(referencedModel.id, '').then((found) => {

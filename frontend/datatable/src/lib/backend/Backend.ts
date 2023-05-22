@@ -1,12 +1,20 @@
-import type { EventSourcedDataRecord, EventSourcedModel } from '@cozemble/model-event-sourced'
+import type {
+  EventSourcedDataRecord,
+  EventSourcedModel,
+  EventSourcedRecordGraph,
+} from '@cozemble/model-event-sourced'
 import type { JustErrorMessage, Outcome } from '@cozemble/lang-util'
-import type { DataRecord, DataRecordId, ModelId, ModelView } from '@cozemble/model-core'
+import type {
+  DataRecord,
+  DataRecordId,
+  ModelId,
+  ModelView,
+  RecordGraphEdge,
+} from '@cozemble/model-core'
 import type { AttachmentsManager, RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import type { FilterGroupList } from '@cozemble/data-filters-core'
 import { filterGroupListFns } from '@cozemble/data-filters-core'
-import type { EventSourcedRecordGraph } from '@cozemble/model-event-sourced/dist/esm'
-import type { RecordGraphEdge } from '@cozemble/model-core/dist/esm'
 
 export interface FilterParams {
   search: string | null

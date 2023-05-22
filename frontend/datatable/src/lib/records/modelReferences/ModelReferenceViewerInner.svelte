@@ -6,6 +6,7 @@
     import {modelRecordsContextFns} from "$lib/records/modelRecordsContextFns";
     import {dereference} from "$lib/records/modelReferences/dereference";
     import {renderReference} from "$lib/records/modelReferences/renderReference";
+    import {afterUpdate} from "svelte";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord
@@ -21,9 +22,10 @@
     let referencedRecord: DataRecord | null = null
     let htmlRender: string | null = null
 
-    $: dereference(dataRecordViewerClient, $recordGraph,editorParams.referencedModelId, selectedRecordIds, (record) => referencedRecord = record)
+    $: dereference(dataRecordViewerClient, $recordGraph, editorParams.referencedModelId, selectedRecordIds, (record) => referencedRecord = record)
     $: htmlRender = renderReference(referencedRecord, editorParams)
 
+    afterUpdate(() => console.log({selectedRecordIds, graph: $recordGraph}))
 </script>
 
 {#if htmlRender}

@@ -218,4 +218,18 @@ router.get('/:tenantId/entity', (req: Request, res: Response) => {
   })
 })
 
+router.post('/:tenantId/model/:modelId/record/recordEdges', (req: Request, res: Response) => {
+  const edges = Array.isArray(req.body) ? req.body : [req.body]
+  return authenticatedDatabaseRequest(req, res, async (client) => {
+    const result = await client.query(
+      'select * from insert_record_edges($1,$2::ltree, $3::jsonb[]);',
+      [mandatory(req.env, `No env in request`), req.params.tenantId, edges],
+    )
+    if (result.rows.length === 0) {
+      return res.status(404).send()
+    }
+    return res.status(200).send()
+  })
+})
+
 export default router

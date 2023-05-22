@@ -21,7 +21,7 @@ import type {
 import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import { recordSaveSucceeded } from '@cozemble/data-paginated-editor'
-import { outcomeFns } from '@cozemble/lang-util/dist/esm'
+import { outcomeFns } from '@cozemble/lang-util'
 
 export class InMemoryBackend implements Backend {
   constructor(

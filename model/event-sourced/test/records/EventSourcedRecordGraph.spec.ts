@@ -17,20 +17,32 @@ import { objects } from '@cozemble/lang-util'
 
 describe('given a customer and bookings arrangement', () => {
   const modelReferenceId = modelReferenceIdFns.newInstance('fromBookingToCustomer')
+  const customerModelId = modelIdFns.newInstance('customers')
+  const bookingModelId = modelIdFns.newInstance('bookings')
   const bookingModel = eventSourcedModelFns.newInstance(
-    modelFns.newInstance('Bookings', modelOptions.withId(modelIdFns.newInstance('bookings'))),
+    modelFns.newInstance('Bookings', modelOptions.withId(bookingModelId)),
   )
   const customerModel = eventSourcedModelFns.newInstance(
     modelFns.newInstance(
       'Customers',
-      modelOptions.withId(modelIdFns.newInstance('customers')),
+      modelOptions.withId(customerModelId),
       modelOptions.withSlot(
-        modelReferenceFns.forwardToModel(bookingModel.model, modelReferenceId, 'many'),
+        modelReferenceFns.forwardModelReference(
+          customerModelId,
+          bookingModel.model,
+          modelReferenceId,
+          'many',
+        ),
       ),
     ),
   )
   bookingModel.model.slots.push(
-    modelReferenceFns.inverseToModel(customerModel.model, modelReferenceId, 'one'),
+    modelReferenceFns.inverseModelReference(
+      customerModel.model,
+      customerModel.model,
+      modelReferenceId,
+      'one',
+    ),
   )
   const models = [bookingModel, customerModel].map((m) => m.model)
   const systemConfiguration = systemConfigurationFns.empty()
@@ -43,7 +55,7 @@ describe('given a customer and bookings arrangement', () => {
   booking1.id = dataRecordIdFns.newInstance('booking1')
   booking2.id = dataRecordIdFns.newInstance('booking2')
   const fromCustomerToBookingModelReference = customerModel.model.slots[0] as ModelReference
-  const fromBookingToCustomerModelReference = bookingModel.model.slots[0] as ModelReference
+  const inverseCustomerToBookingModelReference = bookingModel.model.slots[0] as ModelReference
 
   const graph = eventSourcedRecordGraphFns.newInstance(
     [customer1, customer2, booking1, booking2].map((r) =>
@@ -63,7 +75,13 @@ describe('given a customer and bookings arrangement', () => {
     expect(mutatedGraph.edges).toHaveLength(1)
     expectEdgeMatch(
       mutatedGraph.edges[0],
-      recordGraphEdgeFns.newInstance(modelReferenceId, customer1.id, booking1.id),
+      recordGraphEdgeFns.newInstance(
+        modelReferenceId,
+        customerModel.model.id,
+        bookingModel.model.id,
+        customer1.id,
+        booking1.id,
+      ),
     )
   })
 
@@ -78,11 +96,23 @@ describe('given a customer and bookings arrangement', () => {
     expect(mutatedGraph.edges).toHaveLength(2)
     expectEdgeMatch(
       mutatedGraph.edges[0],
-      recordGraphEdgeFns.newInstance(modelReferenceId, customer1.id, booking1.id),
+      recordGraphEdgeFns.newInstance(
+        modelReferenceId,
+        customerModel.model.id,
+        bookingModel.model.id,
+        customer1.id,
+        booking1.id,
+      ),
     )
     expectEdgeMatch(
       mutatedGraph.edges[1],
-      recordGraphEdgeFns.newInstance(modelReferenceId, customer1.id, booking2.id),
+      recordGraphEdgeFns.newInstance(
+        modelReferenceId,
+        customerModel.model.id,
+        bookingModel.model.id,
+        customer1.id,
+        booking2.id,
+      ),
     )
   })
 
@@ -103,7 +133,13 @@ describe('given a customer and bookings arrangement', () => {
     expect(mutatedGraph.edges).toHaveLength(1)
     expectEdgeMatch(
       mutatedGraph.edges[0],
-      recordGraphEdgeFns.newInstance(modelReferenceId, customer1.id, booking1.id),
+      recordGraphEdgeFns.newInstance(
+        modelReferenceId,
+        customerModel.model.id,
+        bookingModel.model.id,
+        customer1.id,
+        booking1.id,
+      ),
     )
   })
 
@@ -125,7 +161,7 @@ describe('given a customer and bookings arrangement', () => {
   test('can add a customer to a booking', () => {
     const mutatedGraph = eventSourcedRecordGraphFns.addEvent(
       graph,
-      recordGraphEvents.recordReferencesChanged(booking1, fromBookingToCustomerModelReference, [
+      recordGraphEvents.recordReferencesChanged(booking1, inverseCustomerToBookingModelReference, [
         customer1,
       ]),
     )
@@ -133,20 +169,30 @@ describe('given a customer and bookings arrangement', () => {
     expect(mutatedGraph.edges).toHaveLength(1)
     expectEdgeMatch(
       mutatedGraph.edges[0],
-      recordGraphEdgeFns.newInstance(modelReferenceId, customer1.id, booking1.id),
+      recordGraphEdgeFns.newInstance(
+        modelReferenceId,
+        customerModel.model.id,
+        bookingModel.model.id,
+        customer1.id,
+        booking1.id,
+      ),
     )
   })
 
   test('can remove a customer from a booking', () => {
     const initialGraph = eventSourcedRecordGraphFns.addEvent(
       graph,
-      recordGraphEvents.recordReferencesChanged(booking1, fromBookingToCustomerModelReference, [
+      recordGraphEvents.recordReferencesChanged(booking1, inverseCustomerToBookingModelReference, [
         customer1,
       ]),
     )
     const mutatedGraph = eventSourcedRecordGraphFns.addEvent(
       initialGraph,
-      recordGraphEvents.recordReferencesChanged(booking1, fromBookingToCustomerModelReference, []),
+      recordGraphEvents.recordReferencesChanged(
+        booking1,
+        inverseCustomerToBookingModelReference,
+        [],
+      ),
     )
     expect(mutatedGraph.edges).toHaveLength(0)
   })
@@ -155,10 +201,11 @@ describe('given a customer and bookings arrangement', () => {
     try {
       eventSourcedRecordGraphFns.addEvent(
         graph,
-        recordGraphEvents.recordReferencesChanged(booking1, fromBookingToCustomerModelReference, [
-          customer1,
-          customer2,
-        ]),
+        recordGraphEvents.recordReferencesChanged(
+          booking1,
+          inverseCustomerToBookingModelReference,
+          [customer1, customer2],
+        ),
       )
       expect("shouldn't get here").toBe(true)
     } catch (e) {

@@ -23,3 +23,7 @@ export function editCell(cellIndex = '0-0', eq = 0) {
 export function cellSelector(cellIndex = '0-0') {
   return `[data-cell-index="${cellIndex}"]`
 }
+
+export function clickTable(index: number) {
+  cy.get('a.model-' + index).click()
+}

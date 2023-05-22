@@ -2,14 +2,13 @@ import type { PageLoad } from './$types'
 import { browser } from '$app/environment'
 import { cozauth } from '../../../lib/auth/cozauth'
 import { eventSourcedModels } from '../../../lib/models/modelsStore'
-import { eventSourcedModelFns } from '@cozemble/model-event-sourced'
+import { eventSourcedModelFns, eventSourcedModelListFns } from '@cozemble/model-event-sourced'
 import { tenantStore } from '../../../lib/tenant/tenantStore'
 import { tenantEntities } from '../../../lib/models/tenantEntityStore'
 import { backend, setBackend } from '../../../lib/backend/backendStore'
 import { LocalStorageBackend, RestBackend } from '@cozemble/frontend-bff'
 import { accessTokenProvider, backendUrlProvider } from '../../../lib/backend/adapters'
 import { eventSourcedModels as incrementalEventSourcedModels } from '../../../lib/incrementalModelling/incrementalModelStore'
-import { eventSourcedModelListFns } from '@cozemble/model-event-sourced/dist/esm'
 
 export const load: PageLoad = async ({ params, url }) => {
   if (browser) {

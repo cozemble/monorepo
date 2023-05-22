@@ -25,13 +25,13 @@ describe('given a customer and ticket model', () => {
     customerModel.model.id,
     'many',
   )
-  const setFromCustomerToTicketsSlotEvent = eventSourcedModelListEvents.setToModelReference(
+  const setFromCustomerToTicketsSlotEvent = eventSourcedModelListEvents.setReferencedModelId(
     modelReferenceId,
     customerModel.model.id,
     ticketModel.model.id,
     'many',
   )
-  const setFromCustomerToNullSlotEvent = eventSourcedModelListEvents.setToModelReference(
+  const setFromCustomerToNullSlotEvent = eventSourcedModelListEvents.setReferencedModelId(
     modelReferenceId,
     customerModel.model.id,
     null,
@@ -54,7 +54,7 @@ describe('given a customer and ticket model', () => {
     expect(customerTicketsSlot.cardinality).toEqual('many')
     expect(customerTicketsSlot.name.value).toEqual(addTicketsToCustomerEvent.name.value)
     expect(customerTicketsSlot.id.value).toEqual(addTicketsToCustomerEvent.id.value)
-    expect(customerTicketsSlot.direction).toEqual('forward')
+    expect(customerTicketsSlot.inverse).toEqual(false)
     expect(customerTicketsSlot.referencedModelIds).toHaveLength(0)
   })
 
@@ -67,9 +67,10 @@ describe('given a customer and ticket model', () => {
     expect(customerToTicketSlot.referencedModelIds).toEqual([ticketModel.model.id])
     expect(ticketToCustomerSlot).toEqual(
       modelReferenceFns.newInstance(
-        [customerModel.model.id],
+        customerModel.model.id,
+        [ticketModel.model.id],
         modelReferenceNameFns.newInstance('Customers'),
-        'inverse',
+        true,
         modelReferenceId,
         'many',
       ),

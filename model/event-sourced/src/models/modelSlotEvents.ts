@@ -12,6 +12,7 @@ import {
 
 interface NewModelReference extends ModelEvent {
   _type: 'new.model.reference.event'
+  originModelId: ModelId
   modelReferenceName: ModelReferenceName
   modelReferenceId: ModelReferenceId
 }
@@ -24,20 +25,22 @@ function newModelReference(
   return {
     _type: 'new.model.reference.event',
     ...modelEventFns.coreParts(modelId),
+    originModelId: modelId,
     modelReferenceName,
     modelReferenceId,
   }
 }
 
-function replaceSlot(model: Model, event: NewModelReference) {
+function replaceSlotWithModelReference(model: Model, event: NewModelReference) {
   return {
     ...model,
     slots: model.slots.map((s) => {
       if (s.id.value === event.modelReferenceId.value) {
         return modelReferenceFns.newInstance(
+          event.originModelId,
           [],
           event.modelReferenceName,
-          'forward',
+          false,
           event.modelReferenceId,
         )
       }
@@ -46,15 +49,16 @@ function replaceSlot(model: Model, event: NewModelReference) {
   }
 }
 
-function addSlot(model: Model, event: NewModelReference) {
+function addModelReferenceSlot(model: Model, event: NewModelReference) {
   return {
     ...model,
     slots: [
       ...model.slots,
       modelReferenceFns.newInstance(
+        event.originModelId,
         [],
         event.modelReferenceName,
-        'forward',
+        false,
         event.modelReferenceId,
       ),
     ],
@@ -66,9 +70,9 @@ const newModelReferenceDescriptor: ModelEventDescriptor<NewModelReference> = {
   modelEventType: 'new.model.reference.event',
   applyEvent: (model, event) => {
     if (model.slots.some((s) => s.id.value === event.modelReferenceId.value)) {
-      return replaceSlot(model, event)
+      return replaceSlotWithModelReference(model, event)
     }
-    return addSlot(model, event)
+    return addModelReferenceSlot(model, event)
   },
 }
 

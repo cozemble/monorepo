@@ -6,6 +6,7 @@ import type {
   ModelId,
   ModelReference,
   ModelReferenceId,
+  ModelView,
 } from '@cozemble/model-core'
 import { modelReferenceFns, recordGraphEdgeFns } from '@cozemble/model-core'
 import type {
@@ -17,7 +18,7 @@ import { type UserInstruction, userInstructionFns } from '@cozemble/data-editor-
 import { applyTemplate, modelToJson } from '@cozemble/model-to-json'
 import { modelFns } from '@cozemble/model-api'
 import { strings } from '@cozemble/lang-util'
-import type { EventSourcedRecordGraph } from '@cozemble/model-event-sourced/dist/esm'
+import type { EventSourcedRecordGraph } from '@cozemble/model-event-sourced'
 
 export interface EditorParams {
   _type: 'editor.params'
@@ -31,16 +32,16 @@ export interface EditorParams {
 export function assembleEditorParams(
   client: DataRecordEditorClient | DataRecordViewerClient,
   recordPath: DataRecordValuePath,
+  modelViews: ModelView[],
 ): EditorParams | UserInstruction {
   const modelReference = recordPath.lastElement as ModelReference
   if (modelReference._type !== 'model.reference') {
     throw new Error('Expected a model reference')
   }
-  const referencedModelId = modelReferenceFns.oneReference(modelReference)
+  const referencedModelId = getReferencedModelId(modelReference)
   if (!referencedModelId) {
     throw new Error('No referenced model id')
   }
-  const modelViews = client.getModelViews(referencedModelId)
   const summaryView = modelViews.find(
     (e) => e.modelId.value === referencedModelId.value && e.name.value === 'Summary View',
   )
@@ -70,6 +71,12 @@ export function assembleEditorParams(
   }
 }
 
+export function getReferencedModelId(modelReference: ModelReference): ModelId | null {
+  return modelReference.inverse
+    ? modelReference.originModelId
+    : modelReferenceFns.oneReference(modelReference)
+}
+
 export function makeSummaryView(record: DataRecord, params: EditorParams): string {
   return strings.stripHtml(
     applyTemplate(params.summaryView.template, modelToJson(params.models, record)),
@@ -87,7 +94,13 @@ export function inverseReferenceSetter(
       ...graph,
       relatedRecords: [originatingRecord],
       edges: [
-        recordGraphEdgeFns.newInstance(modelReferenceId, originatingRecord.id, createdRecord.id),
+        recordGraphEdgeFns.newInstance(
+          modelReferenceId,
+          originatingRecord.modelId,
+          createdRecord.modelId,
+          originatingRecord.id,
+          createdRecord.id,
+        ),
       ],
     }
   }

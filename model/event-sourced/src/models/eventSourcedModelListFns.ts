@@ -26,15 +26,15 @@ interface AddModelReferenceSlotEvent {
   _type: 'add.model.reference.slot.event'
   id: ModelReferenceId
   name: ModelReferenceName
-  fromModelId: ModelId
+  originModelId: ModelId
   cardinality: Cardinality
 }
 
-interface SetToModelReferenceEvent {
-  _type: 'set.to.model.reference.event'
-  id: ModelReferenceId
-  fromModelId: ModelId
-  toModelId: ModelId | null
+interface SetReferencedModelIdEvent {
+  _type: 'set.referenced.model.id.event'
+  modelReferenceId: ModelReferenceId
+  originModelId: ModelId
+  referencedModelId: ModelId | null
   cardinality: Cardinality
 }
 
@@ -47,7 +47,7 @@ export type EventSourcedModelListEvent =
   | AddModelEvent
   | RemoveModelEvent
   | AddModelReferenceSlotEvent
-  | SetToModelReferenceEvent
+  | SetReferencedModelIdEvent
   | RemoveModelReferenceSlotEvent
 
 function addModel(event: AddModelEvent, list: EventSourcedModelList) {
@@ -69,10 +69,10 @@ function removeModel(list: EventSourcedModelList, event: RemoveModelEvent) {
 }
 
 function addModelReferenceSlot(list: EventSourcedModelList, event: AddModelReferenceSlotEvent) {
-  const model = eventSourcedModelFns.findById(list.models, event.fromModelId)
+  const originModel = eventSourcedModelFns.findById(list.models, event.originModelId)
   const mutated = eventSourcedModelFns.addEvent(
-    model,
-    modelSlotEvents.newModelReference(model.model.id, event.name, event.id),
+    originModel,
+    modelSlotEvents.newModelReference(originModel.model.id, event.name, event.id),
   )
   return {
     ...list,
@@ -106,35 +106,42 @@ function removeModelReferenceSlot(
 }
 
 function newInverseModelReferenceSlot(
-  fromModel: EventSourcedModel,
-  event: SetToModelReferenceEvent,
+  list: EventSourcedModelList,
+  event: SetReferencedModelIdEvent,
+  referencedModelId: ModelId,
 ): ModelReference {
+  const originModel = eventSourcedModelFns.findById(list.models, event.originModelId)
   return modelReferenceFns.newInstance(
-    [event.fromModelId],
-    fromModel.model.name.value,
-    'inverse',
-    event.id,
+    originModel.model.id,
+    [referencedModelId],
+    originModel.model.name.value,
+    true,
+    event.modelReferenceId,
   )
 }
 
 function addInverseModelReferenceSlot(
-  m: EventSourcedModel,
-  fromModel: EventSourcedModel,
-  event: SetToModelReferenceEvent,
+  list: EventSourcedModelList,
+  inverseModel: EventSourcedModel,
+  event: SetReferencedModelIdEvent,
+  referencedModelId: ModelId,
 ) {
   return {
-    ...m,
+    ...inverseModel,
     model: {
-      ...m.model,
-      slots: [...m.model.slots, newInverseModelReferenceSlot(fromModel, event)],
+      ...inverseModel.model,
+      slots: [
+        ...inverseModel.model.slots,
+        newInverseModelReferenceSlot(list, event, referencedModelId),
+      ],
     },
   }
 }
 
-function setToModelReferenceInModel(
+function setReferencedModelId(
   m: EventSourcedModel,
   modelReferenceId: ModelReferenceId,
-  toModelId: ModelId,
+  referencedModelId: ModelId,
 ) {
   return {
     ...m,
@@ -144,7 +151,7 @@ function setToModelReferenceInModel(
         if (s.id.value === modelReferenceId.value) {
           return {
             ...s,
-            referencedModelIds: [toModelId],
+            referencedModelIds: [referencedModelId],
           }
         }
         return s
@@ -153,21 +160,20 @@ function setToModelReferenceInModel(
   }
 }
 
-function setToModelReferenceValue(
+function setReferencedModelIdValue(
   list: EventSourcedModelList,
-  event: SetToModelReferenceEvent,
-  toModelId: ModelId,
-  fromModel: EventSourcedModel,
+  event: SetReferencedModelIdEvent,
+  referencedModelId: ModelId,
 ) {
-  const toModel = eventSourcedModelFns.findById(list.models, toModelId)
+  // const toModel = eventSourcedModelFns.findById(list.models, toModelId)
   const mutatedModels = list.models.map((m) => {
-    if (m.model.id.value === fromModel.model.id.value) {
-      return setToModelReferenceInModel(m, event.id, toModelId)
+    if (m.model.id.value === event.originModelId.value) {
+      return setReferencedModelId(m, event.modelReferenceId, referencedModelId)
     }
-    if (m.model.id.value === toModel.model.id.value) {
-      return addInverseModelReferenceSlot(m, fromModel, event)
+    if (m.model.id.value === referencedModelId.value) {
+      return addInverseModelReferenceSlot(list, m, event, referencedModelId)
     }
-    return removeModelReferenceSlotFromModel(m, event.id)
+    return removeModelReferenceSlotFromModel(m, event.modelReferenceId)
   })
   return {
     ...list,
@@ -206,13 +212,13 @@ function removeSlot(m: EventSourcedModel, modelReferenceId: ModelReferenceId): E
   }
 }
 
-function clearToModelReferenceValue(
+function clearModelReferenceIdValue(
   list: EventSourcedModelList,
   modelReferenceId: ModelReferenceId,
-  fromModel: EventSourcedModel,
+  originalModelId: ModelId,
 ) {
   const mutatedModels = list.models.map((m) => {
-    if (m.model.id.value === fromModel.model.id.value) {
+    if (m.model.id.value === originalModelId.value) {
       return clearReferencedModelIds(m, modelReferenceId)
     }
     return removeSlot(m, modelReferenceId)
@@ -220,12 +226,11 @@ function clearToModelReferenceValue(
   return { ...list, models: mutatedModels }
 }
 
-function setToModelReference(list: EventSourcedModelList, event: SetToModelReferenceEvent) {
-  const fromModel = eventSourcedModelFns.findById(list.models, event.fromModelId)
-  if (event.toModelId) {
-    return setToModelReferenceValue(list, event, event.toModelId, fromModel)
+function handleSetReferencedModelId(list: EventSourcedModelList, event: SetReferencedModelIdEvent) {
+  if (event.referencedModelId) {
+    return setReferencedModelIdValue(list, event, event.referencedModelId)
   } else {
-    return clearToModelReferenceValue(list, event.id, fromModel)
+    return clearModelReferenceIdValue(list, event.modelReferenceId, event.originModelId)
   }
 }
 
@@ -234,8 +239,8 @@ function eventSourceModelListReducer(
   event: EventSourcedModelListEvent,
 ): EventSourcedModelList {
   switch (event._type) {
-    case 'set.to.model.reference.event':
-      return setToModelReference(list, event)
+    case 'set.referenced.model.id.event':
+      return handleSetReferencedModelId(list, event)
     case 'remove.model.reference.slot.event':
       return removeModelReferenceSlot(list, event)
     case 'add.model.reference.slot.event':
@@ -263,28 +268,28 @@ export const eventSourcedModelListEvents = {
   addModelReferenceSlot: (
     id: ModelReferenceId,
     name: ModelReferenceName,
-    fromModelId: ModelId,
+    originModelId: ModelId,
     cardinality: Cardinality,
   ): AddModelReferenceSlotEvent => {
     return {
       _type: 'add.model.reference.slot.event',
       id,
       name,
-      fromModelId,
+      originModelId,
       cardinality,
     }
   },
-  setToModelReference: (
-    id: ModelReferenceId,
-    fromModelId: ModelId,
-    toModelId: ModelId | null,
+  setReferencedModelId: (
+    modelReferenceId: ModelReferenceId,
+    originModelId: ModelId,
+    referencedModelId: ModelId | null,
     cardinality: Cardinality,
-  ): SetToModelReferenceEvent => {
+  ): SetReferencedModelIdEvent => {
     return {
-      _type: 'set.to.model.reference.event',
-      id,
-      fromModelId,
-      toModelId,
+      _type: 'set.referenced.model.id.event',
+      modelReferenceId,
+      originModelId,
+      referencedModelId,
       cardinality,
     }
   },

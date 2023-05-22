@@ -22,7 +22,7 @@
         const target = event.target as HTMLSelectElement
         const newValue = target.value
         const referencedModelId = otherModelIds.find(modelId => modelId.value === newValue) ?? null
-        modelList.update(ms => eventSourcedModelListFns.addEvent(ms, eventSourcedModelListEvents.setToModelReference(modelReference.id, modelId, referencedModelId, "many")))
+        modelList.update(ms => eventSourcedModelListFns.addEvent(ms, eventSourcedModelListEvents.setReferencedModelId(modelReference.id, modelId, referencedModelId, "many")))
     }
 
 </script>

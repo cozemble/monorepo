@@ -1,6 +1,6 @@
 import type { DataRecordEditorClient, DataRecordViewerClient } from '@cozemble/data-editor-sdk'
 import type { DataRecord, DataRecordId, ModelId } from '@cozemble/model-core'
-import type { EventSourcedRecordGraph } from '@cozemble/model-event-sourced/dist/esm'
+import type { EventSourcedRecordGraph } from '@cozemble/model-event-sourced'
 
 export async function dereference(
   client: DataRecordViewerClient | DataRecordEditorClient,

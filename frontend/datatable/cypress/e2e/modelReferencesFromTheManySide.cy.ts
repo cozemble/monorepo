@@ -1,8 +1,4 @@
-import { cellSelector, clickAddField, editCell } from './helpers'
-
-function clickTable(index: number) {
-  cy.get('a.model-' + index).click()
-}
+import { cellSelector, clickAddField, clickTable, editCell } from './helpers'
 
 function setTableSingularName(tableIndex: number, singularName: string) {
   cy.get(`.edit-model-${tableIndex}`).click()

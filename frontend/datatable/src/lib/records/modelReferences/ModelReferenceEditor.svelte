@@ -8,6 +8,7 @@
     import ModelReferenceEditorInner from "./ModelReferenceEditorInner.svelte";
     import {type ConfigureViewParams, makeConfigureViewParams} from "./ConfigureViewParams";
     import ConfigureViewModal from "./ConfigureViewModal.svelte";
+    import {allModelViews} from "$lib/stores/allModelViews";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord
@@ -23,7 +24,7 @@
 
     onMount(() => {
         try {
-            editorParams = assembleEditorParams(dataRecordEditorClient, recordPath)
+            editorParams = assembleEditorParams(dataRecordEditorClient, recordPath, $allModelViews)
         } catch (e: any) {
             console.error(e)
             error = e.message
@@ -40,7 +41,7 @@
 
     function viewConfigured() {
         cancelConfigureViewModal()
-        editorParams = assembleEditorParams(dataRecordEditorClient, recordPath)
+        editorParams = assembleEditorParams(dataRecordEditorClient, recordPath, $allModelViews)
     }
 
     function takeFocus(el: HTMLElement) {

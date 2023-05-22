@@ -21,10 +21,12 @@
         propertyOptions
     } from "@cozemble/model-api";
     import type {EventSourcedRecordGraph} from "@cozemble/model-event-sourced";
+    import {modelIdFns} from "@cozemble/model-api";
 
     const systemConfiguration = systemConfigurationFns.empty()
+    const invoiceModelId = modelIdFns.newInstance("invoices")
     const customerModel = modelFns.newInstance("Customers", modelOptions.withProperties(propertyFns.newInstance("First name", propertyOptions.required), propertyFns.newInstance("Last name")))
-    const invoiceModel = modelFns.newInstance("Invoices", modelOptions.withSlot(modelReferenceFns.newInstance([customerModel.id], "Customer")))
+    const invoiceModel = modelFns.newInstance("Invoices", modelOptions.withId(invoiceModelId), modelOptions.withSlot(modelReferenceFns.newInstance(invoiceModelId,[customerModel.id], "Customer")))
     const models = [customerModel, invoiceModel]
     const invoiceRecord1 = dataRecordFns.newInstance(invoiceModel, "test")
     const referenceSlot = invoiceModel.slots[0] as ModelReference

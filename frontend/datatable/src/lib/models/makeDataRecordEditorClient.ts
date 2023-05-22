@@ -2,9 +2,11 @@ import type { RecordsContext } from '../records/RecordsContext'
 import type { DataRecordEditorClient, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import type { DataRecord, DataRecordId, Model, ModelView } from '@cozemble/model-core'
 import type { JustErrorMessage } from '@cozemble/lang-util'
-import type { DataRecordControlEvent, DataRecordEditEvent } from '@cozemble/model-event-sourced'
-import type { RecordGraph } from '@cozemble/model-core'
-import type { EventSourcedRecordGraph } from '@cozemble/model-event-sourced/dist/esm'
+import type {
+  DataRecordControlEvent,
+  DataRecordEditEvent,
+  EventSourcedRecordGraph,
+} from '@cozemble/model-event-sourced'
 
 export function makeDataRecordEditorClient(
   context: RecordsContext,

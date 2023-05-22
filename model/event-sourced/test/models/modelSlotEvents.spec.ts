@@ -25,7 +25,7 @@ describe('given a model with a property', () => {
     const event = modelSlotEvents.newModelReference(model.id, expectedName, expectedId)
     const mutatedModel = modelEventDescriptors.applyEvent(model, event)
     expect(mutatedModel.slots[0]).toEqual(
-      modelReferenceFns.newInstance([], expectedName, 'forward', expectedId),
+      modelReferenceFns.newInstance(model.id, [], expectedName, false, expectedId),
     )
   })
 
@@ -36,7 +36,7 @@ describe('given a model with a property', () => {
     const mutatedModel = modelEventDescriptors.applyEvent(model, event)
     expect(mutatedModel.slots[0]).toEqual(property)
     expect(mutatedModel.slots[1]).toEqual(
-      modelReferenceFns.newInstance([], expectedName, 'forward', expectedId),
+      modelReferenceFns.newInstance(model.id, [], expectedName, false, expectedId),
     )
   })
 })

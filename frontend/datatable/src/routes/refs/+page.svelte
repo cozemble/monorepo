@@ -2,24 +2,24 @@
     import type {EventSourcedModel} from "@cozemble/model-event-sourced";
     import {eventSourcedModelFns} from "@cozemble/model-event-sourced";
     import type {DataRecord, ModelView} from "@cozemble/model-core";
-    import {modelReferenceFns, modelViewFns, systemConfigurationFns} from "@cozemble/model-core";
+    import {modelReferenceFns, modelViewFns, summaryViewFns, systemConfigurationFns} from "@cozemble/model-core";
     import {registerEverything} from "@cozemble/model-assembled";
     import {onMount} from 'svelte'
-    import {dataRecordFns, modelFns, modelOptions, propertyFns, propertyOptions} from "@cozemble/model-api";
+    import {dataRecordFns, modelFns, modelIdFns, modelOptions, propertyFns, propertyOptions} from "@cozemble/model-api";
     import {writable} from "svelte/store";
     import DataTable from "../../lib/DataTable.svelte";
-    import {backendFns} from "../../lib";
+    import {backendFns, eventSourcedModelStore} from "../../lib";
     import {InMemoryBackend} from "../../lib/backend/InMemoryBackend";
     import RecordFilteringPanel from "../../lib/filtering/RecordFilteringPanel.svelte";
     import {tempRegisterDateFilters} from "../temp";
-    import {eventSourcedModelStore} from "../../lib";
-    import {summaryViewFns} from "@cozemble/model-core";
     import DevOptions from "../DevOptions.svelte";
 
     const modelViews = writable([] as ModelView[])
 
     const customerModel = modelFns.newInstance("Customers", modelOptions.withProperties(propertyFns.newInstance("First name", propertyOptions.required), propertyFns.newInstance("Last name")))
-    const invoiceModel = modelFns.newInstance("Invoices", modelOptions.withSlot(modelReferenceFns.newInstance([customerModel.id], "Customer")))
+    const invoiceModelId = modelIdFns.newInstance('invoices')
+
+    const invoiceModel = modelFns.newInstance("Invoices", modelOptions.withId(invoiceModelId), modelOptions.withSlot(modelReferenceFns.newInstance(invoiceModelId, [customerModel.id], "Customer")))
     modelViews.update(views => [...views, modelViewFns.newInstance("Summary View", customerModel.id, summaryViewFns.empty())])
     const models = [customerModel, invoiceModel]
     const eventSourcedModels = models.map(m => eventSourcedModelFns.newInstance(m))
