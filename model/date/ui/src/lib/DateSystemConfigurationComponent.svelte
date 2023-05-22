@@ -34,8 +34,3 @@
 		{/each}
     </select>
 </div>
-<!--
-<label class="label" for="date-format-input">Date format:</label>
-<input type="text" id="date-format-input" class="input input-bordered w-full max-w-xs"
-       bind:value={$systemConfiguration.slotConfiguration[datePropertyType.value].configuration.dateFormat}/>
-       -->
