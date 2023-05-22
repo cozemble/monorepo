@@ -1,11 +1,14 @@
 <!-- TODO (refactor): move into '$lib/components/EditorWrapper.svelte' -->
 <script lang="ts">
+// types
 import type { Writable } from 'svelte/store'
+import type { ModelView, SystemConfiguration } from '@cozemble/model-core'
+import type { EventSourcedModelStore } from './types'
+
 import { writable } from 'svelte/store'
 import { onMount } from 'svelte'
 
 // Cozemble
-import type { ModelView, SystemConfiguration } from '@cozemble/model-core'
 import { customNaming } from '@cozemble/model-editor'
 import {
   slotEditorRegistry,
@@ -16,14 +19,15 @@ import {
   ModelReferenceViewer,
 } from '@cozemble/data-paginated-editor'
 
+// stores
 import { setAllModelViews } from './stores/allModelViews'
 import { setAllEventSourcedModels } from './stores/allModels'
 import { currentUserId } from './stores/currentUserId'
 import { systemConfiguration as systemConfigurationStore } from './stores/systemConfiguration'
-import DataTableInner from './DataTableInner_r.svelte'
 import { recordFilteringComponentStore } from './stores/recordFilteringComponentStore'
-import type { EventSourcedModelStore } from './types'
 import { contextHelper } from './stores/contextHelper'
+// components
+import DataTableInner from './DataTableInner_r.svelte'
 
 export let permitModelling = writable(true)
 export let showDevConsole = writable(false)
