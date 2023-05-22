@@ -32,6 +32,17 @@
             )
         }
     }
+
+    function validateInput(event: Event) {
+        const target = event.target as HTMLInputElement;
+        target.value = target.value.replace(/[^0-9]/g, '');
+    }
 </script>
 
-<input class="input input-bordered" type="number" step="1" value={editableValue} on:change={integerChanged}/>
+<input 
+    class="input input-bordered" 
+    type="number" 
+    step="1" 
+    value={editableValue} 
+    on:input={validateInput}
+    on:change={integerChanged}/>

@@ -14,23 +14,26 @@ export let onEditModel: (clicked: Event, modelIndex: number) => void
 
 const isModellingPermitted = contextHelper.getPermitModelling()
 
-const onShow = (modelId: ModelId) => navbarState.set(modelId.value)
+function onShow(modelId: ModelId) {
+  navbarState.set(modelId.value)
+}
 
-const onEdit = (clicked: Event) => onEditModel(clicked, index)
+function onEdit(clicked: Event) {
+  onEditModel(clicked, index)
+}
 </script>
 
 <div class="flex items-center">
   <button
     class="tab tab-lg model-{index + 1}"
     class:tab-active={$navbarState === esModel.model.id.value}
-    on:click={() => onShow(esModel.model.id)}
-  >
+    on:click={() => onShow(esModel.model.id)}>
     {esModel.model.pluralName.value}
 
     {#if $isModellingPermitted}
       <span on:click={onEdit} on:keydown={onEdit} class="ml-2 mt-1">
-        <DownCaret /></span
-      >
+        <DownCaret />
+      </span>
     {/if}
   </button>
 </div>
