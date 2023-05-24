@@ -17,7 +17,7 @@ import {
 
 import { InMemoryBackend } from '../../lib/backend/InMemoryBackend'
 import { backendFns } from '../../lib/appBackend'
-import DataTable from '../../lib/DataTable_r.svelte'
+import EditorWrapper from '../../lib/components/editor/EditorWrapper.svelte'
 import { eventSourcedModelStore } from '../../lib'
 import DevOptions from '../DevOptions.svelte'
 
@@ -75,7 +75,7 @@ onMount(() => {
 
 <DevOptions {permitModelling} {showDevConsole} />
 
-<DataTable
+<EditorWrapper
   models={eventSourcedModelStore(esModels)}
   {modelViews}
   {systemConfiguration}

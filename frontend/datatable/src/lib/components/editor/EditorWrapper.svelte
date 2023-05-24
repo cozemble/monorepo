@@ -1,9 +1,8 @@
-<!-- TODO (refactor): move into '$lib/components/EditorWrapper.svelte' -->
 <script lang="ts">
 // types
 import type { Writable } from 'svelte/store'
 import type { ModelView, SystemConfiguration } from '@cozemble/model-core'
-import type { EventSourcedModelStore } from './types'
+import type { EventSourcedModelStore } from '../../types'
 
 import { writable } from 'svelte/store'
 import { onMount } from 'svelte'
@@ -20,14 +19,14 @@ import {
 } from '@cozemble/data-paginated-editor'
 
 // stores
-import { setAllModelViews } from './stores/allModelViews'
-import { setAllEventSourcedModels } from './stores/allModels'
-import { currentUserId } from './stores/currentUserId'
-import { systemConfiguration as systemConfigurationStore } from './stores/systemConfiguration'
-import { recordFilteringComponentStore } from './stores/recordFilteringComponentStore'
-import { contextHelper } from './stores/contextHelper'
+import { setAllModelViews } from '../../stores/allModelViews'
+import { setAllEventSourcedModels } from '../../stores/allModels'
+import { currentUserId } from '../../stores/currentUserId'
+import { systemConfiguration as systemConfigurationStore } from '../../stores/systemConfiguration'
+import { recordFilteringComponentStore } from '../../stores/recordFilteringComponentStore'
+import { contextHelper } from '../../stores/contextHelper'
 // components
-import DataTableInner from './DataTableInner_r.svelte'
+import Editor from './Editor.svelte'
 
 export let permitModelling = writable(true)
 export let showDevConsole = writable(false)
@@ -71,5 +70,5 @@ onMount(() => {
 </script>
 
 {#if mounted}
-  <DataTableInner {navbarState} />
+  <Editor {navbarState} />
 {/if}
