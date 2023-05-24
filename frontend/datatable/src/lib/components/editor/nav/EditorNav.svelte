@@ -13,7 +13,7 @@ import {
   allTopLevelEventSourcedModels,
 } from '$lib/stores/allModels'
 // components
-import ModelTab from '$lib/ModelTab_r.svelte'
+import NavItem from '$lib/components/editor/nav/NavItem.svelte'
 import AddTableNavButton from '$lib/AddTableNavButton_r.svelte'
 
 export let navbarState: Writable<string | null> = writable(null)
@@ -44,7 +44,7 @@ function onAddModel(event: CustomEvent) {
 
 <div class="tabs bg-base-200 rounded pb-1 pl-2">
   {#each $allTopLevelEventSourcedModels as esModel, index}
-    <ModelTab {esModel} {index} {navbarState} {onEditModel} />
+    <NavItem {esModel} {index} {navbarState} {onEditModel} />
   {/each}
 
   {#if $isModellingPermitted}

@@ -5,7 +5,7 @@ import { writable } from 'svelte/store'
 import ModelPane from '$lib/models/ModelPane.svelte'
 import RecordCreatorContext from '$lib/records/creator/RecordCreatorContext.svelte'
 import Modals from '$lib/Modals.svelte'
-import EditorNav from '$lib/components/editor/EditorNav.svelte'
+import EditorNav from '$lib/components/editor/nav/EditorNav.svelte'
 
 export let navbarState: Writable<string | null> = writable(null)
 
