@@ -19,10 +19,6 @@ export class StoreSyncBackend implements Backend {
     return await this.delegate.saveNewGraph(graph)
   }
 
-  async saveNewEdges(edges: RecordGraphEdge[]): Promise<Outcome<RecordGraphEdge[]>> {
-    return await this.delegate.saveNewEdges(edges)
-  }
-
   async saveModel(model: EventSourcedModel): Promise<JustErrorMessage | null> {
     const result = await this.delegate.saveModel(model)
     if (result === null) {
@@ -47,15 +43,21 @@ export class StoreSyncBackend implements Backend {
     return await this.delegate.getRecords(modelId, filterParams)
   }
 
-  async saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
-    return await this.delegate.saveNewRecord(newRecord)
+  async saveNewRecord(
+    newRecord: EventSourcedDataRecord,
+    edges: RecordGraphEdge[],
+  ): Promise<RecordSaveOutcome> {
+    return await this.delegate.saveNewRecord(newRecord, edges, [])
   }
 
-  async saveExistingRecord(record: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
-    return await this.delegate.saveExistingRecord(record)
+  async saveExistingRecord(
+    record: EventSourcedDataRecord,
+    edges: RecordGraphEdge[],
+  ): Promise<RecordSaveOutcome> {
+    return await this.delegate.saveExistingRecord(record, edges, [])
   }
 
-  async searchRecords(modelId: ModelId, search: string): Promise<DataRecord[]> {
+  async searchRecords(modelId: ModelId, search: string) {
     return await this.delegate.searchRecords(modelId, search)
   }
 
@@ -79,7 +81,7 @@ export class StoreSyncBackend implements Backend {
     return outcome
   }
 
-  async recordById(modelId: ModelId, recordId: DataRecordId): Promise<DataRecord | null> {
+  async recordById(modelId: ModelId, recordId: DataRecordId) {
     return await this.delegate.recordById(modelId, recordId)
   }
 

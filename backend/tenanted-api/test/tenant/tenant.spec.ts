@@ -10,9 +10,6 @@ import { dataRecordFns, modelFns } from '@cozemble/model-api'
 import {
   ModelEvent,
   modelEventIdFns,
-  modelReferenceFns,
-  modelReferenceNameFns,
-  recordGraphEdgeFns,
   systemConfigurationFns,
   timestampEpochMillis,
 } from '@cozemble/model-core'
@@ -228,6 +225,7 @@ describe('with a migrated database', () => {
       queryCount: 0,
       queryPages: 1,
       records: [],
+      edges: [],
       totalCount: 0,
       totalPages: 1,
     })
@@ -250,7 +248,7 @@ describe('with a migrated database', () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(savableRecords([record])),
+        body: JSON.stringify(savableRecords([record], [], [])),
       },
     )
     await expect(putResponse.status).toBe(401)
@@ -274,7 +272,7 @@ describe('with a migrated database', () => {
           'Content-Type': 'application/json',
           Authorization: 'Bearer ' + bearer,
         },
-        body: JSON.stringify(savableRecords([record])),
+        body: JSON.stringify(savableRecords([record], [], [])),
       },
     )
     await expect(putResponse.status).toBe(200)
@@ -298,6 +296,7 @@ describe('with a migrated database', () => {
       totalPages: 1,
       queryCount: 1,
       queryPages: 1,
+      edges: [],
     })
   })
 
@@ -319,7 +318,7 @@ describe('with a migrated database', () => {
           'Content-Type': 'application/json',
           Authorization: 'Bearer ' + bearer,
         },
-        body: JSON.stringify(savableRecords([record])),
+        body: JSON.stringify(savableRecords([record], [], [])),
       },
     )
     await expect(putResponse.status).toBe(200)
@@ -334,7 +333,7 @@ describe('with a migrated database', () => {
     )
     expect(getResponse.status).toBe(200)
     const fetched = await getResponse.json()
-    expect(fetched).toEqual(record)
+    expect(fetched).toEqual({ record, edges: [] })
   })
 
   test('can put a record with values that are string arrays', async () => {
@@ -359,7 +358,7 @@ describe('with a migrated database', () => {
           'Content-Type': 'application/json',
           Authorization: 'Bearer ' + bearer,
         },
-        body: JSON.stringify(savableRecords([record])),
+        body: JSON.stringify(savableRecords([record], [], [])),
       },
     )
     await expect(putResponse.status).toBe(200)
@@ -430,56 +429,5 @@ describe('with a migrated database', () => {
       },
     )
     await expect(putResponse.status).toBe(400)
-  })
-
-  test('can post record edges and retrieve them', async () => {
-    const { tenantId, bearer } = await simulateNewUser(port, jwtSigningSecret)
-    const [customerModel, bookingModel] = await putModels(
-      port,
-      tenantId,
-      [modelFns.newInstance('Customers'), modelFns.newInstance('Bookings')],
-      bearer,
-    )
-    const models = [customerModel, bookingModel]
-    const customerRecord1 = dataRecordFns.random(systemConfig, models, customerModel)
-    const bookingRecord1 = dataRecordFns.random(systemConfig, models, bookingModel)
-    const bookingRecord2 = dataRecordFns.random(systemConfig, models, bookingModel)
-
-    await putRecord(port, tenantId, customerModel, bearer, customerRecord1)
-    await putRecord(port, tenantId, bookingModel, bearer, bookingRecord1)
-    await putRecord(port, tenantId, bookingModel, bearer, bookingRecord2)
-    const modelReference = modelReferenceFns.newInstance(
-      customerModel.id,
-      [bookingModel.id],
-      modelReferenceNameFns.newInstance('Bookings'),
-    )
-
-    const customer1ToBooking1Edge = recordGraphEdgeFns.newInstance(
-      modelReference.id,
-      customerRecord1.modelId,
-      bookingRecord1.modelId,
-      customerRecord1.id,
-      bookingRecord1.id,
-    )
-    const customer1ToBooking2Edge = recordGraphEdgeFns.newInstance(
-      modelReference.id,
-      customerRecord1.modelId,
-      bookingRecord2.modelId,
-      customerRecord1.id,
-      bookingRecord2.id,
-    )
-
-    const postResponse = await fetch(
-      `http://localhost:3002/${testEnv}/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record/recordEdges`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + bearer,
-        },
-        body: JSON.stringify([customer1ToBooking1Edge, customer1ToBooking2Edge]),
-      },
-    )
-    expect(postResponse.status).toBe(200)
   })
 })

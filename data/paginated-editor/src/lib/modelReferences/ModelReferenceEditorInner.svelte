@@ -1,5 +1,6 @@
 <script lang="ts">
     import type {DataRecord, DataRecordValuePath, ReferencedRecords, SystemConfiguration} from "@cozemble/model-core";
+    import type {RecordAndEdges} from "@cozemble/model-core";
     import {dataRecordValuePathFns} from "@cozemble/model-api";
     import {dataRecordEditor} from "@cozemble/data-editor-sdk";
     import {onMount} from "svelte";
@@ -22,7 +23,7 @@
     let options: DataRecord[] = []
     let searchTerm = ""
 
-    let referencedRecord: DataRecord | null = null
+    let referencedRecord: RecordAndEdges | null = null
 
     $: referencedRecords = dataRecordValuePathFns.getValue(systemConfiguration, recordPath, record) as ReferencedRecords ?? null
     $: dereference(dataRecordEditorClient, editorParams.referencedModelId, referencedRecords, (record) => referencedRecord = record)
@@ -78,7 +79,7 @@
 
     async function createNewRecord() {
         const createdGraph = await dataRecordEditorClient.createNewRootRecord(editorParams.referencedModelId)
-        if(!createdGraph) {
+        if (!createdGraph) {
             return
         }
         const createdRecord = createdGraph.records[0] ?? null
@@ -101,7 +102,8 @@
 
 
     onMount(async () => {
-        options = await dataRecordEditorClient.searchRecords(editorParams.referencedModelId, searchTerm)
+        const found = await dataRecordEditorClient.searchRecords(editorParams.referencedModelId, searchTerm)
+        options = found.records
     })
 
     function handleKeydown(event: KeyboardEvent) {

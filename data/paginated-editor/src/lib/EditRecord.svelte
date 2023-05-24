@@ -40,7 +40,7 @@
     }
 
     const dataRecordEditorClient: DataRecordEditorClient = {
-        async recordById(modelId: ModelId, recordId: DataRecordId): Promise<DataRecord | null> {
+        async recordById(modelId: ModelId, recordId: DataRecordId) {
             return recordSearcher.recordById(modelId, recordId)
         },
 
@@ -55,7 +55,7 @@
         dispatchControlEvent(event: DataRecordControlEvent): void {
             recordEditContext.handleDataRecordControlEvent(event)
         },
-        searchRecords(modelId: ModelId, search: string): Promise<DataRecord[]> {
+        searchRecords(modelId: ModelId, search: string) {
             return recordSearcher.searchRecords(modelId, search)
         },
         getModelViews(modelId: ModelId): ModelView[] {

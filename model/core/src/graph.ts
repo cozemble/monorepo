@@ -42,6 +42,12 @@ export const recordGraphEdgeFns = {
         edge.referenceRecordId.value === recordId.value,
     )
   },
+  forRecords(edges: RecordGraphEdge[], recordIds: DataRecordId[]): RecordGraphEdge[] {
+    return edges.filter(
+      (edge) =>
+        recordIds.includes(edge.originRecordId) || recordIds.includes(edge.referenceRecordId),
+    )
+  },
 }
 
 export interface RecordGraph {
@@ -70,4 +76,32 @@ export const recordGraphFns = {
       records: [...graph.records, record],
     }
   },
+}
+
+export interface RecordAndEdges {
+  _type: 'record.and.edges'
+  record: DataRecord
+  edges: RecordGraphEdge[]
+}
+
+export function recordAndEdges(record: DataRecord, edges: RecordGraphEdge[]): RecordAndEdges {
+  return {
+    _type: 'record.and.edges',
+    record,
+    edges,
+  }
+}
+
+export interface RecordsAndEdges {
+  _type: 'records.and.edges'
+  records: DataRecord[]
+  edges: RecordGraphEdge[]
+}
+
+export function recordsAndEdges(records: DataRecord[], edges: RecordGraphEdge[]): RecordsAndEdges {
+  return {
+    _type: 'records.and.edges',
+    records,
+    edges,
+  }
 }

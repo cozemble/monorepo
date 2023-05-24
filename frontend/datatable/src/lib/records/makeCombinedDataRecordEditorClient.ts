@@ -23,6 +23,7 @@ import type {
   DataRecordEditEvent,
   EventSourcedRecordGraph,
 } from '@cozemble/model-event-sourced'
+import type { RecordAndEdges } from '@cozemble/model-core'
 
 export type CombinedDataRecordEditorClient = DataRecordEditorClient & DataRecordViewerClient
 
@@ -76,7 +77,7 @@ export function makeCombinedDataRecordEditorClient(
       }
     },
 
-    searchRecords(modelId: ModelId, search: string): Promise<DataRecord[]> {
+    searchRecords(modelId: ModelId, search: string) {
       return backend.searchRecords(modelId, search)
     },
 
@@ -111,7 +112,7 @@ export function makeCombinedDataRecordEditorClient(
       throw new Error('Method not implemented.')
     },
 
-    recordById(modelId: ModelId, recordId: DataRecordId): Promise<DataRecord | null> {
+    recordById(modelId: ModelId, recordId: DataRecordId): Promise<RecordAndEdges | null> {
       return backend.recordById(modelId, recordId)
     },
   }

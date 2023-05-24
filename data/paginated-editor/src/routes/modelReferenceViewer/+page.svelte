@@ -2,7 +2,7 @@
 
     import ModelReferenceViewer from "../../lib/modelReferences/ModelReferenceViewer.svelte";
     import type {DataRecord, DataRecordId, ModelId, ModelReference, ModelView} from "@cozemble/model-core";
-    import {modelReferenceFns, systemConfigurationFns} from "@cozemble/model-core";
+    import {modelReferenceFns, recordsAndEdges, systemConfigurationFns} from "@cozemble/model-core";
     import {makeDataRecordViewer} from "../../lib/makeDataRecordViewer";
     import {
         type AttachmentIdAndFileName,
@@ -14,13 +14,13 @@
         dataRecordFns,
         dataRecordValuePathFns,
         modelFns,
+        modelIdFns,
         modelOptions,
         propertyFns,
         propertyOptions
     } from "@cozemble/model-api";
     import type {JustErrorMessage} from "@cozemble/lang-util";
     import type {EventSourcedDataRecord} from "@cozemble/model-event-sourced";
-    import {modelIdFns} from "@cozemble/model-api";
 
     const systemConfiguration = systemConfigurationFns.empty()
     const customerModel = modelFns.newInstance("Customers", modelOptions.withProperties(propertyFns.newInstance("First name", propertyOptions.required), propertyFns.newInstance("Last name")))
@@ -68,10 +68,10 @@
         async searchRecords(
             _modelId: ModelId,
             _search: string,
-        ): Promise<DataRecord[]> {
-            return []
+        ) {
+            return recordsAndEdges([], [])
         },
-        async recordById(_modelId: ModelId, _recordId: DataRecordId): Promise<DataRecord | null> {
+        async recordById(_modelId: ModelId, _recordId: DataRecordId) {
             return null
         },
         async uploadAttachments(

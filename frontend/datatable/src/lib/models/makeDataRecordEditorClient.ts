@@ -13,7 +13,7 @@ export function makeDataRecordEditorClient(
   recordId: DataRecordId,
 ): DataRecordEditorClient {
   return {
-    recordById(): Promise<DataRecord | null> {
+    recordById() {
       throw new Error('Not implemented')
     },
 
@@ -36,7 +36,7 @@ export function makeDataRecordEditorClient(
       throw new Error('Method not implemented.')
     },
 
-    searchRecords(): Promise<DataRecord[]> {
+    searchRecords() {
       throw new Error('Method not implemented.')
     },
 

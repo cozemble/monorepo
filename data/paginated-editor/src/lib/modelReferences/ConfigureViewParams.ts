@@ -27,7 +27,7 @@ export async function makeConfigureViewParams(
   const referencedModel = modelFns.findById(models, referencedModelId)
   const sampleRecords = writable<DataRecord[]>([])
   client.searchRecords(referencedModel.id, '').then((found) => {
-    sampleRecords.set(found.slice(0, 3))
+    sampleRecords.set(found.records.slice(0, 3))
   })
   return { models, model: referencedModel, sampleRecords }
 }

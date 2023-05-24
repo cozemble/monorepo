@@ -85,7 +85,8 @@
 
 
     onMount(async () => {
-        options = await dataRecordEditorClient.searchRecords(editorParams.referencedModelId, searchTerm)
+        const found = await dataRecordEditorClient.searchRecords(editorParams.referencedModelId, searchTerm)
+        options = found.records
     })
 
     function handleKeydown(event: KeyboardEvent) {

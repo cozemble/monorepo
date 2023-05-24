@@ -50,7 +50,7 @@
     <ModelDevConsoleOption id="records" label="Records" {tab}/>
     <ModelDevConsoleOption
             id="eventSourcedRecords"
-            label="Event sourced records"
+            label="Event sourced record graph"
             {tab}
     />
     <ModelDevConsoleOption id="filterParams" label="Filter params" {tab}/>

@@ -1,7 +1,7 @@
-import type { DataRecord, DataRecordId, ModelId } from '@cozemble/model-core'
+import type { DataRecordId, ModelId, RecordAndEdges, RecordsAndEdges } from '@cozemble/model-core'
 
 export interface RecordSearcher {
-  searchRecords(modelId: ModelId, searchTerm: string): Promise<DataRecord[]>
+  searchRecords(modelId: ModelId, searchTerm: string): Promise<RecordsAndEdges>
 
-  recordById(modelId: ModelId, recordId: DataRecordId): Promise<DataRecord | null>
+  recordById(modelId: ModelId, recordId: DataRecordId): Promise<RecordAndEdges | null>
 }

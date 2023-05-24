@@ -36,11 +36,19 @@ export function makeRecordControls(
         (id) => id.value === recordId.value,
       )
       if (indexOfNewUnsavedRecords >= 0) {
-        await recordSaver.saveNewRecord(record)
+        await recordSaver.saveNewRecord(
+          record,
+          eventSourcedRecordGraphFns.getEdgesInvolvingRecord(recordGraph.get(), recordId),
+          [],
+        )
         // remove recordId from newUnsavedRecords
         newUnsavedRecords.splice(indexOfNewUnsavedRecords, 1)
       } else {
-        await recordSaver.saveExistingRecord(record)
+        await recordSaver.saveExistingRecord(
+          record,
+          eventSourcedRecordGraphFns.getEdgesInvolvingRecord(recordGraph.get(), recordId),
+          [],
+        )
       }
       lastSavedByRecordId.update((lastSavedByRecordId) => {
         lastSavedByRecordId.set(record.record.id.value, Date.now())
@@ -65,7 +73,11 @@ export function makeRecordControls(
       const indexOfNewUnsavedRecords = newUnsavedRecords.findIndex(
         (id) => id.value === recordId.value,
       )
-      await recordSaver.saveNewRecord(record)
+      await recordSaver.saveNewRecord(
+        record,
+        eventSourcedRecordGraphFns.getEdgesInvolvingRecord(recordGraph.get(), recordId),
+        [],
+      )
       // remove recordId from newUnsavedRecords
       newUnsavedRecords.splice(indexOfNewUnsavedRecords, 1)
       lastSavedByRecordId.update((lastSavedByRecordId) => {

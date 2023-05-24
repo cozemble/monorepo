@@ -1,6 +1,6 @@
 import type { Backend, FilterParams } from './Backend'
 import type { JustErrorMessage, Outcome } from '@cozemble/lang-util'
-import { uuids } from '@cozemble/lang-util'
+import { outcomeFns, uuids } from '@cozemble/lang-util'
 import type {
   EventSourcedDataRecord,
   EventSourcedModel,
@@ -18,10 +18,16 @@ import type {
   ModelView,
   RecordGraphEdge,
 } from '@cozemble/model-core'
+import {
+  recordAndEdges,
+  type RecordAndEdges,
+  recordGraphEdgeFns,
+  type RecordsAndEdges,
+} from '@cozemble/model-core'
 import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import { recordSaveSucceeded } from '@cozemble/data-paginated-editor'
-import { outcomeFns } from '@cozemble/lang-util'
+import { recordsAndEdges } from '@cozemble/model-core/dist/esm'
 
 export class InMemoryBackend implements Backend {
   constructor(
@@ -97,10 +103,20 @@ export class InMemoryBackend implements Backend {
     return recordSaveSucceeded(newRecord.record)
   }
 
-  async searchRecords(modelId: ModelId, search: string): Promise<DataRecord[]> {
+  async searchRecords(modelId: ModelId, search: string): Promise<RecordsAndEdges> {
     const records = this.records.get(modelId.value) || []
-    if (search.trim().length === 0) return records
-    return records.filter((record) => JSON.stringify(record.values).includes(search))
+    if (search.trim().length === 0) {
+      return recordsAndEdges(records, this.edges)
+    }
+    const matchingRecords = records.filter((record) =>
+      JSON.stringify(record.values).includes(search),
+    )
+    const edges = new Set<RecordGraphEdge>()
+    matchingRecords.forEach((record) => {
+      const recordEdges = recordGraphEdgeFns.forRecord(this.edges, record.id)
+      recordEdges.forEach((edge) => edges.add(edge))
+    })
+    return recordsAndEdges(matchingRecords, Array.from(edges))
   }
 
   async saveModelView(modelView: ModelView): Promise<JustErrorMessage | null> {
@@ -108,9 +124,14 @@ export class InMemoryBackend implements Backend {
     return null
   }
 
-  async recordById(modelId: ModelId, recordId: DataRecordId): Promise<DataRecord | null> {
+  async recordById(modelId: ModelId, recordId: DataRecordId): Promise<RecordAndEdges | null> {
     const records = this.records.get(modelId.value) || []
-    return records.find((record) => record.id.value === recordId.value) || null
+    const record = records.find((record) => record.id.value === recordId.value) || null
+    if (record === null) {
+      return null
+    }
+    const edges = recordGraphEdgeFns.forRecord(this.edges, record.id)
+    return recordAndEdges(record, edges)
   }
 
   async uploadAttachments(

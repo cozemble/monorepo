@@ -24,7 +24,7 @@
     }
 
     const dataRecordEditorClient: DataRecordEditorClient = {
-        recordById(): Promise<DataRecord | null> {
+        recordById() {
             throw new Error("Not implemented")
         },
 
@@ -38,7 +38,7 @@
             throw new Error("Not implemented")
         },
 
-        searchRecords(): Promise<DataRecord[]> {
+        searchRecords() {
             throw new Error("Not implemented")
         },
 
@@ -85,11 +85,11 @@
             throw new Error("Not implemented")
         },
 
-        searchRecords(): Promise<DataRecord[]> {
+        searchRecords() {
             throw new Error("Not implemented")
         },
 
-        recordById(): Promise<DataRecord | null> {
+        recordById() {
             throw new Error("Not implemented")
         },
 

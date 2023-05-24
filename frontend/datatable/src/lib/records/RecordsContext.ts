@@ -214,7 +214,7 @@ export class RootRecordsContext implements RecordsContext {
   }
 
   async saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
-    const outcome = await this.backend.saveNewRecord(newRecord)
+    const outcome = await this.backend.saveNewRecord(newRecord, [], [])
     if (outcome._type === 'record.save.succeeded') {
       this._records.update((records) => [...records, newRecord])
     }
@@ -222,7 +222,7 @@ export class RootRecordsContext implements RecordsContext {
   }
 
   async saveExistingRecord(record: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
-    const outcome = await this.backend.saveExistingRecord(record)
+    const outcome = await this.backend.saveExistingRecord(record, [], [])
     if (outcome._type === 'record.save.succeeded') {
       this._records.update((records) =>
         records.map((r) => (r.record.id.value === record.record.id.value ? record : r)),

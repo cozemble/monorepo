@@ -2,11 +2,12 @@
 
     import type {DataRecordEditorClient, UploadedAttachment} from "@cozemble/data-editor-sdk";
     import {dataRecordEditorHost} from "@cozemble/data-editor-sdk";
-    import type {DataRecord, Model, ModelView} from "@cozemble/model-core";
+    import type {Model, ModelView, RecordAndEdges} from "@cozemble/model-core";
     import {
         type ModelReference,
         modelReferenceFns,
         modelViewFns,
+        recordsAndEdges,
         summaryViewFns,
         systemConfigurationFns
     } from "@cozemble/model-core";
@@ -16,17 +17,17 @@
         dataRecordFns,
         dataRecordValuePathFns,
         modelFns,
+        modelIdFns,
         modelOptions,
         propertyFns,
         propertyOptions
     } from "@cozemble/model-api";
     import type {EventSourcedRecordGraph} from "@cozemble/model-event-sourced";
-    import {modelIdFns} from "@cozemble/model-api";
 
     const systemConfiguration = systemConfigurationFns.empty()
     const invoiceModelId = modelIdFns.newInstance("invoices")
     const customerModel = modelFns.newInstance("Customers", modelOptions.withProperties(propertyFns.newInstance("First name", propertyOptions.required), propertyFns.newInstance("Last name")))
-    const invoiceModel = modelFns.newInstance("Invoices", modelOptions.withId(invoiceModelId), modelOptions.withSlot(modelReferenceFns.newInstance(invoiceModelId,[customerModel.id], "Customer")))
+    const invoiceModel = modelFns.newInstance("Invoices", modelOptions.withId(invoiceModelId), modelOptions.withSlot(modelReferenceFns.newInstance(invoiceModelId, [customerModel.id], "Customer")))
     const models = [customerModel, invoiceModel]
     const invoiceRecord1 = dataRecordFns.newInstance(invoiceModel, "test")
     const referenceSlot = invoiceModel.slots[0] as ModelReference
@@ -34,7 +35,7 @@
     const modelView = modelViewFns.newInstance("Summary View", customerModel.id, summaryViewFns.empty())
 
     const dataRecordEditorClient: DataRecordEditorClient = {
-        async recordById(): Promise<DataRecord | null> {
+        async recordById(): Promise<RecordAndEdges | null> {
             return null
         },
 
@@ -48,8 +49,8 @@
         dispatchControlEvent(): void {
             throw new Error("Not implemented")
         },
-        async searchRecords(): Promise<DataRecord[]> {
-            return []
+        async searchRecords() {
+            return recordsAndEdges([], [])
         },
         getModelViews(): ModelView[] {
             return [modelView]

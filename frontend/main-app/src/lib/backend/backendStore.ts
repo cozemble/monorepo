@@ -1,5 +1,5 @@
 import { type Backend, ErrorListenerBackend } from '@cozemble/frontend-bff'
-import type { FetchRecordsResponse, TenantEntity } from '@cozemble/frontend-bff'
+import type { TenantEntity } from '@cozemble/frontend-bff'
 import type { RecordDeleteOutcome, RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
 
@@ -10,12 +10,7 @@ export const notImplementedBackend: Backend = {
   deleteRecord(tenantId: string, modelId: string, record): Promise<RecordDeleteOutcome> {
     throw new Error(`Not implemented`)
   },
-  fetchRecords(
-    tenantId: string,
-    modelId: string,
-    search: string | null,
-    filters: any,
-  ): Promise<FetchRecordsResponse> {
+  fetchRecords(tenantId: string, modelId: string, search: string | null, filters: any) {
     throw new Error(`Not implemented`)
   },
   findRecordById(tenantId: string, modelId, recordId): Promise<null> {

@@ -1,10 +1,18 @@
 import { expect } from 'vitest'
-import { DataRecord, Model } from '@cozemble/model-core'
+import {
+  DataRecord,
+  DataRecordId,
+  Id,
+  Model,
+  ModelId,
+  RecordAndEdges,
+  RecordGraphEdge,
+} from '@cozemble/model-core'
 import { uuids } from '@cozemble/lang-util'
-import { BackendModel } from '@cozemble/backend-tenanted-api-types'
+import { BackendModel, savableRecords } from '@cozemble/backend-tenanted-api-types'
 import jwt from 'jsonwebtoken'
-import { savableRecords } from '@cozemble/backend-tenanted-api-types'
 import { testEnv } from '../helper'
+import { filterRequestPayloadFns } from '@cozemble/backend-tenanted-api-types/dist/esm'
 
 async function postTenant(port: number, id: string, name = 'Test Tenant', ownerId = uuids.v4()) {
   return await fetch(`http://localhost:${port}/${testEnv}/api/v1/tenant`, {
@@ -68,8 +76,10 @@ export async function putRecord(
   model: Model,
   bearer: string,
   record: DataRecord,
+  edges: RecordGraphEdge[] = [],
+  deletedEdges: Id[] = [],
 ) {
-  return putRecords(port, tenantId, model, bearer, [record])
+  return putRecords(port, tenantId, model, bearer, [record], edges, deletedEdges)
 }
 
 export async function putRecords(
@@ -78,6 +88,8 @@ export async function putRecords(
   model: Model,
   bearer: string,
   records: DataRecord[],
+  edges: RecordGraphEdge[] = [],
+  deletedEdges: Id[] = [],
 ) {
   const putResponse = await fetch(
     `http://localhost:${port}/${testEnv}/api/v1/tenant/${tenantId}/model/${model.id.value}/record`,
@@ -87,7 +99,7 @@ export async function putRecords(
         'Content-Type': 'application/json',
         Authorization: 'Bearer ' + bearer,
       },
-      body: JSON.stringify(savableRecords(records)),
+      body: JSON.stringify(savableRecords(records, edges, deletedEdges)),
     },
   )
   await expect(putResponse.status).toBe(200)
@@ -114,4 +126,48 @@ export async function simulateNewUser(port: number, jwtSigningSecret: string) {
   await makeTenant(port, tenantId, 'Tenant 2', ownerId)
   const bearer = await makeTenantMemberAccessToken(tenantId, ownerId, jwtSigningSecret)
   return { tenantId, ownerId, bearer }
+}
+
+export async function getRecordById(
+  port: number,
+  tenantId: string,
+  modelId: ModelId,
+  recordId: DataRecordId,
+  bearer: string,
+): Promise<RecordAndEdges> {
+  const getResponse = await fetch(
+    `http://localhost:${port}/${testEnv}/api/v1/tenant/${tenantId}/model/${modelId.value}/record/${recordId.value}`,
+    {
+      headers: {
+        Authorization: 'Bearer ' + bearer,
+      },
+    },
+  )
+  expect(getResponse.status).toBe(200)
+  return (await getResponse.json()) as RecordAndEdges
+}
+
+export async function getRecordsForModel(
+  port: number,
+  tenantId: string,
+  modelId: ModelId,
+  bearer: string,
+  filter = filterRequestPayloadFns.newInstance(null, null),
+) {
+  const response = await fetch(
+    `http://localhost:${port}/${testEnv}/api/v1/tenant/${tenantId}/model/${modelId.value}/record`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + bearer,
+      },
+      body: JSON.stringify(filter),
+    },
+  )
+  expect(response.status).toBe(200)
+  return await response.json()
+  // expect(records.records.length).toBe(3)
+  // expect(records.queryCount).toBe(3)
+  // expect(records.totalCount).toBe(5)
 }

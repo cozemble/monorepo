@@ -177,4 +177,14 @@ export const eventSourcedRecordGraphFns = {
   ): EventSourcedRecordGraph {
     return events.reduce((g, event) => this.addEvent(g, event), graph)
   },
+  getEdgesInvolvingRecord(
+    graph: EventSourcedRecordGraph,
+    recordId: DataRecordId,
+  ): RecordGraphEdge[] {
+    return graph.edges.filter(
+      (edge) =>
+        edge.originRecordId.value === recordId.value ||
+        edge.referenceRecordId.value === recordId.value,
+    )
+  },
 }

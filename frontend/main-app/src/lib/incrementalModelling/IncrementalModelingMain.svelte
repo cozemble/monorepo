@@ -9,7 +9,7 @@
     import {onDestroy, onMount} from "svelte";
     import IncrementalModelingData from "./IncrementalModelingData.svelte";
     import {IncrementalModelingBackend} from "./IncrementalModelingBackend";
-    import type {DataTableBackend} from "@cozemble/frontend-datatable";
+    import type {Backend as DataTableBackend} from "@cozemble/frontend-datatable";
     import {backendFns} from "@cozemble/frontend-datatable";
     import {eventSourcedModels, models, permitModelling} from "./incrementalModelStore";
     import type {EventSourcedModel} from "@cozemble/model-event-sourced";

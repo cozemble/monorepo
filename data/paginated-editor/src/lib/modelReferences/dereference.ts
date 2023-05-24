@@ -1,11 +1,11 @@
 import type { DataRecordEditorClient, DataRecordViewerClient } from '@cozemble/data-editor-sdk'
-import type { DataRecord, ModelId, ReferencedRecords } from '@cozemble/model-core'
+import type { ModelId, RecordAndEdges, ReferencedRecords } from '@cozemble/model-core'
 
 export async function dereference(
   client: DataRecordViewerClient | DataRecordEditorClient,
   referencedModelId: ModelId,
   referencedRecords: ReferencedRecords | null,
-  setter: (value: DataRecord | null) => void,
+  setter: (value: RecordAndEdges | null) => void,
 ) {
   console.log('dereference', { referencedRecords })
   if (!referencedRecords) {

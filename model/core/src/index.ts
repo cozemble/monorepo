@@ -104,4 +104,10 @@ export {
   RecordGraph,
   recordGraphFns,
   RecordGraphOption,
+  RecordAndEdges,
+  recordAndEdges,
+  RecordsAndEdges,
+  recordsAndEdges,
 } from './graph'
+
+export { Id, tinyValueFns, TinyValue, Name } from './TinyValue'

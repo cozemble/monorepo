@@ -68,7 +68,6 @@ router.put('/:tenantId/model', (req: Request, res: Response) => {
 })
 
 router.post('/', (req: Request, res: Response) => {
-  console.log({ envParam: req.params.envParam })
   return withAdminPgClient(async (client) => {
     const body = req.body as CreateTenant
     if (body._type !== 'create.tenant') {
@@ -105,12 +104,8 @@ router.put('/:tenantId/model/:modelId/record', (req: Request, res: Response) => 
 
   return authenticatedDatabaseRequest(req, res, async (client) => {
     const result = await client.query(
-      'select * from upsert_record($1,text2Ltree($2), $3) as records;',
-      [
-        mandatory(req.env, `No env in request`),
-        req.params.tenantId,
-        JSON.stringify(records.records),
-      ],
+      'select * from upsert_records_and_edges($1,text2Ltree($2), $3) as records;',
+      [mandatory(req.env, `No env in request`), req.params.tenantId, JSON.stringify(records)],
     )
     if (result.rows.length === 0 || result.rows[0].records === null) {
       return res.status(400).send()

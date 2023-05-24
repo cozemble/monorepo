@@ -4,6 +4,7 @@ import type {
   EventSourcedModel,
   EventSourcedRecordGraph,
 } from '@cozemble/model-event-sourced'
+import { eventSourcedRecordGraphFns } from '@cozemble/model-event-sourced'
 import type { JustErrorMessage } from '@cozemble/lang-util'
 import { RootRecordsContext } from './records/RecordsContext'
 import type { DataRecord, DataRecordId, ModelId, SystemConfiguration } from '@cozemble/model-core'
@@ -25,14 +26,15 @@ export const backendFns = {
   },
 }
 
-export async function saveNewRecord(record: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
-  return backend.saveNewRecord(record)
-}
-
-export async function saveExistingRecord(
+export async function saveNewRecord(
+  graph: EventSourcedRecordGraph,
   record: EventSourcedDataRecord,
 ): Promise<RecordSaveOutcome> {
-  return backend.saveExistingRecord(record)
+  return backend.saveNewRecord(
+    record,
+    eventSourcedRecordGraphFns.getEdgesInvolvingRecord(graph, record.record.id),
+    [],
+  )
 }
 
 export async function getRecordsForModel(
@@ -61,10 +63,10 @@ export function rootRecordsContext(
 }
 
 export const recordSearcher: RecordSearcher = {
-  async recordById(modelId: ModelId, recordId: DataRecordId): Promise<DataRecord | null> {
+  async recordById() {
     throw new Error('Not implemented')
   },
-  async searchRecords(modelId: ModelId, searchTerm: string): Promise<DataRecord[]> {
+  async searchRecords() {
     throw new Error('Not implemented')
   },
 }

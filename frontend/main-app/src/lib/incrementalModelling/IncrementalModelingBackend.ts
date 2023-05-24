@@ -1,4 +1,4 @@
-import type { DataTableBackend, FilterParams } from '@cozemble/frontend-datatable'
+import type { Backend as DataTableBackend, FilterParams } from '@cozemble/frontend-datatable'
 import type { EventSourcedDataRecord, EventSourcedModel } from '@cozemble/model-event-sourced'
 import {
   eventSourcedDataRecordFns,
@@ -7,19 +7,15 @@ import {
 } from '@cozemble/model-event-sourced'
 import type { JustErrorMessage, Outcome } from '@cozemble/lang-util'
 import { justErrorMessage, outcomeFns } from '@cozemble/lang-util'
-import type {
-  DataRecord,
-  DataRecordId,
-  Model,
-  ModelId,
-  ModelView,
-  RecordGraphEdge,
-} from '@cozemble/model-core'
+import type { DataRecordId, Model, ModelId, ModelView, RecordGraphEdge } from '@cozemble/model-core'
 import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import type { Backend } from '@cozemble/frontend-bff'
 import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
 import { toFilledFilterInstanceGroup } from '@cozemble/frontend-ui-blocks'
+import type { Id } from '@cozemble/model-core'
+import type { RecordAndEdges } from '@cozemble/model-core'
+import type { RecordsAndEdges } from '@cozemble/model-core'
 
 export class IncrementalModelingBackend implements DataTableBackend {
   constructor(
@@ -33,15 +29,15 @@ export class IncrementalModelingBackend implements DataTableBackend {
   }
 
   async saveNewGraph(graph: EventSourcedRecordGraph): Promise<Outcome<EventSourcedRecordGraph>> {
-    for (const record of graph.records) {
-      await this.saveNewRecord(record)
+    const lastIndex = graph.records.length - 1
+    for (let i = 0; i < graph.records.length; i++) {
+      if (i === lastIndex) {
+        await this.saveNewRecord(graph.records[i], graph.edges, [])
+      } else {
+        await this.saveNewRecord(graph.records[i], [], [])
+      }
     }
-    await this.saveNewEdges(graph.edges)
     return outcomeFns.successful(graph)
-  }
-
-  async saveNewEdges(edges: RecordGraphEdge[]): Promise<Outcome<RecordGraphEdge[]>> {
-    throw new Error('Not implemented')
   }
 
   async saveModels(models: EventSourcedModel[]): Promise<JustErrorMessage | null> {
@@ -73,20 +69,40 @@ export class IncrementalModelingBackend implements DataTableBackend {
     )
   }
 
-  saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
-    return this.backend.saveRecord(this.tenantId, this.modelsProvider(), newRecord)
+  saveNewRecord(
+    newRecord: EventSourcedDataRecord,
+    edges: RecordGraphEdge[],
+    deletedEdges: Id[],
+  ): Promise<RecordSaveOutcome> {
+    return this.backend.saveRecord(
+      this.tenantId,
+      this.modelsProvider(),
+      newRecord,
+      edges,
+      deletedEdges,
+    )
   }
 
-  saveExistingRecord(record: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
-    return this.backend.saveRecord(this.tenantId, this.modelsProvider(), record)
+  saveExistingRecord(
+    record: EventSourcedDataRecord,
+    edges: RecordGraphEdge[],
+    deletedEdges: Id[],
+  ): Promise<RecordSaveOutcome> {
+    return this.backend.saveRecord(
+      this.tenantId,
+      this.modelsProvider(),
+      record,
+      edges,
+      deletedEdges,
+    )
   }
 
-  async searchRecords(modelId: ModelId, search: string): Promise<DataRecord[]> {
+  async searchRecords(modelId: ModelId, search: string): Promise<RecordsAndEdges> {
     const fetched = await this.backend.fetchRecords(this.tenantId, modelId.value, search, null)
-    return fetched.records
+    return fetched
   }
 
-  recordById(modelId: ModelId, recordId: DataRecordId): Promise<DataRecord | null> {
+  recordById(modelId: ModelId, recordId: DataRecordId): Promise<RecordAndEdges | null> {
     return this.backend.findRecordById(this.tenantId, modelId, recordId)
   }
 

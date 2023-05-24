@@ -17,6 +17,7 @@
     import EditEventInspector from './EditEventInspector.svelte'
     import type {JustErrorMessage} from "@cozemble/lang-util";
     import type {DataRecordEditEvent, EventSourcedDataRecord} from "@cozemble/model-event-sourced";
+    import {recordsAndEdges} from "@cozemble/model-core";
 
     export const ssr = false
 
@@ -83,10 +84,10 @@
         async searchRecords(
             _modelId: ModelId,
             _search: string,
-        ): Promise<DataRecord[]> {
-            return []
+        )  {
+            return recordsAndEdges([], [])
         },
-        async recordById(_modelId: ModelId, _recordId: DataRecordId): Promise<DataRecord | null> {
+        async recordById(_modelId: ModelId, _recordId: DataRecordId) {
             return null
         },
         async uploadAttachments(

@@ -1,6 +1,7 @@
 <script lang="ts">
     import type {EditorParams} from "./editorHelper";
     import type {DataRecord, DataRecordValuePath, ModelReference, SystemConfiguration} from "@cozemble/model-core";
+    import type {RecordAndEdges} from "@cozemble/model-core";
     import {dataRecordViewer} from "@cozemble/data-editor-sdk";
     import {eventSourcedRecordGraphFns} from "@cozemble/model-event-sourced";
     import {modelRecordsContextFns} from "$lib/records/modelRecordsContextFns";
@@ -19,7 +20,7 @@
 
     $: selectedRecordIds = eventSourcedRecordGraphFns.referencedRecordIds($recordGraph, record.id, modelReference)
 
-    let referencedRecord: DataRecord | null = null
+    let referencedRecord: RecordAndEdges | null = null
     let htmlRender: string | null = null
 
     $: dereference(dataRecordViewerClient, $recordGraph, editorParams.referencedModelId, selectedRecordIds, (record) => referencedRecord = record)

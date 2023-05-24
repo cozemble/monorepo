@@ -1,8 +1,10 @@
 import type { DataRecord, DataRecordId, Model, ModelEvent, ModelId } from '@cozemble/model-core'
+import { Id, RecordAndEdges, RecordGraphEdge } from '@cozemble/model-core'
 import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import type { RecordDeleteOutcome, RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
 import { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
+import { RecordsAndEdges } from '@cozemble/model-core'
 
 export interface TenantEntity {
   _type: string
@@ -16,10 +18,6 @@ export interface FetchTenantResponse {
   models: Model[]
   events: ModelEvent[]
   entities: TenantEntity[]
-}
-
-export interface FetchRecordsResponse {
-  records: DataRecord[]
 }
 
 export interface Backend {
@@ -40,13 +38,13 @@ export interface Backend {
     modelId: string,
     search: string | null,
     filters: any,
-  ): Promise<FetchRecordsResponse>
+  ): Promise<RecordsAndEdges>
 
   findRecordById(
     tenantId: string,
     modelId: ModelId,
     recordId: DataRecordId,
-  ): Promise<DataRecord | null>
+  ): Promise<RecordAndEdges | null>
 
   deleteRecord(tenantId: string, modelId: string, record: DataRecord): Promise<RecordDeleteOutcome>
 
@@ -54,6 +52,8 @@ export interface Backend {
     tenantId: string,
     models: Model[],
     newRecord: EventSourcedDataRecord,
+    edges: RecordGraphEdge[],
+    deletedEdges: Id[],
   ): Promise<RecordSaveOutcome>
 
   referencingRecords(
@@ -78,12 +78,7 @@ export const notImplementedBackend: Backend = {
   deleteRecord(tenantId: string, modelId: string, record): Promise<RecordDeleteOutcome> {
     throw new Error(`Not implemented`)
   },
-  fetchRecords(
-    tenantId: string,
-    modelId: string,
-    search: string | null,
-    filters: any,
-  ): Promise<FetchRecordsResponse> {
+  fetchRecords(tenantId: string, modelId: string, search: string | null, filters: any) {
     throw new Error(`Not implemented`)
   },
   findRecordById(tenantId: string, modelId, recordId): Promise<null> {

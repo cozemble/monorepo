@@ -7,9 +7,12 @@ import type { JustErrorMessage, Outcome } from '@cozemble/lang-util'
 import type {
   DataRecord,
   DataRecordId,
+  Id,
   ModelId,
   ModelView,
+  RecordAndEdges,
   RecordGraphEdge,
+  RecordsAndEdges,
 } from '@cozemble/model-core'
 import type { AttachmentsManager, RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
@@ -26,15 +29,21 @@ export function emptyFilterParams(): FilterParams {
 }
 
 export interface RecordSaver {
-  saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome>
+  saveNewRecord(
+    newRecord: EventSourcedDataRecord,
+    edges: RecordGraphEdge[],
+    deletedEdges: Id[],
+  ): Promise<RecordSaveOutcome>
 
-  saveExistingRecord(record: EventSourcedDataRecord): Promise<RecordSaveOutcome>
+  saveExistingRecord(
+    record: EventSourcedDataRecord,
+    edges: RecordGraphEdge[],
+    deletedEdges: Id[],
+  ): Promise<RecordSaveOutcome>
 }
 
 export interface Backend extends AttachmentsManager, RecordSaver {
   saveNewGraph(graph: EventSourcedRecordGraph): Promise<Outcome<EventSourcedRecordGraph>>
-
-  saveNewEdges(edges: RecordGraphEdge[]): Promise<Outcome<RecordGraphEdge[]>>
 
   saveModel(model: EventSourcedModel): Promise<JustErrorMessage | null>
 
@@ -42,19 +51,15 @@ export interface Backend extends AttachmentsManager, RecordSaver {
 
   getRecords(modelId: ModelId, filterParams: FilterParams): Promise<EventSourcedRecordGraph>
 
-  searchRecords(modelId: ModelId, search: string): Promise<DataRecord[]>
+  searchRecords(modelId: ModelId, search: string): Promise<RecordsAndEdges>
 
-  recordById(modelId: ModelId, recordId: DataRecordId): Promise<DataRecord | null>
+  recordById(modelId: ModelId, recordId: DataRecordId): Promise<RecordAndEdges | null>
 
   saveModelView(modelView: ModelView): Promise<JustErrorMessage | null>
 }
 
 export const notImplementedBackend: Backend = {
   async saveNewGraph(): Promise<Outcome<EventSourcedRecordGraph>> {
-    throw new Error('Not implemented')
-  },
-
-  async saveNewEdges(): Promise<Outcome<RecordGraphEdge[]>> {
     throw new Error('Not implemented')
   },
 
@@ -76,7 +81,7 @@ export const notImplementedBackend: Backend = {
   recordById: async () => {
     throw new Error('Not implemented')
   },
-  async searchRecords(): Promise<DataRecord[]> {
+  async searchRecords() {
     throw new Error('Not implemented')
   },
   async saveModelView(): Promise<JustErrorMessage | null> {
