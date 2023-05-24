@@ -21,6 +21,7 @@ import {
   simulateNewUser,
 } from './testHelpers'
 import { testEnv } from '../helper'
+import { recordAndEdges } from '@cozemble/model-core'
 
 const jwtSigningSecret = 'secret'
 const port = 3002
@@ -333,7 +334,7 @@ describe('with a migrated database', () => {
     )
     expect(getResponse.status).toBe(200)
     const fetched = await getResponse.json()
-    expect(fetched).toEqual({ record, edges: [] })
+    expect(fetched).toEqual(recordAndEdges(record, []))
   })
 
   test('can put a record with values that are string arrays', async () => {

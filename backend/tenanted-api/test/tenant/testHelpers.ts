@@ -9,10 +9,14 @@ import {
   RecordGraphEdge,
 } from '@cozemble/model-core'
 import { uuids } from '@cozemble/lang-util'
-import { BackendModel, savableRecords } from '@cozemble/backend-tenanted-api-types'
+import {
+  BackendModel,
+  FetchedRecords,
+  filterRequestPayloadFns,
+  savableRecords,
+} from '@cozemble/backend-tenanted-api-types'
 import jwt from 'jsonwebtoken'
 import { testEnv } from '../helper'
-import { filterRequestPayloadFns } from '@cozemble/backend-tenanted-api-types/dist/esm'
 
 async function postTenant(port: number, id: string, name = 'Test Tenant', ownerId = uuids.v4()) {
   return await fetch(`http://localhost:${port}/${testEnv}/api/v1/tenant`, {
@@ -91,6 +95,7 @@ export async function putRecords(
   edges: RecordGraphEdge[] = [],
   deletedEdges: Id[] = [],
 ) {
+  const body = savableRecords(records, edges, deletedEdges)
   const putResponse = await fetch(
     `http://localhost:${port}/${testEnv}/api/v1/tenant/${tenantId}/model/${model.id.value}/record`,
     {
@@ -99,7 +104,7 @@ export async function putRecords(
         'Content-Type': 'application/json',
         Authorization: 'Bearer ' + bearer,
       },
-      body: JSON.stringify(savableRecords(records, edges, deletedEdges)),
+      body: JSON.stringify(body),
     },
   )
   await expect(putResponse.status).toBe(200)
@@ -153,7 +158,7 @@ export async function getRecordsForModel(
   modelId: ModelId,
   bearer: string,
   filter = filterRequestPayloadFns.newInstance(null, null),
-) {
+): Promise<FetchedRecords> {
   const response = await fetch(
     `http://localhost:${port}/${testEnv}/api/v1/tenant/${tenantId}/model/${modelId.value}/record`,
     {
@@ -166,7 +171,7 @@ export async function getRecordsForModel(
     },
   )
   expect(response.status).toBe(200)
-  return await response.json()
+  return (await response.json()) as FetchedRecords
   // expect(records.records.length).toBe(3)
   // expect(records.queryCount).toBe(3)
   // expect(records.totalCount).toBe(5)

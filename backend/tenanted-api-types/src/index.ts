@@ -38,7 +38,14 @@ export function refreshTokenKey(userPool: string) {
   return `cozauth.refreshToken.${userPool}`
 }
 
-export { SavableRecords, SavableRecord, JsonPath, savableRecords } from './records'
+export {
+  SavableRecords,
+  SavableRecord,
+  JsonPath,
+  savableRecords,
+  fetchedRecords,
+  FetchedRecords,
+} from './records'
 
 export { ErrorType, ConflictErrorType } from './errorsTypes'
 

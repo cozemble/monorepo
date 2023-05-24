@@ -86,8 +86,8 @@ BEGIN
       AND ((e.origin_model_id = p_model_id AND e.origin_record_id = p_record_id)
         OR (e.reference_model_id = p_model_id AND e.reference_record_id = p_record_id));
 
-    RETURN jsonb_build_object('record', v_record, 'edges', v_edges);
-END;
+    RETURN jsonb_build_object('_type', 'record.and.edges', 'record', v_record, 'edges', v_edges);
+END ;
 $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION upsert_record_edges(given_env text, p_tenant LTREE, p_edges JSONB)
@@ -144,13 +144,39 @@ END;
 $$ LANGUAGE plpgsql;
 
 
+CREATE OR REPLACE FUNCTION delete_edges(given_env text, p_tenant LTREE, deleted_edges JSONB)
+    RETURNS JSONB AS
+$$
+DECLARE
+    edge_ids text[];
+BEGIN
+    -- Extract the 'value' field from each element in the 'deletedEdges' array and convert to text array
+    SELECT ARRAY_AGG(edge ->> 'value')
+    INTO edge_ids
+    FROM jsonb_array_elements(deleted_edges) AS edge;
+
+    -- Delete the edges with the matching IDs
+    DELETE FROM record_edges
+    WHERE env = given_env
+      AND tenant = p_tenant
+      AND id = ANY(edge_ids);
+
+    RETURN jsonb_build_object('edge_ids', edge_ids);
+END;
+$$ LANGUAGE plpgsql;
+
+
 CREATE OR REPLACE FUNCTION upsert_records_and_edges(given_env text, p_tenant LTREE, p_definition JSONB)
     RETURNS JSONB AS
 $$
 DECLARE
     record_result JSONB;
     edges_result  JSONB;
+    deleted_edges_result JSONB;
 BEGIN
+    -- Delete edges
+    deleted_edges_result := delete_edges(given_env, p_tenant, p_definition -> 'deletedEdges');
+
     -- Upsert records
     SELECT upsert_record(given_env, p_tenant, p_definition -> 'records')
     INTO record_result;
@@ -168,7 +194,8 @@ BEGIN
     RETURN jsonb_build_object(
             '_type', 'success',
             'recordResult', record_result,
-            'edgesResult', edges_result
+            'edgesResult', edges_result,
+            'deletedEdgesResult', deleted_edges_result
         );
 END;
 $$ LANGUAGE plpgsql;

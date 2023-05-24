@@ -2,10 +2,14 @@ import { beforeAll, describe, expect, test } from 'vitest'
 import { appWithTestContainer } from '../../src/appWithTestContainer'
 import { dataRecordFns, modelFns } from '@cozemble/model-api'
 import {
-  modelReferenceFns,
-  modelReferenceNameFns,
+  DataRecordId,
+  ModelId,
+  modelReferenceIdFns,
+  recordAndEdges,
+  RecordAndEdges,
   recordGraphEdgeFns,
   systemConfigurationFns,
+  tinyValueFns,
 } from '@cozemble/model-core'
 import {
   getRecordById,
@@ -14,12 +18,37 @@ import {
   putRecord,
   simulateNewUser,
 } from './testHelpers'
-import { testEnv } from '../helper'
-import { modelReferenceIdFns, tinyValueFns } from '@cozemble/model-core'
+import { RecordsAndEdges, recordsAndEdges } from '@cozemble/model-core/dist/esm'
 
 const jwtSigningSecret = 'secret'
 const port = 3012
 const systemConfig = systemConfigurationFns.empty()
+
+const [customerModel, bookingModel] = [
+  modelFns.newInstance('Customers'),
+  modelFns.newInstance('Bookings'),
+]
+const models = [customerModel, bookingModel]
+const customerRecord1 = dataRecordFns.random(systemConfig, models, customerModel)
+const bookingRecord1 = dataRecordFns.random(systemConfig, models, bookingModel)
+const bookingRecord2 = dataRecordFns.random(systemConfig, models, bookingModel)
+
+const booking1ToCustomer1 = recordGraphEdgeFns.newInstance(
+  modelReferenceIdFns.newInstance(),
+  bookingModel.id,
+  customerModel.id,
+  bookingRecord1.id,
+  customerRecord1.id,
+  tinyValueFns.id(),
+)
+const booking2ToCustomer1 = recordGraphEdgeFns.newInstance(
+  modelReferenceIdFns.newInstance(),
+  bookingModel.id,
+  customerModel.id,
+  bookingRecord2.id,
+  customerRecord1.id,
+  tinyValueFns.id(),
+)
 
 describe('with a migrated database', () => {
   beforeAll(async () => {
@@ -33,115 +62,173 @@ describe('with a migrated database', () => {
 
   test(`getting a record with no edges returns an empty edge array`, async () => {
     const { tenantId, bearer } = await simulateNewUser(port, jwtSigningSecret)
-    const [customerModel] = await putModels(
-      port,
-      tenantId,
-      [modelFns.newInstance('Customers')],
-      bearer,
-    )
-    const models = [customerModel]
-    const customerRecord1 = dataRecordFns.random(systemConfig, models, customerModel)
-
+    await putModels(port, tenantId, models, bearer)
     await putRecord(port, tenantId, customerModel, bearer, customerRecord1)
-    const fetchedById = await getRecordById(
-      port,
+
+    await expectRecordByIdToMatch(
       tenantId,
       customerModel.id,
       customerRecord1.id,
       bearer,
+      recordAndEdges(customerRecord1, []),
     )
-    expect(fetchedById.edges).toHaveLength(0)
-    expect(fetchedById.record).toEqual(customerRecord1)
 
-    const allRecords = await getRecordsForModel(port, tenantId, customerModel.id, bearer)
-    expect(allRecords.records).toEqual([customerRecord1])
-    expect(allRecords.edges).toHaveLength(0)
+    await expectRecordsByModelIdToMatch(
+      tenantId,
+      customerModel.id,
+      bearer,
+      recordsAndEdges([customerRecord1], []),
+    )
   })
 
   test('can add one edge to a record and retrieve it', async () => {
     const { tenantId, bearer } = await simulateNewUser(port, jwtSigningSecret)
-    const [customerModel, bookingModel] = await putModels(
-      port,
-      tenantId,
-      [modelFns.newInstance('Customers'), modelFns.newInstance('Bookings')],
-      bearer,
-    )
-    const models = [customerModel, bookingModel]
-    const customerRecord1 = dataRecordFns.random(systemConfig, models, customerModel)
-    const bookingRecord1 = dataRecordFns.random(systemConfig, models, bookingModel)
+    await putModels(port, tenantId, models, bearer)
     await putRecord(port, tenantId, customerModel, bearer, customerRecord1)
-    const booking1ToCustomer1 = recordGraphEdgeFns.newInstance(
-      modelReferenceIdFns.newInstance(),
-      bookingModel.id,
-      customerModel.id,
-      bookingRecord1.id,
-      customerRecord1.id,
-      tinyValueFns.id(),
-    )
     await putRecord(port, tenantId, bookingModel, bearer, bookingRecord1, [booking1ToCustomer1])
-    const fetchedBooking = await getRecordById(
-      port,
+
+    await expectRecordByIdToMatch(
       tenantId,
       bookingModel.id,
       bookingRecord1.id,
       bearer,
+      recordAndEdges(bookingRecord1, [booking1ToCustomer1]),
     )
-    expect(fetchedBooking.record).toEqual(bookingRecord1)
-    expect(fetchedBooking.edges).toEqual([booking1ToCustomer1])
 
-    const allRecords = await getRecordsForModel(port, tenantId, customerModel.id, bearer)
-    expect(allRecords.records).toEqual([customerRecord1])
-    expect(allRecords.edges).toEqual([booking1ToCustomer1])
+    await expectRecordByIdToMatch(
+      tenantId,
+      customerModel.id,
+      customerRecord1.id,
+      bearer,
+      recordAndEdges(customerRecord1, [booking1ToCustomer1]),
+    )
+
+    await expectRecordsByModelIdToMatch(
+      tenantId,
+      customerModel.id,
+      bearer,
+      recordsAndEdges([customerRecord1], [booking1ToCustomer1]),
+    )
+
+    await expectRecordsByModelIdToMatch(
+      tenantId,
+      bookingModel.id,
+      bearer,
+      recordsAndEdges([bookingRecord1], [booking1ToCustomer1]),
+    )
   })
 
-  test('can post record edges and retrieve them', async () => {
+  test('can add two edges to one record', async () => {
     const { tenantId, bearer } = await simulateNewUser(port, jwtSigningSecret)
-    const [customerModel, bookingModel] = await putModels(
+    await putModels(port, tenantId, models, bearer)
+    await putRecord(port, tenantId, customerModel, bearer, customerRecord1)
+    await putRecord(port, tenantId, bookingModel, bearer, bookingRecord1, [booking1ToCustomer1])
+    await putRecord(port, tenantId, bookingModel, bearer, bookingRecord2, [booking2ToCustomer1])
+
+    await expectRecordByIdToMatch(
+      tenantId,
+      bookingModel.id,
+      bookingRecord1.id,
+      bearer,
+      recordAndEdges(bookingRecord1, [booking1ToCustomer1]),
+    )
+
+    await expectRecordByIdToMatch(
+      tenantId,
+      bookingModel.id,
+      bookingRecord2.id,
+      bearer,
+      recordAndEdges(bookingRecord2, [booking2ToCustomer1]),
+    )
+
+    await expectRecordByIdToMatch(
+      tenantId,
+      customerModel.id,
+      customerRecord1.id,
+      bearer,
+      recordAndEdges(customerRecord1, [booking1ToCustomer1, booking2ToCustomer1]),
+    )
+
+    await expectRecordsByModelIdToMatch(
+      tenantId,
+      customerModel.id,
+      bearer,
+      recordsAndEdges([customerRecord1], [booking1ToCustomer1, booking2ToCustomer1]),
+    )
+
+    await expectRecordsByModelIdToMatch(
+      tenantId,
+      bookingModel.id,
+      bearer,
+      recordsAndEdges([bookingRecord1, bookingRecord2], [booking1ToCustomer1, booking2ToCustomer1]),
+    )
+  })
+
+  test('can remove an edge between two records', async () => {
+    const { tenantId, bearer } = await simulateNewUser(port, jwtSigningSecret)
+    await putModels(port, tenantId, models, bearer)
+    await putRecord(port, tenantId, customerModel, bearer, customerRecord1)
+    await putRecord(port, tenantId, bookingModel, bearer, bookingRecord1, [booking1ToCustomer1])
+    await putRecord(
       port,
       tenantId,
-      [modelFns.newInstance('Customers'), modelFns.newInstance('Bookings')],
+      bookingModel,
       bearer,
-    )
-    const models = [customerModel, bookingModel]
-    const customerRecord1 = dataRecordFns.random(systemConfig, models, customerModel)
-    const bookingRecord1 = dataRecordFns.random(systemConfig, models, bookingModel)
-    const bookingRecord2 = dataRecordFns.random(systemConfig, models, bookingModel)
-
-    await putRecord(port, tenantId, customerModel, bearer, customerRecord1)
-    await putRecord(port, tenantId, bookingModel, bearer, bookingRecord1)
-    await putRecord(port, tenantId, bookingModel, bearer, bookingRecord2)
-    const modelReference = modelReferenceFns.newInstance(
-      customerModel.id,
-      [bookingModel.id],
-      modelReferenceNameFns.newInstance('Bookings'),
+      bookingRecord1,
+      [],
+      [booking1ToCustomer1.id],
     )
 
-    const customer1ToBooking1Edge = recordGraphEdgeFns.newInstance(
-      modelReference.id,
-      customerRecord1.modelId,
-      bookingRecord1.modelId,
-      customerRecord1.id,
+    await expectRecordByIdToMatch(
+      tenantId,
+      bookingModel.id,
       bookingRecord1.id,
-    )
-    const customer1ToBooking2Edge = recordGraphEdgeFns.newInstance(
-      modelReference.id,
-      customerRecord1.modelId,
-      bookingRecord2.modelId,
-      customerRecord1.id,
-      bookingRecord2.id,
+      bearer,
+      recordAndEdges(bookingRecord1, []),
     )
 
-    const postResponse = await fetch(
-      `http://localhost:${port}/${testEnv}/api/v1/tenant/${tenantId}/model/${customerModel.id.value}/record/recordEdges`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + bearer,
-        },
-        body: JSON.stringify([customer1ToBooking1Edge, customer1ToBooking2Edge]),
-      },
+    await expectRecordByIdToMatch(
+      tenantId,
+      customerModel.id,
+      customerRecord1.id,
+      bearer,
+      recordAndEdges(customerRecord1, []),
     )
-    expect(postResponse.status).toBe(200)
+
+    await expectRecordsByModelIdToMatch(
+      tenantId,
+      customerModel.id,
+      bearer,
+      recordsAndEdges([customerRecord1], []),
+    )
+
+    await expectRecordsByModelIdToMatch(
+      tenantId,
+      bookingModel.id,
+      bearer,
+      recordsAndEdges([bookingRecord1], []),
+    )
   })
 })
+
+async function expectRecordByIdToMatch(
+  tenantId: string,
+  modelId: ModelId,
+  recordId: DataRecordId,
+  bearer: string,
+  expected: RecordAndEdges,
+) {
+  const actual = await getRecordById(port, tenantId, modelId, recordId, bearer)
+  expect(actual).toEqual(expected)
+}
+
+async function expectRecordsByModelIdToMatch(
+  tenantId: string,
+  modelId: ModelId,
+  bearer: string,
+  expected: RecordsAndEdges,
+) {
+  const actual = await getRecordsForModel(port, tenantId, modelId, bearer)
+  expect(actual.records).toEqual(expect.arrayContaining(expected.records))
+  expect(actual.edges).toEqual(expect.arrayContaining(expected.edges))
+}
