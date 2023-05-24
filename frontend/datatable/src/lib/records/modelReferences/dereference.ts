@@ -28,3 +28,16 @@ export async function dereference(
     setter(null)
   }
 }
+
+export async function getReferencedRecord(
+  client: DataRecordViewerClient | DataRecordEditorClient,
+  graph: EventSourcedRecordGraph,
+  referencedModelId: ModelId,
+  recordId: DataRecordId,
+): Promise<RecordAndEdges | null> {
+  const maybeInGraph = graph.relatedRecords.find((r) => r.id.value === recordId.value)
+  if (maybeInGraph) {
+    return recordAndEdges(maybeInGraph, recordGraphEdgeFns.forRecord(graph.edges, maybeInGraph.id))
+  }
+  return await client.recordById(referencedModelId, recordId)
+}

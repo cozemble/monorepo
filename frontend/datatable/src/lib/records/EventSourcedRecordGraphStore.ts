@@ -94,7 +94,7 @@ class EventSourcedRecordGraphStoreImpl implements EventSourcedRecordGraphStore {
     modelReference: ModelReference,
     selectedValue: DataRecord | null,
   ): EventSourcedRecordGraph {
-    return eventSourcedRecordGraphFns.addEvent(
+    const mutated = eventSourcedRecordGraphFns.addEvent(
       graph,
       recordGraphEvents.recordReferencesChanged(
         recordBeingEdited,
@@ -102,6 +102,8 @@ class EventSourcedRecordGraphStoreImpl implements EventSourcedRecordGraphStore {
         selectedValue ? [selectedValue] : [],
       ),
     )
+    console.log({ mutated })
+    return mutated
   }
 }
 

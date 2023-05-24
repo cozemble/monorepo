@@ -82,10 +82,9 @@ function recordIdMatches(
   edge: RecordGraphEdge,
   recordId: DataRecordId,
 ) {
-  if (modelReference.inverse) {
-    return edge.originRecordId.value === recordId.value
-  }
-  return edge.referenceRecordId.value === recordId.value
+  return (
+    edge.referenceRecordId.value === recordId.value || edge.originRecordId.value === recordId.value
+  )
 }
 
 export const eventSourcedRecordGraphFns = {
@@ -160,10 +159,9 @@ export const eventSourcedRecordGraphFns = {
         edge.modelReferenceId.value === modelReference.id.value &&
         recordIdMatches(modelReference, edge, recordId),
     )
-    if (modelReference.inverse) {
-      return edges.map((edge) => edge.originRecordId)
-    }
-    return edges.map((edge) => edge.referenceRecordId)
+    return edges.flatMap((e) =>
+      [e.originRecordId, e.referenceRecordId].filter((id) => id.value !== recordId.value),
+    )
   },
   addEvent(graph: EventSourcedRecordGraph, event: RecordGraphEvent): EventSourcedRecordGraph {
     if (event._type === 'record.references.changed.event') {

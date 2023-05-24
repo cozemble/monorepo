@@ -64,7 +64,7 @@ export class IncrementalModelingBackend implements DataTableBackend {
     )
     return eventSourcedRecordGraphFns.newInstance(
       fetched.records.map((r) => eventSourcedDataRecordFns.fromRecord(this.modelsProvider(), r)),
-      [],
+      fetched.edges,
       [],
     )
   }

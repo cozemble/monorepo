@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type {DataRecord, DataRecordValuePath, SystemConfiguration} from "@cozemble/model-core";
+    import type {DataRecord, DataRecordValuePath, ModelView, SystemConfiguration} from "@cozemble/model-core";
     import {assembleEditorParams, type EditorParams} from "./editorHelper";
     import type {DataRecordViewerClient, UserInstruction} from "@cozemble/data-editor-sdk";
     import {dataRecordViewer} from "@cozemble/data-editor-sdk";
@@ -10,7 +10,6 @@
     import {makeConfigureViewParams} from "./ConfigureViewParams";
     import {afterUpdate} from "svelte";
     import {allModelViews} from "$lib/stores/allModelViews";
-    import type {ModelView} from "@cozemble/model-core";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord
@@ -26,7 +25,7 @@
 
     $: fetchEditorParams(dataRecordViewerClient, recordPath, $allModelViews)
 
-    function fetchEditorParams(client: DataRecordViewerClient, recordPath: DataRecordValuePath, modelViews:ModelView[]) {
+    function fetchEditorParams(client: DataRecordViewerClient, recordPath: DataRecordValuePath, modelViews: ModelView[]) {
         error = null
         try {
             editorParams = assembleEditorParams(dataRecordViewerClient, recordPath, modelViews)
