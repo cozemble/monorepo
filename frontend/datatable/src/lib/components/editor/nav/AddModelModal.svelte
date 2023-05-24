@@ -5,11 +5,11 @@ import { writable } from 'svelte/store'
 import type { JustErrorMessage } from '@cozemble/lang-util'
 import { modelIdFns } from '@cozemble/model-api'
 
-import { addTableAction } from './tables/actions'
-import { positionModal } from './modelUi'
-import { editableTableName } from './models/editableTableName'
-import { allEventSourcedModels } from './stores/allModels'
-import EditableStringInput from './editors/EditableStringInput.svelte'
+import { addTableAction } from '../../../tables/actions'
+import { positionModal } from '../../../modelUi'
+import { editableTableName } from '../../../models/editableTableName'
+import { allEventSourcedModels } from '../../../stores/allModels'
+import EditableStringInput from '../../../editors/EditableStringInput.svelte'
 
 export let anchorElement: HTMLElement
 

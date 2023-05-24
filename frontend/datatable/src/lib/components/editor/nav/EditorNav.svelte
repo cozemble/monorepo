@@ -14,7 +14,7 @@ import {
 } from '$lib/stores/allModels'
 // components
 import NavItem from '$lib/components/editor/nav/NavItem.svelte'
-import AddTableNavButton from '$lib/AddTableNavButton_r.svelte'
+import AddModelButton from '$lib/components/editor/nav/AddModelButton.svelte'
 
 export let navbarState: Writable<string | null> = writable(null)
 
@@ -48,6 +48,6 @@ function onAddModel(event: CustomEvent) {
   {/each}
 
   {#if $isModellingPermitted}
-    <AddTableNavButton on:added={onAddModel} />
+    <AddModelButton on:added={onAddModel} />
   {/if}
 </div>
