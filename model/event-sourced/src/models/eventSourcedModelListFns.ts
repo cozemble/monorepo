@@ -38,6 +38,13 @@ interface SetReferencedModelIdEvent {
   cardinality: Cardinality
 }
 
+interface SetModelReferenceCardinalityEvent {
+  _type: 'set.model.reference.cardinality.event'
+  modelReferenceId: ModelReferenceId
+  modelId: ModelId
+  cardinality: Cardinality
+}
+
 interface RemoveModelReferenceSlotEvent {
   _type: 'remove.model.reference.slot.event'
   id: ModelReferenceId
@@ -49,6 +56,7 @@ export type EventSourcedModelListEvent =
   | AddModelReferenceSlotEvent
   | SetReferencedModelIdEvent
   | RemoveModelReferenceSlotEvent
+  | SetModelReferenceCardinalityEvent
 
 function addModel(event: AddModelEvent, list: EventSourcedModelList) {
   const addition =
@@ -234,6 +242,35 @@ function handleSetReferencedModelId(list: EventSourcedModelList, event: SetRefer
   }
 }
 
+function setModelReferenceCardinality(
+  list: EventSourcedModelList,
+  event: SetModelReferenceCardinalityEvent,
+): EventSourcedModelList {
+  return {
+    ...list,
+    models: list.models.map((m) => {
+      if (m.model.id.value === event.modelId.value) {
+        return {
+          ...m,
+          model: {
+            ...m.model,
+            slots: m.model.slots.map((s) => {
+              if (s.id.value === event.modelReferenceId.value) {
+                return {
+                  ...s,
+                  cardinality: event.cardinality,
+                }
+              }
+              return s
+            }),
+          },
+        }
+      }
+      return m
+    }),
+  }
+}
+
 function eventSourceModelListReducer(
   list: EventSourcedModelList,
   event: EventSourcedModelListEvent,
@@ -249,6 +286,8 @@ function eventSourceModelListReducer(
       return addModel(event, list)
     case 'remove.model.event':
       return removeModel(list, event)
+    case 'set.model.reference.cardinality.event':
+      return setModelReferenceCardinality(list, event)
   }
 }
 
@@ -299,6 +338,18 @@ export const eventSourcedModelListEvents = {
       id,
     }
   },
+  setModelReferenceCardinality: (
+    modelReferenceId: ModelReferenceId,
+    modelId: ModelId,
+    cardinality: Cardinality,
+  ): SetModelReferenceCardinalityEvent => {
+    return {
+      _type: 'set.model.reference.cardinality.event',
+      modelReferenceId,
+      modelId,
+      cardinality,
+    }
+  },
 }
 
 export const eventSourcedModelListFns = {
@@ -306,6 +357,7 @@ export const eventSourcedModelListFns = {
     return {
       _type: 'event.sourced.model.list',
       models,
+      events: [],
     }
   },
   addEvent: (list: EventSourcedModelList, event: EventSourcedModelListEvent) => {

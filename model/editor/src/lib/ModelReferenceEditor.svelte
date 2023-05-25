@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type {ModelId, ModelReference} from "@cozemble/model-core";
+    import type {Cardinality, ModelId, ModelReference} from "@cozemble/model-core";
     import {modelReferenceFns} from "@cozemble/model-core";
     import {
         type EventSourcedModelList,
@@ -25,6 +25,9 @@
         modelList.update(ms => eventSourcedModelListFns.addEvent(ms, eventSourcedModelListEvents.setReferencedModelId(modelReference.id, modelId, referencedModelId, "many")))
     }
 
+    function setCardinality(cardinality: Cardinality) {
+        modelList.update(ms => eventSourcedModelListFns.addEvent(ms, eventSourcedModelListEvents.setModelReferenceCardinality(modelReference.id, modelId, cardinality)))
+    }
 </script>
 
 <br/>
@@ -41,3 +44,9 @@
         {/each}
     </select>
 {/if}
+<label class="label">Permit multiple records</label>
+<input class="checkbox" type="radio" name="cardinality" value="many"
+       checked={modelReference.cardinality === "many"} on:click={() => setCardinality('many')}/> Yes
+<input class="checkbox" type="radio" name="cardinality" value="one" checked={modelReference.cardinality === "one"}
+       on:click={() => setCardinality('one')}
+/> No

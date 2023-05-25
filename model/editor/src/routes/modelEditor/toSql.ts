@@ -6,10 +6,10 @@ import { modelList } from './host'
 type ModelEventAndModelId = { event: ModelEvent; modelId: ModelId }
 
 export const events = derived(modelList, (list) => {
-  const events = list.models.flatMap((model) =>
+  const modelEvents = list.models.flatMap((model) =>
     model.events.map((event) => ({ event, modelId: model.model.id })),
   )
-  return arrays.sortBy(events, (e: ModelEventAndModelId) => e.event.timestamp.value)
+  return arrays.sortBy(modelEvents, (e: ModelEventAndModelId) => e.event.timestamp.value)
 })
 
 export const eventTypes = derived(events, (events) => {

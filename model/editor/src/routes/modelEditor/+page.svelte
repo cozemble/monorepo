@@ -43,43 +43,46 @@
     }
 </script>
 
-<button class="btn" on:click={addModel}>Add a random model</button>
-{#if mounted && firstModel}
-    <ModelEditor {systemConfiguration} modelId={firstModel.model.id} {modelList} {host}/>
-{/if}
-<hr/>
-<br/>
-<div class="inspector">
-    <div class="events-inspector">
-        <div class="event-types">
-            <h5>Event types</h5>
-            {#each $eventTypes as eventType, index}
-                <a href="#!" class="event-type" on:click={() => showEvent(index)}>{index}. {eventType}</a><br/>
-            {/each}
+<div class="m-4">
+    <button class="btn" on:click={addModel}>Add a random model</button>
+    {#if mounted && firstModel}
+        <ModelEditor {systemConfiguration} modelId={firstModel.model.id} {modelList} {host}/>
+    {/if}
+    <hr/>
+    <br/>
+    <div class="inspector">
+        <div class="events-inspector">
+            <div class="event-types">
+                <h5>Event types</h5>
+                {#each $eventTypes as eventType, index}
+                    <a href="#!" class="event-type" on:click={() => showEvent(index)}>{index}. {eventType}</a><br/>
+                {/each}
+            </div>
+            {#if eventIndexToShow !== null}
+                <div class="event-type">
+                    <h5>Event {eventIndexToShow}</h5>
+                    <pre>{JSON.stringify($events[eventIndexToShow].event, null, 2)}</pre>
+                </div>
+            {/if}
         </div>
-        {#if eventIndexToShow !== null}
-            <div class="event-type">
-                <h5>Event {eventIndexToShow}</h5>
-                <pre>{JSON.stringify($events[eventIndexToShow].event, null, 2)}</pre>
-            </div>
-        {/if}
+        <div class="models-inspector">
+            <h5>Models</h5>
+            {#each $modelList.models as model, index}
+                <a href="#!" class="model-name" on:click={() => showModel(index)}>{index}
+                    . {model.model.name.value}</a><br/>
+            {/each}
+            {#if modelIndexToShow !== null}
+                {@const model = $modelList.models[modelIndexToShow]}
+                <div class="model-type">
+                    <h5>Showing model {model.model.name.value}</h5>
+                    <pre>{JSON.stringify($modelList.models[modelIndexToShow].model, null, 2)}</pre>
+                </div>
+            {/if}
+        </div>
     </div>
-    <div class="models-inspector">
-        <h5>Models</h5>
-        {#each $modelList.models as model, index}
-            <a href="#!" class="model-name" on:click={() => showModel(index)}>{index}. {model.model.name.value}</a><br/>
-        {/each}
-        {#if modelIndexToShow !== null}
-            {@const model = $modelList.models[modelIndexToShow]}
-            <div class="model-type">
-                <h5>Showing model {model.model.name.value}</h5>
-                <pre>{JSON.stringify($modelList.models[modelIndexToShow].model, null, 2)}</pre>
-            </div>
-        {/if}
+    <div class="controls">
+        <button type="button" class="btn" on:click={clearClicked}>Clear</button>
     </div>
-</div>
-<div class="controls">
-    <button type="button" on:click={clearClicked}>Clear</button>
 </div>
 
 <style>
