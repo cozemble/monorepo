@@ -33,7 +33,7 @@ export async function saveNewRecord(
   return backend.saveNewRecord(
     record,
     eventSourcedRecordGraphFns.getEdgesInvolvingRecord(graph, record.record.id),
-    [],
+    graph.deletedEdges.map((edge) => edge.id),
   )
 }
 

@@ -35,11 +35,17 @@ export function makeRecordControls(
       const indexOfNewUnsavedRecords = newUnsavedRecords.findIndex(
         (id) => id.value === recordId.value,
       )
+      console.log({
+        graph: recordGraph.get(),
+        recordId,
+        indexOfNewUnsavedRecords,
+        newUnsavedRecords,
+      })
       if (indexOfNewUnsavedRecords >= 0) {
         await recordSaver.saveNewRecord(
           record,
           eventSourcedRecordGraphFns.getEdgesInvolvingRecord(recordGraph.get(), recordId),
-          [],
+          recordGraph.get().deletedEdges.map((e) => e.id),
         )
         // remove recordId from newUnsavedRecords
         newUnsavedRecords.splice(indexOfNewUnsavedRecords, 1)
@@ -47,7 +53,7 @@ export function makeRecordControls(
         await recordSaver.saveExistingRecord(
           record,
           eventSourcedRecordGraphFns.getEdgesInvolvingRecord(recordGraph.get(), recordId),
-          [],
+          recordGraph.get().deletedEdges.map((e) => e.id),
         )
       }
       lastSavedByRecordId.update((lastSavedByRecordId) => {
@@ -76,7 +82,7 @@ export function makeRecordControls(
       await recordSaver.saveNewRecord(
         record,
         eventSourcedRecordGraphFns.getEdgesInvolvingRecord(recordGraph.get(), recordId),
-        [],
+        recordGraph.get().deletedEdges.map((e) => e.id),
       )
       // remove recordId from newUnsavedRecords
       newUnsavedRecords.splice(indexOfNewUnsavedRecords, 1)

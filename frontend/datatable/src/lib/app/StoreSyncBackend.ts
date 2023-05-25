@@ -6,11 +6,10 @@ import type {
 } from '@cozemble/model-event-sourced'
 import type { JustErrorMessage, Outcome } from '@cozemble/lang-util'
 import { allEventSourcedModels } from '../stores/allModels'
-import type { DataRecord, DataRecordId, ModelId, ModelView } from '@cozemble/model-core'
+import type { DataRecordId, Id, ModelId, ModelView, RecordGraphEdge } from '@cozemble/model-core'
 import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import { allModelViews } from '../stores/allModelViews'
 import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
-import type { RecordGraphEdge } from '@cozemble/model-core'
 
 export class StoreSyncBackend implements Backend {
   constructor(private readonly delegate: Backend) {}
@@ -46,15 +45,17 @@ export class StoreSyncBackend implements Backend {
   async saveNewRecord(
     newRecord: EventSourcedDataRecord,
     edges: RecordGraphEdge[],
+    deletedEdges: Id[],
   ): Promise<RecordSaveOutcome> {
-    return await this.delegate.saveNewRecord(newRecord, edges, [])
+    return await this.delegate.saveNewRecord(newRecord, edges, deletedEdges)
   }
 
   async saveExistingRecord(
     record: EventSourcedDataRecord,
     edges: RecordGraphEdge[],
+    deletedEdges: Id[],
   ): Promise<RecordSaveOutcome> {
-    return await this.delegate.saveExistingRecord(record, edges, [])
+    return await this.delegate.saveExistingRecord(record, edges, deletedEdges)
   }
 
   async searchRecords(modelId: ModelId, search: string) {

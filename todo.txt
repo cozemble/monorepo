@@ -1,9 +1,10 @@
  * changing a model referenced does not mark the row as dirty - cover this by storing edge edit events in the graph
  * need to be able to configure cardinality on model reference slots
-
  * changing a booking from customer a to customer b leave the old reference to the booking in customer a
+
  * borders around select boxes in model slot configurer are gone
  * Need to be able to remove a reference in a many model reference slot
  * Need to be able to add a reference in a many model reference slot
  * Need to be able to change a reference in a many model reference slot
  * Inverse reference does not have the right model name in the slot configurer
+ * When changing a reference in a has-one relationship to a newly created record, the new edge gets saved twice

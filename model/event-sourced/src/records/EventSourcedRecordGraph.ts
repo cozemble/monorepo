@@ -16,6 +16,7 @@ export interface EventSourcedRecordGraph {
   _type: 'event.sourced.record.graph'
   records: EventSourcedDataRecord[]
   edges: RecordGraphEdge[]
+  deletedEdges: RecordGraphEdge[]
   relatedRecords: DataRecord[]
   events: RecordGraphEvent[]
 }
@@ -68,8 +69,22 @@ function addReferencesChangedEvent(
   graph: EventSourcedRecordGraph,
   event: RecordReferencesChangedEvent,
 ): EventSourcedRecordGraph {
-  if (event.modelReference.cardinality === 'one' && event.selection.length > 1) {
-    throw new Error(`Cannot add multiple references to a one to one relationship`)
+  if (event.modelReference.cardinality === 'one') {
+    if (event.selection.length > 1) {
+      throw new Error(`Cannot add multiple references to a one to one relationship`)
+    }
+    const edge = graph.edges.find(
+      (edge) =>
+        edge.modelReferenceId.value === event.modelReference.id.value &&
+        recordGraphEdgeFns.involvesRecord(edge, event.recordBeingEdited.id),
+    )
+    if (edge) {
+      graph = {
+        ...graph,
+        deletedEdges: [...graph.deletedEdges, edge],
+        edges: graph.edges.filter((e) => e !== edge),
+      }
+    }
   }
   if (event.modelReference.inverse) {
     return addReferencesChangedEventInverse(graph, event)
@@ -107,6 +122,7 @@ export const eventSourcedRecordGraphFns = {
     edges,
     relatedRecords,
     events,
+    deletedEdges: [],
   }),
   fromRecordGraph: (models: Model[], graph: RecordGraph): EventSourcedRecordGraph => {
     return eventSourcedRecordGraphFns.newInstance(

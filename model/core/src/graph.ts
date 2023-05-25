@@ -48,6 +48,12 @@ export const recordGraphEdgeFns = {
         recordIds.includes(edge.originRecordId) || recordIds.includes(edge.referenceRecordId),
     )
   },
+  involvesRecord(edges: RecordGraphEdge, recordId: DataRecordId): boolean {
+    return (
+      edges.originRecordId.value === recordId.value ||
+      edges.referenceRecordId.value === recordId.value
+    )
+  },
 }
 
 export interface RecordGraph {

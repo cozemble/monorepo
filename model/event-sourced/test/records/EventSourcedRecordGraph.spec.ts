@@ -104,6 +104,7 @@ describe('given a customer and bookings arrangement', () => {
       .map((r) => r.record.id)
     expect(changedRecordIds).toEqual([customer1.id])
   })
+
   test('can add two bookings to a customer', () => {
     const mutatedGraph = eventSourcedRecordGraphFns.addEvents(
       graph,
@@ -230,6 +231,23 @@ describe('given a customer and bookings arrangement', () => {
     } catch (e) {
       expect(e.message).toMatch('Cannot add multiple references to a one to one relationship')
     }
+  })
+
+  test('trying to add a second customer to a booking deletes the old edge, because its a has-one relationship', () => {
+    const initialGraph = eventSourcedRecordGraphFns.addEvent(
+      graph,
+      recordGraphEvents.recordReferencesChanged(booking1, inverseCustomerToBookingModelReference, [
+        customer1,
+      ]),
+    )
+    const mutatedGraph = eventSourcedRecordGraphFns.addEvent(
+      initialGraph,
+      recordGraphEvents.recordReferencesChanged(booking1, inverseCustomerToBookingModelReference, [
+        customer2,
+      ]),
+    )
+    expect(mutatedGraph.edges).toHaveLength(1)
+    expect(mutatedGraph.deletedEdges).toHaveLength(1)
   })
 })
 

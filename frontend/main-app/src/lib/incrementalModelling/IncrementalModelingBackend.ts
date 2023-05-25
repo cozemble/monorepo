@@ -7,15 +7,21 @@ import {
 } from '@cozemble/model-event-sourced'
 import type { JustErrorMessage, Outcome } from '@cozemble/lang-util'
 import { justErrorMessage, outcomeFns } from '@cozemble/lang-util'
-import type { DataRecordId, Model, ModelId, ModelView, RecordGraphEdge } from '@cozemble/model-core'
+import type {
+  DataRecordId,
+  Id,
+  Model,
+  ModelId,
+  ModelView,
+  RecordAndEdges,
+  RecordGraphEdge,
+  RecordsAndEdges,
+} from '@cozemble/model-core'
 import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import type { Backend } from '@cozemble/frontend-bff'
 import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
 import { toFilledFilterInstanceGroup } from '@cozemble/frontend-ui-blocks'
-import type { Id } from '@cozemble/model-core'
-import type { RecordAndEdges } from '@cozemble/model-core'
-import type { RecordsAndEdges } from '@cozemble/model-core'
 
 export class IncrementalModelingBackend implements DataTableBackend {
   constructor(
@@ -29,10 +35,15 @@ export class IncrementalModelingBackend implements DataTableBackend {
   }
 
   async saveNewGraph(graph: EventSourcedRecordGraph): Promise<Outcome<EventSourcedRecordGraph>> {
+    console.log('saveNewGraph', graph)
     const lastIndex = graph.records.length - 1
     for (let i = 0; i < graph.records.length; i++) {
       if (i === lastIndex) {
-        await this.saveNewRecord(graph.records[i], graph.edges, [])
+        await this.saveNewRecord(
+          graph.records[i],
+          graph.edges,
+          graph.deletedEdges.map((e) => e.id),
+        )
       } else {
         await this.saveNewRecord(graph.records[i], [], [])
       }
@@ -74,6 +85,7 @@ export class IncrementalModelingBackend implements DataTableBackend {
     edges: RecordGraphEdge[],
     deletedEdges: Id[],
   ): Promise<RecordSaveOutcome> {
+    console.log('saveNewRecord', newRecord)
     return this.backend.saveRecord(
       this.tenantId,
       this.modelsProvider(),
@@ -88,6 +100,7 @@ export class IncrementalModelingBackend implements DataTableBackend {
     edges: RecordGraphEdge[],
     deletedEdges: Id[],
   ): Promise<RecordSaveOutcome> {
+    console.log('saveExistingRecord', { record, edges, deletedEdges })
     return this.backend.saveRecord(
       this.tenantId,
       this.modelsProvider(),
@@ -98,8 +111,7 @@ export class IncrementalModelingBackend implements DataTableBackend {
   }
 
   async searchRecords(modelId: ModelId, search: string): Promise<RecordsAndEdges> {
-    const fetched = await this.backend.fetchRecords(this.tenantId, modelId.value, search, null)
-    return fetched
+    return await this.backend.fetchRecords(this.tenantId, modelId.value, search, null)
   }
 
   recordById(modelId: ModelId, recordId: DataRecordId): Promise<RecordAndEdges | null> {
