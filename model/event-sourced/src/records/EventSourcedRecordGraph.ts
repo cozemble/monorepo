@@ -17,6 +17,7 @@ export interface EventSourcedRecordGraph {
   records: EventSourcedDataRecord[]
   edges: RecordGraphEdge[]
   relatedRecords: DataRecord[]
+  events: RecordGraphEvent[]
 }
 
 function addReferencesChangedEventForward(
@@ -87,16 +88,25 @@ function recordIdMatches(
   )
 }
 
+function storeEvent(
+  eventSourcedRecordGraph: EventSourcedRecordGraph,
+  event: RecordGraphEvent,
+): EventSourcedRecordGraph {
+  return { ...eventSourcedRecordGraph, events: [...eventSourcedRecordGraph.events, event] }
+}
+
 export const eventSourcedRecordGraphFns = {
   newInstance: (
     records: EventSourcedDataRecord[],
     edges: RecordGraphEdge[],
     relatedRecords: DataRecord[],
+    events: RecordGraphEvent[] = [],
   ): EventSourcedRecordGraph => ({
     _type: 'event.sourced.record.graph',
     records,
     edges,
     relatedRecords,
+    events,
   }),
   fromRecordGraph: (models: Model[], graph: RecordGraph): EventSourcedRecordGraph => {
     return eventSourcedRecordGraphFns.newInstance(
@@ -165,7 +175,7 @@ export const eventSourcedRecordGraphFns = {
   },
   addEvent(graph: EventSourcedRecordGraph, event: RecordGraphEvent): EventSourcedRecordGraph {
     if (event._type === 'record.references.changed.event') {
-      return addReferencesChangedEvent(graph, event)
+      return storeEvent(addReferencesChangedEvent(graph, event), event)
     }
     return graph
   },
@@ -184,5 +194,20 @@ export const eventSourcedRecordGraphFns = {
         edge.originRecordId.value === recordId.value ||
         edge.referenceRecordId.value === recordId.value,
     )
+  },
+  recordsChangedSince(
+    graph: EventSourcedRecordGraph,
+    sinceByRecordId: Map<string, number>,
+  ): EventSourcedDataRecord[] {
+    return graph.records.filter((record) => {
+      const since = sinceByRecordId.get(record.record.id.value) ?? 0
+      return (
+        record.events.some((event) => event.timestamp.value > since) ||
+        graph.events.some(
+          (e) =>
+            e.recordBeingEdited.id.value === record.record.id.value && e.timestamp.value > since,
+        )
+      )
+    })
   },
 }

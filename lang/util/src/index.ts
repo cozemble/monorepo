@@ -295,3 +295,5 @@ export { Value, value } from './value'
 export { nanoids } from './nanoids'
 
 export { UnsuccessfulOutcome, Outcome, SuccessfulOutcome, outcomeFns } from './outcomes'
+
+export { time } from './time'

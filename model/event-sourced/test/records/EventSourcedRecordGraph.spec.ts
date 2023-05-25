@@ -1,6 +1,11 @@
 import { describe, expect, test } from 'vitest'
 import { dataRecordFns, modelFns, modelIdFns, modelOptions } from '@cozemble/model-api'
-import { eventSourcedModelFns } from '../../src'
+import {
+  eventSourcedDataRecordFns,
+  eventSourcedModelFns,
+  eventSourcedRecordGraphFns,
+  recordGraphEvents,
+} from '../../src'
 import {
   dataRecordIdFns,
   ModelReference,
@@ -10,10 +15,7 @@ import {
   recordGraphEdgeFns,
   systemConfigurationFns,
 } from '@cozemble/model-core'
-import { eventSourcedRecordGraphFns } from '../../src/records/EventSourcedRecordGraph'
-import { eventSourcedDataRecordFns } from '../../src/records/EventSourcedDataRecord'
-import { recordGraphEvents } from '../../src/records/recordGraphEvents'
-import { objects } from '@cozemble/lang-util'
+import { objects, time } from '@cozemble/lang-util'
 
 describe('given a customer and bookings arrangement', () => {
   const modelReferenceId = modelReferenceIdFns.newInstance('fromBookingToCustomer')
@@ -56,11 +58,10 @@ describe('given a customer and bookings arrangement', () => {
   booking2.id = dataRecordIdFns.newInstance('booking2')
   const fromCustomerToBookingModelReference = customerModel.model.slots[0] as ModelReference
   const inverseCustomerToBookingModelReference = bookingModel.model.slots[0] as ModelReference
+  const records = [customer1, customer2, booking1, booking2]
 
   const graph = eventSourcedRecordGraphFns.newInstance(
-    [customer1, customer2, booking1, booking2].map((r) =>
-      eventSourcedDataRecordFns.fromRecord(models, r),
-    ),
+    records.map((r) => eventSourcedDataRecordFns.fromRecord(models, r)),
     [],
     [],
   )
@@ -85,6 +86,24 @@ describe('given a customer and bookings arrangement', () => {
     )
   })
 
+  test('adding a reference marks the record as dirty', async () => {
+    const now = new Date().getTime()
+    const saveTimes = records.reduce((acc, r) => {
+      acc.set(r.id.value, now)
+      return acc
+    }, new Map<string, number>())
+    await time.sleep(1)
+    const mutatedGraph = eventSourcedRecordGraphFns.addEvent(
+      graph,
+      recordGraphEvents.recordReferencesChanged(customer1, fromCustomerToBookingModelReference, [
+        booking1,
+      ]),
+    )
+    const changedRecordIds = eventSourcedRecordGraphFns
+      .recordsChangedSince(mutatedGraph, saveTimes)
+      .map((r) => r.record.id)
+    expect(changedRecordIds).toEqual([customer1.id])
+  })
   test('can add two bookings to a customer', () => {
     const mutatedGraph = eventSourcedRecordGraphFns.addEvents(
       graph,

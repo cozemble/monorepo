@@ -40,13 +40,8 @@
     const focus = gettableWritable(emptyDataTableFocus(() => $records))
     const focusControls = makeFocusControls(modelsProvider, () => $records, systemConfigurationProvider, focus)
     const lastSavedByRecordId = writable(new Map<string, number>())
-    const dirtyRecords = derived([eventSourcedRecords, lastSavedByRecordId], ([records, lastSavedByRecordId]) => {
-        return records
-            .filter((r) => {
-                const lastSaved = lastSavedByRecordId.get(r.record.id.value) ?? 0
-                return r.events.some((e) => e.timestamp.value > lastSaved)
-            })
-            .map((r) => r.record.id)
+    const dirtyRecords = derived([eventSourcedRecordGraph, lastSavedByRecordId], ([graph, lastSavedByRecordId]) => {
+        return eventSourcedRecordGraphFns.recordsChangedSince(graph, lastSavedByRecordId).map(r => r.record.id)
     })
     const loadingState = writable('loading' as LoadingState)
     const filterParams = writable(emptyFilterParams())
