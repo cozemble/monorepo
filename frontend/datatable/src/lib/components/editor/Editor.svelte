@@ -26,7 +26,7 @@ import { systemConfiguration as systemConfigurationStore } from '../../stores/sy
 import { recordFilteringComponentStore } from '../../stores/recordFilteringComponentStore'
 import { contextHelper } from '../../stores/contextHelper'
 // components
-import ModelPane from '$lib/models/ModelPane.svelte'
+import ModelPane from '$lib/components/editor/ModelPane.svelte'
 import RecordCreatorContext from '$lib/records/creator/RecordCreatorContext.svelte'
 import Modals from '$lib/Modals.svelte'
 import EditorNav from '$lib/components/editor/nav/EditorNav.svelte'
