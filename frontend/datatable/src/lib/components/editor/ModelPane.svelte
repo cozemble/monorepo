@@ -3,7 +3,6 @@ import { modelIdFns } from '@cozemble/model-api'
 import { clickOutside } from '@cozemble/ui-atoms'
 
 // misc <!-- TODO simplify -->
-import DataRecordsTableInContext from '../../records/DataRecordsTableInContext.svelte'
 import type { DataTableFocusControls2 } from '../../focus/DataTableFocus'
 // stores
 import { recordFilteringComponentStore } from '../../stores/recordFilteringComponentStore'
@@ -11,6 +10,7 @@ import { contextHelper } from '../../stores/contextHelper'
 // components
 import ModelPaneContext from './ModelRecordsContext.svelte'
 import ModelDevConsole from '../../models/ModelDevConsole.svelte'
+import RecordEditor from './RecordEditor.svelte'
 
 export let modelId: string
 const showDevConsole = contextHelper.getShowDevConsole()
@@ -36,7 +36,7 @@ function clickedOutsideTable(focusControls: DataTableFocusControls2) {
         use:clickOutside
         on:click_outside={() => clickedOutsideTable(focusControls)}
       >
-        <DataRecordsTableInContext />
+        <RecordEditor />
       </div>
     </div>
 

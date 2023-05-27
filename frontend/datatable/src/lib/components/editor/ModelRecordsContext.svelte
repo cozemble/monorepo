@@ -110,9 +110,8 @@ let someRecordsLoaded = false
 //
 
 const unsubAllEventSourcedModels = allModels.subscribe(models => {
-    eventSourcedRecordGraph.update(graph => {
-        return eventSourcedRecordGraphFns.updateModelsInDataRecords(graph, models)
-    })
+    eventSourcedRecordGraph.update(graph =>
+        eventSourcedRecordGraphFns.updateModelsInDataRecords(graph, models))
 })
 
 function newEmptyRecord(model: Model) {
