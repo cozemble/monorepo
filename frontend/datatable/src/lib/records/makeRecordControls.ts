@@ -45,7 +45,7 @@ export function makeRecordControls(
         await recordSaver.saveNewRecord(
           record,
           eventSourcedRecordGraphFns.getEdgesInvolvingRecord(recordGraph.get(), recordId),
-          recordGraph.get().deletedEdges.map((e) => e.id),
+          recordGraph.get().deletedEdges.map((e) => e.edge.id),
         )
         // remove recordId from newUnsavedRecords
         newUnsavedRecords.splice(indexOfNewUnsavedRecords, 1)
@@ -53,7 +53,7 @@ export function makeRecordControls(
         await recordSaver.saveExistingRecord(
           record,
           eventSourcedRecordGraphFns.getEdgesInvolvingRecord(recordGraph.get(), recordId),
-          recordGraph.get().deletedEdges.map((e) => e.id),
+          recordGraph.get().deletedEdges.map((e) => e.edge.id),
         )
       }
       lastSavedByRecordId.update((lastSavedByRecordId) => {
@@ -82,7 +82,7 @@ export function makeRecordControls(
       await recordSaver.saveNewRecord(
         record,
         eventSourcedRecordGraphFns.getEdgesInvolvingRecord(recordGraph.get(), recordId),
-        recordGraph.get().deletedEdges.map((e) => e.id),
+        recordGraph.get().deletedEdges.map((e) => e.edge.id),
       )
       // remove recordId from newUnsavedRecords
       newUnsavedRecords.splice(indexOfNewUnsavedRecords, 1)

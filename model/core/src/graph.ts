@@ -54,6 +54,15 @@ export const recordGraphEdgeFns = {
       edges.referenceRecordId.value === recordId.value
     )
   },
+  sameReference(a: RecordGraphEdge, b: RecordGraphEdge): boolean {
+    return (
+      a.modelReferenceId.value === b.modelReferenceId.value &&
+      a.originModelId.value === b.originModelId.value &&
+      a.referenceModelId.value === b.referenceModelId.value &&
+      a.originRecordId.value === b.originRecordId.value &&
+      a.referenceRecordId.value === b.referenceRecordId.value
+    )
+  },
 }
 
 export interface RecordGraph {

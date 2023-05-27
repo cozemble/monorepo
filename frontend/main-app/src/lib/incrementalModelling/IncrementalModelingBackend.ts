@@ -22,6 +22,7 @@ import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data
 import type { Backend } from '@cozemble/frontend-bff'
 import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
 import { toFilledFilterInstanceGroup } from '@cozemble/frontend-ui-blocks'
+import { timestampedRecordGraphEdgeFns } from '@cozemble/model-event-sourced/dist/esm'
 
 export class IncrementalModelingBackend implements DataTableBackend {
   constructor(
@@ -41,8 +42,8 @@ export class IncrementalModelingBackend implements DataTableBackend {
       if (i === lastIndex) {
         await this.saveNewRecord(
           graph.records[i],
-          graph.edges,
-          graph.deletedEdges.map((e) => e.id),
+          graph.edges.map((e) => e.edge),
+          graph.deletedEdges.map((e) => e.edge.id),
         )
       } else {
         await this.saveNewRecord(graph.records[i], [], [])
@@ -75,7 +76,7 @@ export class IncrementalModelingBackend implements DataTableBackend {
     )
     return eventSourcedRecordGraphFns.newInstance(
       fetched.records.map((r) => eventSourcedDataRecordFns.fromRecord(this.modelsProvider(), r)),
-      fetched.edges,
+      fetched.edges.map((e) => timestampedRecordGraphEdgeFns.newInstance(e)),
       [],
     )
   }
@@ -85,7 +86,6 @@ export class IncrementalModelingBackend implements DataTableBackend {
     edges: RecordGraphEdge[],
     deletedEdges: Id[],
   ): Promise<RecordSaveOutcome> {
-    console.log('saveNewRecord', newRecord)
     return this.backend.saveRecord(
       this.tenantId,
       this.modelsProvider(),

@@ -9,6 +9,7 @@ import type {
 import {
   eventSourcedDataRecordFns,
   eventSourcedRecordGraphFns,
+  type TimestampedRecordGraphEdge,
 } from '@cozemble/model-event-sourced'
 import type {
   DataRecord,
@@ -33,7 +34,7 @@ export class InMemoryBackend implements Backend {
   constructor(
     private readonly models: Map<string, EventSourcedModel> = new Map(),
     private readonly records: Map<string, DataRecord[]> = new Map(),
-    private readonly edges: RecordGraphEdge[] = [],
+    private readonly edges: TimestampedRecordGraphEdge[] = [],
     private readonly modelViews: ModelView[] = [],
     private attachments: UploadedAttachment[] = [],
   ) {}
@@ -42,11 +43,6 @@ export class InMemoryBackend implements Backend {
     graph.records.forEach((record) => this.saveNewRecord(record))
     graph.edges.forEach((edge) => this.edges.push(edge))
     return outcomeFns.successful(graph)
-  }
-
-  async saveNewEdges(edges: RecordGraphEdge[]): Promise<Outcome<RecordGraphEdge[]>> {
-    edges.forEach((edge) => this.edges.push(edge))
-    return outcomeFns.successful(edges)
   }
 
   async saveModel(model: EventSourcedModel): Promise<JustErrorMessage | null> {
@@ -106,14 +102,20 @@ export class InMemoryBackend implements Backend {
   async searchRecords(modelId: ModelId, search: string): Promise<RecordsAndEdges> {
     const records = this.records.get(modelId.value) || []
     if (search.trim().length === 0) {
-      return recordsAndEdges(records, this.edges)
+      return recordsAndEdges(
+        records,
+        this.edges.map((e) => e.edge),
+      )
     }
     const matchingRecords = records.filter((record) =>
       JSON.stringify(record.values).includes(search),
     )
     const edges = new Set<RecordGraphEdge>()
     matchingRecords.forEach((record) => {
-      const recordEdges = recordGraphEdgeFns.forRecord(this.edges, record.id)
+      const recordEdges = recordGraphEdgeFns.forRecord(
+        this.edges.map((e) => e.edge),
+        record.id,
+      )
       recordEdges.forEach((edge) => edges.add(edge))
     })
     return recordsAndEdges(matchingRecords, Array.from(edges))
@@ -130,7 +132,10 @@ export class InMemoryBackend implements Backend {
     if (record === null) {
       return null
     }
-    const edges = recordGraphEdgeFns.forRecord(this.edges, record.id)
+    const edges = recordGraphEdgeFns.forRecord(
+      this.edges.map((e) => e.edge),
+      record.id,
+    )
     return recordAndEdges(record, edges)
   }
 

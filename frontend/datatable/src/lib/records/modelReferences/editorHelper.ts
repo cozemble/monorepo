@@ -19,6 +19,7 @@ import { applyTemplate, modelToJson } from '@cozemble/model-to-json'
 import { modelFns } from '@cozemble/model-api'
 import { strings } from '@cozemble/lang-util'
 import type { EventSourcedRecordGraph } from '@cozemble/model-event-sourced'
+import { timestampedRecordGraphEdgeFns } from '@cozemble/model-event-sourced/dist/esm'
 
 export interface EditorParams {
   _type: 'editor.params'
@@ -94,12 +95,14 @@ export function inverseReferenceSetter(
       ...graph,
       relatedRecords: [originatingRecord],
       edges: [
-        recordGraphEdgeFns.newInstance(
-          modelReferenceId,
-          originatingRecord.modelId,
-          createdRecord.modelId,
-          originatingRecord.id,
-          createdRecord.id,
+        timestampedRecordGraphEdgeFns.newInstance(
+          recordGraphEdgeFns.newInstance(
+            modelReferenceId,
+            originatingRecord.modelId,
+            createdRecord.modelId,
+            originatingRecord.id,
+            createdRecord.id,
+          ),
         ),
       ],
     }

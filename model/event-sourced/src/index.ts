@@ -19,6 +19,8 @@ export {
 export {
   EventSourcedRecordGraph,
   eventSourcedRecordGraphFns,
+  TimestampedRecordGraphEdge,
+  timestampedRecordGraphEdgeFns,
 } from './records/EventSourcedRecordGraph'
 
 export {

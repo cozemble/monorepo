@@ -7,90 +7,200 @@ import {
   RecordGraphEdge,
   recordGraphEdgeFns,
   SystemConfiguration,
+  TimestampEpochMillis,
+  timestampEpochMillis,
 } from '@cozemble/model-core'
 import { DataRecordEditEvent } from './dataRecordEditEvents'
 import { EventSourcedDataRecord, eventSourcedDataRecordFns } from './EventSourcedDataRecord'
 import { RecordGraphEvent, RecordReferencesChangedEvent } from './recordGraphEvents'
 
+export interface TimestampedRecordGraphEdge {
+  _type: 'timestamped.record.graph.edge'
+  edge: RecordGraphEdge
+  timestamp: TimestampEpochMillis
+}
+
+export const timestampedRecordGraphEdgeFns = {
+  newInstance: (
+    edge: RecordGraphEdge,
+    timestamp = timestampEpochMillis(),
+  ): TimestampedRecordGraphEdge => ({
+    _type: 'timestamped.record.graph.edge',
+    edge,
+    timestamp,
+  }),
+}
+
 export interface EventSourcedRecordGraph {
   _type: 'event.sourced.record.graph'
   records: EventSourcedDataRecord[]
-  edges: RecordGraphEdge[]
-  deletedEdges: RecordGraphEdge[]
+  edges: TimestampedRecordGraphEdge[]
+  deletedEdges: TimestampedRecordGraphEdge[]
   relatedRecords: DataRecord[]
   events: RecordGraphEvent[]
 }
 
-function addReferencesChangedEventForward(
-  graph: EventSourcedRecordGraph,
+function updateEdge(
+  edge: TimestampedRecordGraphEdge,
   event: RecordReferencesChangedEvent,
-): EventSourcedRecordGraph {
-  const relevantEdges = graph.edges.filter(
-    (edge) =>
-      edge.modelReferenceId.value === event.modelReference.id.value &&
-      edge.originRecordId.value === event.recordBeingEdited.id.value,
-  )
-  const newEdges = event.selection.map((selectedRecord) => {
-    return recordGraphEdgeFns.newInstance(
-      event.modelReference.id,
-      event.modelReference.originModelId,
-      selectedRecord.modelId,
-      event.recordBeingEdited.id,
-      selectedRecord.id,
-    )
-  })
-  const retainedEdges = graph.edges.filter((edge) => !relevantEdges.includes(edge))
-  return { ...graph, edges: [...retainedEdges, ...newEdges] }
+): TimestampedRecordGraphEdge {
+  if (event.modelReference.originModelId.value === edge.edge.originModelId.value) {
+    return {
+      ...edge,
+      edge: { ...edge.edge, originRecordId: event.selection[0].id },
+      timestamp: event.timestamp,
+    }
+  } else {
+    return {
+      ...edge,
+      edge: { ...edge.edge, referenceRecordId: event.selection[0].id },
+      timestamp: event.timestamp,
+    }
+  }
 }
 
-function addReferencesChangedEventInverse(
-  graph: EventSourcedRecordGraph,
+function makeNewEdge(
   event: RecordReferencesChangedEvent,
-): EventSourcedRecordGraph {
-  const relevantEdges = graph.edges.filter(
-    (edge) =>
-      edge.modelReferenceId.value === event.modelReference.id.value &&
-      edge.referenceRecordId.value === event.recordBeingEdited.id.value,
-  )
-  const newEdges = event.selection.map((selectedRecord) => {
-    return recordGraphEdgeFns.newInstance(
+  selectedRecord: DataRecord,
+): TimestampedRecordGraphEdge {
+  if (event.modelReference.originModelId.value === event.recordBeingEdited.modelId.value) {
+    return timestampedRecordGraphEdgeFns.newInstance(
+      recordGraphEdgeFns.newInstance(
+        event.modelReference.id,
+        event.modelReference.originModelId,
+        selectedRecord.modelId,
+        event.recordBeingEdited.id,
+        selectedRecord.id,
+      ),
+      event.timestamp,
+    )
+  }
+  return timestampedRecordGraphEdgeFns.newInstance(
+    recordGraphEdgeFns.newInstance(
       event.modelReference.id,
       selectedRecord.modelId,
       event.recordBeingEdited.modelId,
       selectedRecord.id,
       event.recordBeingEdited.id,
+    ),
+    event.timestamp,
+  )
+}
+
+function deleteEdges(
+  graph: EventSourcedRecordGraph,
+  existingEdges: TimestampedRecordGraphEdge[],
+  event: RecordReferencesChangedEvent,
+) {
+  return {
+    ...graph,
+    edges: graph.edges.filter((edge) => !existingEdges.includes(edge)),
+    deletedEdges: [
+      ...graph.deletedEdges,
+      ...existingEdges.map((e) =>
+        timestampedRecordGraphEdgeFns.newInstance(e.edge, event.timestamp),
+      ),
+    ],
+  }
+}
+
+function handleHasOneReference(
+  event: RecordReferencesChangedEvent,
+  existingEdges: TimestampedRecordGraphEdge[],
+  graph: EventSourcedRecordGraph,
+) {
+  if (event.selection.length > 1) {
+    throw new Error(
+      `Cannot set multiple references for has-one relationship ${event.modelReference.id.value}`,
     )
-  })
-  const retainedEdges = graph.edges.filter((edge) => !relevantEdges.includes(edge))
-  return { ...graph, edges: [...retainedEdges, ...newEdges] }
+  }
+  if (existingEdges.length > 1) {
+    throw new Error(
+      `Found ${existingEdges.length} edges for model reference ${event.modelReference.id.value} but expected 1`,
+    )
+  }
+  if (existingEdges.length === 1) {
+    const updatedEdge = updateEdge(existingEdges[0], event)
+    return {
+      ...graph,
+      edges: graph.edges.map((edge) => (edge === existingEdges[0] ? updatedEdge : edge)),
+    }
+  }
+  const newEdge = makeNewEdge(event, event.selection[0])
+  return { ...graph, edges: [...graph.edges, newEdge] }
+}
+
+function findDeletedEdges(
+  existingEdges: TimestampedRecordGraphEdge[],
+  desiredEdgeState: TimestampedRecordGraphEdge[],
+) {
+  return existingEdges.filter(
+    (existingEdge) =>
+      !desiredEdgeState.some((edge) =>
+        recordGraphEdgeFns.sameReference(existingEdge.edge, edge.edge),
+      ),
+  )
+}
+
+function findRetainedEdges(
+  existingEdges: TimestampedRecordGraphEdge[],
+  desiredEdgeState: TimestampedRecordGraphEdge[],
+) {
+  return existingEdges.filter((existingEdge) =>
+    desiredEdgeState.some((edge) => recordGraphEdgeFns.sameReference(existingEdge.edge, edge.edge)),
+  )
+}
+
+function findNewEdges(
+  deletedEdges: TimestampedRecordGraphEdge[],
+  retainedEdges: TimestampedRecordGraphEdge[],
+  desiredEdgeState: TimestampedRecordGraphEdge[],
+) {
+  return desiredEdgeState.filter(
+    (desiredEdge) =>
+      !deletedEdges.some((edge) => recordGraphEdgeFns.sameReference(desiredEdge.edge, edge.edge)) &&
+      !retainedEdges.some((edge) => recordGraphEdgeFns.sameReference(desiredEdge.edge, edge.edge)),
+  )
+}
+
+function handleHasManyReference(
+  graph: EventSourcedRecordGraph,
+  event: RecordReferencesChangedEvent,
+  existingEdges: TimestampedRecordGraphEdge[],
+): EventSourcedRecordGraph {
+  const desiredEdgeState = event.selection.map((selectedRecord) =>
+    makeNewEdge(event, selectedRecord),
+  )
+  const deletedEdges = findDeletedEdges(existingEdges, desiredEdgeState).map((edge) => ({
+    ...edge,
+    timestamp: event.timestamp,
+  }))
+  const retainedEdges = findRetainedEdges(existingEdges, desiredEdgeState)
+  const newEdges = findNewEdges(deletedEdges, retainedEdges, desiredEdgeState)
+
+  return {
+    ...graph,
+    edges: [...retainedEdges, ...newEdges],
+    deletedEdges: [...graph.deletedEdges, ...deletedEdges],
+  }
 }
 
 function addReferencesChangedEvent(
   graph: EventSourcedRecordGraph,
   event: RecordReferencesChangedEvent,
 ): EventSourcedRecordGraph {
+  const existingEdges = graph.edges.filter(
+    (edge) =>
+      edge.edge.modelReferenceId.value === event.modelReference.id.value &&
+      recordGraphEdgeFns.involvesRecord(edge.edge, event.recordBeingEdited.id),
+  )
+  if (event.selection.length === 0) {
+    return deleteEdges(graph, existingEdges, event)
+  }
   if (event.modelReference.cardinality === 'one') {
-    if (event.selection.length > 1) {
-      throw new Error(`Cannot add multiple references to a one to one relationship`)
-    }
-    const edge = graph.edges.find(
-      (edge) =>
-        edge.modelReferenceId.value === event.modelReference.id.value &&
-        recordGraphEdgeFns.involvesRecord(edge, event.recordBeingEdited.id),
-    )
-    if (edge) {
-      graph = {
-        ...graph,
-        deletedEdges: [...graph.deletedEdges, edge],
-        edges: graph.edges.filter((e) => e !== edge),
-      }
-    }
+    return handleHasOneReference(event, existingEdges, graph)
   }
-  if (event.modelReference.inverse) {
-    return addReferencesChangedEventInverse(graph, event)
-  } else {
-    return addReferencesChangedEventForward(graph, event)
-  }
+  return handleHasManyReference(graph, event, existingEdges)
 }
 
 function recordIdMatches(
@@ -113,7 +223,7 @@ function storeEvent(
 export const eventSourcedRecordGraphFns = {
   newInstance: (
     records: EventSourcedDataRecord[],
-    edges: RecordGraphEdge[],
+    edges: TimestampedRecordGraphEdge[],
     relatedRecords: DataRecord[],
     events: RecordGraphEvent[] = [],
   ): EventSourcedRecordGraph => ({
@@ -127,7 +237,7 @@ export const eventSourcedRecordGraphFns = {
   fromRecordGraph: (models: Model[], graph: RecordGraph): EventSourcedRecordGraph => {
     return eventSourcedRecordGraphFns.newInstance(
       graph.records.map((record) => eventSourcedDataRecordFns.fromRecord(models, record)),
-      graph.edges,
+      graph.edges.map((edge) => timestampedRecordGraphEdgeFns.newInstance(edge)),
       graph.relatedRecords,
     )
   },
@@ -182,11 +292,11 @@ export const eventSourcedRecordGraphFns = {
   ): DataRecordId[] => {
     const edges = graph.edges.filter(
       (edge) =>
-        edge.modelReferenceId.value === modelReference.id.value &&
-        recordIdMatches(modelReference, edge, recordId),
+        edge.edge.modelReferenceId.value === modelReference.id.value &&
+        recordIdMatches(modelReference, edge.edge, recordId),
     )
     return edges.flatMap((e) =>
-      [e.originRecordId, e.referenceRecordId].filter((id) => id.value !== recordId.value),
+      [e.edge.originRecordId, e.edge.referenceRecordId].filter((id) => id.value !== recordId.value),
     )
   },
   addEvent(graph: EventSourcedRecordGraph, event: RecordGraphEvent): EventSourcedRecordGraph {
@@ -205,11 +315,13 @@ export const eventSourcedRecordGraphFns = {
     graph: EventSourcedRecordGraph,
     recordId: DataRecordId,
   ): RecordGraphEdge[] {
-    return graph.edges.filter(
-      (edge) =>
-        edge.originRecordId.value === recordId.value ||
-        edge.referenceRecordId.value === recordId.value,
-    )
+    return graph.edges
+      .filter(
+        (edge) =>
+          edge.edge.originRecordId.value === recordId.value ||
+          edge.edge.referenceRecordId.value === recordId.value,
+      )
+      .map((e) => e.edge)
   },
   recordsChangedSince(
     graph: EventSourcedRecordGraph,

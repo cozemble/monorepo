@@ -7,7 +7,7 @@ import type {
 import { eventSourcedRecordGraphFns } from '@cozemble/model-event-sourced'
 import type { JustErrorMessage } from '@cozemble/lang-util'
 import { RootRecordsContext } from './records/RecordsContext'
-import type { DataRecord, DataRecordId, ModelId, SystemConfiguration } from '@cozemble/model-core'
+import type { ModelId, SystemConfiguration } from '@cozemble/model-core'
 import type { Writable } from 'svelte/store'
 import type {
   AttachmentsManager,
@@ -33,7 +33,7 @@ export async function saveNewRecord(
   return backend.saveNewRecord(
     record,
     eventSourcedRecordGraphFns.getEdgesInvolvingRecord(graph, record.record.id),
-    graph.deletedEdges.map((edge) => edge.id),
+    graph.deletedEdges.map((edge) => edge.edge.id),
   )
 }
 

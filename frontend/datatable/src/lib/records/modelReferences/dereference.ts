@@ -18,7 +18,13 @@ export async function dereference(
     const maybeInGraph = graph.relatedRecords.find((r) => r.id.value === referencedRecords[0].value)
     if (maybeInGraph) {
       setter(
-        recordAndEdges(maybeInGraph, recordGraphEdgeFns.forRecord(graph.edges, maybeInGraph.id)),
+        recordAndEdges(
+          maybeInGraph,
+          recordGraphEdgeFns.forRecord(
+            graph.edges.map((e) => e.edge),
+            maybeInGraph.id,
+          ),
+        ),
       )
       return
     }
@@ -37,7 +43,13 @@ export async function getReferencedRecord(
 ): Promise<RecordAndEdges | null> {
   const maybeInGraph = graph.relatedRecords.find((r) => r.id.value === recordId.value)
   if (maybeInGraph) {
-    return recordAndEdges(maybeInGraph, recordGraphEdgeFns.forRecord(graph.edges, maybeInGraph.id))
+    return recordAndEdges(
+      maybeInGraph,
+      recordGraphEdgeFns.forRecord(
+        graph.edges.map((e) => e.edge),
+        maybeInGraph.id,
+      ),
+    )
   }
   return await client.recordById(referencedModelId, recordId)
 }
