@@ -4,8 +4,8 @@ import type { Writable } from 'svelte/store'
 import type { ModelId } from '@cozemble/model-core'
 import type { EventSourcedModel } from '@cozemble/model-event-sourced'
 
-import DownCaret from './icons/DownCaret.svelte'
-import { contextHelper } from './stores/contextHelper'
+import DownCaret from '../../../icons/DownCaret.svelte'
+import { contextHelper } from '../../../stores/contextHelper'
 
 export let esModel: EventSourcedModel
 export let index: number
@@ -27,7 +27,8 @@ function onEdit(clicked: Event) {
   <button
     class="tab tab-lg model-{index + 1}"
     class:tab-active={$navbarState === esModel.model.id.value}
-    on:click={() => onShow(esModel.model.id)}>
+    on:click={() => onShow(esModel.model.id)}
+  >
     {esModel.model.pluralName.value}
 
     {#if $isModellingPermitted}

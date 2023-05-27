@@ -1,28 +1,24 @@
-<!-- TODO (refactor): move into '$lib/components/Editor.svelte' -->
 <script lang="ts">
+// types
 import type { Writable } from 'svelte/store'
-import { writable } from 'svelte/store'
-
-// Cozemble
 import type { ModelId } from '@cozemble/model-core'
 
-import AddTableNavButton from './AddTableNavButton_r.svelte'
-import Modals from './Modals.svelte'
-import { modelUi } from './modelUi'
+import { writable } from 'svelte/store'
+
+// stores
+import { modelUi } from '$lib/modelUi'
+import { contextHelper } from '$lib/stores/contextHelper'
 import {
   allEventSourcedModels,
   allTopLevelEventSourcedModels,
-} from './stores/allModels'
-import ModelPane from './models/ModelPane.svelte'
-import ModelTab from './ModelTab_r.svelte'
-import { contextHelper } from './stores/contextHelper'
-import RecordCreatorContext from './records/creator/RecordCreatorContext.svelte'
+} from '$lib/stores/allModels'
+// components
+import NavItem from '$lib/components/editor/nav/NavItem.svelte'
+import AddModelButton from '$lib/components/editor/nav/AddModelButton.svelte'
 
 export let navbarState: Writable<string | null> = writable(null)
 
 const isModellingPermitted = contextHelper.getPermitModelling()
-
-//
 
 function onShowModel(modelId: ModelId) {
   navbarState.set(modelId.value)
@@ -44,25 +40,14 @@ function onEditModel(clicked: Event, modelIndex: number) {
 function onAddModel(event: CustomEvent) {
   event.detail.modelId && onShowModel(event.detail.modelId)
 }
-//
 </script>
 
 <div class="tabs bg-base-200 rounded pb-1 pl-2">
   {#each $allTopLevelEventSourcedModels as esModel, index}
-    <ModelTab {esModel} {index} {navbarState} {onEditModel} />
+    <NavItem {esModel} {index} {navbarState} {onEditModel} />
   {/each}
 
   {#if $isModellingPermitted}
-    <AddTableNavButton on:added={onAddModel} />
+    <AddModelButton on:added={onAddModel} />
   {/if}
 </div>
-
-{#if $navbarState}
-  {#key $navbarState}
-    <RecordCreatorContext>
-      <ModelPane modelId={$navbarState} />
-    </RecordCreatorContext>
-  {/key}
-{/if}
-
-<Modals />

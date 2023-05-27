@@ -1,9 +1,8 @@
-<!-- TODO move to '&/lib/components/nav/AddModelButton.svelte'-->
 <script lang="ts">
 import { createEventDispatcher } from 'svelte'
 
-import AddTableModal from './AddTableModal_r.svelte'
-import { allEventSourcedModels } from './stores/allModels'
+import AddModelModal from './AddModelModal.svelte'
+import { allEventSourcedModels } from '../../../stores/allModels'
 
 const dispatch = createEventDispatcher()
 
@@ -36,7 +35,7 @@ function onAdded(event: CustomEvent) {
 </div>
 
 {#if addingTable}
-  <AddTableModal
+  <AddModelModal
     anchorElement={rootDiv}
     on:cancel={cancel}
     on:added={onAdded}
