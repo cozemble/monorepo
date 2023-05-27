@@ -127,9 +127,9 @@ let someRecordsLoaded = false
 //
 
 const unsubAllEventSourcedModels = allModels.subscribe((models) => {
-  eventSourcedRecords.update((records) => {
-    return records.map((r) => ({ ...r, models }))
-  })
+  eventSourcedRecords.update((records) =>
+    records.map((r) => ({ ...r, models })),
+  )
 })
 
 function newEmptyRecord(model: Model) {
@@ -144,16 +144,10 @@ async function loadRecords(filterParams: FilterParams) {
 
   const loaded = await recordLoader(modelId, filterParams)
 
-  if (oneOnly) {
-    eventSourcedRecords.set([
-      ...loaded.map((r) => eventSourcedDataRecordFns.fromRecord($allModels, r)),
-    ])
-  } else {
-    eventSourcedRecords.set([
-      ...loaded.map((r) => eventSourcedDataRecordFns.fromRecord($allModels, r)),
-      newEmptyRecord($model),
-    ])
-  }
+  eventSourcedRecords.set([
+    ...loaded.map((r) => eventSourcedDataRecordFns.fromRecord($allModels, r)),
+    !oneOnly && newEmptyRecord($model),
+  ])
 
   someRecordsLoaded = true
   loadingState.set('loaded')
