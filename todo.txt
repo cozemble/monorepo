@@ -10,3 +10,4 @@
  * When changing a reference in a has-one relationship to a newly created record, the new edge gets saved twice
  * When setting a reference from a has-many to a has-one, when the has-one is already set, the old reference is not removed. i.e. customer mike points to ticket 1 and ticket 2.  When editing customer tom to point to ticket 1, mike should no longer point to ticket 1
     * this will require a model reference to know whether it is one-to-one, many-to-one, one-to-many or many-to-many.  Can model as originCardinality and referenceCardinality ?
+
