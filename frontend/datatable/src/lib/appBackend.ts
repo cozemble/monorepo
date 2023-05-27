@@ -49,7 +49,6 @@ export async function saveModel(model: EventSourcedModel): Promise<JustErrorMess
 }
 
 export async function saveModels(models: EventSourcedModel[]): Promise<JustErrorMessage | null> {
-  console.log({ models })
   return backend.saveModels(models)
 }
 
