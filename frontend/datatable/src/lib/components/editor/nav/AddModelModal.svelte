@@ -5,18 +5,16 @@ import { writable } from 'svelte/store'
 import type { JustErrorMessage } from '@cozemble/lang-util'
 import { modelIdFns } from '@cozemble/model-api'
 
-import { addTableAction } from '../../../tables/actions'
 import { positionModal } from '../../../modelUi'
 import { editableTableName } from '../../../models/editableTableName'
 import { allEventSourcedModels } from '../../../stores/allModels'
 import EditableStringInput from '../../../editors/EditableStringInput.svelte'
+import {modelFns, modelOptions} from "@cozemble/model-api/dist/esm";
+import {eventSourcedModelListEvents, eventSourcedModelListFns} from "@cozemble/model-event-sourced/dist/esm";
 
 export let anchorElement: HTMLElement
 
-const tableName = editableTableName(
-  `Table ${$allEventSourcedModels.length + 1}`,
-  $allEventSourcedModels,
-)
+const tableName = editableTableName(`Table ${$allEventSourcedModels.models.length + 1}`, $allEventSourcedModels.models)
 const newTableNameErrors = tableName.errors
 const newTableName = tableName.value
 
@@ -51,9 +49,8 @@ async function saveNewTable() {
     }
 
     const newModelId = modelIdFns.newInstance()
-    allEventSourcedModels.dispatch(
-      addTableAction(newModelId, $newTableName, $newTableName),
-    )
+    const newModel = modelFns.newInstance($newTableName, modelOptions.withId(newModelId), modelOptions.withProperty(`Field 1`))
+    allEventSourcedModels.update(list => eventSourcedModelListFns.addEvent(list, eventSourcedModelListEvents.addModel(newModel)))
 
     const saveOutcome = await allEventSourcedModels.save()
 
