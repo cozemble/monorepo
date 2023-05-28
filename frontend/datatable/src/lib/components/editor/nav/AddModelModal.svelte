@@ -9,8 +9,8 @@ import { positionModal } from '../../../modelUi'
 import { editableTableName } from '../../../models/editableTableName'
 import { allEventSourcedModels } from '../../../stores/allModels'
 import EditableStringInput from '../../../editors/EditableStringInput.svelte'
-import {modelFns, modelOptions} from "@cozemble/model-api/dist/esm";
-import {eventSourcedModelListEvents, eventSourcedModelListFns} from "@cozemble/model-event-sourced/dist/esm";
+import {modelFns, modelOptions} from "@cozemble/model-api";
+import {eventSourcedModelListEvents, eventSourcedModelListFns} from "@cozemble/model-event-sourced";
 
 export let anchorElement: HTMLElement
 

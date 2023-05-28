@@ -13,7 +13,7 @@ import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
 import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import { uuids } from '@cozemble/lang-util'
 import { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
-import { recordGraphEdgeFns } from '@cozemble/model-core/dist/esm'
+import { recordGraphEdgeFns } from '@cozemble/model-core'
 
 const storageKey = 'cozemble.localstorage.backend'
 

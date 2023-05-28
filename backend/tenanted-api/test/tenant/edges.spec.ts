@@ -18,7 +18,7 @@ import {
   putRecord,
   simulateNewUser,
 } from './testHelpers'
-import { RecordsAndEdges, recordsAndEdges } from '@cozemble/model-core/dist/esm'
+import { RecordsAndEdges, recordsAndEdges } from '@cozemble/model-core'
 
 const jwtSigningSecret = 'secret'
 const port = 3012

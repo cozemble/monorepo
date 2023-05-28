@@ -13,6 +13,7 @@ import {
 import { DataRecordEditEvent } from './dataRecordEditEvents'
 import { EventSourcedDataRecord, eventSourcedDataRecordFns } from './EventSourcedDataRecord'
 import { RecordGraphEvent, RecordReferencesChangedEvent } from './recordGraphEvents'
+import { modelReferenceFns } from '@cozemble/model-core'
 
 export interface TimestampedRecordGraphEdge {
   _type: 'timestamped.record.graph.edge'
@@ -185,7 +186,7 @@ function handleHasManyReference(
   }
 }
 
-function addReferencesChangedEvent(
+function handleRecordReferencedChanged(
   graph: EventSourcedRecordGraph,
   event: RecordReferencesChangedEvent,
 ): EventSourcedRecordGraph {
@@ -197,7 +198,7 @@ function addReferencesChangedEvent(
   if (event.selection.length === 0) {
     return deleteEdges(graph, existingEdges, event)
   }
-  if (event.modelReference.cardinality === 'one') {
+  if (modelReferenceFns.getCardinality(event.modelReference) === 'one') {
     return handleHasOneReference(event, existingEdges, graph)
   }
   return handleHasManyReference(graph, event, existingEdges)
@@ -301,7 +302,7 @@ export const eventSourcedRecordGraphFns = {
   },
   addEvent(graph: EventSourcedRecordGraph, event: RecordGraphEvent): EventSourcedRecordGraph {
     if (event._type === 'record.references.changed.event') {
-      return storeEvent(addReferencesChangedEvent(graph, event), event)
+      return storeEvent(handleRecordReferencedChanged(graph, event), event)
     }
     return graph
   },

@@ -1,5 +1,5 @@
 import { Id, RecordGraphEdge } from '@cozemble/model-core'
-import { DataRecord } from '@cozemble/model-core/dist/esm'
+import { DataRecord } from '@cozemble/model-core'
 
 export type JsonPath = string[]
 

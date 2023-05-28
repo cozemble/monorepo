@@ -14,6 +14,7 @@
     export let modelReference: ModelReference
 
     $: referencedModelId = modelReferenceFns.getReferencedModelId(modelReference)
+    $: cardinality = modelReferenceFns.getCardinality(modelReference)
 
     const otherModels = $modelList.models.filter(m => m.model.id.value !== modelId.value)
     const otherModelIds = otherModels.map(model => model.model.id) as ModelId[]
@@ -26,7 +27,11 @@
     }
 
     function setCardinality(cardinality: Cardinality) {
-        modelList.update(ms => eventSourcedModelListFns.addEvent(ms, eventSourcedModelListEvents.setModelReferenceCardinality(modelReference.id, modelId, cardinality)))
+        if(modelReference.inverse) {
+            modelList.update(ms => eventSourcedModelListFns.addEvent(ms, eventSourcedModelListEvents.setReferenceCardinality(modelReference.id, modelId, cardinality)))
+        } else {
+            modelList.update(ms => eventSourcedModelListFns.addEvent(ms, eventSourcedModelListEvents.setOriginCardinality(modelReference.id, modelId, cardinality)))
+        }
     }
 </script>
 
@@ -46,7 +51,7 @@
 {/if}
 <label class="label">Permit multiple records</label>
 <input class="checkbox" type="radio" name="cardinality" value="many"
-       checked={modelReference.cardinality === "many"} on:click={() => setCardinality('many')}/> Yes
-<input class="checkbox" type="radio" name="cardinality" value="one" checked={modelReference.cardinality === "one"}
+       checked={cardinality === "many"} on:click={() => setCardinality('many')}/> Yes
+<input class="checkbox" type="radio" name="cardinality" value="one" checked={cardinality === "one"}
        on:click={() => setCardinality('one')}
 /> No

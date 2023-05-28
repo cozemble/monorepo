@@ -172,7 +172,8 @@ export interface ModelReference {
   originModelId: ModelId
   referencedModelIds: ModelId[]
   inverse: boolean
-  cardinality: Cardinality
+  originCardinality: Cardinality
+  referencedCardinality: Cardinality
 }
 
 export const modelReferenceValuePlaceholder = {
@@ -235,7 +236,8 @@ export const modelReferenceFns = {
     referenceName: ModelReferenceName | string,
     inverse = false,
     id = modelReferenceIdFns.newInstance(uuids.v4()),
-    cardinality: Cardinality = 'many',
+    originCardinality: Cardinality = 'many',
+    referencedCardinality: Cardinality = 'many',
   ): ModelReference => {
     const name =
       typeof referenceName === 'string'
@@ -248,7 +250,8 @@ export const modelReferenceFns = {
       originModelId,
       inverse,
       referencedModelIds,
-      cardinality,
+      originCardinality,
+      referencedCardinality,
     }
   },
   validate: (modelReference: ModelReference): Map<string, string> => {
@@ -263,7 +266,11 @@ export const modelReferenceFns = {
       ? modelReference.originModelId
       : modelReferenceFns.oneReference(modelReference)
   },
-
+  getCardinality(modelReference: ModelReference): Cardinality {
+    return modelReference.inverse
+      ? modelReference.referencedCardinality
+      : modelReference.originCardinality
+  },
   oneReference: (reference: ModelReference): ModelId | null => {
     return reference.referencedModelIds[0] ?? null
   },
@@ -271,7 +278,8 @@ export const modelReferenceFns = {
     originModelId: ModelId,
     toModel: Model,
     id = modelReferenceIdFns.newInstance(),
-    cardinality: Cardinality = 'many',
+    originCardinality: Cardinality = 'many',
+    referencedCardinality: Cardinality = 'many',
   ): ModelReference => {
     return modelReferenceFns.newInstance(
       originModelId,
@@ -279,14 +287,16 @@ export const modelReferenceFns = {
       modelReferenceNameFns.newInstance(toModel.name.value),
       false,
       id,
-      cardinality,
+      originCardinality,
+      referencedCardinality,
     )
   },
   inverseModelReference: (
     originModel: Model,
     toModel: Model,
     id = modelReferenceIdFns.newInstance(),
-    cardinality: Cardinality = 'many',
+    originCardinality: Cardinality = 'many',
+    referencedCardinality: Cardinality = 'many',
   ): ModelReference => {
     return modelReferenceFns.newInstance(
       originModel.id,
@@ -294,7 +304,8 @@ export const modelReferenceFns = {
       modelReferenceNameFns.newInstance(originModel.name.value),
       true,
       id,
-      cardinality,
+      originCardinality,
+      referencedCardinality,
     )
   },
 }

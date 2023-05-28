@@ -22,7 +22,7 @@ import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data
 import type { Backend } from '@cozemble/frontend-bff'
 import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
 import { toFilledFilterInstanceGroup } from '@cozemble/frontend-ui-blocks'
-import { timestampedRecordGraphEdgeFns } from '@cozemble/model-event-sourced/dist/esm'
+import { timestampedRecordGraphEdgeFns } from '@cozemble/model-event-sourced'
 
 export class IncrementalModelingBackend implements DataTableBackend {
   constructor(

@@ -17,14 +17,6 @@ import {
 } from '@cozemble/model-core'
 import { mandatory, time } from '@cozemble/lang-util'
 
-function firstEdge(graphWithBookingWithCustomer: EventSourcedRecordGraph) {
-  return mandatory(graphWithBookingWithCustomer.edges[0], `No first edge`)
-}
-
-function secondEdge(graphWithBookingWithCustomer: EventSourcedRecordGraph) {
-  return mandatory(graphWithBookingWithCustomer.edges[1], `No second edge`)
-}
-
 describe('given customer and bookings models with a customer has-many bookings and a booking has-one customer', () => {
   const modelReferenceId = modelReferenceIdFns.newInstance('fromBookingToCustomer')
   const customerModelId = modelIdFns.newInstance('customers')
@@ -42,6 +34,7 @@ describe('given customer and bookings models with a customer has-many bookings a
           bookingModel.model,
           modelReferenceId,
           'many',
+          'one',
         ),
       ),
     ),
@@ -51,6 +44,7 @@ describe('given customer and bookings models with a customer has-many bookings a
       customerModel.model,
       customerModel.model,
       modelReferenceId,
+      'many',
       'one',
     ),
   )
@@ -125,7 +119,7 @@ describe('given customer and bookings models with a customer has-many bookings a
       expect(graphWithBookingWithSameCustomer.deletedEdges).toHaveLength(0)
     })
 
-    test('setting the customer when the customer is is already set to a different customer updates the edge', async () => {
+    test('setting the customer when the customer is already set to a different customer updates the edge', async () => {
       const booking1HasCustomer1 = eventSourcedRecordGraphFns.addEvent(
         graph,
         recordGraphEvents.recordReferencesChanged(
@@ -354,3 +348,11 @@ describe('given customer and bookings models with a customer has-many bookings a
     })
   })
 })
+
+function firstEdge(graphWithBookingWithCustomer: EventSourcedRecordGraph) {
+  return mandatory(graphWithBookingWithCustomer.edges[0], `No first edge`)
+}
+
+function secondEdge(graphWithBookingWithCustomer: EventSourcedRecordGraph) {
+  return mandatory(graphWithBookingWithCustomer.edges[1], `No second edge`)
+}
