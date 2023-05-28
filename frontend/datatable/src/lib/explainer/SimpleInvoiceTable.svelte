@@ -42,11 +42,7 @@
         "Invoice Date": "2023/11/24",
         "Order Number": "OD3445"
     })
-    const modelMap = new Map<string, EventSourcedModel>()
-    modelMap.set(invoiceModel.id.value, eventSourcedModelFns.newInstance(invoiceModel))
-    const recordsMap = new Map<string, DataRecord[]>()
-    recordsMap.set(invoiceModel.id.value, [invoiceRecord1, invoiceRecord2])
-    backendFns.setBackend(new InMemoryBackend(modelMap, recordsMap))
+    backendFns.setBackend(new InMemoryBackend([eventSourcedModelFns.newInstance(invoiceModel)], [invoiceRecord1, invoiceRecord2]))
     const modelStore = eventSourcedModelStore(eventSourcedModels)
     setAllEventSourcedModels(modelStore)
     const expandedRecordIds = writable([invoiceRecord1.id])

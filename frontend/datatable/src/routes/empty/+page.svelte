@@ -21,4 +21,5 @@
 <DataTable models={eventSourcedModelStore(models)}
            {modelViews}
            {systemConfiguration}
+           showDevConsole={writable(true)}
            userId="test"/>

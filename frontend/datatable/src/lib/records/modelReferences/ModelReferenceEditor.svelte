@@ -9,6 +9,7 @@
     import {type ConfigureViewParams, makeConfigureViewParams} from "./ConfigureViewParams";
     import ConfigureViewModal from "./ConfigureViewModal.svelte";
     import {allModelViews} from "$lib/stores/allModelViews";
+    import {dataRecordControlEvents} from "@cozemble/model-event-sourced";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord
@@ -41,7 +42,9 @@
 
     function viewConfigured() {
         cancelConfigureViewModal()
-        editorParams = assembleEditorParams(dataRecordEditorClient, recordPath, $allModelViews)
+        dataRecordEditorClient.dispatchControlEvent(
+            dataRecordControlEvents.editAborted(record, recordPath),
+        )
     }
 
     function takeFocus(el: HTMLElement) {

@@ -58,14 +58,7 @@ const esModels = [
   eventSourcedModelFns.newInstance(addressModel),
 ]
 
-// set the backend
-const modelMap = new Map<string, EventSourcedModel>(
-  esModels.map((esModel) => [esModel.model.id.value, esModel]),
-)
-
-const recordsMap = new Map<string, DataRecord[]>()
-
-backendFns.setBackend(new InMemoryBackend(modelMap, recordsMap))
+backendFns.setBackend(new InMemoryBackend(esModels))
 
 // register everything for Cozemble packages
 onMount(() => {

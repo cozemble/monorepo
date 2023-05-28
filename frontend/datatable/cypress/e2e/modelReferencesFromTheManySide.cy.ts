@@ -45,10 +45,14 @@ describe('data table', () => {
     cy.contains('First name').click()
     cy.contains('Last name').click()
     cy.get('button.save-view').click()
-    cy.contains('Create a new Booking').click()
     cy.get(cellSelector('0-1')).should('contain', 'John Smith')
     cy.get('button.save').click()
-
+    cy.get('button.save-root-record').click()
+    //
     cy.get(cellSelector('0-2')).should('contain', 'Booking #11')
+
+    clickTable(2)
+    cy.get(cellSelector('0-0')).should('contain', 'Booking #11')
+    cy.get(cellSelector('0-1')).should('contain', 'John Smith')
   })
 })

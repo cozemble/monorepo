@@ -33,12 +33,8 @@
         dispatch('apply', model)
     }
 
-    const modelMap = new Map<string, EventSourcedModel>()
-    models.forEach(m => modelMap.set(m.id.value, eventSourcedModelFns.newInstance(m)))
-    const eventSourcedModels = Array.from(modelMap.values())
-    const recordMap = new Map<string, DataRecord[]>()
-    recordMap.set(model.id.value, records)
-    const backend = new InMemoryBackend(modelMap, recordMap)
+    const eventSourcedModels = models.map(m => eventSourcedModelFns.newInstance(m))
+    const backend = new InMemoryBackend(eventSourcedModels, records)
     const sampleRecordsContext = new RootRecordsContext(backend, () => $systemConfiguration,defaultOnError,model.id, writable(eventSourcedModels))
 
     onMount(async () => {

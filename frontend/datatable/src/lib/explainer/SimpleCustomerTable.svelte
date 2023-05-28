@@ -26,11 +26,7 @@
         "Date of birth": "1993-05-15",
         "Last visit": "2023-01-22"
     })
-    const modelMap = new Map<string, EventSourcedModel>()
-    modelMap.set(customerModel.id.value, eventSourcedModelFns.newInstance(customerModel))
-    const recordsMap = new Map<string, DataRecord[]>()
-    recordsMap.set(customerModel.id.value, [customerRecord1, customerRecord2])
-    backendFns.setBackend(new InMemoryBackend(modelMap, recordsMap))
+    backendFns.setBackend(new InMemoryBackend([eventSourcedModelFns.newInstance(customerModel)], [customerRecord1, customerRecord2]))
     const modelStore = eventSourcedModelStore(eventSourcedModels)
     setAllEventSourcedModels(modelStore)
 </script>

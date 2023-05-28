@@ -33,11 +33,7 @@
         "First name": "Jane",
         "Last name": "Doe"
     })
-    const modelMap = new Map<string, EventSourcedModel>()
-    modelMap.set(customerModel.id.value, eventSourcedModelFns.newInstance(customerModel))
-    const recordsMap = new Map<string, DataRecord[]>()
-    recordsMap.set(customerModel.id.value, [customerRecord1, customerRecord2])
-    backendFns.setBackend(new InMemoryBackend(modelMap, recordsMap))
+                            backendFns.setBackend(new InMemoryBackend(eventSourcedModels, [customerRecord1, customerRecord2]))
     const modelStore = eventSourcedModelStore(eventSourcedModels)
     setAllEventSourcedModels(modelStore)
     const expandedRecordIds = writable([customerRecord1.id])

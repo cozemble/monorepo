@@ -36,11 +36,7 @@
             "First name": "Cherise",
             "Last name": "Hogan"
         })
-        const modelMap = new Map<string, EventSourcedModel>()
-        modelMap.set(customer.id.value, eventSourcedModelFns.newInstance(customer))
-        const recordsMap = new Map<string, DataRecord[]>()
-        recordsMap.set(customer.id.value, [customerRecord1, customerRecord2])
-        backendFns.setBackend(new InMemoryBackend(modelMap, recordsMap))
+        backendFns.setBackend(new InMemoryBackend(eventSourcedModels, [customerRecord1, customerRecord2]))
     })
 
 </script>

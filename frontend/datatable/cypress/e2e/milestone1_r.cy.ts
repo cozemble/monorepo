@@ -78,6 +78,7 @@ describe('data table', () => {
     cy.contains('First name').click()
     cy.contains('Last name').click()
     cy.get('button.save-view').click()
+    editCell('0-0')
     cy.get('select.reference-selector').select('Jane Smith')
     cy.get('input.date-input').invoke('val', '2023-11-23').trigger('change')
     cy.get('button.save-root-record').click()

@@ -27,18 +27,8 @@ onMount(() => {
   const storedRecordsJson =
     localStorage.getItem(testRecordsLocalStorageKey) ?? '[]'
   models = JSON.parse(storedModelJson)
-  const modelMap = new Map<string, EventSourcedModel>()
-  for (const model of models) {
-    modelMap.set(model.model.id.value, model)
-  }
   const records = JSON.parse(storedRecordsJson) as DataRecord[]
-  const recordMap = new Map<string, DataRecord[]>()
-  for (const record of records) {
-    const modelRecords = recordMap.get(record.modelId.value) ?? []
-    modelRecords.push(record)
-    recordMap.set(record.modelId.value, modelRecords)
-  }
-  backendFns.setBackend(new InMemoryBackend(modelMap, recordMap))
+  backendFns.setBackend(new InMemoryBackend(models, records))
   mounted = true
 })
 </script>

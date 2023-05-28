@@ -24,16 +24,16 @@ import {
   type RecordAndEdges,
   recordGraphEdgeFns,
   type RecordsAndEdges,
+  recordsAndEdges,
 } from '@cozemble/model-core'
 import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import { recordSaveSucceeded } from '@cozemble/data-paginated-editor'
-import { recordsAndEdges } from '@cozemble/model-core/dist/esm'
 
 export class InMemoryBackend implements Backend {
   constructor(
-    private readonly models: Map<string, EventSourcedModel> = new Map(),
-    private readonly records: Map<string, DataRecord[]> = new Map(),
+    private models: EventSourcedModel[] = [],
+    private records: DataRecord[] = [],
     private readonly edges: TimestampedRecordGraphEdge[] = [],
     private readonly modelViews: ModelView[] = [],
     private attachments: UploadedAttachment[] = [],
@@ -46,12 +46,16 @@ export class InMemoryBackend implements Backend {
   }
 
   async saveModel(model: EventSourcedModel): Promise<JustErrorMessage | null> {
-    this.models.set(model.model.id.value, model)
+    if (this.models.some((m) => m.model.id.value === model.model.id.value)) {
+      this.models = this.models.map((m) => (m.model.id.value === model.model.id.value ? model : m))
+    } else {
+      this.models.push(model)
+    }
     return null
   }
 
   async saveModels(models: EventSourcedModel[]): Promise<JustErrorMessage | null> {
-    models.forEach((model) => this.models.set(model.model.id.value, model))
+    models.forEach((model) => this.saveModel(model))
     return null
   }
 
@@ -60,7 +64,7 @@ export class InMemoryBackend implements Backend {
   }
 
   async getRecords(modelId: ModelId, filterParams: FilterParams): Promise<EventSourcedRecordGraph> {
-    const records = this.records.get(modelId.value) ?? []
+    const records = this.records.filter((r) => r.modelId.value === modelId.value)
     if (filterParams.search) {
       const filtered = records.filter((record) =>
         JSON.stringify(record.values)
@@ -81,26 +85,19 @@ export class InMemoryBackend implements Backend {
   }
 
   async saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
-    const existingRecords = this.records.get(newRecord.record.modelId.value) || []
-    const updatedRecords = [...existingRecords, newRecord.record]
-    this.records.set(newRecord.record.modelId.value, updatedRecords)
+    this.records.push(newRecord.record)
     return recordSaveSucceeded(newRecord.record)
   }
 
   async saveExistingRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
-    const existingRecords = this.records.get(newRecord.record.modelId.value) || []
-    const updatedRecords = existingRecords.map((record) => {
-      if (record.id.value === newRecord.record.id.value) {
-        return newRecord.record
-      }
-      return record
-    })
-    this.records.set(newRecord.record.modelId.value, updatedRecords)
+    this.records = this.records.map((r) =>
+      r.id.value === newRecord.record.id.value ? newRecord.record : r,
+    )
     return recordSaveSucceeded(newRecord.record)
   }
 
   async searchRecords(modelId: ModelId, search: string): Promise<RecordsAndEdges> {
-    const records = this.records.get(modelId.value) || []
+    const records = this.records.filter((r) => r.modelId.value === modelId.value)
     if (search.trim().length === 0) {
       return recordsAndEdges(
         records,
@@ -127,7 +124,7 @@ export class InMemoryBackend implements Backend {
   }
 
   async recordById(modelId: ModelId, recordId: DataRecordId): Promise<RecordAndEdges | null> {
-    const records = this.records.get(modelId.value) || []
+    const records = this.records.filter((r) => r.modelId.value === modelId.value)
     const record = records.find((record) => record.id.value === recordId.value) || null
     if (record === null) {
       return null

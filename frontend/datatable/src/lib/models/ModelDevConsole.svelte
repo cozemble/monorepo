@@ -5,6 +5,7 @@
     import {modelRecordsContextFns} from '../records/modelRecordsContextFns'
     import ModelDevConsoleOption from './ModelDevConsoleOption.svelte'
     import {allModels} from "$lib/stores/allModels";
+    import {backend} from "$lib/appBackend";
 
     const eventSourcedModel = modelRecordsContextFns.getEventSourcedModel()
     const model = modelRecordsContextFns.getModel()
@@ -28,7 +29,9 @@
                         : $tab === 'filterParams'
                             ? $filterParams
                             : $tab === 'focus'
-                                ? $focus
+                                ? $focus :
+                                    $tab === 'backend'
+                                        ? JSON.stringify(backend, null, 2)
                                 : null
 
     $: content = {
@@ -55,6 +58,7 @@
     />
     <ModelDevConsoleOption id="filterParams" label="Filter params" {tab}/>
     <ModelDevConsoleOption id="focus" label="Focus" {tab}/>
+    <ModelDevConsoleOption id="backend" label="Backend" {tab}/>
 </div>
 <div class="text-xs">
     <JSONEditor {content}/>

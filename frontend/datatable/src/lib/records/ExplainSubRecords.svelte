@@ -35,11 +35,7 @@
     })
     customerRecord.values[nestedDeliveryAddress.id.value] = [deliveryAddressRecord]
     customerRecord.values[nestedBillingAddress.id.value] = [billingAddressRecord]
-    const modelMap = new Map<string, EventSourcedModel>()
-    eventSourcedModels.forEach(m => modelMap.set(m.model.id.value, m))
-    const recordMap = new Map<string, DataRecord[]>()
-    recordMap.set(customer.id.value, [customerRecord])
-    const backend = new InMemoryBackend(modelMap, recordMap)
+    const backend = new InMemoryBackend(eventSourcedModels, [customerRecord])
     const customerRecordsContext = new RootRecordsContext(backend, () => $systemConfiguration,defaultOnError,customer.id, writable(eventSourcedModels))
 
     onMount(async () => {

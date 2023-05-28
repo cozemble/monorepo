@@ -5,7 +5,6 @@ import type {
 } from '@cozemble/model-event-sourced'
 import type { JustErrorMessage, Outcome } from '@cozemble/lang-util'
 import type {
-  DataRecord,
   DataRecordId,
   Id,
   ModelId,

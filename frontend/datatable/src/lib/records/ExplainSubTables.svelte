@@ -34,12 +34,8 @@
     })
     invoiceRecord.values[nestedLineItems.id.value] = [applesLineItem, orangesLineItem]
 
-    const modelMap = new Map<string, EventSourcedModel>()
-    models.forEach(m => modelMap.set(m.id.value, eventSourcedModelFns.newInstance(m)))
-    const eventSourcedModels = Array.from(modelMap.values())
-    const recordMap = new Map<string, DataRecord[]>()
-    recordMap.set(invoiceModel.id.value, [invoiceRecord])
-    const backend = new InMemoryBackend(modelMap, recordMap)
+    const eventSourcedModels = models.map(m => eventSourcedModelFns.newInstance(m))
+    const backend = new InMemoryBackend(eventSourcedModels, [invoiceRecord])
     const customerRecordsContext = new RootRecordsContext(backend, () => $systemConfiguration,defaultOnError,invoiceModel.id, writable(eventSourcedModels))
 
     onMount(async () => {
