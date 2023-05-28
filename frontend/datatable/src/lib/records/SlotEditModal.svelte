@@ -5,13 +5,14 @@
     import {positionModal} from "../modelUi";
     import {systemConfiguration} from "../stores/systemConfiguration";
     import {clickOutside} from "@cozemble/ui-atoms";
+    import {get} from "svelte/store";
+    import {eventSourcedModelListFns} from "@cozemble/model-event-sourced";
 
     export let slotBeingEdited: SlotBeingEdited
     let model = slotBeingEdited.model
     let slot = slotBeingEdited.slot
     const modelList = slotBeingEdited.modelList
 
-    const models = $modelList.models.map(m => m.model)
     let modal: HTMLDivElement
     const dispatch = createEventDispatcher()
 
@@ -20,6 +21,8 @@
     }
 
     function saveSlot() {
+        const modelList = get(slotBeingEdited.modelList)
+        const model = eventSourcedModelListFns.modelWithId(modelList, slotBeingEdited.model.model.id)
         dispatch('edited', {model})
     }
 

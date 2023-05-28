@@ -16,10 +16,11 @@
     import {modelIdFns} from "@cozemble/model-api";
 
     let customer = modelFns.newInstance("Customer", modelOptions.withProperties(propertyFns.newInstance("First name", propertyOptions.required), propertyFns.newInstance("Last name")))
-    const invoiceModelId = modelIdFns.newInstance('invoices')
-    let invoice = modelFns.newInstance("Invoice",modelOptions.withId(invoiceModelId), modelOptions.withProperties(propertyFns.newInstance("Invoice number", propertyOptions.required)), modelOptions.withSlot(modelReferenceFns.forwardModelReference(invoiceModelId,customer, modelReferenceIdFns.newInstance(), "one")))
-    const modelViews = writable([modelViewFns.newInstance("Summary View", customer.id, summaryViewFns.withHtmlTemplate('{{First name}} {{Last name}}'))] as ModelView[])
-    const models = [customer, invoice]
+    // const invoiceModelId = modelIdFns.newInstance('invoices')
+    // let invoice = modelFns.newInstance("Invoice",modelOptions.withId(invoiceModelId), modelOptions.withProperties(propertyFns.newInstance("Invoice number", propertyOptions.required)), modelOptions.withSlot(modelReferenceFns.forwardModelReference(invoiceModelId,customer, modelReferenceIdFns.newInstance(), "one")))
+    // const modelViews = writable([modelViewFns.newInstance("Summary View", customer.id, summaryViewFns.withHtmlTemplate('{{First name}} {{Last name}}'))] as ModelView[])
+    const modelViews = writable([] as ModelView[])
+    const models = [customer]
     const eventSourcedModels = models.map(m => eventSourcedModelFns.newInstance(m))
     const systemConfiguration = systemConfigurationFns.empty()
     const permitModelling = writable(true)
@@ -50,7 +51,7 @@
            {modelViews}
            {systemConfiguration}
            userId="test"
-           navbarState={writable(invoice.id.value)}
+           navbarState={writable(customer.id.value)}
            {showDevConsole}
            {permitModelling}/>
 <!--<DataTable models={eventSourcedModelStore([])} {modelViews} {systemConfiguration} userId="test"/>-->
