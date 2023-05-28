@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type {Model, ModelSlot, PropertyDescriptor, SystemConfiguration} from '@cozemble/model-core'
+    import type {ModelId, ModelSlot, PropertyDescriptor, SystemConfiguration} from '@cozemble/model-core'
     import {
         modelReferenceIdFns,
         modelReferenceNameFns,
@@ -10,21 +10,26 @@
         propertyTypeFns,
     } from '@cozemble/model-core'
     import {editorHost, emptyFormErrorState} from '@cozemble/model-editor-sdk'
+    import type {Writable} from "svelte/store";
     import {readable, writable} from 'svelte/store'
-    import {createEventDispatcher} from 'svelte'
-    import type {ModelChangeHandler} from './ModelEditorHost'
-    import {coreModelEvents, modelSlotEvents} from '@cozemble/model-event-sourced'
+    import {createEventDispatcher, tick} from 'svelte'
+    import type {EventSourcedModelList} from "@cozemble/model-event-sourced";
+    import {coreModelEvents, eventSourcedModelListFns, modelSlotEvents} from '@cozemble/model-event-sourced'
     import PropertyEditor from "./PropertyEditor.svelte";
     import {validateSlot} from "./validateSlot";
     import ModelReferenceEditor from "./ModelReferenceEditor.svelte";
-    import {tick} from "svelte";
+    import {mandatory} from "@cozemble/lang-util";
+    import {modelFns} from "@cozemble/model-api";
 
-    export let modelChangeHandler: ModelChangeHandler
-    export let model: Model
-    export let models: Model[]
-    export let modelSlot: ModelSlot
+    export let modelList: Writable<EventSourcedModelList>
+    export let modelId: ModelId
+    export let slotId: string
     export let systemConfiguration: SystemConfiguration
     export let slotNoun = 'Property'
+
+    $: models = $modelList.models.map((m) => m.model)
+    $: model = mandatory(models.find((m) => m.id.value === modelId.value), `Could not find model ${modelId.value}`)
+    $: modelSlot = mandatory(modelFns.elementById(model, slotId) as ModelSlot,`Could not find slot ${slotId} in model ${modelId.value}`)
 
     const formSectionErrorState = writable(emptyFormErrorState())
     editorHost.setErrorState(formSectionErrorState)
@@ -33,21 +38,17 @@
     function slotTypeChanged(event: Event) {
         const target = event.target as HTMLSelectElement
         if (target.value === 'model.reference') {
-            return modelChangeHandler.modelChanged(
-                model.id,
-                modelSlotEvents.newModelReference(model.id,
+            return modelList.update(list => eventSourcedModelListFns.addModelEvent(list,
+                modelSlotEvents.newModelReference(modelId,
                     modelReferenceNameFns.newInstance(modelSlot.name.value),
                     modelReferenceIdFns.newInstance(modelSlot.id.value)),
-            )
+            ))
         }
-        let propertyDescriptor = propertyDescriptors.get(propertyTypeFns.newInstance(target.value))
+        const propertyDescriptor = propertyDescriptors.get(propertyTypeFns.newInstance(target.value))
         if (propertyDescriptor) {
             const propertyName = propertyNameFns.newInstance(modelSlot.name.value)
             const propertyId = propertyIdFns.newInstance(modelSlot.id.value)
-            modelChangeHandler.modelChanged(
-                model.id,
-                propertyDescriptor.newProperty(systemConfiguration, model.id, propertyName, propertyId),
-            )
+            return modelList.update(list => eventSourcedModelListFns.addModelEvent(list, propertyDescriptor.newProperty(systemConfiguration, modelId, propertyName, propertyId)))
         } else {
             alert('Dont know how to handle model slot type ' + target.value)
         }
@@ -70,14 +71,11 @@
 
     function slotNameChanged(event: Event) {
         const target = event.target as HTMLInputElement
-        modelChangeHandler.modelChanged(
-            model.id,
-            coreModelEvents.slotRenamed(
-                model.id,
-                modelSlot.id,
-                modelSlotNameFns.newInstance(modelSlot._type, target.value),
-            ),
-        )
+        modelList.update(list => eventSourcedModelListFns.addModelEvent(list, coreModelEvents.slotRenamed(
+            modelId,
+            modelSlot.id,
+            modelSlotNameFns.newInstance(modelSlot._type, target.value),
+        )))
     }
 
     function isPropertyForDescriptor(slot: ModelSlot, propertyDescriptor: PropertyDescriptor) {
@@ -90,7 +88,7 @@
 
     async function onKeyDown(event: KeyboardEvent) {
         if (event.key === 'Enter') {
-            if(document.activeElement instanceof HTMLInputElement) {
+            if (document.activeElement instanceof HTMLInputElement) {
                 document.activeElement.blur()
             }
             await tick()
@@ -122,14 +120,13 @@
     {#if modelSlot._type === 'property'}
         <PropertyEditor
                 property={modelSlot}
-                {modelChangeHandler}
+                {modelList}
                 {model}/>
     {:else if modelSlot._type === 'model.reference'}
         <ModelReferenceEditor
                 modelReference={modelSlot}
-                {modelChangeHandler}
-                {models}
-                {model}/>
+                {modelList}
+                {modelId}/>
     {:else}
         <p>To do ${modelSlot._type}</p>
     {/if}

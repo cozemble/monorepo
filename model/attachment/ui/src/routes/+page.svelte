@@ -9,6 +9,7 @@
     import {dataRecordEditorHost, type DataRecordViewerClient, dataRecordViewerHost} from "@cozemble/data-editor-sdk";
     import {AttachmentPropertyEditor, AttachmentPropertyViewer} from "../lib";
     import type {JustErrorMessage} from "@cozemble/lang-util";
+    import type {EventSourcedRecordGraph} from "@cozemble/model-event-sourced";
 
     registerAttachmentProperty()
     const property: AttachmentProperty = emptyProperty("Pictures")
@@ -23,7 +24,7 @@
     }
 
     const dataRecordEditorClient: DataRecordEditorClient = {
-        recordById(): Promise<DataRecord | null> {
+        recordById() {
             throw new Error("Not implemented")
         },
 
@@ -33,11 +34,11 @@
         dispatchEditEvent(): void {
         },
 
-        createNewRootRecord(): Promise<DataRecord | null> {
+        createNewRootRecord(): Promise<EventSourcedRecordGraph | null> {
             throw new Error("Not implemented")
         },
 
-        searchRecords(): Promise<DataRecord[]> {
+        searchRecords() {
             throw new Error("Not implemented")
         },
 
@@ -84,11 +85,11 @@
             throw new Error("Not implemented")
         },
 
-        searchRecords(): Promise<DataRecord[]> {
+        searchRecords() {
             throw new Error("Not implemented")
         },
 
-        recordById(): Promise<DataRecord | null> {
+        recordById() {
             throw new Error("Not implemented")
         },
 

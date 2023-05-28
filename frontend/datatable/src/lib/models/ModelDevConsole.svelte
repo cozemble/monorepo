@@ -9,7 +9,7 @@
     const eventSourcedModel = modelRecordsContextFns.getEventSourcedModel()
     const model = modelRecordsContextFns.getModel()
     const records = modelRecordsContextFns.getRecords()
-    const eventSourcedRecords = modelRecordsContextFns.getEventSourcedRecords()
+    const eventSourcedRecords = modelRecordsContextFns.getEventSourcedRecordGraph()
     const filterParams = modelRecordsContextFns.getFilterParams()
     const focus = modelRecordsContextFns.getFocus()
     const tab = writable('model' as string)
@@ -50,7 +50,7 @@
     <ModelDevConsoleOption id="records" label="Records" {tab}/>
     <ModelDevConsoleOption
             id="eventSourcedRecords"
-            label="Event sourced records"
+            label="Event sourced record graph"
             {tab}
     />
     <ModelDevConsoleOption id="filterParams" label="Filter params" {tab}/>

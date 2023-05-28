@@ -1,12 +1,9 @@
 import type { PaginatedEditorHost } from './PaginatedEditorHost'
-import type {
-  DataRecordEditEvent,
-  DataRecordViewerClient,
-  EventSourcedDataRecord,
-} from '@cozemble/data-editor-sdk'
-import { eventSourcedDataRecordFns } from '@cozemble/data-editor-sdk'
+import type { DataRecordViewerClient } from '@cozemble/data-editor-sdk'
 import type { Model, ModelView, SystemConfiguration } from '@cozemble/model-core'
 import type { RecordSaveOutcome } from './RecordEditContext'
+import type { DataRecordEditEvent, EventSourcedDataRecord } from '@cozemble/model-event-sourced'
+import { eventSourcedDataRecordFns } from '@cozemble/model-event-sourced'
 
 export function makeDataRecordViewer(
   systemConfiguration: SystemConfiguration,

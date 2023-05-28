@@ -12,12 +12,10 @@ import {
   LeafModelSlot,
   ModelPath,
   modelPathElementFns,
-  modelReferenceFns,
+  modelReferenceValuePlaceholder,
   NestedModel,
   NestedRecordArrayPathElement,
   propertyDescriptors,
-  ReferencedRecords,
-  referencedRecordsFns,
   SystemConfiguration,
 } from '@cozemble/model-core'
 import { dataRecordFns } from './dataRecordFns'
@@ -79,10 +77,7 @@ function setLeafSlotValue<T>(
       .mandatory(path.lastElement)
       .setValue(systemConfiguration, path.lastElement, record, t)
   }
-  if (t === null) {
-    return modelReferenceFns.setReferences(path.lastElement, record, referencedRecordsFns.empty())
-  }
-  return modelReferenceFns.setReferences(path.lastElement, record, t as ReferencedRecords)
+  throw new Error("Can't set value on a model reference, update the edge instead")
 }
 
 export const dataRecordValuePathFns = {
@@ -110,7 +105,7 @@ export const dataRecordValuePathFns = {
           .mandatory(path.lastElement)
           .getValue(systemConfiguration, path.lastElement, record)
       }
-      return modelReferenceFns.dereferenceOne(path.lastElement, record) as T
+      return modelReferenceValuePlaceholder as T
     }
     const deref = path.parentElements.reduce((acc, parentElement) => {
       if (acc === undefined) {

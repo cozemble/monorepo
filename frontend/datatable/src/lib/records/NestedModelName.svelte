@@ -31,7 +31,7 @@
     }
 
     function openNestedTableNamesModal() {
-        modelUi.edit($allEventSourcedModels, $eventSourcedModel,anchorElement)
+        modelUi.edit(allEventSourcedModels, $eventSourcedModel,anchorElement)
     }
 
 </script>

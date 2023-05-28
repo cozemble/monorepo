@@ -4,9 +4,9 @@ import type { Readable, Writable } from 'svelte/store'
 
 import type { EventSourcedModel } from '@cozemble/model-event-sourced'
 import type { DataRecord, DataRecordId, Model, NestedModelId } from '@cozemble/model-core'
+import type { EventSourcedRecordGraph } from '@cozemble/model-event-sourced'
 
 import type { DataTableFocus, DataTableFocusControls2 } from '$lib/focus/DataTableFocus'
-import type { EventSourcedDataRecordsStore } from '$lib/records/EventSourcedDataRecordsStore'
 import type { RecordControls } from '$lib/records/RecordControls'
 import type { ModelControls } from '$lib/records/ModelControls'
 import type { ErrorVisibilityByRecordId } from '$lib/records/helpers'
@@ -34,8 +34,7 @@ function createContext<TContext>(name: string) {
 export const eventSourcedModel = createContext<Readable<EventSourcedModel>>('eventSourcedModel')
 export const model = createContext<Readable<Model>>('model')
 
-export const eventSourcedRecords =
-  createContext<EventSourcedDataRecordsStore>('eventSourcedRecords')
+export const eventSourcedRecords = createContext<EventSourcedRecordGraph>('eventSourcedRecords')
 export const records = createContext<Readable<DataRecord[]>>('records')
 
 export const focus = createContext<Readable<DataTableFocus>>('focus')

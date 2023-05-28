@@ -12,8 +12,7 @@ import { writable } from 'svelte/store'
 // Cozemble
 import { propertyDescriptors, propertyNameFns } from '@cozemble/model-core'
 import { modelFns, modelOptions, propertyFns } from '@cozemble/model-api'
-import type { EventSourcedDataRecord } from '@cozemble/data-editor-sdk/dist/esm'
-import { mandatory } from '@cozemble/lang-util/dist/esm'
+import { mandatory } from '@cozemble/lang-util'
 
 // stores
 import { allEventSourcedModels } from '$lib/stores/allModels'
@@ -28,8 +27,9 @@ import { modelRecordsContextFns } from '$lib/records/modelRecordsContextFns'
 // components
 import DataEntryRow from '$lib/records/entry/DataEntryRow.svelte'
 import AddModelElementButton from '$lib/records/modelling/AddModelElementButton.svelte'
-import SlotTh from '$lib/records/SlotTh.svelte'
 import SlotEditModal from '$lib/records/SlotEditModal.svelte'
+import type {EventSourcedRecordGraph} from "@cozemble/model-event-sourced";
+import SlotTh from "$lib/records/cells/SlotTh.svelte";
 
 export let oneOnly = false
 export let options: DataRecordsTableOptions = dataRecordsTableOptions(
@@ -43,7 +43,7 @@ export let parentPath: DataRecordPathParentElement[] = []
 // context
 const eventSourcedModel = modelRecordsContextFns.getEventSourcedModel()
 const model = modelRecordsContextFns.getModel()
-const eventSourcedRecords = modelRecordsContextFns.getEventSourcedRecords()
+const eventSourcedRecords = modelRecordsContextFns.getEventSourcedRecordGraph()
 const records = modelRecordsContextFns.getRecords()
 const focus = modelRecordsContextFns.getFocus()
 const focusControls = modelRecordsContextFns.getFocusControls()
@@ -67,7 +67,7 @@ function editSlot(clicked: Event, slot: ModelSlot) {
     return
   }
   slotBeingEdited = {
-    models: $allEventSourcedModels,
+    modelList: allEventSourcedModels,
     model: $eventSourcedModel,
     slot,
     anchorElement,
@@ -112,7 +112,7 @@ async function addSlotToModel() {
   if (element) {
     const slot = $model.slots[$model.slots.length - 1]
     slotBeingEdited = {
-      models: $allEventSourcedModels,
+      modelList: allEventSourcedModels,
       model: $eventSourcedModel,
       slot,
       anchorElement: element,
@@ -172,11 +172,9 @@ async function saveNewRecord(record: DataRecord, rootRecordIndex: number) {
   }
 }
 
-function recordHasEvents(rowIndex: number, records: EventSourcedDataRecord[]) {
-  return (
-    mandatory(records[rowIndex], `No event sourced record at index ${rowIndex}`)
-      .events.length > 0
-  )
+function recordHasEvents(rowIndex: number, graph: EventSourcedRecordGraph) {
+  const records = graph.records
+  return mandatory(records[rowIndex], `No event sourced record at index ${rowIndex}`).events.length > 0
 }
 
 function isDirtyRecord(record: DataRecord, dirtyRecords: DataRecordId[]) {

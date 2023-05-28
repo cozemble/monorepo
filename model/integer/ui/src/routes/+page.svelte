@@ -10,6 +10,7 @@
     import type {JustErrorMessage} from "@cozemble/lang-util";
     import {type IntegerProperty, emptyProperty, registerIntegerProperty} from "@cozemble/model-integer-core";
     import IntegerRepl from "./IntegerRepl.svelte";
+    import type {EventSourcedRecordGraph} from "@cozemble/model-event-sourced";
 
     registerIntegerProperty()
     const systemConfiguration = systemConfigurationFns.empty()
@@ -24,7 +25,7 @@
     }
 
     const dataRecordEditorClient: DataRecordEditorClient = {
-        recordById(): Promise<DataRecord | null> {
+        recordById() {
             throw new Error("Not implemented")
         },
 
@@ -34,11 +35,11 @@
         dispatchEditEvent(): void {
         },
 
-        createNewRootRecord(): Promise<DataRecord | null> {
+        createNewRootRecord(): Promise<EventSourcedRecordGraph | null> {
             throw new Error("Not implemented")
         },
 
-        searchRecords(): Promise<DataRecord[]> {
+        searchRecords() {
             throw new Error("Not implemented")
         },
 
@@ -85,11 +86,11 @@
             throw new Error("Not implemented")
         },
 
-        searchRecords(): Promise<DataRecord[]> {
+        searchRecords() {
             throw new Error("Not implemented")
         },
 
-        recordById(): Promise<DataRecord | null> {
+        recordById() {
             throw new Error("Not implemented")
         },
 

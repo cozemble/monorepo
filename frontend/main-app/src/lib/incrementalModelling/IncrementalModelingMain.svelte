@@ -9,12 +9,13 @@
     import {onDestroy, onMount} from "svelte";
     import IncrementalModelingData from "./IncrementalModelingData.svelte";
     import {IncrementalModelingBackend} from "./IncrementalModelingBackend";
-    import type {DataTableBackend} from "@cozemble/frontend-datatable";
+    import type {Backend as DataTableBackend} from "@cozemble/frontend-datatable";
     import {backendFns} from "@cozemble/frontend-datatable";
     import {eventSourcedModels, models, permitModelling} from "./incrementalModelStore";
     import type {EventSourcedModel} from "@cozemble/model-event-sourced";
     import {toastNoticeStoreFns} from "../notices/toastNoticeStore";
     import {backend} from "../backend/backendStore";
+    import type {EventSourcedModelList} from "@cozemble/model-event-sourced";
 
     export let tenantId: string
     let panelToShow: "data" | "settings" = "data"
@@ -26,7 +27,8 @@
     })
 
     let lastSavedModels: EventSourcedModel[] = []
-    const unsubModels = eventSourcedModels.subscribe(async (models: EventSourcedModel[]) => {
+    const unsubModels = eventSourcedModels.subscribe(async (list: EventSourcedModelList) => {
+        const models = list.models
         if (lastSavedModels.length === 0) {
             lastSavedModels = models
         } else {

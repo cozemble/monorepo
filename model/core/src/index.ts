@@ -60,6 +60,8 @@ export {
   ModelPluralName,
   dataRecordIdFns,
   nestedModelIdFns,
+  LeafModelSlotId,
+  modelReferenceValuePlaceholder,
 } from './core'
 
 export { propertyDescriptors } from './propertyDescriptor'
@@ -95,3 +97,17 @@ export {
   slotConfigurationFns,
   systemConfigurationFns,
 } from './systemConfiguration'
+
+export {
+  recordGraphEdgeFns,
+  RecordGraphEdge,
+  RecordGraph,
+  recordGraphFns,
+  RecordGraphOption,
+  RecordAndEdges,
+  recordAndEdges,
+  RecordsAndEdges,
+  recordsAndEdges,
+} from './graph'
+
+export { Id, tinyValueFns, TinyValue, Name } from './TinyValue'

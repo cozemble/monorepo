@@ -20,6 +20,7 @@
     "@cozemble/lang-util": "workspace:*",
     "@cozemble/model-core": "workspace:*",
     "@cozemble/model-api": "workspace:*",
+    "@cozemble/model-event-sourced": "workspace:*",
     "@cozemble/data-editor-sdk": "workspace:*",
     "@cozemble/data-paginated-editor": "workspace:*",
     "@cozemble/backend-tenanted-api-types": "workspace:*",

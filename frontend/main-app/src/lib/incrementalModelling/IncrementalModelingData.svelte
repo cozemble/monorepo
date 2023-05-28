@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {DataTable, type DataTableBackend, RecordFilteringPanel} from "@cozemble/frontend-datatable";
+    import {DataTable, type Backend as DataTableBackend, RecordFilteringPanel} from "@cozemble/frontend-datatable";
     import {mergeTenantEntities, modelViews, systemConfiguration, type TenantEntity} from "../models/tenantEntityStore";
     import {eventSourcedModels, permitModelling} from "./incrementalModelStore";
     import {writable} from "svelte/store";

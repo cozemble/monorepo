@@ -1,10 +1,7 @@
 import { clock, type Option, uuids } from '@cozemble/lang-util'
 import { propertyDescriptors } from './propertyDescriptor'
 import { SystemConfiguration } from './systemConfiguration'
-
-interface TinyValue<T = string> {
-  value: T
-}
+import { TinyValue } from './TinyValue'
 
 export interface PropertyType extends TinyValue {
   _type: 'property.type'
@@ -172,9 +169,14 @@ export interface ModelReference {
   _type: 'model.reference'
   id: ModelReferenceId
   name: ModelReferenceName
-  referencedModels: ModelId[]
+  originModelId: ModelId
+  referencedModelIds: ModelId[]
+  inverse: boolean
   cardinality: Cardinality
-  inverseName?: ModelReferenceName
+}
+
+export const modelReferenceValuePlaceholder = {
+  _type: 'model.reference.value.placeholder',
 }
 
 export interface ReferencedRecord {
@@ -228,10 +230,12 @@ export const referencedRecordsFns = {
 
 export const modelReferenceFns = {
   newInstance: (
-    referencedModels: ModelId[],
+    originModelId: ModelId,
+    referencedModelIds: ModelId[],
     referenceName: ModelReferenceName | string,
+    inverse = false,
     id = modelReferenceIdFns.newInstance(uuids.v4()),
-    cardinality: Cardinality = 'one',
+    cardinality: Cardinality = 'many',
   ): ModelReference => {
     const name =
       typeof referenceName === 'string'
@@ -241,41 +245,58 @@ export const modelReferenceFns = {
       _type: 'model.reference',
       id,
       name,
-      referencedModels,
+      originModelId,
+      inverse,
+      referencedModelIds,
       cardinality,
     }
   },
   validate: (modelReference: ModelReference): Map<string, string> => {
     const errors = new Map<string, string>()
-    if (modelReference.referencedModels.length === 0) {
-      errors.set('referencedModels', 'Required')
+    if (modelReference.referencedModelIds.length === 0) {
+      errors.set('referencedModelIds', 'Required')
     }
     return errors
   },
+  mandatoryReferencedModelId: (modelReference: ModelReference): ModelId => {
+    const modelId = modelReference.referencedModelIds[0]
+    if (!modelId) {
+      throw new Error('No referenced model id')
+    }
+    return modelId
+  },
   oneReference: (reference: ModelReference): ModelId | null => {
-    if (reference.cardinality !== 'one') {
-      throw new Error('Cannot get one reference from many reference')
-    }
-    return reference.referencedModels[0] ?? null
+    return reference.referencedModelIds[0] ?? null
   },
-  dereferenceOne: (reference: ModelReference, record: DataRecord): ReferencedRecords | null => {
-    if (reference.cardinality !== 'one') {
-      throw new Error('Cannot get one reference from many reference')
-    }
-    return (record.values[reference.id.value] ?? null) as ReferencedRecords
+  forwardModelReference: (
+    originModelId: ModelId,
+    toModel: Model,
+    id = modelReferenceIdFns.newInstance(),
+    cardinality: Cardinality = 'many',
+  ): ModelReference => {
+    return modelReferenceFns.newInstance(
+      originModelId,
+      [toModel.id],
+      modelReferenceNameFns.newInstance(toModel.name.value),
+      false,
+      id,
+      cardinality,
+    )
   },
-  setReferences: (
-    reference: ModelReference,
-    record: DataRecord,
-    referencedRecords: ReferencedRecords,
-  ): DataRecord => {
-    return {
-      ...record,
-      values: {
-        ...record.values,
-        [reference.id.value]: referencedRecords,
-      },
-    }
+  inverseModelReference: (
+    originModel: Model,
+    toModel: Model,
+    id = modelReferenceIdFns.newInstance(),
+    cardinality: Cardinality = 'many',
+  ): ModelReference => {
+    return modelReferenceFns.newInstance(
+      originModel.id,
+      [toModel.id],
+      modelReferenceNameFns.newInstance(originModel.name.value),
+      true,
+      id,
+      cardinality,
+    )
   },
 }
 
@@ -303,7 +324,7 @@ export const modelSlotFns = {
         .getValue(systemConfiguration, slot, record)
     }
     if (slot._type === 'model.reference') {
-      return modelReferenceFns.dereferenceOne(slot, record)
+      return modelReferenceValuePlaceholder
     }
     throw new Error(`Can't get a value from model slot type: ${slot._type}`)
   },
@@ -418,6 +439,7 @@ export type DataRecordPathParentElement =
   | InlinedModelReference
 
 export type LeafModelSlot = Property | ModelReference
+export type LeafModelSlotId = PropertyId | ModelReferenceId
 
 export interface DataRecordValuePath {
   _type: 'data.record.value.path'

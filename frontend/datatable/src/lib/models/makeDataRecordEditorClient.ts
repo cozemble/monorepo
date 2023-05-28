@@ -1,19 +1,19 @@
 import type { RecordsContext } from '../records/RecordsContext'
+import type { DataRecordEditorClient, UploadedAttachment } from '@cozemble/data-editor-sdk'
+import type { DataRecord, DataRecordId, Model, ModelView } from '@cozemble/model-core'
+import type { JustErrorMessage } from '@cozemble/lang-util'
 import type {
   DataRecordControlEvent,
   DataRecordEditEvent,
-  DataRecordEditorClient,
-  UploadedAttachment,
-} from '@cozemble/data-editor-sdk'
-import type { DataRecord, DataRecordId, Model, ModelView } from '@cozemble/model-core'
-import type { JustErrorMessage } from '@cozemble/lang-util'
+  EventSourcedRecordGraph,
+} from '@cozemble/model-event-sourced'
 
 export function makeDataRecordEditorClient(
   context: RecordsContext,
   recordId: DataRecordId,
 ): DataRecordEditorClient {
   return {
-    recordById(): Promise<DataRecord | null> {
+    recordById() {
       throw new Error('Not implemented')
     },
 
@@ -32,11 +32,11 @@ export function makeDataRecordEditorClient(
       }
     },
 
-    createNewRootRecord(): Promise<DataRecord | null> {
+    createNewRootRecord(): Promise<EventSourcedRecordGraph | null> {
       throw new Error('Method not implemented.')
     },
 
-    searchRecords(): Promise<DataRecord[]> {
+    searchRecords() {
       throw new Error('Method not implemented.')
     },
 

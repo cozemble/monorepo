@@ -1,5 +1,10 @@
 import type { EventSourcedStore } from './stores/EventSourcedStore'
-import type { TablesAction } from './tables/actions'
-import type { EventSourcedModel } from '@cozemble/model-event-sourced'
+import type {
+  EventSourcedModelList,
+  EventSourcedModelListEvent,
+} from '@cozemble/model-event-sourced'
 
-export type EventSourcedModelStore = EventSourcedStore<EventSourcedModel[], TablesAction>
+export type EventSourcedModelStore = EventSourcedStore<
+  EventSourcedModelList,
+  EventSourcedModelListEvent
+>

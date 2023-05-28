@@ -1,8 +1,9 @@
 <script lang="ts">
     import type {DataRecord, DataRecordValuePath, SystemConfiguration} from '@cozemble/model-core'
     import {propertyDescriptors} from "@cozemble/model-core";
-    import {dataRecordControlEvents, dataRecordEditEvents, dataRecordEditor,} from '@cozemble/data-editor-sdk'
+    import {dataRecordEditor} from '@cozemble/data-editor-sdk'
     import type {StringProperty} from "@cozemble/model-string-core";
+    import {dataRecordControlEvents, dataRecordEditEvents} from "@cozemble/model-event-sourced";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord

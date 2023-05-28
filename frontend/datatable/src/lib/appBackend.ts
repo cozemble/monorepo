@@ -1,19 +1,20 @@
 import { type Backend, type FilterParams, notImplementedBackend } from './backend/Backend'
-import type { EventSourcedModel } from '@cozemble/model-event-sourced'
+import type {
+  EventSourcedDataRecord,
+  EventSourcedModel,
+  EventSourcedRecordGraph,
+} from '@cozemble/model-event-sourced'
+import { eventSourcedRecordGraphFns } from '@cozemble/model-event-sourced'
 import type { JustErrorMessage } from '@cozemble/lang-util'
 import { RootRecordsContext } from './records/RecordsContext'
-import type { DataRecord, DataRecordId, ModelId, SystemConfiguration } from '@cozemble/model-core'
+import type { ModelId, SystemConfiguration } from '@cozemble/model-core'
 import type { Writable } from 'svelte/store'
 import type {
   AttachmentsManager,
   RecordSaveOutcome,
   RecordSearcher,
 } from '@cozemble/data-paginated-editor'
-import type {
-  AttachmentIdAndFileName,
-  EventSourcedDataRecord,
-  UploadedAttachment,
-} from '@cozemble/data-editor-sdk'
+import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import { StoreSyncBackend } from './app/StoreSyncBackend'
 
 export let backend = notImplementedBackend
@@ -25,20 +26,21 @@ export const backendFns = {
   },
 }
 
-export async function saveNewRecord(record: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
-  return backend.saveNewRecord(record)
-}
-
-export async function saveExistingRecord(
+export async function saveNewRecord(
+  graph: EventSourcedRecordGraph,
   record: EventSourcedDataRecord,
 ): Promise<RecordSaveOutcome> {
-  return backend.saveExistingRecord(record)
+  return backend.saveNewRecord(
+    record,
+    eventSourcedRecordGraphFns.getEdgesInvolvingRecord(graph, record.record.id),
+    graph.deletedEdges.map((edge) => edge.edge.id),
+  )
 }
 
 export async function getRecordsForModel(
   modelId: ModelId,
   filterParams: FilterParams,
-): Promise<DataRecord[]> {
+): Promise<EventSourcedRecordGraph> {
   return backend.getRecords(modelId, filterParams)
 }
 
@@ -60,10 +62,10 @@ export function rootRecordsContext(
 }
 
 export const recordSearcher: RecordSearcher = {
-  async recordById(modelId: ModelId, recordId: DataRecordId): Promise<DataRecord | null> {
+  async recordById() {
     throw new Error('Not implemented')
   },
-  async searchRecords(modelId: ModelId, searchTerm: string): Promise<DataRecord[]> {
+  async searchRecords() {
     throw new Error('Not implemented')
   },
 }

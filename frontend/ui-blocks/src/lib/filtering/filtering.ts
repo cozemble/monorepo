@@ -27,14 +27,13 @@ import { mandatory } from '@cozemble/lang-util'
 import { eventSourcedModelFns } from '@cozemble/model-event-sourced'
 import { slotEditorRegistry } from '@cozemble/model-assembled'
 import type { DataRecordEditorClient } from '@cozemble/data-editor-sdk'
+import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
+import type { FilledFilterInstanceGroup, RhsValue } from '@cozemble/backend-tenanted-api-types'
 import {
-  type AttachmentIdAndFileName,
   type DataRecordControlEvent,
   type DataRecordEditEvent,
   eventSourcedDataRecordFns,
-  type UploadedAttachment,
-} from '@cozemble/data-editor-sdk'
-import type { FilledFilterInstanceGroup, RhsValue } from '@cozemble/backend-tenanted-api-types'
+} from '@cozemble/model-event-sourced'
 
 export function getFilterablePaths(models: Model[], model: Model): ModelPath<ModelPathElement>[] {
   return modelFns.allPaths(models, model).filter((path) => {
@@ -99,7 +98,7 @@ export function createModelAndRecordForFiltering(
   const editorComponent = slotEditorRegistry.forSlot(property)
   let eventSourcedRecord = eventSourcedDataRecordFns.fromRecord([model.model], record)
   const editorClient: DataRecordEditorClient = {
-    createNewRecord(modelId: ModelId): Promise<DataRecord | null> {
+    createNewRootRecord(modelId: ModelId): Promise<DataRecord | null> {
       throw new Error('Method not implemented')
     },
 
@@ -144,6 +143,12 @@ export function createModelAndRecordForFiltering(
     },
 
     instructUser() {
+      throw new Error('Method not implemented')
+    },
+    recordById() {
+      throw new Error('Method not implemented')
+    },
+    saveModelView() {
       throw new Error('Method not implemented')
     },
   }

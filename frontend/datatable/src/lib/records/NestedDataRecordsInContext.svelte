@@ -9,10 +9,11 @@
     import {allEventSourcedModels} from "../stores/allModels";
     import {dataRecordFns} from "@cozemble/model-api";
     import {eventSourcedModelFns} from "@cozemble/model-event-sourced";
-    import {dataRecordEditEvents} from "@cozemble/data-editor-sdk";
     import {singleRecordEditContext} from "./contextHelper";
     import {createNewNestedRecord} from "./creator/recordCreatorStore";
     import NestedModelName from "$lib/records/NestedModelName.svelte";
+    import {dataRecordEditEvents} from "@cozemble/model-event-sourced";
+    import {getCreatedRecord} from "$lib/records/modelReferences/editorHelper";
 
     export let options: DataRecordsTableOptions
     export let record: DataRecord
@@ -20,7 +21,7 @@
     export let parentPath: DataRecordPathParentElement[]
     export let parentModelId: ModelId
     const nestedParentPath = [...parentPath, nestedModel]
-    const eventSourcedModel = derived(allEventSourcedModels, allModels => mandatory(eventSourcedModelFns.findById(allModels, nestedModel.modelId), `No model found for ${nestedModel.modelId.value}`))
+    const eventSourcedModel = derived(allEventSourcedModels, list => mandatory(eventSourcedModelFns.findById(list.models, nestedModel.modelId), `No model found for ${nestedModel.modelId.value}`))
     const model = derived(eventSourcedModel, esm => esm.model)
     const oneOnly = nestedModel.cardinality === 'one'
     const records = modelRecordsContextFns.getRecords()
@@ -44,9 +45,13 @@
     })
 
     async function addRecord() {
-        const newRecord = await createNewNestedRecord($model.id, '')
+        const graph = await createNewNestedRecord($model.id, '')
+        if(!graph) {
+            return
+        }
+        const newRecord = getCreatedRecord(graph, $model.id)
         if (newRecord) {
-            rootRecordEditorClient.dispatchEditEvent(dataRecordEditEvents.hasManyItemAdded(record, parentPath, nestedModel, newRecord.record))
+            rootRecordEditorClient.dispatchEditEvent(dataRecordEditEvents.hasManyItemAdded(record, parentPath, nestedModel, newRecord))
         }
     }
 

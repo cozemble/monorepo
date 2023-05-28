@@ -12,14 +12,22 @@ import type {
 } from '@cozemble/model-core'
 import { modelIdAndNameFns, nestedModelNameFns } from '@cozemble/model-core'
 import type { Backend } from '../backend/Backend'
+import { emptyFilterParams } from '../backend/Backend'
 import { derived, type Readable, type Writable, writable } from 'svelte/store'
-import type { EventSourcedModel } from '@cozemble/model-event-sourced'
-import { coreModelEvents, eventSourcedModelFns } from '@cozemble/model-event-sourced'
+import type {
+  DataRecordEditEvent,
+  EventSourcedDataRecord,
+  EventSourcedModel,
+} from '@cozemble/model-event-sourced'
+import {
+  coreModelEvents,
+  eventSourcedDataRecordFns,
+  eventSourcedModelFns,
+} from '@cozemble/model-event-sourced'
 import type { JustErrorMessage } from '@cozemble/lang-util'
 import { mandatory } from '@cozemble/lang-util'
 import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import { DataRecordPathFocus, recordSaveSucceeded } from '@cozemble/data-paginated-editor'
-import type { DataRecordEditEvent, EventSourcedDataRecord } from '@cozemble/data-editor-sdk'
 import { dataRecordFns, dataRecordValuePathFns, modelFns } from '@cozemble/model-api'
 import {
   DataTableFocus,
@@ -27,8 +35,6 @@ import {
   emptyDataTableFocus,
 } from '../focus/DataTableFocus'
 import { gettableWritable } from '../editors/GettableWritable'
-import { eventSourcedDataRecordFns } from '@cozemble/data-editor-sdk'
-import { emptyFilterParams } from '../backend/Backend'
 
 export type LoadingState = 'loading' | 'loaded'
 
@@ -202,15 +208,13 @@ export class RootRecordsContext implements RecordsContext {
 
   async loadRecords(): Promise<void> {
     this._loadingState.set('loading')
-    const loaded = await this.backend.getRecords(this.modelId(), emptyFilterParams())
-    this._records.set(
-      loaded.map((r) => eventSourcedDataRecordFns.fromRecord(this._allModelCache, r)),
-    )
+    const graph = await this.backend.getRecords(this.modelId(), emptyFilterParams())
+    this._records.set(graph.records)
     this._loadingState.set('loaded')
   }
 
   async saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
-    const outcome = await this.backend.saveNewRecord(newRecord)
+    const outcome = await this.backend.saveNewRecord(newRecord, [], [])
     if (outcome._type === 'record.save.succeeded') {
       this._records.update((records) => [...records, newRecord])
     }
@@ -218,7 +222,7 @@ export class RootRecordsContext implements RecordsContext {
   }
 
   async saveExistingRecord(record: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
-    const outcome = await this.backend.saveExistingRecord(record)
+    const outcome = await this.backend.saveExistingRecord(record, [], [])
     if (outcome._type === 'record.save.succeeded') {
       this._records.update((records) =>
         records.map((r) => (r.record.id.value === record.record.id.value ? record : r)),

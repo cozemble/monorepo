@@ -2,7 +2,7 @@ import type { PageLoad } from './$types'
 import { browser } from '$app/environment'
 import { cozauth } from '../../../lib/auth/cozauth'
 import { eventSourcedModels } from '../../../lib/models/modelsStore'
-import { eventSourcedModelFns } from '@cozemble/model-event-sourced'
+import { eventSourcedModelFns, eventSourcedModelListFns } from '@cozemble/model-event-sourced'
 import { tenantStore } from '../../../lib/tenant/tenantStore'
 import { tenantEntities } from '../../../lib/models/tenantEntityStore'
 import { backend, setBackend } from '../../../lib/backend/backendStore'
@@ -23,7 +23,9 @@ export const load: PageLoad = async ({ params, url }) => {
       const tenantData = await backend.getTenantDetails(params.tenantId)
       eventSourcedModels.set(tenantData.models.map((m: any) => eventSourcedModelFns.newInstance(m)))
       incrementalEventSourcedModels.set(
-        tenantData.models.map((m: any) => eventSourcedModelFns.newInstance(m)),
+        eventSourcedModelListFns.newInstance(
+          tenantData.models.map((m: any) => eventSourcedModelFns.newInstance(m)),
+        ),
       )
       tenantEntities.set(tenantData.entities)
       tenantStore.set({ _type: 'tenant', id: params.tenantId, name: tenantData.name })

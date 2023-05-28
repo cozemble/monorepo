@@ -1,12 +1,18 @@
-import { Backend, FetchRecordsResponse, FetchTenantResponse, TenantEntity } from './Backend'
-import { DataRecord, DataRecordId, Model, ModelId } from '@cozemble/model-core'
-import { RecordDeleteOutcome, RecordSaveOutcome } from '@cozemble/data-paginated-editor'
+import { Backend, FetchTenantResponse, TenantEntity } from './Backend'
 import {
-  AttachmentIdAndFileName,
-  EventSourcedDataRecord,
-  UploadedAttachment,
-} from '@cozemble/data-editor-sdk'
+  DataRecord,
+  DataRecordId,
+  Id,
+  Model,
+  ModelId,
+  RecordAndEdges,
+  RecordGraphEdge,
+  RecordsAndEdges,
+} from '@cozemble/model-core'
+import { RecordDeleteOutcome, RecordSaveOutcome } from '@cozemble/data-paginated-editor'
+import { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import { BackendModel } from '@cozemble/backend-tenanted-api-types'
+import { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
 
 export type ErrorListener = (e: any) => void
 
@@ -50,7 +56,7 @@ export class ErrorListenerBackend implements Backend {
     modelId: string,
     search: string | null,
     filters: any,
-  ): Promise<FetchRecordsResponse> {
+  ): Promise<RecordsAndEdges> {
     try {
       return await this.backend.fetchRecords(tenantId, modelId, search, filters)
     } catch (e) {
@@ -63,7 +69,7 @@ export class ErrorListenerBackend implements Backend {
     tenantId: string,
     modelId: ModelId,
     recordId: DataRecordId,
-  ): Promise<DataRecord | null> {
+  ): Promise<RecordAndEdges | null> {
     try {
       return await this.backend.findRecordById(tenantId, modelId, recordId)
     } catch (e) {
@@ -128,9 +134,11 @@ export class ErrorListenerBackend implements Backend {
     tenantId: string,
     models: Model[],
     newRecord: EventSourcedDataRecord,
+    edges: RecordGraphEdge[],
+    deletedEdges: Id[],
   ): Promise<RecordSaveOutcome> {
     try {
-      return await this.backend.saveRecord(tenantId, models, newRecord)
+      return await this.backend.saveRecord(tenantId, models, newRecord, edges, deletedEdges)
     } catch (e) {
       this.errorListeners.forEach((l) => l(e))
       throw e

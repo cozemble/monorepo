@@ -38,7 +38,6 @@ export function assembleEditorParams(
   const summaryView = modelViews.find(
     (e) => e.modelId.value === referencedModelId.value && e.name.value === 'Summary View',
   )
-  console.log({ modelViews, summaryView })
   const referencedModel = modelFns.findById(client.getModels(), referencedModelId)
   if (!referencedModel) {
     throw new Error('No referenced model')

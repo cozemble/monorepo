@@ -25,7 +25,7 @@
        class:tab-active={$navbarState === model.model.id.value}
        on:click={() => showModel(model.model.id)}>{model.model.pluralName.value}
         {#if $permitModelling}
-        <span on:click={editModelClicked} class="ml-2 mt-1">
+        <span on:click={editModelClicked} class="ml-2 mt-1 edit-model-{index + 1}">
             <DownCaret/></span>
         {/if}
     </a>

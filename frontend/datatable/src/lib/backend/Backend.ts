@@ -1,12 +1,21 @@
-import type { EventSourcedModel } from '@cozemble/model-event-sourced'
-import type { JustErrorMessage } from '@cozemble/lang-util'
-import type { DataRecord, DataRecordId, ModelId, ModelView } from '@cozemble/model-core'
-import type { AttachmentsManager, RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import type {
-  AttachmentIdAndFileName,
   EventSourcedDataRecord,
-  UploadedAttachment,
-} from '@cozemble/data-editor-sdk'
+  EventSourcedModel,
+  EventSourcedRecordGraph,
+} from '@cozemble/model-event-sourced'
+import type { JustErrorMessage, Outcome } from '@cozemble/lang-util'
+import type {
+  DataRecord,
+  DataRecordId,
+  Id,
+  ModelId,
+  ModelView,
+  RecordAndEdges,
+  RecordGraphEdge,
+  RecordsAndEdges,
+} from '@cozemble/model-core'
+import type { AttachmentsManager, RecordSaveOutcome } from '@cozemble/data-paginated-editor'
+import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import type { FilterGroupList } from '@cozemble/data-filters-core'
 import { filterGroupListFns } from '@cozemble/data-filters-core'
 
@@ -20,26 +29,40 @@ export function emptyFilterParams(): FilterParams {
 }
 
 export interface RecordSaver {
-  saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome>
+  saveNewRecord(
+    newRecord: EventSourcedDataRecord,
+    edges: RecordGraphEdge[],
+    deletedEdges: Id[],
+  ): Promise<RecordSaveOutcome>
 
-  saveExistingRecord(record: EventSourcedDataRecord): Promise<RecordSaveOutcome>
+  saveExistingRecord(
+    record: EventSourcedDataRecord,
+    edges: RecordGraphEdge[],
+    deletedEdges: Id[],
+  ): Promise<RecordSaveOutcome>
 }
 
 export interface Backend extends AttachmentsManager, RecordSaver {
+  saveNewGraph(graph: EventSourcedRecordGraph): Promise<Outcome<EventSourcedRecordGraph>>
+
   saveModel(model: EventSourcedModel): Promise<JustErrorMessage | null>
 
   saveModels(model: EventSourcedModel[]): Promise<JustErrorMessage | null>
 
-  getRecords(modelId: ModelId, filterParams: FilterParams): Promise<DataRecord[]>
+  getRecords(modelId: ModelId, filterParams: FilterParams): Promise<EventSourcedRecordGraph>
 
-  searchRecords(modelId: ModelId, search: string): Promise<DataRecord[]>
+  searchRecords(modelId: ModelId, search: string): Promise<RecordsAndEdges>
 
-  recordById(modelId: ModelId, recordId: DataRecordId): Promise<DataRecord | null>
+  recordById(modelId: ModelId, recordId: DataRecordId): Promise<RecordAndEdges | null>
 
   saveModelView(modelView: ModelView): Promise<JustErrorMessage | null>
 }
 
 export const notImplementedBackend: Backend = {
+  async saveNewGraph(): Promise<Outcome<EventSourcedRecordGraph>> {
+    throw new Error('Not implemented')
+  },
+
   saveNewRecord(): Promise<RecordSaveOutcome> {
     throw new Error('Not implemented')
   },
@@ -58,7 +81,7 @@ export const notImplementedBackend: Backend = {
   recordById: async () => {
     throw new Error('Not implemented')
   },
-  async searchRecords(): Promise<DataRecord[]> {
+  async searchRecords() {
     throw new Error('Not implemented')
   },
   async saveModelView(): Promise<JustErrorMessage | null> {

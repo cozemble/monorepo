@@ -1,28 +1,34 @@
 import type { Backend, FilterParams } from '../backend/Backend'
-import type { EventSourcedModel } from '@cozemble/model-event-sourced'
-import type { JustErrorMessage } from '@cozemble/lang-util'
+import type {
+  EventSourcedDataRecord,
+  EventSourcedModel,
+  EventSourcedRecordGraph,
+} from '@cozemble/model-event-sourced'
+import type { JustErrorMessage, Outcome } from '@cozemble/lang-util'
 import { allEventSourcedModels } from '../stores/allModels'
-import type { DataRecord, ModelId } from '@cozemble/model-core'
+import type { DataRecordId, Id, ModelId, ModelView, RecordGraphEdge } from '@cozemble/model-core'
 import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
-import type { EventSourcedDataRecord } from '@cozemble/data-editor-sdk'
-import type { DataRecordId, ModelView } from '@cozemble/model-core'
 import { allModelViews } from '../stores/allModelViews'
 import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 
 export class StoreSyncBackend implements Backend {
   constructor(private readonly delegate: Backend) {}
 
+  async saveNewGraph(graph: EventSourcedRecordGraph): Promise<Outcome<EventSourcedRecordGraph>> {
+    return await this.delegate.saveNewGraph(graph)
+  }
+
   async saveModel(model: EventSourcedModel): Promise<JustErrorMessage | null> {
     const result = await this.delegate.saveModel(model)
     if (result === null) {
-      allEventSourcedModels.update((ms) => {
-        const index = ms.findIndex((m) => m.model.id.value === model.model.id.value)
+      allEventSourcedModels.update((list) => {
+        const index = list.models.findIndex((m) => m.model.id.value === model.model.id.value)
         if (index === -1) {
-          return [...ms, model]
+          return { ...list, models: [...list.models, model] }
         }
-        const newMs = [...ms]
-        newMs[index] = model
-        return newMs
+        const newModels = [...list.models]
+        newModels[index] = model
+        return { ...list, models: newModels }
       })
     }
     return result
@@ -32,25 +38,32 @@ export class StoreSyncBackend implements Backend {
     return await this.delegate.saveModels(models)
   }
 
-  async getRecords(modelId: ModelId, filterParams: FilterParams): Promise<DataRecord[]> {
+  async getRecords(modelId: ModelId, filterParams: FilterParams): Promise<EventSourcedRecordGraph> {
     return await this.delegate.getRecords(modelId, filterParams)
   }
 
-  async saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
-    return await this.delegate.saveNewRecord(newRecord)
+  async saveNewRecord(
+    newRecord: EventSourcedDataRecord,
+    edges: RecordGraphEdge[],
+    deletedEdges: Id[],
+  ): Promise<RecordSaveOutcome> {
+    return await this.delegate.saveNewRecord(newRecord, edges, deletedEdges)
   }
 
-  async saveExistingRecord(record: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
-    return await this.delegate.saveExistingRecord(record)
+  async saveExistingRecord(
+    record: EventSourcedDataRecord,
+    edges: RecordGraphEdge[],
+    deletedEdges: Id[],
+  ): Promise<RecordSaveOutcome> {
+    return await this.delegate.saveExistingRecord(record, edges, deletedEdges)
   }
 
-  async searchRecords(modelId: ModelId, search: string): Promise<DataRecord[]> {
+  async searchRecords(modelId: ModelId, search: string) {
     return await this.delegate.searchRecords(modelId, search)
   }
 
   async saveModelView(modelView: ModelView): Promise<JustErrorMessage | null> {
     const outcome = await this.delegate.saveModelView(modelView)
-    console.log({ outcome })
     if (outcome !== null) {
       return outcome
     }
@@ -69,7 +82,7 @@ export class StoreSyncBackend implements Backend {
     return outcome
   }
 
-  async recordById(modelId: ModelId, recordId: DataRecordId): Promise<DataRecord | null> {
+  async recordById(modelId: ModelId, recordId: DataRecordId) {
     return await this.delegate.recordById(modelId, recordId)
   }
 

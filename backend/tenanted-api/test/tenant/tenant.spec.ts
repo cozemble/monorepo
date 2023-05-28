@@ -21,6 +21,7 @@ import {
   simulateNewUser,
 } from './testHelpers'
 import { testEnv } from '../helper'
+import { recordAndEdges } from '@cozemble/model-core'
 
 const jwtSigningSecret = 'secret'
 const port = 3002
@@ -225,6 +226,7 @@ describe('with a migrated database', () => {
       queryCount: 0,
       queryPages: 1,
       records: [],
+      edges: [],
       totalCount: 0,
       totalPages: 1,
     })
@@ -247,7 +249,7 @@ describe('with a migrated database', () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(savableRecords([record])),
+        body: JSON.stringify(savableRecords([record], [], [])),
       },
     )
     await expect(putResponse.status).toBe(401)
@@ -271,7 +273,7 @@ describe('with a migrated database', () => {
           'Content-Type': 'application/json',
           Authorization: 'Bearer ' + bearer,
         },
-        body: JSON.stringify(savableRecords([record])),
+        body: JSON.stringify(savableRecords([record], [], [])),
       },
     )
     await expect(putResponse.status).toBe(200)
@@ -295,6 +297,7 @@ describe('with a migrated database', () => {
       totalPages: 1,
       queryCount: 1,
       queryPages: 1,
+      edges: [],
     })
   })
 
@@ -316,7 +319,7 @@ describe('with a migrated database', () => {
           'Content-Type': 'application/json',
           Authorization: 'Bearer ' + bearer,
         },
-        body: JSON.stringify(savableRecords([record])),
+        body: JSON.stringify(savableRecords([record], [], [])),
       },
     )
     await expect(putResponse.status).toBe(200)
@@ -331,7 +334,7 @@ describe('with a migrated database', () => {
     )
     expect(getResponse.status).toBe(200)
     const fetched = await getResponse.json()
-    expect(fetched).toEqual(record)
+    expect(fetched).toEqual(recordAndEdges(record, []))
   })
 
   test('can put a record with values that are string arrays', async () => {
@@ -356,7 +359,7 @@ describe('with a migrated database', () => {
           'Content-Type': 'application/json',
           Authorization: 'Bearer ' + bearer,
         },
-        body: JSON.stringify(savableRecords([record])),
+        body: JSON.stringify(savableRecords([record], [], [])),
       },
     )
     await expect(putResponse.status).toBe(200)

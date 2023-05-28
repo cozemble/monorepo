@@ -32,7 +32,6 @@
     "@cozemble/data-paginated-editor": "workspace:*",
     "@cozemble/frontend-bff": "workspace:*",
     "@cozemble/frontend-datatable": "workspace:*",
-    "@cozemble/frontend-incremental-modelling-spike": "workspace:*",
     "@cozemble/frontend-ui-blocks": "workspace:*",
     "@cozemble/lang-util": "workspace:*",
     "@cozemble/model-api": "workspace:*",

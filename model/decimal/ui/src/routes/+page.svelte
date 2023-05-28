@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type {DataRecordId, ModelEvent, ModelId} from "@cozemble/model-core";
+    import type {ModelEvent, RecordAndEdges} from "@cozemble/model-core";
     import {
         type DataRecord, type Model, modelEventDescriptors, type
             ModelView, systemConfigurationFns
@@ -10,6 +10,7 @@
     import type {JustErrorMessage} from "@cozemble/lang-util";
     import {type DecimalProperty, emptyProperty, registerDecimalProperty} from "@cozemble/model-decimal-core";
     import DecimalRepl from "./DecimalRepl.svelte";
+    import type {EventSourcedRecordGraph} from "@cozemble/model-event-sourced";
 
     registerDecimalProperty()
     const systemConfiguration = systemConfigurationFns.empty()
@@ -24,7 +25,7 @@
     }
 
     const dataRecordEditorClient: DataRecordEditorClient = {
-        recordById(): Promise<DataRecord | null> {
+        recordById(): Promise<RecordAndEdges | null> {
             throw new Error("Not implemented")
         },
 
@@ -34,11 +35,11 @@
         dispatchEditEvent(): void {
         },
 
-        createNewRootRecord(): Promise<DataRecord | null> {
+        createNewRootRecord(): Promise<EventSourcedRecordGraph | null> {
             throw new Error("Not implemented")
         },
 
-        searchRecords(): Promise<DataRecord[]> {
+        searchRecords() {
             throw new Error("Not implemented")
         },
 
@@ -85,11 +86,11 @@
             throw new Error("Not implemented")
         },
 
-        searchRecords(): Promise<DataRecord[]> {
+        searchRecords() {
             throw new Error("Not implemented")
         },
 
-        recordById(): Promise<DataRecord | null> {
+        recordById() {
             throw new Error("Not implemented")
         },
 

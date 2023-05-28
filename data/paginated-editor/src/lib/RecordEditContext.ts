@@ -9,13 +9,13 @@ import type {
 import { DataRecordPathFocus } from './DataRecordPathFocus'
 import { writable, type Writable } from 'svelte/store'
 import { dataRecordFns, modelFns } from '@cozemble/model-api'
-import type { DataRecordControlEvent } from '@cozemble/data-editor-sdk'
-import {
-  type DataRecordEditEvent,
-  type EventSourcedDataRecord,
-  eventSourcedDataRecordFns,
-} from '@cozemble/data-editor-sdk'
 import { uuids } from '@cozemble/lang-util'
+import type {
+  DataRecordControlEvent,
+  DataRecordEditEvent,
+  EventSourcedDataRecord,
+} from '@cozemble/model-event-sourced'
+import { eventSourcedDataRecordFns } from '@cozemble/model-event-sourced'
 
 export interface RecordSaveSucceeded {
   _type: 'record.save.succeeded'

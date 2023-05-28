@@ -13,10 +13,6 @@ import {
   slotEditorRegistry,
   slotViewerRegistry,
 } from '@cozemble/model-assembled'
-import {
-  ModelReferenceEditor,
-  ModelReferenceViewer,
-} from '@cozemble/data-paginated-editor'
 
 // stores
 import { setAllModelViews } from '../../stores/allModelViews'
@@ -30,6 +26,8 @@ import ModelPane from '$lib/components/editor/ModelPane.svelte'
 import RecordCreatorContext from '$lib/records/creator/RecordCreatorContext.svelte'
 import Modals from '$lib/Modals.svelte'
 import EditorNav from '$lib/components/editor/nav/EditorNav.svelte'
+import ModelReferenceViewer from "$lib/records/modelReferences/ModelReferenceViewer.svelte";
+import ModelReferenceEditor from "$lib/records/modelReferences/ModelReferenceEditor.svelte";
 
 // <!-- TODO change to a non-store boolean
 export let permitModelling = writable(true)

@@ -2,8 +2,6 @@
     import DataRecordEditor from './DataRecordEditor.svelte'
     import type {
         AttachmentIdAndFileName,
-        DataRecordControlEvent,
-        DataRecordEditEvent,
         DataRecordEditorClient,
         ModelViewManager,
         UserInstruction,
@@ -19,6 +17,8 @@
     import type {JustErrorMessage} from "@cozemble/lang-util";
     import {strings} from "@cozemble/lang-util";
     import type {DataRecordId} from "@cozemble/model-core";
+    import type {DataRecordControlEvent, DataRecordEditEvent} from "@cozemble/model-event-sourced";
+    import type {EventSourcedRecordGraph} from "@cozemble/model-event-sourced";
 
     export let recordEditContext: RecordEditContext
     export let recordSearcher: RecordSearcher
@@ -40,11 +40,11 @@
     }
 
     const dataRecordEditorClient: DataRecordEditorClient = {
-        async recordById(modelId: ModelId, recordId: DataRecordId): Promise<DataRecord | null> {
+        async recordById(modelId: ModelId, recordId: DataRecordId) {
             return recordSearcher.recordById(modelId, recordId)
         },
 
-        createNewRootRecord(modelId: ModelId): Promise<DataRecord | null> {
+        createNewRootRecord(modelId: ModelId): Promise<EventSourcedRecordGraph | null> {
             return recordCreator.createNewRecord(modelId)
         },
 
@@ -55,7 +55,7 @@
         dispatchControlEvent(event: DataRecordControlEvent): void {
             recordEditContext.handleDataRecordControlEvent(event)
         },
-        searchRecords(modelId: ModelId, search: string): Promise<DataRecord[]> {
+        searchRecords(modelId: ModelId, search: string) {
             return recordSearcher.searchRecords(modelId, search)
         },
         getModelViews(modelId: ModelId): ModelView[] {
