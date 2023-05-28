@@ -19,7 +19,7 @@ import { applyTemplate, modelToJson } from '@cozemble/model-to-json'
 import { modelFns } from '@cozemble/model-api'
 import { strings } from '@cozemble/lang-util'
 import type { EventSourcedRecordGraph } from '@cozemble/model-event-sourced'
-import { timestampedRecordGraphEdgeFns } from '@cozemble/model-event-sourced/dist/esm'
+import { timestampedRecordGraphEdgeFns } from '@cozemble/model-event-sourced'
 
 export interface EditorParams {
   _type: 'editor.params'
@@ -39,7 +39,7 @@ export function assembleEditorParams(
   if (modelReference._type !== 'model.reference') {
     throw new Error('Expected a model reference')
   }
-  const referencedModelId = getReferencedModelId(modelReference)
+  const referencedModelId = modelReferenceFns.getReferencedModelId(modelReference)
   if (!referencedModelId) {
     throw new Error('No referenced model id')
   }
@@ -70,12 +70,6 @@ export function assembleEditorParams(
     summaryView: summaryView.view.view,
     models: client.getModels(),
   }
-}
-
-export function getReferencedModelId(modelReference: ModelReference): ModelId | null {
-  return modelReference.inverse
-    ? modelReference.originModelId
-    : modelReferenceFns.oneReference(modelReference)
 }
 
 export function makeSummaryView(record: DataRecord, params: EditorParams): string {

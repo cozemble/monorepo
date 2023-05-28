@@ -258,13 +258,12 @@ export const modelReferenceFns = {
     }
     return errors
   },
-  mandatoryReferencedModelId: (modelReference: ModelReference): ModelId => {
-    const modelId = modelReference.referencedModelIds[0]
-    if (!modelId) {
-      throw new Error('No referenced model id')
-    }
-    return modelId
+  getReferencedModelId: (modelReference: ModelReference): ModelId | null => {
+    return modelReference.inverse
+      ? modelReference.originModelId
+      : modelReferenceFns.oneReference(modelReference)
   },
+
   oneReference: (reference: ModelReference): ModelId | null => {
     return reference.referencedModelIds[0] ?? null
   },

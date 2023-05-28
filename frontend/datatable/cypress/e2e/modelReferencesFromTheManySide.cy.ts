@@ -48,11 +48,15 @@ describe('data table', () => {
     cy.get(cellSelector('0-1')).should('contain', 'John Smith')
     cy.get('button.save').click()
     cy.get('button.save-root-record').click()
-    //
+
     cy.get(cellSelector('0-2')).should('contain', 'Booking #11')
 
     clickTable(2)
     cy.get(cellSelector('0-0')).should('contain', 'Booking #11')
     cy.get(cellSelector('0-1')).should('contain', 'John Smith')
+
+    cy.get('.edit-field-2').click()
+    cy.get('select.referenced-model').find(':selected').should('have.text', 'Customer')
+    cy.contains('Cancel').click()
   })
 })

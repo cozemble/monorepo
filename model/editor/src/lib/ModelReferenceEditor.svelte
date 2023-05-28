@@ -13,7 +13,7 @@
     export let modelId: ModelId
     export let modelReference: ModelReference
 
-    $: referencedModelId = modelReferenceFns.oneReference(modelReference)
+    $: referencedModelId = modelReferenceFns.getReferencedModelId(modelReference)
 
     const otherModels = $modelList.models.filter(m => m.model.id.value !== modelId.value)
     const otherModelIds = otherModels.map(model => model.model.id) as ModelId[]
