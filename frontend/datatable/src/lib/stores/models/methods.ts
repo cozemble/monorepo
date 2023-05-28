@@ -2,64 +2,61 @@
 
 import type { Writable } from 'svelte/store'
 
-import type { NestedModelId, Cardinality, Model, ModelEvent, ModelId } from '@cozemble/model-core'
-import type { EventSourcedModel } from '@cozemble/model-event-sourced'
-import type { JustErrorMessage } from '@cozemble/lang-util'
-
-import { nestedModelIdFns, modelIdAndNameFns, nestedModelNameFns } from '@cozemble/model-core'
+import type { Cardinality, Model, ModelEvent, ModelId, NestedModelId } from '@cozemble/model-core'
+import { modelIdAndNameFns, nestedModelIdFns, nestedModelNameFns } from '@cozemble/model-core'
+import type { EventSourcedModel, EventSourcedModelList } from '@cozemble/model-event-sourced'
 import { coreModelEvents, eventSourcedModelFns } from '@cozemble/model-event-sourced'
+import type { JustErrorMessage } from '@cozemble/lang-util'
 
 //
 
 export const modelEdited = async (
-  eventSourcedModels: Writable<EventSourcedModel[]>,
+  modelList: Writable<EventSourcedModelList>,
   model: EventSourcedModel,
 ): Promise<JustErrorMessage | null> => {
-  eventSourcedModels.update((models) =>
-    models.map((m) => (m.model.id.value === model.model.id.value ? model : m)),
-  )
-
+  modelList.update((list) => {
+    const mutatedModels = list.models.map((m) =>
+      m.model.id.value === model.model.id.value ? model : m,
+    )
+    return { ...list, models: mutatedModels }
+  })
   return null
 }
 
 export const updateModel = async (
-  eventSourcedModels: Writable<EventSourcedModel[]>,
+  modelList: Writable<EventSourcedModelList>,
   modelId: ModelId,
   event: ModelEvent,
 ): Promise<void> => {
-  eventSourcedModels.update((models) => {
-    const model = eventSourcedModelFns.findById(models, modelId)
-
+  modelList.update((list) => {
+    const model = eventSourcedModelFns.findById(list.models, modelId)
     const mutated = eventSourcedModelFns.addEvent(model, event)
-
-    return models.map((model) => (model.model.id.value === modelId.value ? mutated : model))
+    const mutatedModels = list.models.map((model) =>
+      model.model.id.value === modelId.value ? mutated : model,
+    )
+    return { ...list, models: mutatedModels }
   })
 }
 
 export const addNestedModel = async (
-  eventSourcedModels: Writable<EventSourcedModel[]>,
+  modelList: Writable<EventSourcedModelList>,
   parentModel: EventSourcedModel,
   childModel: Model,
   cardinality: Cardinality,
 ): Promise<NestedModelId> => {
   childModel.parentModelId = parentModel.model.id
-
-  eventSourcedModels.update((models) => {
+  modelList.update((list) => {
     const newEventSourcedModel = eventSourcedModelFns.newInstance(childModel)
-    return [...models, newEventSourcedModel]
+    return { ...list, models: [...list.models, newEventSourcedModel] }
   })
-
   const parent = modelIdAndNameFns.fromModel(parentModel.model)
   const child = modelIdAndNameFns.fromModel(childModel)
-
   const name =
     cardinality === 'one'
       ? nestedModelNameFns.newInstance(childModel.name.value)
       : nestedModelNameFns.newInstance(childModel.pluralName.value)
   const nestedModelId = nestedModelIdFns.newInstance()
   const event = coreModelEvents.nestedModelAdded(parent, child, cardinality, name, nestedModelId)
-
-  await updateModel(eventSourcedModels, parentModel.model.id, event)
-
+  await updateModel(modelList, parentModel.model.id, event)
   return nestedModelId
 }
