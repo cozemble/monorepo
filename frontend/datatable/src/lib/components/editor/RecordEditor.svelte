@@ -18,6 +18,7 @@ import { mandatory } from '@cozemble/lang-util'
 import { allEventSourcedModels } from '$lib/stores/allModels'
 import { systemConfiguration } from '$lib/stores/systemConfiguration'
 import { contextHelper } from '$lib/stores/contextHelper'
+import * as modelsStore_r from '$lib/stores/models'
 // records
 import type { SlotBeingEdited } from '$lib/records/helpers'
 import type { DataRecordsTableOptions } from '$lib/records/DataRecordsTableOptions'
@@ -55,6 +56,8 @@ const permitModelling = contextHelper.getPermitModelling()
 const permitRecordAdditions = modelRecordsContextFns.getPermitRecordAdditions()
 
 let slotBeingEdited: SlotBeingEdited | null = null
+
+const { model: model_r } = modelsStore_r.contexts.getAll()
 
 //
 
@@ -100,18 +103,8 @@ async function addInnerRecord() {
 }
 
 async function addSlotToModel() {
-  const fieldName = `Field ${$model.slots.length + 1}`
+  await modelsStore_r.addSlotToModel(model_r)
 
-  await modelControls.updateModel(
-    $model.id,
-    propertyDescriptors
-      .getDefault()
-      .newProperty(
-        $systemConfiguration,
-        $model.id,
-        propertyNameFns.newInstance(fieldName),
-      ),
-  )
   await tick()
   const element = document.querySelector(
     `th#field-${$model.slots.length}`,
