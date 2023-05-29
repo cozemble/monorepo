@@ -1,0 +1,142 @@
+import {
+  DataRecord,
+  Model,
+  ModelEvent,
+  ModelEventDescriptor,
+  modelEventDescriptors,
+  modelEventFns,
+  ModelId,
+  type Property,
+  PropertyDescriptor,
+  propertyDescriptors,
+  PropertyId,
+  propertyIdFns,
+  PropertyName,
+  propertyNameFns,
+  propertyTypeFns,
+  SlotConfiguration,
+  SystemConfiguration,
+} from '@cozemble/model-core'
+import { currencyModelChangedModelEventDescriptor } from './events';
+
+export const currencyPropertyType = propertyTypeFns.newInstance('currency.property')
+
+export interface CurrencyProperty extends Property {
+  propertyType: { _type: 'property.type'; value: 'currency.property' }
+  currency: string // Currency to be used for formatting (USD|EUR|GBP)
+  locale: string // Locale to be used for the currency formatting. (en_US|es_US|en_GB|de_DE)
+  format?: string | null // Use the unicode currency symbol (¤) for special formatting (¤#,##0.00)
+}
+
+export function emptyProperty(name: string): CurrencyProperty {
+  const id = propertyIdFns.newInstance()
+  return {
+    _type: 'property',
+    propertyType: { _type: 'property.type', value: 'currency.property' },
+    id,
+    version: 1,
+    name: propertyNameFns.newInstance(name),
+    required: false,
+    unique: false,
+    currency: 'USD',
+    locale: 'en_US',
+  }
+}
+
+export const currencyPropertyDescriptor: PropertyDescriptor<CurrencyProperty, number> = {
+  _type: 'property.descriptor',
+  propertyType: currencyPropertyType,
+  name: { _type: 'dotted.name', value: 'Currency' },
+  isRequireable: true,
+  isUniqueable: false,
+  validateProperty: function (_property: CurrencyProperty): Map<string, string> {
+    return new Map<string, string>()
+  },
+  randomValue: (systemConfiguration: SystemConfiguration): number => {
+    return 0
+  },
+  validateValue: (
+    systemConfiguration: SystemConfiguration,
+    property: CurrencyProperty,
+    value: number | null,
+  ): string[] => {
+    if ((property.required && value === null) || value === undefined) {
+      return ['Required']
+    }
+    return []
+  },
+  setValue: (
+    systemConfiguration: SystemConfiguration,
+    property: Property,
+    record: DataRecord,
+    value: number | null,
+  ) => {
+    return {
+      ...record,
+      values: {
+        ...record.values,
+        [property.id.value]: value,
+      },
+    }
+  },
+  getValue: (systemConfiguration: SystemConfiguration, property: Property, record: DataRecord) => {
+    return record.values[property.id.value] ?? null
+  },
+  newProperty: (
+    systemConfiguration: SystemConfiguration,
+    modelId: ModelId,
+    propertyName: PropertyName,
+    propertyId?: PropertyId,
+  ) => newCurrencyPropertyModelEvent(modelId, propertyName, propertyId),
+}
+
+export interface NewCurrencyPropertyModelEvent extends ModelEvent {
+  _type: 'new.currency.property.model.event'
+  propertyName: PropertyName
+  propertyId: PropertyId
+}
+
+export function newCurrencyPropertyModelEvent(
+  modelId: ModelId,
+  propertyName: PropertyName,
+  propertyId?: PropertyId,
+): NewCurrencyPropertyModelEvent {
+  return {
+    _type: 'new.currency.property.model.event',
+    ...modelEventFns.coreParts(modelId),
+    propertyName,
+    propertyId: propertyId ?? propertyIdFns.newInstance(propertyName.value),
+  }
+}
+
+export const newCurrencyPropertyModelEventDescriptor: ModelEventDescriptor = {
+  _type: 'model.event.descriptor',
+  modelEventType: 'new.currency.property.model.event',
+  applyEvent: (model: Model, event: NewCurrencyPropertyModelEvent): Model => {
+    let newProperty = {
+      ...emptyProperty(`Property`),
+      id: event.propertyId,
+      name: event.propertyName,
+    }
+    if (model.slots.some((p) => p.id.value === event.propertyId.value)) {
+      newProperty = { ...newProperty, id: event.propertyId }
+      return {
+        ...model,
+        slots: model.slots.map((p) => (p.id.value === event.propertyId.value ? newProperty : p)),
+      }
+    }
+    return { ...model, slots: [...model.slots, newProperty] }
+  },
+}
+
+export function registerModelEvents() {
+  modelEventDescriptors.register(newCurrencyPropertyModelEventDescriptor)
+  modelEventDescriptors.register(currencyModelChangedModelEventDescriptor)
+}
+
+export function registerCurrencyProperty() {
+  propertyDescriptors.register(currencyPropertyDescriptor)
+  registerModelEvents()
+}
+
+export { currencyModelChangedModelEvent } from './events'

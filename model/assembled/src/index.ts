@@ -31,6 +31,12 @@ import {
 import { registerDateSystemConfiguration } from '@cozemble/model-date-ui'
 import { integerPropertyType, registerIntegerProperty } from '@cozemble/model-integer-core'
 import { decimalPropertyType, registerDecimalProperty } from '@cozemble/model-decimal-core'
+import { currencyPropertyType, registerCurrencyProperty } from '@cozemble/model-currency-core'
+import {
+  PropertyConfigurer as CurrencyPropertyConfigurer,
+  PropertyEditor as CurrencyPropertyEditor,
+  PropertyViewer as CurrencyPropertyViewer,
+} from '@cozemble/model-currency-ui'
 
 export { propertyDescriptors } from '@cozemble/model-core'
 
@@ -85,6 +91,7 @@ export function registerAllProperties() {
   registerIntegerProperty()
   registerDecimalProperty()
   registerAttachmentProperty()
+  registerCurrencyProperty()
 }
 
 export function registerAllPropertyConfigurers() {
@@ -93,6 +100,7 @@ export function registerAllPropertyConfigurers() {
   propertyConfigurerRegistry.register(integerPropertyType, IntegerPropertyConfigurer)
   propertyConfigurerRegistry.register(decimalPropertyType, DecimalPropertyConfigurer)
   propertyConfigurerRegistry.register(attachmentPropertyType, AttachmentPropertyConfigurer)
+  propertyConfigurerRegistry.register(currencyPropertyType, CurrencyPropertyConfigurer)
 }
 
 export function registerAllSlotViewers() {
@@ -101,6 +109,7 @@ export function registerAllSlotViewers() {
   slotViewerRegistry.register(integerPropertyType, IntegerPropertyViewer)
   slotViewerRegistry.register(decimalPropertyType, DecimalPropertyViewer)
   slotViewerRegistry.register(attachmentPropertyType, AttachmentPropertyViewer)
+  slotViewerRegistry.register(currencyPropertyType, CurrencyPropertyViewer)
 }
 
 export function registerAllSlotEditors() {
@@ -109,6 +118,7 @@ export function registerAllSlotEditors() {
   slotEditorRegistry.register(integerPropertyType, IntegerPropertyEditor)
   slotEditorRegistry.register(decimalPropertyType, DecimalPropertyEditor)
   slotEditorRegistry.register(attachmentPropertyType, AttachmentPropertyEditor)
+  slotEditorRegistry.register(currencyPropertyType, CurrencyPropertyEditor)
 }
 
 export function registerAllSystemConfigurations() {
