@@ -2,7 +2,7 @@
 
     import ModelReferenceViewer from "../../lib/modelReferences/ModelReferenceViewer.svelte";
     import type {DataRecord, DataRecordId, ModelId, ModelReference, ModelView} from "@cozemble/model-core";
-    import {modelReferenceFns, recordsAndEdges, systemConfigurationFns} from "@cozemble/model-core";
+    import {modelIdFns, modelReferenceFns, recordsAndEdges, systemConfigurationFns} from "@cozemble/model-core";
     import {makeDataRecordViewer} from "../../lib/makeDataRecordViewer";
     import {
         type AttachmentIdAndFileName,
@@ -14,7 +14,6 @@
         dataRecordFns,
         dataRecordValuePathFns,
         modelFns,
-        modelIdFns,
         modelOptions,
         propertyFns,
         propertyOptions

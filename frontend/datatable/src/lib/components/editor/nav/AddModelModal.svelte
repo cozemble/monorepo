@@ -3,7 +3,7 @@ import { createEventDispatcher, onMount } from 'svelte'
 import { writable } from 'svelte/store'
 
 import type { JustErrorMessage } from '@cozemble/lang-util'
-import { modelIdFns } from '@cozemble/model-api'
+import { modelIdFns } from '@cozemble/model-core'
 
 import { positionModal } from '../../../modelUi'
 import { editableTableName } from '../../../models/editableTableName'

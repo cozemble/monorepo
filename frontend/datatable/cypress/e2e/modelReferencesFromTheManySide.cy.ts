@@ -83,5 +83,16 @@ describe('data table', () => {
     cy.get(cellSelector('0-2')).should('contain', 'Booking #11')
     cy.get(cellSelector('1-2')).should('contain', 'Booking #12')
     cy.get(cellSelector('1-2')).should('contain', 'Booking #13')
+
+    editCell('2-0')
+    cy.focused().type('Elmer').realPress('Tab')
+    cy.focused().type('Fudd').realPress('Tab')
+    cy.get('select.reference-selector').select('Booking #13')
+    cy.get('button.save-root-record').click()
+
+    cy.get(cellSelector('0-2')).should('contain', 'Booking #11')
+    cy.get(cellSelector('1-2')).should('contain', 'Booking #12')
+    cy.get(cellSelector('1-2')).should('not.contain', 'Booking #13')
+    cy.get(cellSelector('2-2')).should('contain', 'Booking #13')
   })
 })

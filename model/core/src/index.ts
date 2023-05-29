@@ -111,3 +111,5 @@ export {
 } from './graph'
 
 export { Id, tinyValueFns, TinyValue, Name } from './TinyValue'
+
+export { modelIdFns } from './modelIdFns'

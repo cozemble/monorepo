@@ -3,6 +3,7 @@ import {
   DataRecordId,
   Model,
   ModelReference,
+  modelReferenceFns,
   RecordGraph,
   RecordGraphEdge,
   recordGraphEdgeFns,
@@ -13,7 +14,7 @@ import {
 import { DataRecordEditEvent } from './dataRecordEditEvents'
 import { EventSourcedDataRecord, eventSourcedDataRecordFns } from './EventSourcedDataRecord'
 import { RecordGraphEvent, RecordReferencesChangedEvent } from './recordGraphEvents'
-import { modelReferenceFns } from '@cozemble/model-core'
+import { mandatory } from '@cozemble/lang-util'
 
 export interface TimestampedRecordGraphEdge {
   _type: 'timestamped.record.graph.edge'
@@ -155,13 +156,38 @@ function findRetainedEdges(
 function findNewEdges(
   deletedEdges: TimestampedRecordGraphEdge[],
   retainedEdges: TimestampedRecordGraphEdge[],
+  changedEdges: TimestampedRecordGraphEdge[],
   desiredEdgeState: TimestampedRecordGraphEdge[],
-) {
+): TimestampedRecordGraphEdge[] {
   return desiredEdgeState.filter(
     (desiredEdge) =>
       !deletedEdges.some((edge) => recordGraphEdgeFns.sameReference(desiredEdge.edge, edge.edge)) &&
+      !changedEdges.some((edge) => recordGraphEdgeFns.sameReference(desiredEdge.edge, edge.edge)) &&
       !retainedEdges.some((edge) => recordGraphEdgeFns.sameReference(desiredEdge.edge, edge.edge)),
   )
+}
+
+function findChangedEdges(
+  graph: EventSourcedRecordGraph,
+  desiredEdgeState: TimestampedRecordGraphEdge[],
+  event: RecordReferencesChangedEvent,
+): TimestampedRecordGraphEdge[] {
+  const edges = graph.edges.map((edge) => edge.edge)
+  return desiredEdgeState.flatMap((desiredEdge) => {
+    const { proposed, accepted } = recordGraphEdgeFns.proposeEdge(
+      event.modelReference,
+      edges,
+      desiredEdge.edge,
+    )
+    if (accepted !== proposed) {
+      const existingEdge = mandatory(
+        graph.edges.find((edge) => edge.edge.id.value === accepted.id.value),
+        `Could not find edge ${accepted.id.value} in graph`,
+      )
+      return [{ ...existingEdge, edge: accepted, timestamp: event.timestamp }]
+    }
+    return []
+  })
 }
 
 function handleHasManyReference(
@@ -177,11 +203,20 @@ function handleHasManyReference(
     timestamp: event.timestamp,
   }))
   const retainedEdges = findRetainedEdges(existingEdges, desiredEdgeState)
-  const newEdges = findNewEdges(deletedEdges, retainedEdges, desiredEdgeState)
+  const changedEdges = findChangedEdges(graph, desiredEdgeState, event)
+  const newEdges = findNewEdges(deletedEdges, retainedEdges, changedEdges, desiredEdgeState)
+  const unrelatedEdges = graph.edges.filter(
+    (edge) =>
+      edge.edge.modelReferenceId.value !== event.modelReference.id.value ||
+      !(
+        recordGraphEdgeFns.involvesRecord(edge.edge, event.recordBeingEdited.id) ||
+        changedEdges.some((c) => c.edge.id.value === edge.edge.id.value)
+      ),
+  )
 
   return {
     ...graph,
-    edges: [...retainedEdges, ...newEdges],
+    edges: [...unrelatedEdges, ...retainedEdges, ...changedEdges, ...newEdges],
     deletedEdges: [...graph.deletedEdges, ...deletedEdges],
   }
 }
@@ -301,11 +336,8 @@ export const eventSourcedRecordGraphFns = {
     )
   },
   addEvent(graph: EventSourcedRecordGraph, event: RecordGraphEvent): EventSourcedRecordGraph {
-    console.log({ event })
     if (event._type === 'record.references.changed.event') {
-      const mutatedGraph = storeEvent(handleRecordReferencedChanged(graph, event), event)
-      console.log({ event, mutatedGraph, graph })
-      return mutatedGraph
+      return storeEvent(handleRecordReferencedChanged(graph, event), event)
     }
     return graph
   },

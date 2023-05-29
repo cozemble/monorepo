@@ -13,7 +13,7 @@ import {
   modelNameFns,
   timestampEpochMillis,
 } from '@cozemble/model-core'
-import { modelIdFns } from '@cozemble/model-api'
+import { modelIdFns } from '@cozemble/model-core'
 
 test('is ok with no events', () => {
   const models = eventSourcedModelFns.playAll([], () => {

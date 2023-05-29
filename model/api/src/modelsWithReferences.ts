@@ -1,7 +1,6 @@
 import { modelFns, modelOptions } from './modelsFns'
 import { stringPropertyFns, stringPropertyOptions } from '@cozemble/model-string-core'
-import { modelReferenceFns } from '@cozemble/model-core'
-import { modelIdFns } from './modelIdFns'
+import { modelIdFns, modelReferenceFns } from '@cozemble/model-core'
 
 const addressModel = modelFns.newInstance(
   'Address',

@@ -11,7 +11,10 @@
     "test": "echo NA"
   },
   "devDependencies": {
-    "typescript": "^5.0.2"
+    "typescript": "^5.0.2",
+    "vite": "4.1.4",
+    "vitest": "^0.26.2"
+
   },
   "dependencies": {
     "@cozemble/lang-util": "workspace:*"

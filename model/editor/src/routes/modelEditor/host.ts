@@ -1,16 +1,16 @@
 import type { Model, ModelEvent, ModelId } from '@cozemble/model-core'
-import { modelNameFns } from '@cozemble/model-core'
+import { modelIdFns } from '@cozemble/model-core'
 import type { EventSourcedModelList } from '@cozemble/model-event-sourced'
 import {
   type EventSourcedModel,
   eventSourcedModelFns,
+  eventSourcedModelListEvents,
   eventSourcedModelListFns,
 } from '@cozemble/model-event-sourced'
 import type { ModelEditorHost } from '$lib/ModelEditorHost'
 import { mandatory } from '@cozemble/lang-util'
-import { modelFns, modelIdFns } from '@cozemble/model-api'
+import { modelFns } from '@cozemble/model-api'
 import { type Writable, writable } from 'svelte/store'
-import { eventSourcedModelListEvents } from '@cozemble/model-event-sourced'
 
 export const modelList: Writable<EventSourcedModelList> = writable(
   eventSourcedModelListFns.newInstance(),
