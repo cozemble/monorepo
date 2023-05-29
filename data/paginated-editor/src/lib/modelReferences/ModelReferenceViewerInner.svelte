@@ -6,6 +6,7 @@
     import {dereference} from "./dereference";
     import {renderReference} from "./renderReference";
     import type {SystemConfiguration} from "@cozemble/model-core";
+    import type {RecordAndEdges} from "@cozemble/model-core";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord
@@ -14,7 +15,7 @@
 
     const dataRecordViewerClient = dataRecordViewer.getClient()
 
-    let referencedRecord: DataRecord | null = null
+    let referencedRecord: RecordAndEdges | null = null
 
     $: referencedRecords = dataRecordValuePathFns.getValue(systemConfiguration,recordPath, record) as ReferencedRecords ?? null
     $: dereference(dataRecordViewerClient, editorParams.referencedModelId, referencedRecords, (record) => referencedRecord = record)

@@ -15,9 +15,11 @@
     import {clickOutside} from "@cozemble/ui-atoms";
 
     export let state: EditModelModalState
+    const modelList = state.modelList
+
     const eventSourcedModel = eventSourcedStore(modelReducer, saveModel, mandatory($editModelModal, `Edit model not configured`).model)
-    const tableName = editableTableName(state.model.model.name.value, state.allModels)
-    const pluralTableName = editablePluralTableName(state.model.model.pluralName.value, state.allModels)
+    const tableName = editableTableName(state.model.model.name.value, $modelList.models)
+    const pluralTableName = editablePluralTableName(state.model.model.pluralName.value, $modelList.models)
     const showErrors = writable(false)
     let modal: HTMLDivElement
 
@@ -61,11 +63,11 @@
         <h3 class="font-bold text-lg">Edit table</h3>
         <div class="form-control">
             <label class="label">Table name (singular)</label>
-            <EditableStringInput value={tableName} {showErrors} extraClasses="first"/>
+            <EditableStringInput value={tableName} {showErrors} extraClasses="first singular"/>
         </div>
         <div class="form-control mt-2">
             <label class="label">Table name (plural)</label>
-            <EditableStringInput value={pluralTableName} {showErrors}/>
+            <EditableStringInput value={pluralTableName} {showErrors} extraClasses="plural"/>
         </div>
         <div class="modal-action justify-center">
             <label class="btn btn-primary" on:click={save}>Save</label>

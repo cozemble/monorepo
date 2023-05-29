@@ -1,20 +1,26 @@
-import type { Backend, FetchRecordsResponse, FetchTenantResponse, TenantEntity } from './Backend'
+import type { Backend, FetchTenantResponse, TenantEntity } from './Backend'
 import type { DataRecord, DataRecordId, Model, ModelId } from '@cozemble/model-core'
+import {
+  recordAndEdges,
+  RecordAndEdges,
+  RecordGraphEdge,
+  RecordsAndEdges,
+  recordsAndEdges,
+} from '@cozemble/model-core'
 import type { RecordDeleteOutcome, RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import { recordSaveSucceeded } from '@cozemble/data-paginated-editor'
 import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
-import type {
-  AttachmentIdAndFileName,
-  EventSourcedDataRecord,
-  UploadedAttachment,
-} from '@cozemble/data-editor-sdk'
+import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import { uuids } from '@cozemble/lang-util'
+import { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
+import { recordGraphEdgeFns } from '@cozemble/model-core'
 
 const storageKey = 'cozemble.localstorage.backend'
 
 interface LocalStorageBackendState {
   models: BackendModel[]
   records: DataRecord[]
+  edges: RecordGraphEdge[]
   uploadedAttachments: UploadedAttachment[]
   entities: TenantEntity[]
 }
@@ -24,6 +30,7 @@ export class LocalStorageBackend implements Backend {
     uploadedAttachments: [],
     records: [],
     models: [],
+    edges: [],
     entities: [],
   }
 
@@ -60,17 +67,27 @@ export class LocalStorageBackend implements Backend {
     modelId: string,
     search: string | null,
     filters: any,
-  ): Promise<FetchRecordsResponse> {
+  ): Promise<RecordsAndEdges> {
     const records = this.state.records.filter((r) => r.modelId.value === modelId)
-    return { records }
+    return recordsAndEdges(
+      records,
+      recordGraphEdgeFns.forRecords(
+        this.state.edges,
+        records.map((r) => r.id),
+      ),
+    )
   }
 
   async findRecordById(
     tenantId: string,
     modelId: ModelId,
     recordId: DataRecordId,
-  ): Promise<DataRecord | null> {
-    return this.state.records.find((r) => r.id.value === recordId.value) ?? null
+  ): Promise<RecordAndEdges | null> {
+    const maybeRecord = this.state.records.find((r) => r.id.value === recordId.value)
+    if (maybeRecord) {
+      return recordAndEdges(maybeRecord, [])
+    }
+    return null
   }
 
   async getAttachmentViewUrls(

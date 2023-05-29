@@ -1,9 +1,11 @@
 import type { DataRecordValuePath, ModelSlot } from '@cozemble/model-core'
 import type { EventSourcedModel } from '@cozemble/model-event-sourced'
 import { dataRecordValuePathFns } from '@cozemble/model-api'
+import type { EventSourcedModelList } from '@cozemble/model-event-sourced'
+import type { Writable } from 'svelte/store'
 
 export interface SlotBeingEdited {
-  models: EventSourcedModel[]
+  modelList: Writable<EventSourcedModelList>
   model: EventSourcedModel
   slot: ModelSlot
   anchorElement: HTMLElement

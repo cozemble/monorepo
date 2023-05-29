@@ -1,25 +1,38 @@
 import type {
   AttachmentIdAndFileName,
-  DataRecordControlEvent,
-  DataRecordEditEvent,
   DataRecordEditorClient,
   DataRecordViewerClient,
+  RecordGraphModifier,
   UploadedAttachment,
 } from '@cozemble/data-editor-sdk'
-import type { DataRecord, DataRecordId, Model, ModelId, ModelView } from '@cozemble/model-core'
-import type { EventSourcedDataRecordsStore } from './EventSourcedDataRecordsStore'
+import type {
+  DataRecord,
+  DataRecordId,
+  Model,
+  ModelId,
+  ModelView,
+  SystemConfiguration,
+} from '@cozemble/model-core'
+import type { EventSourcedRecordGraphStore } from './EventSourcedRecordGraphStore'
 import type { DataTableFocusControls2 } from '../focus/DataTableFocus'
 import type { JustErrorMessage } from '@cozemble/lang-util'
 import type { Backend } from '../backend/Backend'
 import { createNewRootRecord as createNewRootRecordFn } from './creator/recordCreatorStore'
+import type {
+  DataRecordControlEvent,
+  DataRecordEditEvent,
+  EventSourcedRecordGraph,
+} from '@cozemble/model-event-sourced'
+import type { RecordAndEdges } from '@cozemble/model-core'
 
 export type CombinedDataRecordEditorClient = DataRecordEditorClient & DataRecordViewerClient
 
 export function makeCombinedDataRecordEditorClient(
   backend: Backend,
+  systemConfigProvider: () => SystemConfiguration,
   modelsProvider: () => Model[],
   modelViewsProvider: () => ModelView[],
-  records: EventSourcedDataRecordsStore,
+  recordGraph: EventSourcedRecordGraphStore,
   focusControls: DataTableFocusControls2,
   recordId: DataRecordId,
 ): CombinedDataRecordEditorClient {
@@ -36,32 +49,35 @@ export function makeCombinedDataRecordEditorClient(
     },
 
     dispatchEditEvent(event: DataRecordEditEvent): void {
-      console.log({ event })
       if (event._type === 'data.record.value.changed') {
-        records.updateRecord(recordId, event)
+        recordGraph.updateRecord(recordId, event)
         if (event.confirmMethod === 'Tab') {
           focusControls.moveForward()
         }
       } else if (event._type === 'data.record.has.many.item.added') {
-        records.updateRecord(recordId, event)
+        recordGraph.updateRecord(recordId, event)
       } else {
         throw new Error('Not implemented: ' + event._type)
       }
     },
 
-    async createNewRootRecord(modelId: ModelId): Promise<DataRecord | null> {
-      const newRecord = await createNewRootRecordFn(modelId)
-      if (!newRecord) {
+    async createNewRootRecord(
+      modelId: ModelId,
+      ...modifiers: RecordGraphModifier[]
+    ): Promise<EventSourcedRecordGraph | null> {
+      const newGraph = await createNewRootRecordFn(modelId, ...modifiers)
+      if (!newGraph) {
         return null
       }
-      const outcome = await backend.saveNewRecord(newRecord)
-      if (outcome._type === 'record.save.succeeded') {
-        return outcome.record
+      const outcome = await backend.saveNewGraph(newGraph)
+      if (outcome._type === 'successful.outcome') {
+        return outcome.value
+      } else {
+        throw new Error('Failed to save new record: ' + outcome.error.message)
       }
-      return null
     },
 
-    searchRecords(modelId: ModelId, search: string): Promise<DataRecord[]> {
+    searchRecords(modelId: ModelId, search: string) {
       return backend.searchRecords(modelId, search)
     },
 
@@ -96,7 +112,7 @@ export function makeCombinedDataRecordEditorClient(
       throw new Error('Method not implemented.')
     },
 
-    recordById(modelId: ModelId, recordId: DataRecordId): Promise<DataRecord | null> {
+    recordById(modelId: ModelId, recordId: DataRecordId): Promise<RecordAndEdges | null> {
       return backend.recordById(modelId, recordId)
     },
   }

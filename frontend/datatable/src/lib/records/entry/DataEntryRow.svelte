@@ -4,13 +4,13 @@
     import type {DataRecordsTableOptions} from "../DataRecordsTableOptions";
     import {introductionsState} from "../../stores/introductions";
     import WithSingleRecordContext from "../WithSingleRecordContext.svelte";
-    import DataTd from "../DataTd.svelte";
     import {modelRecordsContextFns} from "../modelRecordsContextFns";
     import type {Writable} from "svelte/store";
     import {contextHelper} from "../../stores/contextHelper";
     import ExpandCollapseButton from "../ExpandCollapseButton.svelte";
     import NestedDataRecordsInContext from "../NestedDataRecordsInContext.svelte";
     import AddSubItemDialogue from "../AddSubItemDialogue.svelte";
+    import DataTd from "$lib/records/cells/DataTd.svelte";
 
     export let parentPath: DataRecordPathParentElement[] = []
     export let options: DataRecordsTableOptions

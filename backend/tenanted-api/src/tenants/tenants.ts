@@ -68,7 +68,6 @@ router.put('/:tenantId/model', (req: Request, res: Response) => {
 })
 
 router.post('/', (req: Request, res: Response) => {
-  console.log({ envParam: req.params.envParam })
   return withAdminPgClient(async (client) => {
     const body = req.body as CreateTenant
     if (body._type !== 'create.tenant') {
@@ -102,16 +101,14 @@ router.put('/:tenantId/model/:modelId/record', (req: Request, res: Response) => 
     return res.status(400).send()
   }
   const records: SavableRecords = req.body
+  console.log(`records: ${JSON.stringify(records)}`)
 
   return authenticatedDatabaseRequest(req, res, async (client) => {
     const result = await client.query(
-      'select * from upsert_record($1,text2Ltree($2), $3) as records;',
-      [
-        mandatory(req.env, `No env in request`),
-        req.params.tenantId,
-        JSON.stringify(records.records),
-      ],
+      'select * from upsert_records_and_edges($1,text2Ltree($2), $3) as records;',
+      [mandatory(req.env, `No env in request`), req.params.tenantId, JSON.stringify(records)],
     )
+    console.log(`upsert_records_and_edges result: ${JSON.stringify(result)}`)
     if (result.rows.length === 0 || result.rows[0].records === null) {
       return res.status(400).send()
     }
@@ -215,6 +212,20 @@ router.get('/:tenantId/entity', (req: Request, res: Response) => {
     }
 
     return res.status(200).json(result.rows[0].get_tenant_entities_definitions)
+  })
+})
+
+router.post('/:tenantId/model/:modelId/record/recordEdges', (req: Request, res: Response) => {
+  const edges = Array.isArray(req.body) ? req.body : [req.body]
+  return authenticatedDatabaseRequest(req, res, async (client) => {
+    const result = await client.query(
+      'select * from insert_record_edges($1,$2::ltree, $3::jsonb[]);',
+      [mandatory(req.env, `No env in request`), req.params.tenantId, edges],
+    )
+    if (result.rows.length === 0) {
+      return res.status(404).send()
+    }
+    return res.status(200).send()
   })
 })
 

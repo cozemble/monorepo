@@ -44,6 +44,7 @@
     "@cozemble/lang-util": "workspace:*",
     "@cozemble/model-core": "workspace:*",
     "@cozemble/model-api": "workspace:*",
+    "@cozemble/model-event-sourced": "workspace:*",
     "@cozemble/model-editor-sdk": "workspace:*",
     "@cozemble/model-attachment-core": "workspace:*",
     "@cozemble/data-editor-sdk": "workspace:*"

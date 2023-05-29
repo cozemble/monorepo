@@ -2,11 +2,17 @@ import { beforeAll, describe, expect, test } from 'vitest'
 import { appWithTestContainer } from '../../src/appWithTestContainer'
 import { makeTenant, makeTenantMemberAccessToken, putModels, putRecords } from './testHelpers'
 import { uuids } from '@cozemble/lang-util'
-import { DataRecord, Model, modelReferenceFns, referencedRecordsFns } from '@cozemble/model-core'
+import {
+  DataRecord,
+  Model,
+  modelReferenceFns,
+  referencedRecordsFns,
+  systemConfigurationFns,
+} from '@cozemble/model-core'
 import { dataRecordFns, modelFns, modelOptions, propertyFns } from '@cozemble/model-api'
 import { registerStringProperty } from '@cozemble/model-string-core'
-import { systemConfigurationFns } from '@cozemble/model-core'
 import { testEnv } from '../helper'
+import { modelIdFns } from '@cozemble/model-core'
 
 const jwtSigningSecret = 'secret'
 const port = 3010
@@ -33,9 +39,13 @@ describe('Given a Customer with a Booking', () => {
         'Customer',
         modelOptions.withProperties(propertyFns.newInstance('First Name')),
       )
+      const bookingModelId = modelIdFns.newInstance('bookings')
       bookingModel = modelFns.newInstance(
         'Booking',
-        modelOptions.withSlot(modelReferenceFns.newInstance([customerModel.id], 'Customer')),
+        modelOptions.withId(bookingModelId),
+        modelOptions.withSlot(
+          modelReferenceFns.newInstance(bookingModelId, [customerModel.id], 'Customer'),
+        ),
       )
       const models = [customerModel, bookingModel]
       await putModels(port, tenantId, models, bearer)

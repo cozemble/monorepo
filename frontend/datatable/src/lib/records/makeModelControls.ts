@@ -8,22 +8,28 @@ import { modelIdAndNameFns, nestedModelNameFns } from '@cozemble/model-core'
 import { coreModelEvents } from '@cozemble/model-event-sourced'
 import type { NestedModelId } from '@cozemble/model-core'
 import { nestedModelIdFns } from '@cozemble/model-core'
+import type { EventSourcedModelList } from '@cozemble/model-event-sourced'
 
-export function makeModelControls(
-  eventSourcedModels: Writable<EventSourcedModel[]>,
-): ModelControls {
+export function makeModelControls(modelList: Writable<EventSourcedModelList>): ModelControls {
   return {
     async modelEdited(model: EventSourcedModel): Promise<JustErrorMessage | null> {
-      eventSourcedModels.update((models) => {
-        return models.map((m) => (m.model.id.value === model.model.id.value ? model : m))
+      console.log({ model })
+      modelList.update((list) => {
+        const mutatedModels = list.models.map((m) =>
+          m.model.id.value === model.model.id.value ? model : m,
+        )
+        return { ...list, models: mutatedModels }
       })
       return null
     },
     async updateModel(modelId: ModelId, event: ModelEvent): Promise<void> {
-      eventSourcedModels.update((models) => {
-        const model = eventSourcedModelFns.findById(models, modelId)
+      modelList.update((list) => {
+        const model = eventSourcedModelFns.findById(list.models, modelId)
         const mutated = eventSourcedModelFns.addEvent(model, event)
-        return models.map((model) => (model.model.id.value === modelId.value ? mutated : model))
+        const mutatedModels = list.models.map((model) =>
+          model.model.id.value === modelId.value ? mutated : model,
+        )
+        return { ...list, models: mutatedModels }
       })
     },
     async addNestedModel(
@@ -32,9 +38,9 @@ export function makeModelControls(
       cardinality: Cardinality,
     ): Promise<NestedModelId> {
       childModel.parentModelId = parentModel.model.id
-      eventSourcedModels.update((models) => {
+      modelList.update((list) => {
         const newEventSourcedModel = eventSourcedModelFns.newInstance(childModel)
-        return [...models, newEventSourcedModel]
+        return { ...list, models: [...list.models, newEventSourcedModel] }
       })
       const parent = modelIdAndNameFns.fromModel(parentModel.model)
       const child = modelIdAndNameFns.fromModel(childModel)

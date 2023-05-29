@@ -1,11 +1,9 @@
 <script lang="ts">
     import {dataRecordFns, modelFns, modelOptions, nestedModelFns, propertyFns} from "@cozemble/model-api";
-    import type {EventSourcedModel} from "@cozemble/model-event-sourced";
     import {eventSourcedModelFns} from "@cozemble/model-event-sourced";
-    import type {DataRecord} from "@cozemble/model-core";
     import {modelPluralNameFns, systemConfigurationFns} from "@cozemble/model-core";
     import {backendFns} from "../appBackend";
-    import {InMemoryBackend} from "../backend/InMemoryBackend";
+    import {makeInMemoryBackend} from "../backend/InMemoryBackend";
     import {eventSourcedModelStore, setAllEventSourcedModels} from "../stores/allModels";
     import DataRecordsTableInContext from "../records/DataRecordsTableInContext.svelte";
     import {writable} from "svelte/store";
@@ -42,11 +40,7 @@
         "Invoice Date": "2023/11/24",
         "Order Number": "OD3445"
     })
-    const modelMap = new Map<string, EventSourcedModel>()
-    modelMap.set(invoiceModel.id.value, eventSourcedModelFns.newInstance(invoiceModel))
-    const recordsMap = new Map<string, DataRecord[]>()
-    recordsMap.set(invoiceModel.id.value, [invoiceRecord1, invoiceRecord2])
-    backendFns.setBackend(new InMemoryBackend(modelMap, recordsMap))
+    backendFns.setBackend(makeInMemoryBackend([eventSourcedModelFns.newInstance(invoiceModel)], [invoiceRecord1, invoiceRecord2]))
     const modelStore = eventSourcedModelStore(eventSourcedModels)
     setAllEventSourcedModels(modelStore)
     const expandedRecordIds = writable([invoiceRecord1.id])

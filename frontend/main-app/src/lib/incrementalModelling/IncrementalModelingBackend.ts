@@ -1,17 +1,28 @@
-import type { DataTableBackend, FilterParams } from '@cozemble/frontend-datatable'
-import type { EventSourcedModel } from '@cozemble/model-event-sourced'
-import type { JustErrorMessage } from '@cozemble/lang-util'
-import { justErrorMessage } from '@cozemble/lang-util'
-import type { DataRecord, DataRecordId, Model, ModelId, ModelView } from '@cozemble/model-core'
-import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
+import type { Backend as DataTableBackend, FilterParams } from '@cozemble/frontend-datatable'
+import type { EventSourcedDataRecord, EventSourcedModel } from '@cozemble/model-event-sourced'
+import {
+  eventSourcedDataRecordFns,
+  type EventSourcedRecordGraph,
+  eventSourcedRecordGraphFns,
+} from '@cozemble/model-event-sourced'
+import type { JustErrorMessage, Outcome } from '@cozemble/lang-util'
+import { justErrorMessage, outcomeFns } from '@cozemble/lang-util'
 import type {
-  AttachmentIdAndFileName,
-  EventSourcedDataRecord,
-  UploadedAttachment,
-} from '@cozemble/data-editor-sdk'
+  DataRecordId,
+  Id,
+  Model,
+  ModelId,
+  ModelView,
+  RecordAndEdges,
+  RecordGraphEdge,
+  RecordsAndEdges,
+} from '@cozemble/model-core'
+import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
+import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import type { Backend } from '@cozemble/frontend-bff'
 import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
 import { toFilledFilterInstanceGroup } from '@cozemble/frontend-ui-blocks'
+import { timestampedRecordGraphEdgeFns } from '@cozemble/model-event-sourced'
 
 export class IncrementalModelingBackend implements DataTableBackend {
   constructor(
@@ -24,8 +35,24 @@ export class IncrementalModelingBackend implements DataTableBackend {
     return this.saveModels([model])
   }
 
+  async saveNewGraph(graph: EventSourcedRecordGraph): Promise<Outcome<EventSourcedRecordGraph>> {
+    console.log('saveNewGraph', graph)
+    const lastIndex = graph.records.length - 1
+    for (let i = 0; i < graph.records.length; i++) {
+      if (i === lastIndex) {
+        await this.saveNewRecord(
+          graph.records[i],
+          graph.edges.map((e) => e.edge),
+          graph.deletedEdges.map((e) => e.edge.id),
+        )
+      } else {
+        await this.saveNewRecord(graph.records[i], [], [])
+      }
+    }
+    return outcomeFns.successful(graph)
+  }
+
   async saveModels(models: EventSourcedModel[]): Promise<JustErrorMessage | null> {
-    console.log({ savingModels: models })
     try {
       const backendModels: BackendModel[] = models.map((m) => ({
         _type: 'backend.model',
@@ -39,7 +66,7 @@ export class IncrementalModelingBackend implements DataTableBackend {
     }
   }
 
-  async getRecords(modelId: ModelId, filterParams: FilterParams): Promise<DataRecord[]> {
+  async getRecords(modelId: ModelId, filterParams: FilterParams): Promise<EventSourcedRecordGraph> {
     const filled = toFilledFilterInstanceGroup(filterParams.filters)
     const fetched = await this.backend.fetchRecords(
       this.tenantId,
@@ -47,23 +74,47 @@ export class IncrementalModelingBackend implements DataTableBackend {
       filterParams.search,
       filled,
     )
-    return fetched.records
+    return eventSourcedRecordGraphFns.newInstance(
+      fetched.records.map((r) => eventSourcedDataRecordFns.fromRecord(this.modelsProvider(), r)),
+      fetched.edges.map((e) => timestampedRecordGraphEdgeFns.newInstance(e)),
+      [],
+    )
   }
 
-  saveNewRecord(newRecord: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
-    return this.backend.saveRecord(this.tenantId, this.modelsProvider(), newRecord)
+  saveNewRecord(
+    newRecord: EventSourcedDataRecord,
+    edges: RecordGraphEdge[],
+    deletedEdges: Id[],
+  ): Promise<RecordSaveOutcome> {
+    return this.backend.saveRecord(
+      this.tenantId,
+      this.modelsProvider(),
+      newRecord,
+      edges,
+      deletedEdges,
+    )
   }
 
-  saveExistingRecord(record: EventSourcedDataRecord): Promise<RecordSaveOutcome> {
-    return this.backend.saveRecord(this.tenantId, this.modelsProvider(), record)
+  saveExistingRecord(
+    record: EventSourcedDataRecord,
+    edges: RecordGraphEdge[],
+    deletedEdges: Id[],
+  ): Promise<RecordSaveOutcome> {
+    console.log('saveExistingRecord', { record, edges, deletedEdges })
+    return this.backend.saveRecord(
+      this.tenantId,
+      this.modelsProvider(),
+      record,
+      edges,
+      deletedEdges,
+    )
   }
 
-  async searchRecords(modelId: ModelId, search: string): Promise<DataRecord[]> {
-    const fetched = await this.backend.fetchRecords(this.tenantId, modelId.value, search, null)
-    return fetched.records
+  async searchRecords(modelId: ModelId, search: string): Promise<RecordsAndEdges> {
+    return await this.backend.fetchRecords(this.tenantId, modelId.value, search, null)
   }
 
-  recordById(modelId: ModelId, recordId: DataRecordId): Promise<DataRecord | null> {
+  recordById(modelId: ModelId, recordId: DataRecordId): Promise<RecordAndEdges | null> {
     return this.backend.findRecordById(this.tenantId, modelId, recordId)
   }
 

@@ -1,11 +1,9 @@
 <script lang="ts">
     import {createEventDispatcher, onMount} from "svelte";
-    import {modelFns} from "@cozemble/model-api";
-    import {type DataRecord, modelPluralNameFns} from "@cozemble/model-core";
-    import {dataRecordFns, modelOptions, propertyFns} from "@cozemble/model-api";
-    import {InMemoryBackend} from "../backend/InMemoryBackend";
+    import {dataRecordFns, modelFns, modelOptions, propertyFns} from "@cozemble/model-api";
+    import {modelPluralNameFns} from "@cozemble/model-core";
+    import {makeInMemoryBackend} from "../backend/InMemoryBackend";
     import {RootRecordsContext} from "./RecordsContext";
-    import type {EventSourcedModel} from "@cozemble/model-event-sourced";
     import {eventSourcedModelFns} from "@cozemble/model-event-sourced";
     import {writable} from "svelte/store";
     import DataRecordsTable from "./DataRecordsTable.svelte";
@@ -33,13 +31,9 @@
         dispatch('apply', model)
     }
 
-    const modelMap = new Map<string, EventSourcedModel>()
-    models.forEach(m => modelMap.set(m.id.value, eventSourcedModelFns.newInstance(m)))
-    const eventSourcedModels = Array.from(modelMap.values())
-    const recordMap = new Map<string, DataRecord[]>()
-    recordMap.set(model.id.value, records)
-    const backend = new InMemoryBackend(modelMap, recordMap)
-    const sampleRecordsContext = new RootRecordsContext(backend, () => $systemConfiguration,defaultOnError,model.id, writable(eventSourcedModels))
+    const eventSourcedModels = models.map(m => eventSourcedModelFns.newInstance(m))
+    const backend = makeInMemoryBackend(eventSourcedModels, records)
+    const sampleRecordsContext = new RootRecordsContext(backend, () => $systemConfiguration, defaultOnError, model.id, writable(eventSourcedModels))
 
     onMount(async () => {
         await sampleRecordsContext.loadRecords()

@@ -42,5 +42,6 @@ describe('data table', () => {
     cy.focused().type('John').realPress('Tab')
     cy.focused().type('Smith').realPress('Tab')
     cy.get('button.save').click()
+    cy.get('[data-cell-index="0-0"]').should('contain', 'John Smith')
   })
 })

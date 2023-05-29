@@ -2,8 +2,9 @@
     import type {DataRecord, DataRecordValuePath, SystemConfiguration} from '@cozemble/model-core'
     import type {AttachmentReference} from "@cozemble/model-attachment-core";
     import ShowAttachmentThumbs from "./ShowAttachmentThumbs.svelte";
-    import {dataRecordEditEvents, dataRecordViewer} from "@cozemble/data-editor-sdk";
+    import {dataRecordViewer} from "@cozemble/data-editor-sdk";
     import {getAttachments} from "./helpers";
+    import {dataRecordEditEvents} from "@cozemble/model-event-sourced";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord

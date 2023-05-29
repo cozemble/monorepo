@@ -1,6 +1,5 @@
 <script lang="ts">
     import {cozauth} from "../../../lib/auth/cozauth";
-    import MainPanel from "../../../lib/MainPanel.svelte";
     import {onMount} from "svelte";
     import {registerEverything,} from "@cozemble/model-assembled";
     import {page} from '$app/stores';
@@ -27,13 +26,9 @@
     <p>loading...</p>
 {:then session}
     {#if session && $tenantStore}
-        {#if ui === 'incremental-modeling'}
-            <ShowDataModellingExplainer>
-                <IncrementalModelingMain tenantId={$page.params.tenantId}/>
-            </ShowDataModellingExplainer>
-        {:else}
-            <MainPanel tenantId={$page.params.tenantId}/>
-        {/if}
+        <ShowDataModellingExplainer>
+            <IncrementalModelingMain tenantId={$page.params.tenantId}/>
+        </ShowDataModellingExplainer>
     {:else }
         <h1>You need to login</h1>
     {/if}

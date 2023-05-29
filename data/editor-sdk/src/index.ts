@@ -1,20 +1,3 @@
-export {
-  DataRecordEditEvent,
-  DataRecordEditAborted,
-  dataRecordEditEvents,
-  HasManyItemAdded,
-  DataRecordValueChanged,
-  dataRecordControlEvents,
-  DataRecordCreatedEvent,
-  DataRecordControlEvent,
-  DataRecordDeletedEvent,
-} from './dataRecordEditEvents'
-
-export {
-  EventSourcedDataRecord,
-  eventSourcedDataRecordFns,
-  EventSourcedDataRecordOption,
-} from './EventSourcedDataRecord'
 export { dataRecordEditorHost, AttachmentIdAndFileName } from './dataRecordEditorHost'
 export { dataRecordEditor } from './dataRecordEditorHost'
 export {
@@ -24,6 +7,7 @@ export {
   userInstructionFns,
   UserInstruction,
   SetupSummaryViewUserInstruction,
+  RecordGraphModifier,
 } from './dataRecordEditorHost'
 
 export {

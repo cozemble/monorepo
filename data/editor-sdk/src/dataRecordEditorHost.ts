@@ -1,4 +1,4 @@
-import { mandatory } from '@cozemble/lang-util'
+import { mandatory, Option } from '@cozemble/lang-util'
 import {
   DataRecord,
   DataRecordId,
@@ -6,10 +6,16 @@ import {
   ModelId,
   ModelName,
   ModelView,
+  RecordAndEdges,
 } from '@cozemble/model-core'
-import { DataRecordControlEvent, DataRecordEditEvent } from './dataRecordEditEvents'
 import { getContext, setContext } from 'svelte'
 import { ModelViewManager } from './ModelViewManager'
+import {
+  DataRecordControlEvent,
+  DataRecordEditEvent,
+  EventSourcedRecordGraph,
+} from '@cozemble/model-event-sourced'
+import { RecordsAndEdges } from '@cozemble/model-core'
 
 const dataRecordEditorClientContext = 'com.cozemble.data.record.editor.client.context'
 
@@ -55,16 +61,21 @@ export const userInstructionFns = {
   },
 }
 
+export type RecordGraphModifier = Option<EventSourcedRecordGraph>
+
 export interface DataRecordEditorClient extends ModelViewManager {
-  recordById(modelId: ModelId, recordId: DataRecordId): Promise<DataRecord | null>
+  recordById(modelId: ModelId, recordId: DataRecordId): Promise<RecordAndEdges | null>
 
   dispatchControlEvent(event: DataRecordControlEvent): void
 
   dispatchEditEvent(event: DataRecordEditEvent): void
 
-  createNewRootRecord(modelId: ModelId): Promise<DataRecord | null>
+  createNewRootRecord(
+    modelId: ModelId,
+    ...modifiers: RecordGraphModifier[]
+  ): Promise<EventSourcedRecordGraph | null>
 
-  searchRecords(modelId: ModelId, search: string): Promise<DataRecord[]>
+  searchRecords(modelId: ModelId, search: string): Promise<RecordsAndEdges>
 
   getModels(): Model[]
 

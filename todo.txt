@@ -1,15 +1,13 @@
- * Click outside table name editor should dismiss it
- * Can't cancel the table editor modal (by clicking the cancel button)
- * Clicking outside the edit slot modal should close it
- * Can't click on Booking.Bike.Make to begin editing there
- * When I make an inner table called "Line Items", the button remains as "Add Inner Table" instead of "Add Line Item"
- * Then with I click the "Add Inner Table" button, the editor that appears also has the "Inner table language"
- * Model reference editor makes the slot visually jump when activated, make this also an absolutely positioned editor
- * No delete button for the last slot in a table
- * Click outside model reference editor should dismiss it
+ * changing a model referenced does not mark the row as dirty - cover this by storing edge edit events in the graph
+ * need to be able to configure cardinality on model reference slots
+ * changing a booking from customer a to customer b leave the old reference to the booking in customer a
+ * Inverse reference does not have the right model name in the slot configurer
 
- * Implement save and cancel buttons for edit of existing records!
- * Support to delete inner records and tables
- * Some UI means of indicating whether an inner thing is a record or table
+ * borders around select boxes in model slot configurer are gone
+ * Need to be able to remove a reference in a many model reference slot
+ * Need to be able to add a reference in a many model reference slot
+ * Need to be able to change a reference in a many model reference slot
+ * When changing a reference in a has-one relationship to a newly created record, the new edge gets saved twice
+ * When setting a reference from a has-many to a has-one, when the has-one is already set, the old reference is not removed. i.e. customer mike points to ticket 1 and ticket 2.  When editing customer tom to point to ticket 1, mike should no longer point to ticket 1
+    * this will require a model reference to know whether it is one-to-one, many-to-one, one-to-many or many-to-many.  Can model as originCardinality and referenceCardinality ?
 
-  * https://github.com/cozemble/monorepo/issues/68

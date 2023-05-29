@@ -4,12 +4,13 @@
 
     import {modelRecordsContextFns} from '../records/modelRecordsContextFns'
     import ModelDevConsoleOption from './ModelDevConsoleOption.svelte'
-    import {allModels} from "$lib/stores/allModels";
+    import {allEventSourcedModels, allModels} from "$lib/stores/allModels";
+    import {backend} from "$lib/appBackend";
 
     const eventSourcedModel = modelRecordsContextFns.getEventSourcedModel()
     const model = modelRecordsContextFns.getModel()
     const records = modelRecordsContextFns.getRecords()
-    const eventSourcedRecords = modelRecordsContextFns.getEventSourcedRecords()
+    const eventSourcedRecords = modelRecordsContextFns.getEventSourcedRecordGraph()
     const filterParams = modelRecordsContextFns.getFilterParams()
     const focus = modelRecordsContextFns.getFocus()
     const tab = writable('model' as string)
@@ -21,6 +22,8 @@
             ? $model
             : $tab === 'eventSourcedModel'
                 ? $eventSourcedModel
+            : $tab === 'eventSourcedModels'
+                ? $allEventSourcedModels
                 : $tab === 'records'
                     ? $records
                     : $tab === 'eventSourcedRecords'
@@ -28,7 +31,9 @@
                         : $tab === 'filterParams'
                             ? $filterParams
                             : $tab === 'focus'
-                                ? $focus
+                                ? $focus :
+                                    $tab === 'backend'
+                                        ? backend
                                 : null
 
     $: content = {
@@ -47,14 +52,20 @@
             label="Event sourced model"
             {tab}
     />
+    <ModelDevConsoleOption
+            id="eventSourcedModels"
+            label="Event sourced models"
+            {tab}
+    />
     <ModelDevConsoleOption id="records" label="Records" {tab}/>
     <ModelDevConsoleOption
             id="eventSourcedRecords"
-            label="Event sourced records"
+            label="Event sourced record graph"
             {tab}
     />
     <ModelDevConsoleOption id="filterParams" label="Filter params" {tab}/>
     <ModelDevConsoleOption id="focus" label="Focus" {tab}/>
+    <ModelDevConsoleOption id="backend" label="Backend" {tab}/>
 </div>
 <div class="text-xs">
     <JSONEditor {content}/>

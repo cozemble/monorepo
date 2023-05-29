@@ -2,7 +2,6 @@
     import type {DataRecord, DataRecordId, DataRecordPathParentElement, ModelSlot,} from "@cozemble/model-core";
     import {propertyDescriptors, propertyNameFns} from "@cozemble/model-core";
     import type {SlotBeingEdited} from "./helpers";
-    import SlotTh from "./SlotTh.svelte";
     import type {DataRecordsTableOptions} from "./DataRecordsTableOptions";
     import {dataRecordsTableOptions} from "./DataRecordsTableOptions";
     import {writable} from "svelte/store";
@@ -15,8 +14,9 @@
     import DataEntryRow from "./entry/DataEntryRow.svelte";
     import AddModelElementButton from "./modelling/AddModelElementButton.svelte";
     import {modelFns, modelOptions, propertyFns} from "@cozemble/model-api";
-    import type {EventSourcedDataRecord} from "@cozemble/data-editor-sdk/dist/esm";
-    import {mandatory} from "@cozemble/lang-util/dist/esm";
+    import {mandatory} from "@cozemble/lang-util";
+    import SlotTh from "$lib/records/cells/SlotTh.svelte";
+    import type {EventSourcedRecordGraph} from "@cozemble/model-event-sourced";
 
     export let oneOnly = false
     export let options: DataRecordsTableOptions = dataRecordsTableOptions(true, true, true)
@@ -24,7 +24,7 @@
     export let parentPath: DataRecordPathParentElement[] = []
     const eventSourcedModel = modelRecordsContextFns.getEventSourcedModel()
     const model = modelRecordsContextFns.getModel()
-    const eventSourcedRecords = modelRecordsContextFns.getEventSourcedRecords()
+    const eventSourcedRecords = modelRecordsContextFns.getEventSourcedRecordGraph()
     const records = modelRecordsContextFns.getRecords()
     const focus = modelRecordsContextFns.getFocus()
     const focusControls = modelRecordsContextFns.getFocusControls()
@@ -42,7 +42,7 @@
         if (!anchorElement) {
             return
         }
-        slotBeingEdited = {models: $allEventSourcedModels, model: $eventSourcedModel, slot, anchorElement}
+        slotBeingEdited = {modelList: allEventSourcedModels, model: $eventSourcedModel, slot, anchorElement}
     }
 
     async function addInnerTable() {
@@ -72,13 +72,18 @@
         const element = document.querySelector(`th#field-${$model.slots.length}`) as HTMLElement
         if (element) {
             const slot = $model.slots[$model.slots.length - 1]
-            slotBeingEdited = {models: $allEventSourcedModels, model: $eventSourcedModel, slot, anchorElement: element}
+            slotBeingEdited = {
+                modelList: allEventSourcedModels,
+                model: $eventSourcedModel,
+                slot,
+                anchorElement: element
+            }
         }
     }
 
-    async function modelEdited(event: CustomEvent) {
-        const edited = event.detail.model
-        await modelControls.modelEdited(edited)
+    async function modelEdited() {
+        // const edited = event.detail.model
+        // await modelControls.modelEdited(edited)
         slotBeingEdited = null
     }
 
@@ -124,11 +129,12 @@
         }
     }
 
-    function recordHasEvents(rowIndex: number, records: EventSourcedDataRecord[]) {
+    function recordHasEvents(rowIndex: number, graph: EventSourcedRecordGraph) {
+        const records = graph.records
         return mandatory(records[rowIndex], `No event sourced record at index ${rowIndex}`).events.length > 0
     }
 
-    function isDirtyRecord(record: DataRecord, dirtyRecords:DataRecordId[]) {
+    function isDirtyRecord(record: DataRecord, dirtyRecords: DataRecordId[]) {
         return dirtyRecords.some(x => x.value === record.id.value)
     }
 

@@ -1,9 +1,5 @@
-import type { Backend, FetchRecordsResponse, FetchTenantResponse, TenantEntity } from './Backend'
-import type {
-  AttachmentIdAndFileName,
-  EventSourcedDataRecord,
-  UploadedAttachment,
-} from '@cozemble/data-editor-sdk'
+import type { Backend, FetchTenantResponse, TenantEntity } from './Backend'
+import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import axios from 'axios'
 import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
 import {
@@ -18,10 +14,14 @@ import type {
   Model,
   ModelId,
 } from '@cozemble/model-core'
+import { Id, RecordGraphEdge } from '@cozemble/model-core'
 import type { RecordDeleteOutcome, RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import { recordSaveFailed, recordSaveSucceeded } from '@cozemble/data-paginated-editor'
 import { justErrorMessage, mandatory } from '@cozemble/lang-util'
 import { dataRecordValuePathFns, modelFns } from '@cozemble/model-api'
+import { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
+import { RecordAndEdges } from '@cozemble/model-core'
+import { RecordsAndEdges } from '@cozemble/model-core'
 
 const axiosInstance = axios.create({
   validateStatus: function () {
@@ -143,7 +143,7 @@ export class RestBackend implements Backend {
     modelId: string,
     search: string | null,
     filters: any,
-  ): Promise<FetchRecordsResponse> {
+  ): Promise<RecordsAndEdges> {
     const respone = await fetch(
       `${this.backendUrl()}/api/v1/tenant/${tenantId}/model/${modelId}/record`,
       {
@@ -166,7 +166,7 @@ export class RestBackend implements Backend {
     tenantId: string,
     modelId: ModelId,
     recordId: DataRecordId,
-  ): Promise<DataRecord | null> {
+  ): Promise<RecordAndEdges | null> {
     const recordsResponse = await fetch(
       `${this.backendUrl()}/api/v1/tenant/${tenantId}/model/${modelId.value}/record/${
         recordId.value
@@ -212,6 +212,8 @@ export class RestBackend implements Backend {
     tenantId: string,
     models: Model[],
     newRecord: EventSourcedDataRecord,
+    edges: RecordGraphEdge[],
+    deletedEdges: Id[],
   ): Promise<RecordSaveOutcome> {
     const modelId = newRecord.record.modelId.value
     const model = modelFns.findById(models, newRecord.record.modelId)
@@ -223,7 +225,7 @@ export class RestBackend implements Backend {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${await this.accessToken(tenantId)}`,
         },
-        body: JSON.stringify(savableRecords([newRecord.record])),
+        body: JSON.stringify(savableRecords([newRecord.record], edges, deletedEdges)),
       },
     )
     if (saveResponse.ok) {

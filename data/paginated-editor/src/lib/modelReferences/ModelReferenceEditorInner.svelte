@@ -1,12 +1,14 @@
 <script lang="ts">
     import type {DataRecord, DataRecordValuePath, ReferencedRecords, SystemConfiguration} from "@cozemble/model-core";
+    import type {RecordAndEdges} from "@cozemble/model-core";
     import {dataRecordValuePathFns} from "@cozemble/model-api";
-    import {dataRecordControlEvents, dataRecordEditEvents, dataRecordEditor} from "@cozemble/data-editor-sdk";
+    import {dataRecordEditor} from "@cozemble/data-editor-sdk";
     import {onMount} from "svelte";
     import {type EditorParams, makeSummaryView} from "./editorHelper";
     import {dereference} from "$lib/modelReferences/dereference";
     import {renderReference} from "$lib/modelReferences/renderReference";
     import {clickOutside} from "@cozemble/ui-atoms";
+    import {dataRecordControlEvents, dataRecordEditEvents} from "@cozemble/model-event-sourced";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord
@@ -21,7 +23,7 @@
     let options: DataRecord[] = []
     let searchTerm = ""
 
-    let referencedRecord: DataRecord | null = null
+    let referencedRecord: RecordAndEdges | null = null
 
     $: referencedRecords = dataRecordValuePathFns.getValue(systemConfiguration, recordPath, record) as ReferencedRecords ?? null
     $: dereference(dataRecordEditorClient, editorParams.referencedModelId, referencedRecords, (record) => referencedRecord = record)
@@ -76,11 +78,15 @@
 
 
     async function createNewRecord() {
-        const createdRecord = await dataRecordEditorClient.createNewRootRecord(editorParams.referencedModelId)
-        if (createdRecord) {
-            options.push(createdRecord)
+        const createdGraph = await dataRecordEditorClient.createNewRootRecord(editorParams.referencedModelId)
+        if (!createdGraph) {
+            return
         }
-        setSelectedRecord(createdRecord)
+        const createdRecord = createdGraph.records[0] ?? null
+        if (createdRecord) {
+            options.push(createdRecord.record)
+        }
+        setSelectedRecord(createdRecord.record)
     }
 
 
@@ -96,7 +102,8 @@
 
 
     onMount(async () => {
-        options = await dataRecordEditorClient.searchRecords(editorParams.referencedModelId, searchTerm)
+        const found = await dataRecordEditorClient.searchRecords(editorParams.referencedModelId, searchTerm)
+        options = found.records
     })
 
     function handleKeydown(event: KeyboardEvent) {

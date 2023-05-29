@@ -1,4 +1,4 @@
-import type { DataRecordEditEvent } from '@cozemble/data-editor-sdk'
+import type { DataRecordEditEvent } from '@cozemble/model-event-sourced'
 import { dataRecordPathElementFns, dataRecordValuePathFns } from '@cozemble/model-api'
 
 export function dataRecordEditEventSummariser(editEvent: DataRecordEditEvent): string | null {

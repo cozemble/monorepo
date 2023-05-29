@@ -6,8 +6,6 @@
     import SlotEditModal from "./SlotEditModal.svelte";
     import {tick} from "svelte";
     import NestedDataRecords from "./NestedDataRecords.svelte";
-    import SlotTh from "./SlotTh.svelte";
-    import DataTd from "./DataTd.svelte";
     import AddSubItemDialogue from "./AddSubItemDialogue.svelte";
     import type {DataRecordsTableOptions} from "./DataRecordsTableOptions";
     import {dataRecordsTableOptions} from "./DataRecordsTableOptions";
@@ -16,13 +14,15 @@
     import ExpandCollapseButton from "./ExpandCollapseButton.svelte";
     import {writable} from "svelte/store";
     import WithDataRecordEditorClient from "../models/WithDataRecordEditorClient.svelte";
+    import {allEventSourcedModels} from "$lib/stores/allModels";
+    import SlotTh from "$lib/records/cells/SlotTh.svelte";
+    import DataTd from "$lib/records/cells/DataTd.svelte";
 
     export let context: RecordsContext
     export let oneOnly = false
     export let options: DataRecordsTableOptions = dataRecordsTableOptions(true, true, true)
     export let expandedRecordIds = writable([] as DataRecordId[])
 
-    const allEventSourcedModels = context.allEventSourcedModels()
     const allModels = context.allModels()
     const model = context.model()
     const records = context.records()
@@ -42,7 +42,7 @@
         if (!anchorElement) {
             return
         }
-        slotBeingEdited = {models: $allEventSourcedModels, model: $model, slot, anchorElement}
+        slotBeingEdited = {modelList: allEventSourcedModels, model: $model, slot, anchorElement}
     }
 
     async function addSlotToModel() {
@@ -58,7 +58,7 @@
         const element = document.querySelector(`th#field-${$model.model.slots.length}`) as HTMLElement
         if (element) {
             const slot = $model.model.slots[$model.model.slots.length - 1]
-            slotBeingEdited = {models: $allEventSourcedModels, model: $model, slot, anchorElement: element}
+            slotBeingEdited = {modelList: allEventSourcedModels, model: $model, slot, anchorElement: element}
         }
     }
 

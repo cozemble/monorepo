@@ -2,31 +2,30 @@
     import type {Model, Property} from '@cozemble/model-core'
     import {propertyDescriptors,} from '@cozemble/model-core'
     import {propertyConfigurerRegistry} from '@cozemble/model-assembled'
-    import type {ModelChangeHandler} from './ModelEditorHost'
-    import {coreModelEvents} from '@cozemble/model-event-sourced'
+    import type {EventSourcedModelList} from "@cozemble/model-event-sourced";
+    import {coreModelEvents, eventSourcedModelListFns} from '@cozemble/model-event-sourced'
+    import type {Writable} from "svelte/store";
 
-    export let modelChangeHandler: ModelChangeHandler
+    export let modelList: Writable<EventSourcedModelList>
     export let model: Model
     export let property: Property
+
     $:propertyDescriptor = propertyDescriptors.get(property.propertyType) ?? null
 
     function onModelChangedEvent(event: CustomEvent) {
-        modelChangeHandler.modelChanged(model.id, event.detail)
+        modelList.update(list => eventSourcedModelListFns.addModelEvent(list, event.detail))
     }
 
     $: configurer = propertyConfigurerRegistry.get(property.propertyType)
 
     function booleanChanged(event: Event, booleanName: 'required' | 'unique') {
         const target = event.target as HTMLInputElement
-        modelChangeHandler.modelChanged(
+        modelList.update(list => eventSourcedModelListFns.addModelEvent(list,             coreModelEvents.booleanPropertyChanged(
             model.id,
-            coreModelEvents.booleanPropertyChanged(
-                model.id,
-                property.id,
-                booleanName,
-                target.checked,
-            ),
-        )
+            property.id,
+            booleanName,
+            target.checked,
+        )))
     }
 
 </script>

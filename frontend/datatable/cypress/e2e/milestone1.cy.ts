@@ -1,4 +1,4 @@
-import { clickAddField, clickAddSubrecord, editCell } from './helpers'
+import { clickAddField, clickAddSubrecord, clickTable, editCell } from './helpers'
 
 describe('data table', () => {
   it('supports building a simple customer and bookings database', () => {
@@ -78,6 +78,7 @@ describe('data table', () => {
     cy.contains('First name').click()
     cy.contains('Last name').click()
     cy.get('button.save-view').click()
+    editCell('0-0')
     cy.get('select.reference-selector').select('Jane Smith')
     cy.get('input.date-input').invoke('val', '2023-11-23').trigger('change')
     cy.get('button.save-root-record').click()
@@ -87,5 +88,10 @@ describe('data table', () => {
     cy.focused().type('Rayleigh').realPress('Tab')
     cy.focused().type('Banana')
     cy.get('button.save-root-record').click()
+
+    clickTable(1)
+    cy.contains('Configure view').eq(0).click()
+    cy.contains('Date').click()
+    cy.get('button.save-view').click()
   })
 })

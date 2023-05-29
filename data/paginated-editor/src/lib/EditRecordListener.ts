@@ -1,5 +1,5 @@
 import type { RecordEditContext } from './RecordEditContext'
-import type { DataRecordEditEvent } from '@cozemble/data-editor-sdk'
+import type { DataRecordEditEvent } from '@cozemble/model-event-sourced'
 
 export interface EditRecordListener {
   beginEdit(context: RecordEditContext): void

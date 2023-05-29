@@ -2,12 +2,11 @@
 
     import ModelReferenceViewer from "../../lib/modelReferences/ModelReferenceViewer.svelte";
     import type {DataRecord, DataRecordId, ModelId, ModelReference, ModelView} from "@cozemble/model-core";
-    import {modelReferenceFns, systemConfigurationFns} from "@cozemble/model-core";
+    import {modelIdFns, modelReferenceFns, recordsAndEdges, systemConfigurationFns} from "@cozemble/model-core";
     import {makeDataRecordViewer} from "../../lib/makeDataRecordViewer";
     import {
         type AttachmentIdAndFileName,
         dataRecordViewerHost,
-        type EventSourcedDataRecord,
         type UploadedAttachment
     } from "@cozemble/data-editor-sdk";
     import type {PaginatedEditorHost, RecordDeleteOutcome, RecordSaveOutcome} from "../../lib";
@@ -20,10 +19,13 @@
         propertyOptions
     } from "@cozemble/model-api";
     import type {JustErrorMessage} from "@cozemble/lang-util";
+    import type {EventSourcedDataRecord} from "@cozemble/model-event-sourced";
 
     const systemConfiguration = systemConfigurationFns.empty()
     const customerModel = modelFns.newInstance("Customers", modelOptions.withProperties(propertyFns.newInstance("First name", propertyOptions.required), propertyFns.newInstance("Last name")))
-    const invoiceModel = modelFns.newInstance("Invoices", modelOptions.withSlot(modelReferenceFns.newInstance([customerModel.id], "Customer")))
+    const invoiceModelId = modelIdFns.newInstance("invoices")
+
+    const invoiceModel = modelFns.newInstance("Invoices", modelOptions.withId(invoiceModelId), modelOptions.withSlot(modelReferenceFns.newInstance(invoiceModelId, [customerModel.id], "Customer")))
     const models = [customerModel, invoiceModel]
     const invoiceRecord1 = dataRecordFns.newInstance(invoiceModel, "test")
     const referenceSlot = invoiceModel.slots[0] as ModelReference
@@ -65,10 +67,10 @@
         async searchRecords(
             _modelId: ModelId,
             _search: string,
-        ): Promise<DataRecord[]> {
-            return []
+        ) {
+            return recordsAndEdges([], [])
         },
-        async recordById(_modelId: ModelId, _recordId: DataRecordId): Promise<DataRecord | null> {
+        async recordById(_modelId: ModelId, _recordId: DataRecordId) {
             return null
         },
         async uploadAttachments(

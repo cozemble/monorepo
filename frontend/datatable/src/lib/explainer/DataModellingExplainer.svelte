@@ -26,7 +26,7 @@
 
     let mounted = false
     onMount(() => {
-        if ($allEventSourcedModels.length > 0) {
+        if ($allEventSourcedModels.models.length > 0) {
             console.error("Calling explainer with models in store")
             finish()
         } else {

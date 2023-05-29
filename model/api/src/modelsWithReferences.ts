@@ -1,6 +1,6 @@
 import { modelFns, modelOptions } from './modelsFns'
 import { stringPropertyFns, stringPropertyOptions } from '@cozemble/model-string-core'
-import { modelReferenceFns } from '@cozemble/model-core'
+import { modelIdFns, modelReferenceFns } from '@cozemble/model-core'
 
 const addressModel = modelFns.newInstance(
   'Address',
@@ -9,12 +9,15 @@ const addressModel = modelFns.newInstance(
   ),
 )
 
+const customerModelId = modelIdFns.newInstance('customer-model')
+const invoiceModelId = modelIdFns.newInstance('invoice-model')
 const customerModel = modelFns.newInstance(
   'Customer',
+  modelOptions.withId(customerModelId),
   modelOptions.withProperties(
     stringPropertyFns.newInstance('First name', stringPropertyOptions.required),
   ),
-  modelOptions.withSlot(modelReferenceFns.newInstance([addressModel.id], 'Address')),
+  modelOptions.withSlot(modelReferenceFns.forwardModelReference(customerModelId, addressModel)),
 )
 
 const invoiceModel = modelFns.newInstance(
@@ -22,7 +25,7 @@ const invoiceModel = modelFns.newInstance(
   modelOptions.withProperties(
     stringPropertyFns.newInstance('Invoice ID', stringPropertyOptions.required),
   ),
-  modelOptions.withSlot(modelReferenceFns.newInstance([customerModel.id], 'Customer')),
+  modelOptions.withSlot(modelReferenceFns.forwardModelReference(invoiceModelId, customerModel)),
 )
 
 export const modelsWithReferences = {

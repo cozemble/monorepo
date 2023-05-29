@@ -6,12 +6,12 @@
     import {onMount} from 'svelte'
     import {writable} from "svelte/store";
     import {backendFns, DataTable, eventSourcedModelStore} from "../../lib";
-    import {InMemoryBackend} from "../../lib/backend/InMemoryBackend";
+    import {makeInMemoryBackend} from "../../lib/backend/InMemoryBackend";
 
     const modelViews = writable([] as ModelView[])
     const models = [] as EventSourcedModel[]
     const systemConfiguration = systemConfigurationFns.empty()
-    backendFns.setBackend(new InMemoryBackend())
+    backendFns.setBackend(makeInMemoryBackend())
 
     onMount(() => {
         registerEverything()
@@ -21,4 +21,5 @@
 <DataTable models={eventSourcedModelStore(models)}
            {modelViews}
            {systemConfiguration}
+           showDevConsole={writable(true)}
            userId="test"/>

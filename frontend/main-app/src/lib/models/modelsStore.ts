@@ -1,4 +1,4 @@
-import { modelFns, modelIdFns } from '@cozemble/model-api'
+import { modelFns } from '@cozemble/model-api'
 import { type EventSourcedModel, eventSourcedModelFns } from '@cozemble/model-event-sourced'
 import type { Writable } from 'svelte/store'
 import { writable } from 'svelte/store'
@@ -9,6 +9,7 @@ import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
 import { backend } from '../backend/backendStore'
 import { gettableWritable } from '@cozemble/frontend-datatable'
 import { derived } from 'svelte/store'
+import { modelIdFns } from '@cozemble/model-core'
 
 export const eventSourcedModels = gettableWritable([] as EventSourcedModel[])
 export const models = derived(eventSourcedModels, (ms) => ms.map((m: EventSourcedModel) => m.model))

@@ -31,6 +31,15 @@ export const summaryViewFns = {
       },
     }
   },
+  withHtmlTemplate(template: string): SummaryView {
+    return {
+      _type: 'summary.view',
+      view: {
+        _type: 'model.html.template',
+        template,
+      },
+    }
+  },
 }
 
 export interface NamingView {

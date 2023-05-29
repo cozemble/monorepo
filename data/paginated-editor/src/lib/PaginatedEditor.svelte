@@ -5,13 +5,14 @@
     import DataTd from './DataTd.svelte'
     import StackingRecordEditor from './StackingRecordEditor.svelte'
     import {RecordEditContext, type RecordSaveOutcome} from './RecordEditContext'
-    import type {EventSourcedDataRecord, EventSourcedDataRecordOption} from '@cozemble/data-editor-sdk'
-    import {dataRecordViewerHost, eventSourcedDataRecordFns} from '@cozemble/data-editor-sdk'
+    import {dataRecordViewerHost} from '@cozemble/data-editor-sdk'
     import type {PaginatedEditorHost} from './PaginatedEditorHost'
     import {makeDataRecordViewer} from "./makeDataRecordViewer";
     import {slotEditorRegistry, slotViewerRegistry} from "@cozemble/model-assembled";
     import ModelReferenceViewer from "./modelReferences/ModelReferenceViewer.svelte";
     import ModelReferenceEditor from "./modelReferences/ModelReferenceEditor.svelte";
+    import {eventSourcedDataRecordFns} from "@cozemble/model-event-sourced";
+    import type {EventSourcedDataRecord, EventSourcedDataRecordOption} from "@cozemble/model-event-sourced";
 
     export let models: Model[]
     export let model: Model

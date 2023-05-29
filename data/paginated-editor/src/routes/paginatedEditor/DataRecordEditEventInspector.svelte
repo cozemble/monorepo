@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { DataRecordEditEvent } from '@cozemble/data-editor-sdk'
+import type { DataRecordEditEvent } from '@cozemble/model-event-sourced'
 
 export let editEvent: DataRecordEditEvent
 </script>

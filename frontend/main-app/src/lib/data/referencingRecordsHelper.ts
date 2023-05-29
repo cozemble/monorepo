@@ -7,8 +7,8 @@ import type {
   SystemConfiguration,
 } from '@cozemble/model-core'
 import { type ReferencedRecords, referencedRecordsFns } from '@cozemble/model-core'
-import type { EventSourcedDataRecordOption } from '@cozemble/data-editor-sdk'
-import { dataRecordEditEvents, eventSourcedDataRecordFns } from '@cozemble/data-editor-sdk'
+import type { EventSourcedDataRecordOption } from '@cozemble/model-event-sourced'
+import { dataRecordEditEvents, eventSourcedDataRecordFns } from '@cozemble/model-event-sourced'
 import { mandatory } from '@cozemble/lang-util'
 import { dataRecordValuePathFns } from '@cozemble/model-api'
 import { backend } from '../backend/backendStore'

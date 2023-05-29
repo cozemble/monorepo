@@ -8,7 +8,7 @@ import {
 import { describe, expect, test } from 'vitest'
 import { registerStringProperty } from '@cozemble/model-string-core'
 import { allModelsWithReferences, modelsWithReferences } from '../../src/modelsWithReferences'
-import { referencedRecordsFns, systemConfigurationFns } from '@cozemble/model-core'
+import { modelReferenceValuePlaceholder, systemConfigurationFns } from '@cozemble/model-core'
 
 registerStringProperty()
 const systemConfig = systemConfigurationFns.empty()
@@ -56,72 +56,14 @@ describe('given a model with a model.reference slot', () => {
     'Address',
   )
 
-  test('getValues returns null when there is no value relationship', () => {
+  test('getValues returns the model reference value placeholder', () => {
     const customer = dataRecordFns.random(
       systemConfig,
       allModelsWithReferences,
       modelsWithReferences.customerModel,
     )
-    expect(dataRecordValuePathFns.getValue(systemConfig, path, customer)).toEqual(null)
-  })
-
-  test('getValues returns the record reference when there is a referenced record', () => {
-    const address = dataRecordFns.random(
-      systemConfig,
-      allModelsWithReferences,
-      modelsWithReferences.addressModel,
+    expect(dataRecordValuePathFns.getValue(systemConfig, path, customer)).toEqual(
+      modelReferenceValuePlaceholder,
     )
-    const reference = referencedRecordsFns.addReference(
-      referencedRecordsFns.empty(),
-      modelsWithReferences.addressModel.id,
-      address.id,
-    )
-    const customer = dataRecordFns.random(
-      systemConfig,
-      allModelsWithReferences,
-      modelsWithReferences.customerModel,
-      {
-        Address: reference,
-      },
-    )
-    expect(dataRecordValuePathFns.getValue(systemConfig, path, customer)).toEqual(reference)
-  })
-
-  test('getValues returns the record reference when there is a referenced record', () => {
-    const address = dataRecordFns.random(
-      systemConfig,
-      allModelsWithReferences,
-      modelsWithReferences.addressModel,
-    )
-    const secondAddress = dataRecordFns.random(
-      systemConfig,
-      allModelsWithReferences,
-      modelsWithReferences.addressModel,
-    )
-    const customer = dataRecordFns.random(
-      systemConfig,
-      allModelsWithReferences,
-      modelsWithReferences.customerModel,
-      {
-        Address: referencedRecordsFns.addReference(
-          referencedRecordsFns.empty(),
-          modelsWithReferences.addressModel.id,
-          address.id,
-        ),
-      },
-    )
-    const secondReference = referencedRecordsFns.addReference(
-      referencedRecordsFns.empty(),
-      modelsWithReferences.addressModel.id,
-      secondAddress.id,
-    )
-    const mutated = dataRecordValuePathFns.setValue(
-      systemConfig,
-      allModelsWithReferences,
-      path,
-      customer,
-      secondReference,
-    )
-    expect(dataRecordValuePathFns.getValue(systemConfig, path, mutated)).toEqual(secondReference)
   })
 })

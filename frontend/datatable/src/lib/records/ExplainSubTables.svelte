@@ -1,13 +1,11 @@
 <script lang="ts">
     import {dataRecordFns, modelFns, modelOptions, nestedModelFns, propertyFns} from "@cozemble/model-api";
     import {systemConfiguration} from "../stores/systemConfiguration";
-    import {InMemoryBackend} from "../backend/InMemoryBackend";
+    import {makeInMemoryBackend} from "../backend/InMemoryBackend";
     import {RootRecordsContext} from "./RecordsContext";
-    import type {EventSourcedModel} from "@cozemble/model-event-sourced";
-    import type {DataRecord} from "@cozemble/model-core";
+    import {eventSourcedModelFns} from "@cozemble/model-event-sourced";
     import {writable} from "svelte/store";
     import {onMount} from "svelte";
-    import {eventSourcedModelFns} from "@cozemble/model-event-sourced";
     import {dataRecordsTableOptions} from "./DataRecordsTableOptions";
     import DataRecordsTable from "./DataRecordsTable.svelte";
     import {defaultOnError} from "../appBackend";
@@ -34,13 +32,9 @@
     })
     invoiceRecord.values[nestedLineItems.id.value] = [applesLineItem, orangesLineItem]
 
-    const modelMap = new Map<string, EventSourcedModel>()
-    models.forEach(m => modelMap.set(m.id.value, eventSourcedModelFns.newInstance(m)))
-    const eventSourcedModels = Array.from(modelMap.values())
-    const recordMap = new Map<string, DataRecord[]>()
-    recordMap.set(invoiceModel.id.value, [invoiceRecord])
-    const backend = new InMemoryBackend(modelMap, recordMap)
-    const customerRecordsContext = new RootRecordsContext(backend, () => $systemConfiguration,defaultOnError,invoiceModel.id, writable(eventSourcedModels))
+    const eventSourcedModels = models.map(m => eventSourcedModelFns.newInstance(m))
+    const backend = makeInMemoryBackend(eventSourcedModels, [invoiceRecord])
+    const customerRecordsContext = new RootRecordsContext(backend, () => $systemConfiguration, defaultOnError, invoiceModel.id, writable(eventSourcedModels))
 
     onMount(async () => {
         await customerRecordsContext.loadRecords()
@@ -48,7 +42,8 @@
 </script>
 
 <div>An <strong>Invoice</strong> usually has many
-    <strong>Line Items</strong>.  Use a <strong>sub-table</strong> to create a table inside another record.</div>
+    <strong>Line Items</strong>. Use a <strong>sub-table</strong> to create a table inside another record.
+</div>
 
 <div class="tooltip tooltip-open tooltip-accent mt-16" data-tip="Preview of a Customer with sub-sections">
 
