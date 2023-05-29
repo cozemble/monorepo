@@ -301,8 +301,11 @@ export const eventSourcedRecordGraphFns = {
     )
   },
   addEvent(graph: EventSourcedRecordGraph, event: RecordGraphEvent): EventSourcedRecordGraph {
+    console.log({ event })
     if (event._type === 'record.references.changed.event') {
-      return storeEvent(handleRecordReferencedChanged(graph, event), event)
+      const mutatedGraph = storeEvent(handleRecordReferencedChanged(graph, event), event)
+      console.log({ event, mutatedGraph, graph })
+      return mutatedGraph
     }
     return graph
   },

@@ -1,11 +1,9 @@
 <script lang="ts">
     import {dataRecordFns, modelFns, modelOptions, propertyFns} from "@cozemble/model-api";
-    import type {EventSourcedModel} from "@cozemble/model-event-sourced";
     import {eventSourcedModelFns} from "@cozemble/model-event-sourced";
-    import type {DataRecord} from "@cozemble/model-core";
     import {systemConfigurationFns} from "@cozemble/model-core";
     import {backendFns} from "../appBackend";
-    import {InMemoryBackend} from "../backend/InMemoryBackend";
+    import {makeInMemoryBackend} from "../backend/InMemoryBackend";
     import {eventSourcedModelStore, setAllEventSourcedModels} from "../stores/allModels";
     import ModelRecordsContext from "../records/ModelRecordsContext.svelte";
     import DataRecordsTableInContext from "../records/DataRecordsTableInContext.svelte";
@@ -26,7 +24,7 @@
         "Date of birth": "1993-05-15",
         "Last visit": "2023-01-22"
     })
-    backendFns.setBackend(new InMemoryBackend([eventSourcedModelFns.newInstance(customerModel)], [customerRecord1, customerRecord2]))
+    backendFns.setBackend(makeInMemoryBackend([eventSourcedModelFns.newInstance(customerModel)], [customerRecord1, customerRecord2]))
     const modelStore = eventSourcedModelStore(eventSourcedModels)
     setAllEventSourcedModels(modelStore)
 </script>

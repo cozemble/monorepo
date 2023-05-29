@@ -15,13 +15,13 @@ import type {
   RecordSearcher,
 } from '@cozemble/data-paginated-editor'
 import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
-import { StoreSyncBackend } from './app/StoreSyncBackend'
+import { makeStoreSyncBackend } from '$lib/app/StoreSyncBackend'
 
 export let backend = notImplementedBackend
 
 export const backendFns = {
   setBackend: (newBackend: Backend) => {
-    backend = new StoreSyncBackend(newBackend)
+    backend = makeStoreSyncBackend(newBackend)
     return backend
   },
 }

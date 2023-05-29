@@ -1,11 +1,9 @@
 <script lang="ts">
     import {createEventDispatcher, onMount} from "svelte";
-    import {modelFns} from "@cozemble/model-api";
-    import {type DataRecord, modelPluralNameFns} from "@cozemble/model-core";
-    import {dataRecordFns, modelOptions, propertyFns} from "@cozemble/model-api";
-    import {InMemoryBackend} from "../backend/InMemoryBackend";
+    import {dataRecordFns, modelFns, modelOptions, propertyFns} from "@cozemble/model-api";
+    import {modelPluralNameFns} from "@cozemble/model-core";
+    import {makeInMemoryBackend} from "../backend/InMemoryBackend";
     import {RootRecordsContext} from "./RecordsContext";
-    import type {EventSourcedModel} from "@cozemble/model-event-sourced";
     import {eventSourcedModelFns} from "@cozemble/model-event-sourced";
     import {writable} from "svelte/store";
     import DataRecordsTable from "./DataRecordsTable.svelte";
@@ -34,8 +32,8 @@
     }
 
     const eventSourcedModels = models.map(m => eventSourcedModelFns.newInstance(m))
-    const backend = new InMemoryBackend(eventSourcedModels, records)
-    const sampleRecordsContext = new RootRecordsContext(backend, () => $systemConfiguration,defaultOnError,model.id, writable(eventSourcedModels))
+    const backend = makeInMemoryBackend(eventSourcedModels, records)
+    const sampleRecordsContext = new RootRecordsContext(backend, () => $systemConfiguration, defaultOnError, model.id, writable(eventSourcedModels))
 
     onMount(async () => {
         await sampleRecordsContext.loadRecords()

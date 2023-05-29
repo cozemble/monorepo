@@ -3,11 +3,10 @@
     import {dataRecordsTableOptions} from "./DataRecordsTableOptions";
     import DataRecordsTable from "./DataRecordsTable.svelte";
     import {systemConfiguration} from "../stores/systemConfiguration";
-    import {InMemoryBackend} from "../backend/InMemoryBackend";
+    import {makeInMemoryBackend} from "../backend/InMemoryBackend";
     import {RootRecordsContext} from "./RecordsContext";
     import {dataRecordFns, modelFns, modelOptions, nestedModelFns, propertyFns} from "@cozemble/model-api";
-    import {type EventSourcedModel, eventSourcedModelFns} from "@cozemble/model-event-sourced";
-    import type {DataRecord} from "@cozemble/model-core";
+    import {eventSourcedModelFns} from "@cozemble/model-event-sourced";
     import {writable} from "svelte/store";
     import {onMount} from "svelte";
     import {defaultOnError} from "../appBackend";
@@ -35,8 +34,8 @@
     })
     customerRecord.values[nestedDeliveryAddress.id.value] = [deliveryAddressRecord]
     customerRecord.values[nestedBillingAddress.id.value] = [billingAddressRecord]
-    const backend = new InMemoryBackend(eventSourcedModels, [customerRecord])
-    const customerRecordsContext = new RootRecordsContext(backend, () => $systemConfiguration,defaultOnError,customer.id, writable(eventSourcedModels))
+    const backend = makeInMemoryBackend(eventSourcedModels, [customerRecord])
+    const customerRecordsContext = new RootRecordsContext(backend, () => $systemConfiguration, defaultOnError, customer.id, writable(eventSourcedModels))
 
     onMount(async () => {
         await customerRecordsContext.loadRecords()

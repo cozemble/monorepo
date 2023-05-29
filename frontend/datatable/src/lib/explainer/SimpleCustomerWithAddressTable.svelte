@@ -1,11 +1,9 @@
 <script lang="ts">
     import {dataRecordFns, modelFns, modelOptions, nestedModelFns, propertyFns} from "@cozemble/model-api";
-    import type {EventSourcedModel} from "@cozemble/model-event-sourced";
     import {eventSourcedModelFns} from "@cozemble/model-event-sourced";
-    import type {DataRecord} from "@cozemble/model-core";
     import {systemConfigurationFns} from "@cozemble/model-core";
     import {backendFns} from "../appBackend";
-    import {InMemoryBackend} from "../backend/InMemoryBackend";
+    import {makeInMemoryBackend} from "../backend/InMemoryBackend";
     import {eventSourcedModelStore, setAllEventSourcedModels} from "../stores/allModels";
     import DataRecordsTableInContext from "../records/DataRecordsTableInContext.svelte";
     import {writable} from "svelte/store";
@@ -33,7 +31,7 @@
         "First name": "Jane",
         "Last name": "Doe"
     })
-                            backendFns.setBackend(new InMemoryBackend(eventSourcedModels, [customerRecord1, customerRecord2]))
+    backendFns.setBackend(makeInMemoryBackend(eventSourcedModels, [customerRecord1, customerRecord2]))
     const modelStore = eventSourcedModelStore(eventSourcedModels)
     setAllEventSourcedModels(modelStore)
     const expandedRecordIds = writable([customerRecord1.id])

@@ -4,7 +4,7 @@
 
     import {modelRecordsContextFns} from '../records/modelRecordsContextFns'
     import ModelDevConsoleOption from './ModelDevConsoleOption.svelte'
-    import {allModels} from "$lib/stores/allModels";
+    import {allEventSourcedModels, allModels} from "$lib/stores/allModels";
     import {backend} from "$lib/appBackend";
 
     const eventSourcedModel = modelRecordsContextFns.getEventSourcedModel()
@@ -22,6 +22,8 @@
             ? $model
             : $tab === 'eventSourcedModel'
                 ? $eventSourcedModel
+            : $tab === 'eventSourcedModels'
+                ? $allEventSourcedModels
                 : $tab === 'records'
                     ? $records
                     : $tab === 'eventSourcedRecords'
@@ -31,7 +33,7 @@
                             : $tab === 'focus'
                                 ? $focus :
                                     $tab === 'backend'
-                                        ? JSON.stringify(backend, null, 2)
+                                        ? backend
                                 : null
 
     $: content = {
@@ -48,6 +50,11 @@
     <ModelDevConsoleOption
             id="eventSourcedModel"
             label="Event sourced model"
+            {tab}
+    />
+    <ModelDevConsoleOption
+            id="eventSourcedModels"
+            label="Event sourced models"
             {tab}
     />
     <ModelDevConsoleOption id="records" label="Records" {tab}/>

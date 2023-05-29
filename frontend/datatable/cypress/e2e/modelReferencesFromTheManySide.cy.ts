@@ -57,6 +57,31 @@ describe('data table', () => {
 
     cy.get('.edit-field-2').click()
     cy.get('select.referenced-model').find(':selected').should('have.text', 'Customer')
-    cy.contains('Cancel').click()
+    cy.get('input[name="cardinality"][value="one"]').click()
+    cy.get('button.save-property').click()
+
+    editCell('1-0')
+    cy.focused().type('Booking #12').realPress('Tab')
+    cy.get('select.reference-selector').select('Create a new Customer')
+    cy.focused().should('have.attr', 'contenteditable', 'true')
+    cy.focused().type('Jane').realPress('Tab')
+    cy.focused().type('Doe').realPress('Enter')
+    cy.get('button.save').click()
+    cy.get('button.save-root-record').click()
+
+    clickTable(1)
+    cy.get(cellSelector('0-2')).should('contain', 'Booking #11')
+    cy.get(cellSelector('1-2')).should('contain', 'Booking #12')
+
+    clickTable(2)
+    editCell('2-0')
+    cy.focused().type('Booking #13').realPress('Tab')
+    cy.get('select.reference-selector').select('Jane Doe')
+    cy.get('button.save-root-record').click()
+
+    clickTable(1)
+    cy.get(cellSelector('0-2')).should('contain', 'Booking #11')
+    cy.get(cellSelector('1-2')).should('contain', 'Booking #12')
+    cy.get(cellSelector('1-2')).should('contain', 'Booking #13')
   })
 })

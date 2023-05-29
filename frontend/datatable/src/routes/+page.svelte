@@ -1,10 +1,9 @@
 <script lang="ts">
-    import type {EventSourcedModel} from "@cozemble/model-event-sourced";
     import {eventSourcedModelFns} from "@cozemble/model-event-sourced";
-    import {InMemoryBackend} from "../lib/backend/InMemoryBackend";
+    import {makeInMemoryBackend} from "../lib/backend/InMemoryBackend";
     import {backendFns} from "../lib/appBackend";
-    import type {DataRecord, ModelView} from "@cozemble/model-core";
-    import {modelReferenceFns, modelReferenceIdFns, systemConfigurationFns} from "@cozemble/model-core";
+    import type {ModelView} from "@cozemble/model-core";
+    import {systemConfigurationFns} from "@cozemble/model-core";
     import {registerEverything} from "@cozemble/model-assembled";
     import {onMount} from 'svelte'
     import {dataRecordFns, modelFns, modelOptions, propertyFns, propertyOptions} from "@cozemble/model-api";
@@ -12,8 +11,6 @@
     import {writable} from "svelte/store";
     import {eventSourcedModelStore} from "../lib";
     import DevOptions from "./DevOptions.svelte";
-    import {modelViewFns, summaryViewFns} from "@cozemble/model-core";
-    import {modelIdFns} from "@cozemble/model-api";
 
     let customer = modelFns.newInstance("Customer", modelOptions.withProperties(propertyFns.newInstance("First name", propertyOptions.required), propertyFns.newInstance("Last name")))
     // const invoiceModelId = modelIdFns.newInstance('invoices')
@@ -36,7 +33,7 @@
             "First name": "Cherise",
             "Last name": "Hogan"
         })
-        backendFns.setBackend(new InMemoryBackend(eventSourcedModels, [customerRecord1, customerRecord2]))
+        backendFns.setBackend(makeInMemoryBackend(eventSourcedModels, [customerRecord1, customerRecord2]))
     })
 
 </script>

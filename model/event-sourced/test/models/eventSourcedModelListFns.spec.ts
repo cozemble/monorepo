@@ -83,14 +83,12 @@ describe('given a customer and ticket model', () => {
   test("setting the origin cardinality of the 'Tickets' reference slot to 'one' updates the customer model and adds an inverse reference to the ticket model", () => {
     list = eventSourcedModelListFns.addEvent(list, addTicketsToCustomerEvent)
     list = eventSourcedModelListFns.addEvent(list, setFromCustomerToTicketsSlotEvent)
-    list = eventSourcedModelListFns.addEvent(
-      list,
-      eventSourcedModelListEvents.setOriginCardinality(
-        modelReferenceId,
-        customerModel.model.id,
-        'one',
-      ),
+    const event = eventSourcedModelListEvents.setOriginCardinality(
+      modelReferenceId,
+      customerModel.model.id,
+      'one',
     )
+    list = eventSourcedModelListFns.addEvent(list, event)
     const [latestTicketModel, latestCustomerModel] = list.models
     const customerToTicketSlot = latestCustomerModel.model.slots[0] as ModelReference
     const ticketToCustomerSlot = latestTicketModel.model.slots[0] as ModelReference
@@ -98,6 +96,7 @@ describe('given a customer and ticket model', () => {
     expect(customerToTicketSlot.referencedCardinality).toEqual('many')
     expect(ticketToCustomerSlot.originCardinality).toEqual('one')
     expect(ticketToCustomerSlot.referencedCardinality).toEqual('many')
+    expect(list.events).toEqual(expect.arrayContaining([event]))
   })
 
   test("setting the referenced cardinality of the 'Tickets' reference slot to 'one' updates the customer model and adds an inverse reference to the ticket model", () => {
@@ -105,7 +104,7 @@ describe('given a customer and ticket model', () => {
     list = eventSourcedModelListFns.addEvent(list, setFromCustomerToTicketsSlotEvent)
     list = eventSourcedModelListFns.addEvent(
       list,
-      eventSourcedModelListEvents.setOriginCardinality(
+      eventSourcedModelListEvents.setReferenceCardinality(
         modelReferenceId,
         ticketModel.model.id,
         'one',
@@ -114,10 +113,10 @@ describe('given a customer and ticket model', () => {
     const [latestTicketModel, latestCustomerModel] = list.models
     const customerToTicketSlot = latestCustomerModel.model.slots[0] as ModelReference
     const ticketToCustomerSlot = latestTicketModel.model.slots[0] as ModelReference
-    expect(customerToTicketSlot.originCardinality).toEqual('one')
-    expect(customerToTicketSlot.referencedCardinality).toEqual('many')
-    expect(ticketToCustomerSlot.originCardinality).toEqual('one')
-    expect(ticketToCustomerSlot.referencedCardinality).toEqual('many')
+    expect(customerToTicketSlot.originCardinality).toEqual('many')
+    expect(customerToTicketSlot.referencedCardinality).toEqual('one')
+    expect(ticketToCustomerSlot.originCardinality).toEqual('many')
+    expect(ticketToCustomerSlot.referencedCardinality).toEqual('one')
   })
 
   test("setting the target of 'Tickets' reference slot to null updates the customer model and removes the inverse reference from the ticket model", () => {

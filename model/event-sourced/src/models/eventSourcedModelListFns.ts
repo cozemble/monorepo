@@ -8,18 +8,22 @@ import {
   modelReferenceFns,
   ModelReferenceId,
   ModelReferenceName,
+  TimestampEpochMillis,
 } from '@cozemble/model-core'
 import { eventSourcedModelFns } from './eventSourcedModelFns'
 import { modelSlotEvents } from './modelSlotEvents'
+import { timestampEpochMillis } from '@cozemble/model-core'
 
 interface AddModelEvent {
   _type: 'add.model.event'
   model: EventSourcedModel | Model
+  timestamp: TimestampEpochMillis
 }
 
 interface RemoveModelEvent {
   _type: 'remove.model.event'
   modelId: ModelId
+  timestamp: TimestampEpochMillis
 }
 
 interface AddModelReferenceSlotEvent {
@@ -28,6 +32,7 @@ interface AddModelReferenceSlotEvent {
   name: ModelReferenceName
   originModelId: ModelId
   originCardinality: Cardinality
+  timestamp: TimestampEpochMillis
 }
 
 interface SetReferencedModelIdEvent {
@@ -36,6 +41,7 @@ interface SetReferencedModelIdEvent {
   originModelId: ModelId
   referencedModelId: ModelId | null
   cardinality: Cardinality
+  timestamp: TimestampEpochMillis
 }
 
 interface SetOriginCardinalityEvent {
@@ -43,6 +49,7 @@ interface SetOriginCardinalityEvent {
   modelReferenceId: ModelReferenceId
   modelId: ModelId
   originCardinality: Cardinality
+  timestamp: TimestampEpochMillis
 }
 
 interface SetReferenceCardinalityEvent {
@@ -50,11 +57,13 @@ interface SetReferenceCardinalityEvent {
   modelReferenceId: ModelReferenceId
   modelId: ModelId
   referenceCardinality: Cardinality
+  timestamp: TimestampEpochMillis
 }
 
 interface RemoveModelReferenceSlotEvent {
   _type: 'remove.model.reference.slot.event'
   id: ModelReferenceId
+  timestamp: TimestampEpochMillis
 }
 
 export type EventSourcedModelListEvent =
@@ -283,29 +292,26 @@ function setReferenceCardinality(
   return {
     ...list,
     models: list.models.map((m) => {
-      if (m.model.id.value === event.modelId.value) {
-        return {
-          ...m,
-          model: {
-            ...m.model,
-            slots: m.model.slots.map((s) => {
-              if (s.id.value === event.modelReferenceId.value) {
-                return {
-                  ...s,
-                  referencedCardinality: event.referenceCardinality,
-                } as ModelReference
-              }
-              return s
-            }),
-          },
-        }
+      return {
+        ...m,
+        model: {
+          ...m.model,
+          slots: m.model.slots.map((s) => {
+            if (s.id.value === event.modelReferenceId.value) {
+              return {
+                ...s,
+                referencedCardinality: event.referenceCardinality,
+              } as ModelReference
+            }
+            return s
+          }),
+        },
       }
-      return m
     }),
   }
 }
 
-function eventSourceModelListReducer(
+function applyEventSourcedModelListEvent(
   list: EventSourcedModelList,
   event: EventSourcedModelListEvent,
 ): EventSourcedModelList {
@@ -327,17 +333,30 @@ function eventSourceModelListReducer(
   }
 }
 
+function eventSourceModelListReducer(
+  list: EventSourcedModelList,
+  event: EventSourcedModelListEvent,
+): EventSourcedModelList {
+  const mutated = applyEventSourcedModelListEvent(list, event)
+  return { ...mutated, events: [...mutated.events, event] }
+}
+
 export const eventSourcedModelListEvents = {
-  addModel: (model: EventSourcedModel | Model): AddModelEvent => {
+  addModel: (
+    model: EventSourcedModel | Model,
+    timestamp = timestampEpochMillis(),
+  ): AddModelEvent => {
     return {
       _type: 'add.model.event',
       model,
+      timestamp,
     }
   },
-  removeModel: (modelId: ModelId): RemoveModelEvent => {
+  removeModel: (modelId: ModelId, timestamp = timestampEpochMillis()): RemoveModelEvent => {
     return {
       _type: 'remove.model.event',
       modelId,
+      timestamp,
     }
   },
   addModelReferenceSlot: (
@@ -345,6 +364,7 @@ export const eventSourcedModelListEvents = {
     name: ModelReferenceName,
     originModelId: ModelId,
     originCardinality: Cardinality,
+    timestamp = timestampEpochMillis(),
   ): AddModelReferenceSlotEvent => {
     return {
       _type: 'add.model.reference.slot.event',
@@ -352,6 +372,7 @@ export const eventSourcedModelListEvents = {
       name,
       originModelId,
       originCardinality,
+      timestamp,
     }
   },
   setReferencedModelId: (
@@ -359,6 +380,7 @@ export const eventSourcedModelListEvents = {
     originModelId: ModelId,
     referencedModelId: ModelId | null,
     cardinality: Cardinality,
+    timestamp = timestampEpochMillis(),
   ): SetReferencedModelIdEvent => {
     return {
       _type: 'set.referenced.model.id.event',
@@ -366,36 +388,45 @@ export const eventSourcedModelListEvents = {
       originModelId,
       referencedModelId,
       cardinality,
+      timestamp,
     }
   },
-  removeModelReferenceSlot: (id: ModelReferenceId): RemoveModelReferenceSlotEvent => {
+  removeModelReferenceSlot: (
+    id: ModelReferenceId,
+    timestamp = timestampEpochMillis(),
+  ): RemoveModelReferenceSlotEvent => {
     return {
       _type: 'remove.model.reference.slot.event',
       id,
+      timestamp,
     }
   },
   setOriginCardinality: (
     modelReferenceId: ModelReferenceId,
     modelId: ModelId,
     originCardinality: Cardinality,
+    timestamp = timestampEpochMillis(),
   ): SetOriginCardinalityEvent => {
     return {
       _type: 'set.origin.cardinality.event',
       modelReferenceId,
       modelId,
       originCardinality,
+      timestamp,
     }
   },
   setReferenceCardinality: (
     modelReferenceId: ModelReferenceId,
     modelId: ModelId,
     referenceCardinality: Cardinality,
+    timestamp = timestampEpochMillis(),
   ): SetReferenceCardinalityEvent => {
     return {
       _type: 'set.reference.cardinality.event',
       modelReferenceId,
       modelId,
       referenceCardinality,
+      timestamp,
     }
   },
 }

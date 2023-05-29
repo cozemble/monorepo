@@ -146,6 +146,7 @@ describe('given customer and bookings models with a customer has-many bookings a
         edge: { ...booking1ToCustomer1Edge.edge, originRecordId: customer2.id },
       })
     })
+
     test('attempting to set two customers throws an error', () => {
       try {
         eventSourcedRecordGraphFns.addEvent(
@@ -160,6 +161,39 @@ describe('given customer and bookings models with a customer has-many bookings a
       } catch (error) {
         expect(error.message).toMatch(/cannot set multiple references/i)
       }
+    })
+
+    test('creating a second booking for an existing customer adds an extra edge, such that each booking has one customer and the customer has two bookings', () => {
+      const booking1HasCustomer1 = eventSourcedRecordGraphFns.addEvent(
+        graph,
+        recordGraphEvents.recordReferencesChanged(
+          booking1,
+          inverseCustomerToBookingModelReference,
+          [customer1],
+        ),
+      )
+      const booking1HasCustomer1AndBooking2HasCustomer1 = eventSourcedRecordGraphFns.addEvent(
+        booking1HasCustomer1,
+        recordGraphEvents.recordReferencesChanged(
+          booking2,
+          inverseCustomerToBookingModelReference,
+          [customer1],
+        ),
+      )
+      expect(booking1HasCustomer1AndBooking2HasCustomer1.edges).toHaveLength(2)
+      expect(booking1HasCustomer1AndBooking2HasCustomer1.edges[0].edge).toEqual(
+        expect.objectContaining({
+          originRecordId: customer1.id,
+          referenceRecordId: booking1.id,
+        }),
+      )
+      expect(booking1HasCustomer1AndBooking2HasCustomer1.edges[1].edge).toEqual(
+        expect.objectContaining({
+          originRecordId: customer1.id,
+          referenceRecordId: booking2.id,
+        }),
+      )
+      expect(booking1HasCustomer1AndBooking2HasCustomer1.deletedEdges).toHaveLength(0)
     })
   })
 

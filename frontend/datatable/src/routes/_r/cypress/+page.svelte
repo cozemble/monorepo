@@ -8,7 +8,7 @@
     import {backendFns, eventSourcedModelStore} from '../../../lib'
     import {testModelsLocalStorageKey} from './testModels'
     import {testRecordsLocalStorageKey} from './testModels.js'
-    import {InMemoryBackend} from '../../../lib/backend/InMemoryBackend'
+    import {makeInMemoryBackend} from '../../../lib/backend/InMemoryBackend'
     import DevOptions from '../../DevOptions.svelte'
     import Editor from '$lib/components/editor/Editor.svelte'
 
@@ -27,7 +27,7 @@
             localStorage.getItem(testRecordsLocalStorageKey) ?? '[]'
         models = JSON.parse(storedModelJson)
         const records = JSON.parse(storedRecordsJson) as DataRecord[]
-        backendFns.setBackend(new InMemoryBackend(models, records))
+        backendFns.setBackend(makeInMemoryBackend(models, records))
         mounted = true
     })
 </script>

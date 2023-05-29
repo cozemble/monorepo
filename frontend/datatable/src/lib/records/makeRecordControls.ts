@@ -19,6 +19,7 @@ export function makeRecordControls(
 ): RecordControls {
   return {
     async saveRecord(recordId: DataRecordId) {
+      console.log('saveRecord', { recordId, graph: recordGraph.get() })
       const record = eventSourcedRecordGraphFns.recordWithId(recordGraph.get(), recordId)
       const errors = modelFns.validate(
         systemConfigurationProvider(),
@@ -63,6 +64,7 @@ export function makeRecordControls(
       return null
     },
     async saveNewRecord(recordId: DataRecordId) {
+      console.log('saveNewRecord', { recordId, graph: recordGraph.get() })
       const record = eventSourcedRecordGraphFns.recordWithId(recordGraph.get(), recordId)
       const errors = modelFns.validate(
         systemConfigurationProvider(),
