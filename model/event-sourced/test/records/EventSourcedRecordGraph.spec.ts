@@ -1,5 +1,13 @@
 import { describe, expect, test } from 'vitest'
-import { dataRecordFns, modelFns, modelIdFns, modelOptions } from '@cozemble/model-api'
+import { dataRecordFns, modelFns, modelOptions } from '@cozemble/model-api'
+import {
+  dataRecordIdFns,
+  modelIdFns,
+  ModelReference,
+  modelReferenceFns,
+  modelReferenceIdFns,
+  systemConfigurationFns,
+} from '@cozemble/model-core'
 import {
   eventSourcedDataRecordFns,
   eventSourcedModelFns,
@@ -8,13 +16,6 @@ import {
   recordGraphEvents,
   timestampedRecordGraphEdgeFns,
 } from '../../src'
-import {
-  dataRecordIdFns,
-  ModelReference,
-  modelReferenceFns,
-  modelReferenceIdFns,
-  systemConfigurationFns,
-} from '@cozemble/model-core'
 import { mandatory, time } from '@cozemble/lang-util'
 
 describe('given customer and bookings models with a customer has-many bookings and a booking has-one customer', () => {
@@ -248,7 +249,7 @@ describe('given customer and bookings models with a customer has-many bookings a
       ])
     })
 
-    test('setting the booking when the booking is is already set to the same booking does nothing', () => {
+    test('setting the booking when the booking is already set to the same booking does nothing', () => {
       const setCustomerToBooking1Event = recordGraphEvents.recordReferencesChanged(
         customer1,
         fromCustomerToBookingModelReference,
@@ -379,6 +380,76 @@ describe('given customer and bookings models with a customer has-many bookings a
       )
       expect(mutated.edges).toHaveLength(2)
       expect(mutated.deletedEdges).toEqual([])
+    })
+
+    test('setting the bookings for a customer leaves the edges of other customers unchanged', () => {
+      const customer1HasBooking1Event = recordGraphEvents.recordReferencesChanged(
+        customer1,
+        fromCustomerToBookingModelReference,
+        [booking1],
+      )
+      const customer1HasBooking1 = eventSourcedRecordGraphFns.addEvent(
+        graph,
+        customer1HasBooking1Event,
+      )
+      const customer2HasBooking2Event = recordGraphEvents.recordReferencesChanged(
+        customer2,
+        fromCustomerToBookingModelReference,
+        [booking2],
+      )
+      const finalGraph = eventSourcedRecordGraphFns.addEvent(
+        customer1HasBooking1,
+        customer2HasBooking2Event,
+      )
+      expect(finalGraph.edges).toHaveLength(2)
+      expect(finalGraph.edges[0].edge).toEqual(
+        expect.objectContaining({
+          originRecordId: customer1.id,
+          referenceRecordId: booking1.id,
+        }),
+      )
+      expect(finalGraph.edges[1].edge).toEqual(
+        expect.objectContaining({
+          originRecordId: customer2.id,
+          referenceRecordId: booking2.id,
+        }),
+      )
+      expect(finalGraph.deletedEdges).toEqual([])
+    })
+
+    test('setting the bookings for a customer also sets the customer for the bookings', () => {
+      const setCustomer1ToBookings1And2Event = recordGraphEvents.recordReferencesChanged(
+        customer1,
+        fromCustomerToBookingModelReference,
+        [booking1, booking2],
+      )
+      const customer1WithBookings1And2 = eventSourcedRecordGraphFns.addEvent(
+        graph,
+        setCustomer1ToBookings1And2Event,
+      )
+      const setCustomer2ToBookings1Event = recordGraphEvents.recordReferencesChanged(
+        customer2,
+        fromCustomerToBookingModelReference,
+        [booking1],
+      )
+      const finalGraph = eventSourcedRecordGraphFns.addEvent(
+        customer1WithBookings1And2,
+        setCustomer2ToBookings1Event,
+      )
+      expect(finalGraph.edges).toHaveLength(2)
+      expect(finalGraph.edges[0].edge).toEqual(
+        expect.objectContaining({
+          originRecordId: customer1.id,
+          referenceRecordId: booking2.id,
+        }),
+      )
+      expect(finalGraph.edges[1].edge).toEqual(
+        expect.objectContaining({
+          originRecordId: customer2.id,
+          referenceRecordId: booking1.id,
+        }),
+      )
+      expect(finalGraph.deletedEdges).toEqual([])
     })
   })
 })

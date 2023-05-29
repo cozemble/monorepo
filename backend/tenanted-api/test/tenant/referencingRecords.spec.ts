@@ -12,7 +12,7 @@ import {
 import { dataRecordFns, modelFns, modelOptions, propertyFns } from '@cozemble/model-api'
 import { registerStringProperty } from '@cozemble/model-string-core'
 import { testEnv } from '../helper'
-import { modelIdFns } from '@cozemble/model-api'
+import { modelIdFns } from '@cozemble/model-core'
 
 const jwtSigningSecret = 'secret'
 const port = 3010

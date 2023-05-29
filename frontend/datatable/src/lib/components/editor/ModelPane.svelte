@@ -1,5 +1,5 @@
 <script lang="ts">
-import { modelIdFns } from '@cozemble/model-api'
+import { modelIdFns } from '@cozemble/model-core'
 import { clickOutside } from '@cozemble/ui-atoms'
 
 // misc <!-- TODO simplify -->

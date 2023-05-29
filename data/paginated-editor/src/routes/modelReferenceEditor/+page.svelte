@@ -4,6 +4,7 @@
     import {dataRecordEditorHost} from "@cozemble/data-editor-sdk";
     import type {Model, ModelView, RecordAndEdges} from "@cozemble/model-core";
     import {
+        modelIdFns,
         type ModelReference,
         modelReferenceFns,
         modelViewFns,
@@ -17,7 +18,6 @@
         dataRecordFns,
         dataRecordValuePathFns,
         modelFns,
-        modelIdFns,
         modelOptions,
         propertyFns,
         propertyOptions

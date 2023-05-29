@@ -1,10 +1,16 @@
 <script lang="ts">
     import {eventSourcedModelFns} from "@cozemble/model-event-sourced";
     import type {ModelView} from "@cozemble/model-core";
-    import {modelReferenceFns, modelViewFns, summaryViewFns, systemConfigurationFns} from "@cozemble/model-core";
+    import {
+        modelIdFns,
+        modelReferenceFns,
+        modelViewFns,
+        summaryViewFns,
+        systemConfigurationFns
+    } from "@cozemble/model-core";
     import {registerEverything} from "@cozemble/model-assembled";
     import {onMount} from 'svelte'
-    import {dataRecordFns, modelFns, modelIdFns, modelOptions, propertyFns, propertyOptions} from "@cozemble/model-api";
+    import {dataRecordFns, modelFns, modelOptions, propertyFns, propertyOptions} from "@cozemble/model-api";
     import {writable} from "svelte/store";
     import DataTable from "../../lib/DataTable.svelte";
     import {backendFns, eventSourcedModelStore} from "../../lib";

@@ -271,6 +271,11 @@ export const modelReferenceFns = {
       ? modelReference.referencedCardinality
       : modelReference.originCardinality
   },
+  getReferencedCardinality(modelReference: ModelReference): Cardinality {
+    return modelReference.inverse
+      ? modelReference.originCardinality
+      : modelReference.referencedCardinality
+  },
   oneReference: (reference: ModelReference): ModelId | null => {
     return reference.referencedModelIds[0] ?? null
   },
@@ -307,6 +312,9 @@ export const modelReferenceFns = {
       originCardinality,
       referencedCardinality,
     )
+  },
+  inverse(modelReference: ModelReference): ModelReference {
+    return { ...modelReference, inverse: true }
   },
 }
 

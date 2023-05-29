@@ -1,4 +1,4 @@
-import { DataRecord, DataRecordId, ModelId, ModelReferenceId } from './core'
+import { DataRecord, DataRecordId, ModelId, ModelReference, ModelReferenceId } from './core'
 import { Id, tinyValueFns } from './TinyValue'
 import { Option } from '@cozemble/lang-util'
 
@@ -62,6 +62,53 @@ export const recordGraphEdgeFns = {
       a.originRecordId.value === b.originRecordId.value &&
       a.referenceRecordId.value === b.referenceRecordId.value
     )
+  },
+  setReferencedRecordId(modelReference: ModelReference, edge: RecordGraphEdge): RecordGraphEdge {
+    if (modelReference.inverse) {
+      return {
+        ...edge,
+        originRecordId: edge.referenceRecordId,
+      }
+    }
+    return {
+      ...edge,
+      referenceRecordId: edge.originRecordId,
+    }
+  },
+  getReferencedRecordId(modelReference: ModelReference, edge: RecordGraphEdge): DataRecordId {
+    if (modelReference.inverse) {
+      return edge.originRecordId
+    }
+    return edge.referenceRecordId
+  },
+  proposeEdge(
+    modelReference: ModelReference,
+    existingEdges: RecordGraphEdge[],
+    proposed: RecordGraphEdge,
+  ): { proposed: RecordGraphEdge; accepted: RecordGraphEdge } {
+    if (modelReference.referencedCardinality === 'one') {
+      const existing = existingEdges.find(
+        (edge) =>
+          edge.referenceRecordId.value === proposed.referenceRecordId.value &&
+          edge.modelReferenceId.value === proposed.modelReferenceId.value,
+      )
+      if (existing && existing.originRecordId.value !== proposed.originRecordId.value) {
+        const accepted = { ...existing, originRecordId: proposed.originRecordId }
+        return { proposed, accepted }
+      }
+    }
+    if (modelReference.originCardinality === 'one') {
+      const existing = existingEdges.find(
+        (edge) =>
+          edge.originRecordId.value === proposed.originRecordId.value &&
+          edge.modelReferenceId.value === proposed.modelReferenceId.value,
+      )
+      if (existing && existing.referenceRecordId.value !== proposed.referenceRecordId.value) {
+        const accepted = { ...existing, referenceRecordId: proposed.referenceRecordId }
+        return { proposed, accepted }
+      }
+    }
+    return { proposed, accepted: proposed }
   },
 }
 

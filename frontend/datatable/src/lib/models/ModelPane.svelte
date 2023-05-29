@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {modelIdFns} from "@cozemble/model-api";
+    import {modelIdFns} from "@cozemble/model-core";
     import DataRecordsTableInContext from "../records/DataRecordsTableInContext.svelte";
     import ModelPaneContext from "../records/ModelRecordsContext.svelte"
     import {recordFilteringComponentStore} from "../stores/recordFilteringComponentStore";

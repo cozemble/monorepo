@@ -5,7 +5,7 @@
     import {positionModal} from "./modelUi";
     import {editableTableName} from "./models/editableTableName";
     import {allEventSourcedModels} from "./stores/allModels";
-    import {modelIdFns} from "@cozemble/model-api";
+    import {modelIdFns} from "@cozemble/model-core";
     import EditableStringInput from "./editors/EditableStringInput.svelte";
     import {eventSourcedModelListEvents, eventSourcedModelListFns} from "@cozemble/model-event-sourced";
     import {modelFns, modelOptions} from "@cozemble/model-api";

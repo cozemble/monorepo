@@ -10,6 +10,7 @@ import type {
 import {
   modelEventDescriptors,
   modelEventFns,
+  modelIdFns,
   ModelPluralName,
   ModelSlotId,
   ModelSlotName,
@@ -18,7 +19,7 @@ import {
   NestedModelName,
   PropertyName,
 } from '@cozemble/model-core'
-import { modelIdFns, nestedModelFns } from '@cozemble/model-api'
+import { nestedModelFns } from '@cozemble/model-api'
 
 export interface ModelRenamed extends ModelEvent {
   _type: 'model.renamed.event'
