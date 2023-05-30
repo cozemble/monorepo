@@ -98,7 +98,7 @@ export function createModelAndRecordForFiltering(
   const editorComponent = slotEditorRegistry.forSlot(property)
   let eventSourcedRecord = eventSourcedDataRecordFns.fromRecord([model.model], record)
   const editorClient: DataRecordEditorClient = {
-    createNewRootRecord(modelId: ModelId): Promise<DataRecord | null> {
+    createNewRootRecord() {
       throw new Error('Method not implemented')
     },
 
@@ -115,7 +115,7 @@ export function createModelAndRecordForFiltering(
       onValueProvided(eventSourcedRecord.record.values[property.id.value])
     },
 
-    searchRecords(modelId: ModelId, search: string): Promise<DataRecord[]> {
+    searchRecords() {
       throw new Error('Method not implemented')
     },
 

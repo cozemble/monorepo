@@ -37,7 +37,7 @@
         dispatchEditEvent(): void {
         },
 
-        createNewRootRecord(): Promise<EventSourcedRecordGraph | null> {
+        createNewRootRecord() {
             throw new Error("Not implemented")
         },
 

@@ -26,7 +26,7 @@ import { dataRecordsTableOptions } from '$lib/records/DataRecordsTableOptions'
 import { modelRecordsContextFns } from '$lib/records/modelRecordsContextFns'
 // components
 import DataEntryRow from '$lib/records/entry/DataEntryRow.svelte'
-import AddModelElementButton from '$lib/records/modelling/AddModelElementButton.svelte'
+import AddModelElementButton from './AddModelElementButton.svelte'
 import SlotEditModal from '$lib/records/SlotEditModal.svelte'
 import type {EventSourcedRecordGraph} from "@cozemble/model-event-sourced";
 import SlotTh from "$lib/records/cells/SlotTh.svelte";
