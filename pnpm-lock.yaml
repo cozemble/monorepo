@@ -1258,6 +1258,9 @@ importers:
       '@cozemble/model-editor-sdk':
         specifier: workspace:*
         version: link:../../editor-sdk
+      '@cozemble/model-event-sourced':
+        specifier: workspace:*
+        version: link:../../event-sourced
     devDependencies:
       '@originjs/vite-plugin-commonjs':
         specifier: ^1.0.3

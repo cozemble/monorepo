@@ -3,7 +3,8 @@
     import type {CurrencyProperty} from "@cozemble/model-currency-core";
     import { createEventDispatcher } from "svelte"
     import { currencyPropertyType } from "@cozemble/model-currency-core"
-import type { Writable } from "svelte/store"
+    import type { Writable } from "svelte/store"
+import { value } from "@cozemble/lang-util"
 
     export let model: Model
     export let property: CurrencyProperty
@@ -56,7 +57,8 @@ import type { Writable } from "svelte/store"
 <div class="mt-3">
     <!-- currency -->
     <label class="label" for="currency-selector">Currency Type</label>  
-    <select data-choose-data id="currency-selector" class="select select-bordered">
+    <select data-choose-data id="currency-selector" class="select select-bordered" 
+        bind:value={$systemConfiguration.slotConfiguration[currencyPropertyType.value].configuration.currency}>
         <option disabled selected>Select Currency</option>
         {#each currencyObj as c}
             <option value={c.key}>{c.value}</option>
@@ -65,7 +67,8 @@ import type { Writable } from "svelte/store"
 
     <!-- locale -->
     <label class="label" for="currency-locale-selector">Currency Locale</label>
-    <select data-choose-data id="currency-locale-selector" class="select select-bordered">
+    <select data-choose-data id="currency-locale-selector" class="select select-bordered" 
+        bind:value={$systemConfiguration}>
         <option disabled selected>Select Locale</option>
         {#each localeObj as l}
             <option value={l.key}>{l.value}</option>

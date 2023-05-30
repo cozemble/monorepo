@@ -31,6 +31,7 @@
     "@cozemble/model-api": "workspace:*",
     "@cozemble/model-currency-core": "workspace:*",
     "@cozemble/model-editor-sdk": "workspace:*",
-    "@cozemble/data-editor-sdk": "workspace:*"
+    "@cozemble/data-editor-sdk": "workspace:*",
+    "@cozemble/model-event-sourced": "workspace:*"
   }
 }

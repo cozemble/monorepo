@@ -1,7 +1,8 @@
 <script lang="ts">
     import type {DataRecord, DataRecordValuePath, SystemConfiguration} from '@cozemble/model-core'
     import {propertyDescriptors} from "@cozemble/model-core";
-    import {dataRecordEditEvents, dataRecordEditor,} from '@cozemble/data-editor-sdk'
+    import { dataRecordEditor } from '@cozemble/data-editor-sdk'
+    import { dataRecordEditEvents } from '@cozemble/model-event-sourced'
     import type {CurrencyProperty} from "@cozemble/model-currency-core";
 
     export let recordPath: DataRecordValuePath
