@@ -19,6 +19,6 @@
   "dependencies": {
     "@cozemble/lang-util": "workspace:*",
     "@cozemble/model-core": "workspace:*",
-    "date-fns": "^2.29.3"
+    "dayjs": "~1.11.7"
   }
 }

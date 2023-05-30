@@ -17,10 +17,14 @@ import {
   SlotConfiguration,
   SystemConfiguration,
 } from '@cozemble/model-core'
-import { format, parse } from 'date-fns'
+
+import advancedFormat from 'dayjs/plugin/advancedFormat'
+import dayjs from 'dayjs'
+
+dayjs.extend(advancedFormat)
 
 const iso8601DateFormat = 'yyyy-MM-dd'
-const defaultDateFormat = 'yyyy-MM-dd'
+const defaultDateFormat = 'YYYY-MM-DD'
 const html5InputDateFormat = 'yyyy-MM-dd'
 
 export const datePropertyType = propertyTypeFns.newInstance('date.property')
@@ -64,7 +68,8 @@ export interface DatePropertySystemConfiguration
 }
 
 function formatDate(systemConfiguration: SystemConfiguration, date: Date): string {
-  return format(date, systemConfigurationDateFormat(systemConfiguration))
+  return dayjs(date).format(systemConfigurationDateFormat(systemConfiguration))
+  // return format(date, systemConfigurationDateFormat(systemConfiguration))
 }
 
 function systemConfigurationDateFormat(systemConfiguration: SystemConfiguration): string {
@@ -81,7 +86,9 @@ function html5InputAsIsoDate(
   if (value === null) {
     return null
   }
-  return format(parse(value, html5InputDateFormat, new Date(0)), iso8601DateFormat)
+
+  return dayjs(value).format(systemConfigurationDateFormat(systemConfiguration))
+  // return format(parse(value, html5InputDateFormat, new Date(0)), iso8601DateFormat)
 }
 
 export const datePropertyDescriptor: PropertyDescriptor<DateProperty, string> = {
@@ -117,6 +124,7 @@ export const datePropertyDescriptor: PropertyDescriptor<DateProperty, string> = 
     value: string | null,
   ) => {
     const persistedValue = html5InputAsIsoDate(systemConfiguration, value)
+    console.log(value, systemConfiguration, persistedValue)
     return {
       ...record,
       values: {
@@ -130,8 +138,8 @@ export const datePropertyDescriptor: PropertyDescriptor<DateProperty, string> = 
     if (maybeValue === null) {
       return null
     }
-    const parsed = parse(maybeValue, iso8601DateFormat, new Date(0))
-    return format(parsed, systemConfigurationDateFormat(systemConfiguration))
+
+    return dayjs(maybeValue).format(systemConfigurationDateFormat(systemConfiguration))
   },
   newProperty: (
     systemConfiguration: SystemConfiguration,
