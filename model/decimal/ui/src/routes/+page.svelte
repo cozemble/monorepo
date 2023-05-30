@@ -35,7 +35,7 @@
         dispatchEditEvent(): void {
         },
 
-        createNewRootRecord(): Promise<EventSourcedRecordGraph | null> {
+        createNewRootRecord() {
             throw new Error("Not implemented")
         },
 
@@ -43,15 +43,15 @@
             throw new Error("Not implemented")
         },
 
-        getModels(): Model[] {
+        getModels() {
             throw new Error("Not implemented")
         },
 
-        getModelViews(): ModelView[] {
+        getModelViews() {
             throw new Error("Not implemented")
         },
 
-        saveModelView(modelView: ModelView): Promise<JustErrorMessage | null> {
+        saveModelView() {
             throw new Error("Not implemented")
         },
 

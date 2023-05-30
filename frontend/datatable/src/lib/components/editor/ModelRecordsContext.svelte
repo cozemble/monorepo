@@ -31,6 +31,7 @@ import { gettableWritable } from '$lib/editors/GettableWritable'
 import {eventSourcedDataRecordFns, eventSourcedRecordGraphFns} from "@cozemble/model-event-sourced";
 import {eventSourcedRecordGraphStore} from "$lib/records/EventSourcedRecordGraphStore";
 import type {RecordGraphLoader} from "$lib/records/RecordGraphLoader";
+import type {SubGraphCollectorsByRecordId} from "$lib/records/RecordControls";
 
 //
 
@@ -75,10 +76,12 @@ const focusControls = makeFocusControls(
 // misc
 const loadingState = writable('loading' as LoadingState)
 const filterParams = writable(emptyFilterParams())
+const subGraphCollectorsByRecordId = {} as SubGraphCollectorsByRecordId
 let debounceTimeout: any
 
 // context <!-- TODO simplify -->
 modelRecordsContextFns.setEventSourcedModel(eventSourcedModel)
+modelRecordsContextFns.setSubGraphCollectorsByRecordId(subGraphCollectorsByRecordId)
 modelRecordsContextFns.setModel(model)
 modelRecordsContextFns.setEventSourcedRecordGraph(eventSourcedRecordGraph)
 modelRecordsContextFns.setRecords(records)
@@ -93,6 +96,7 @@ modelRecordsContextFns.setRecordControls(
     errorVisibilityByRecordId,
     eventSourcedRecordGraph,
     lastSavedByRecordId,
+      subGraphCollectorsByRecordId
   ),
 )
 modelRecordsContextFns.setModelControls(

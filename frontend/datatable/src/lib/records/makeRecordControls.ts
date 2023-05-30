@@ -1,5 +1,5 @@
 import type { EventSourcedRecordGraphStore } from './EventSourcedRecordGraphStore'
-import type { RecordControls } from './RecordControls'
+import type { RecordControls, SubGraphCollectorsByRecordId } from './RecordControls'
 import type { Writable } from 'svelte/store'
 import type { DataRecordId, Model, SystemConfiguration } from '@cozemble/model-core'
 import { justErrorMessage } from '@cozemble/lang-util'
@@ -15,11 +15,11 @@ export function makeRecordControls(
   errorVisibilityByRecordId: Writable<ErrorVisibilityByRecordId>,
   recordGraph: EventSourcedRecordGraphStore,
   lastSavedByRecordId: Writable<Map<string, number>>,
+  subGraphCollectorsByRecordId: SubGraphCollectorsByRecordId,
   newUnsavedRecords = [] as DataRecordId[],
 ): RecordControls {
   return {
     async saveRecord(recordId: DataRecordId) {
-      console.log('saveRecord', { recordId, graph: recordGraph.get() })
       const record = eventSourcedRecordGraphFns.recordWithId(recordGraph.get(), recordId)
       const errors = modelFns.validate(
         systemConfigurationProvider(),
@@ -36,12 +36,6 @@ export function makeRecordControls(
       const indexOfNewUnsavedRecords = newUnsavedRecords.findIndex(
         (id) => id.value === recordId.value,
       )
-      console.log({
-        graph: recordGraph.get(),
-        recordId,
-        indexOfNewUnsavedRecords,
-        newUnsavedRecords,
-      })
       if (indexOfNewUnsavedRecords >= 0) {
         await recordSaver.saveNewRecord(
           record,
@@ -64,7 +58,6 @@ export function makeRecordControls(
       return null
     },
     async saveNewRecord(recordId: DataRecordId) {
-      console.log('saveNewRecord', { recordId, graph: recordGraph.get() })
       const record = eventSourcedRecordGraphFns.recordWithId(recordGraph.get(), recordId)
       const errors = modelFns.validate(
         systemConfigurationProvider(),

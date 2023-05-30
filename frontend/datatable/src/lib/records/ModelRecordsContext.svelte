@@ -21,6 +21,7 @@
     import type {RecordGraphLoader} from "$lib/records/RecordGraphLoader";
     import type {EventSourcedDataRecord} from "@cozemble/model-event-sourced";
     import {eventSourcedDataRecordFns} from "@cozemble/model-event-sourced";
+    import type {SubGraphCollectorsByRecordId} from "$lib/records/RecordControls";
 
     const systemConfigurationProvider = () => $systemConfiguration
     const modelsProvider = () => $allModels
@@ -45,16 +46,18 @@
     })
     const loadingState = writable('loading' as LoadingState)
     const filterParams = writable(emptyFilterParams())
+    const subGraphCollectorsByRecordId = {} as SubGraphCollectorsByRecordId
     let debounceTimeout: any
 
     modelRecordsContextFns.setEventSourcedModel(eventSourcedModel)
+    modelRecordsContextFns.setSubGraphCollectorsByRecordId(subGraphCollectorsByRecordId)
     modelRecordsContextFns.setModel(model)
     modelRecordsContextFns.setEventSourcedRecordGraph(eventSourcedRecordGraph)
     modelRecordsContextFns.setRecords(records)
     modelRecordsContextFns.setFocus(focus)
     modelRecordsContextFns.setFocusControls(focusControls)
     modelRecordsContextFns.setDirtyRecords(dirtyRecords)
-    modelRecordsContextFns.setRecordControls(makeRecordControls(systemConfigurationProvider, recordSaver, modelsProvider, errorVisibilityByRecordId, eventSourcedRecordGraph, lastSavedByRecordId))
+    modelRecordsContextFns.setRecordControls(makeRecordControls(systemConfigurationProvider, recordSaver, modelsProvider, errorVisibilityByRecordId, eventSourcedRecordGraph, lastSavedByRecordId, subGraphCollectorsByRecordId))
     modelRecordsContextFns.setModelControls(makeModelControls(allEventSourcedModels))
     modelRecordsContextFns.setErrorVisibilityByRecordId(errorVisibilityByRecordId)
     modelRecordsContextFns.setFilterParams(filterParams)

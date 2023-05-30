@@ -5,12 +5,11 @@ import { mandatory } from '@cozemble/lang-util'
 import type { Readable, Writable } from 'svelte/store'
 import type { DataTableFocus, DataTableFocusControls2 } from '../focus/DataTableFocus'
 import type { EventSourcedRecordGraphStore } from './EventSourcedRecordGraphStore'
-import type { RecordControls } from './RecordControls'
+import type { RecordControls, SubGraphCollectorsByRecordId } from './RecordControls'
 import type { ModelControls } from './ModelControls'
 import type { ErrorVisibilityByRecordId } from './helpers'
 import type { GettableWritable } from '../editors/GettableWritable'
 import type { FilterParams } from '../backend/Backend'
-import { get } from 'svelte/store'
 
 const eventSourceModelContextKey = 'model.records.context.eventSourcedModel'
 const modelContextKey = 'model.records.context.model'
@@ -25,6 +24,7 @@ const errorVisibilityByRecordIdContextKey = 'model.records.context.errorVisibili
 const filterParamsContextKey = 'model.records.context.filterParams'
 const nestedModelBeingEditedContextKey = 'model.records.context.nestedModelBeingEdited'
 const permitRecordAdditionsContextKey = 'model.records.context.permitRecordAdditions'
+const subGraphCollectorsByRecordIdContextKey = 'model.records.context.subGraphCollectorsByRecordId'
 
 export const modelRecordsContextFns = {
   setEventSourcedModel: (model: Readable<EventSourcedModel>) => {
@@ -120,6 +120,15 @@ export const modelRecordsContextFns = {
     return mandatory(
       getContext(permitRecordAdditionsContextKey),
       `No permit record additions found in context`,
+    )
+  },
+  setSubGraphCollectorsByRecordId(subGraphCollectorsByRecordId: SubGraphCollectorsByRecordId) {
+    setContext(subGraphCollectorsByRecordIdContextKey, subGraphCollectorsByRecordId)
+  },
+  getSubGraphCollectorsByRecordId(): SubGraphCollectorsByRecordId {
+    return mandatory(
+      getContext(subGraphCollectorsByRecordIdContextKey),
+      `No sub graph collectors by record id found in context`,
     )
   },
 }
