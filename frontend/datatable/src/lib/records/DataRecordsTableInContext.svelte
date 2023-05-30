@@ -17,6 +17,8 @@
     import {mandatory} from "@cozemble/lang-util";
     import SlotTh from "$lib/records/cells/SlotTh.svelte";
     import type {EventSourcedRecordGraph} from "@cozemble/model-event-sourced";
+    import RecordAdditionRow from "$lib/records/RecordAdditionRow.svelte";
+    import {expandLastRow} from "$lib/records/expandCollapse";
 
     export let oneOnly = false
     export let options: DataRecordsTableOptions = dataRecordsTableOptions(true, true, true)
@@ -24,10 +26,7 @@
     export let parentPath: DataRecordPathParentElement[] = []
     const eventSourcedModel = modelRecordsContextFns.getEventSourcedModel()
     const model = modelRecordsContextFns.getModel()
-    const eventSourcedRecords = modelRecordsContextFns.getEventSourcedRecordGraph()
     const records = modelRecordsContextFns.getRecords()
-    const focus = modelRecordsContextFns.getFocus()
-    const focusControls = modelRecordsContextFns.getFocusControls()
     const recordControls = modelRecordsContextFns.getRecordControls()
     const modelControls = modelRecordsContextFns.getModelControls()
     const dirtyRecords = modelRecordsContextFns.getDirtyRecords()
@@ -48,14 +47,14 @@
     async function addInnerTable() {
         const nestedModelId = await modelControls.addNestedModel($eventSourcedModel, modelFns.newInstance('Inner table', modelOptions.withSlot(propertyFns.newInstance("Field 1"))), "many")
         await tick()
-        expandLastRow()
+        expandLastRow(expandedRecordIds,$records)
         nestedModelBeingEdited.set(nestedModelId)
     }
 
     async function addInnerRecord() {
         const nestedModelId = await modelControls.addNestedModel($eventSourcedModel, modelFns.newInstance('Inner record', modelOptions.withSlot(propertyFns.newInstance("Field 1"))), "one")
         await tick()
-        expandLastRow()
+        expandLastRow(expandedRecordIds,$records)
         nestedModelBeingEdited.set(nestedModelId)
     }
 
@@ -82,56 +81,7 @@
     }
 
     async function modelEdited() {
-        // const edited = event.detail.model
-        // await modelControls.modelEdited(edited)
         slotBeingEdited = null
-    }
-
-    function expandRecord(id: DataRecordId) {
-        expandedRecordIds.update((ids: DataRecordId[]) => [...ids, id])
-    }
-
-    function collapseRecord(id: DataRecordId) {
-        expandedRecordIds.update((ids: DataRecordId[]) => ids.filter(x => x.value !== id.value))
-    }
-
-    function flashRow(rowIndex: number) {
-        const row = document.querySelector(`tr[data-row-index="${rowIndex}"]`) as HTMLElement
-        const extraClasses = ['border', 'border-primary', 'border-4']
-        if (row) {
-            for (const extraClass of extraClasses) {
-                row.classList.add(extraClass)
-            }
-            setTimeout(() => {
-                for (const extraClass of extraClasses) {
-                    row.classList.remove(extraClass)
-                }
-            }, 1000)
-        }
-    }
-
-    function expandLastRow() {
-        expandRecord($records[$records.length - 1].id)
-    }
-
-    async function saveNewRecord(record: DataRecord, rootRecordIndex: number) {
-        const isExpanded = $expandedRecordIds.find(x => x.value === record.id.value)
-        const outcome = await recordControls.saveNewRecord(record.id)
-        if (outcome) {
-            expandRecord(record.id)
-        } else {
-            collapseRecord(record.id)
-            focusControls.ensureNotFocusedOnRow(rootRecordIndex)
-            flashRow($records.length - 2)
-            if (isExpanded) {
-                expandLastRow()
-            }
-        }
-    }
-
-    function recordHasEvents(rowIndex: number, graph: EventSourcedRecordGraph) {
-        const records = graph.records
-        return mandatory(records[rowIndex], `No event sourced record at index ${rowIndex}`).events.length > 0
     }
 
     function isDirtyRecord(record: DataRecord, dirtyRecords: DataRecordId[]) {
@@ -170,26 +120,7 @@
         {#key record.id.value}
             {#if rowIndex === ($records.length - 1) && parentPath.length === 0}
                 {#if $permitRecordAdditions}
-                    {#if $records.length > 1}
-                        <tr class="bg-accent">
-                            <td {colspan} class="bg-base-300 w-full text-xs">
-                                <div>Add next record below</div>
-                            </td>
-                        </tr>
-                    {/if}
-                    <DataEntryRow {parentPath} {options} {record} {rowIndex} oneOnly={true} {expandedRecordIds}/>
-                    {#if recordHasEvents(rowIndex, $eventSourcedRecords)}
-                        <tr>
-                            <td {colspan}>
-                                <div class="flex justify-center">
-                                    <button class="btn btn-primary save-root-record"
-                                            on:click={() => saveNewRecord(record,($records.length - 1))}>
-                                        Save {$model.name.value}</button>
-                                    <button class="btn btn-secondary ml-2">Clear</button>
-                                </div>
-                            </td>
-                        </tr>
-                    {/if}
+                    <RecordAdditionRow {colspan} {parentPath} {options} {rowIndex} {expandedRecordIds} {record}/>
                 {/if}
             {:else}
                 <DataEntryRow {parentPath} {options} {record} {rowIndex} {oneOnly} {expandedRecordIds}/>

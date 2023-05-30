@@ -6,11 +6,11 @@ import type {
   UploadedAttachment,
 } from '@cozemble/data-editor-sdk'
 import type {
-  DataRecord,
   DataRecordId,
   Model,
   ModelId,
   ModelView,
+  RecordAndEdges,
   SystemConfiguration,
 } from '@cozemble/model-core'
 import type { EventSourcedRecordGraphStore } from './EventSourcedRecordGraphStore'
@@ -23,7 +23,6 @@ import type {
   DataRecordEditEvent,
   EventSourcedRecordGraph,
 } from '@cozemble/model-event-sourced'
-import type { RecordAndEdges } from '@cozemble/model-core'
 
 export type CombinedDataRecordEditorClient = DataRecordEditorClient & DataRecordViewerClient
 
