@@ -14,13 +14,14 @@
     const modelReference = recordPath.lastElement as ModelReference
 
     $: selectedRecordIds = eventSourcedRecordGraphFns.referencedRecordIds($recordGraph, record.id, modelReference)
-    afterUpdate(() => console.log({selectedRecordIds, recordGraph:$recordGraph, record, modelReference}))
+    afterUpdate(() => console.log({selectedRecordIds, recordGraph: $recordGraph, record, modelReference}))
 
 </script>
 
 {#each selectedRecordIds as selectedRecordId}
     <div>
-        <RenderModelReferenceView {selectedRecordId} referencedModelId={editorParams.referencedModelId}
-                                  summaryView={editorParams.summaryView}/>
+        <RenderModelReferenceView referencedRecordId={selectedRecordId}
+                                  referencedModelId={editorParams.referencedModelId}
+                                  recordId={record.id} summaryView={editorParams.summaryView}/>
     </div>
 {/each}

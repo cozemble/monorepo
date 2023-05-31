@@ -17,7 +17,7 @@
 
     let initialValue: ReferencedRecords | null = dataRecordValuePathFns.getValue(systemConfiguration, recordPath, record) ?? null
 
-    $:selectedRecordId = initialValue?.referencedRecords[0]?.referencedRecordId.value ?? null;
+    $:referencedRecordId = initialValue?.referencedRecords[0]?.referencedRecordId.value ?? null;
 
     const dataRecordEditorClient = dataRecordEditor.getClient()
     let options: DataRecord[] = []
@@ -134,7 +134,7 @@
             <option value="create.new.record">Create a new {editorParams.referencedModel.name.value}</option>
             {#each options as option}
                 {@const view = makeSummaryView(option, editorParams)}
-                <option value={option.id.value} selected={selectedRecordId === option.id.value}>{view}</option>
+                <option value={option.id.value} selected={referencedRecordId === option.id.value}>{view}</option>
             {/each}
         </select>
     </div>
