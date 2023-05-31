@@ -1,4 +1,5 @@
 import type { Backend, FetchTenantResponse, TenantEntity } from './Backend'
+import { recordDataErrorFns, RecordSaveFailure } from './Backend'
 import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import axios from 'axios'
 import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
@@ -14,15 +15,19 @@ import type {
   Model,
   ModelId,
 } from '@cozemble/model-core'
-import { Id, RecordGraphEdge } from '@cozemble/model-core'
+import {
+  Id,
+  modelIdFns,
+  RecordAndEdges,
+  RecordGraphEdge,
+  RecordsAndEdges,
+} from '@cozemble/model-core'
 import type { RecordDeleteOutcome, RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import { recordSaveFailed, recordSaveSucceeded } from '@cozemble/data-paginated-editor'
-import { justErrorMessage, mandatory } from '@cozemble/lang-util'
+import { justErrorMessage, mandatory, Outcome, outcomeFns } from '@cozemble/lang-util'
 import { dataRecordValuePathFns, modelFns } from '@cozemble/model-api'
 import { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
-import { RecordAndEdges } from '@cozemble/model-core'
-import { RecordsAndEdges } from '@cozemble/model-core'
-import { Outcome } from '@cozemble/lang-util'
+import { dataRecordIdFns } from '@cozemble/model-core/dist/esm'
 
 const axiosInstance = axios.create({
   validateStatus: function () {
@@ -254,8 +259,47 @@ export class RestBackend implements Backend {
     records: EventSourcedDataRecord[],
     edges: RecordGraphEdge[],
     deletedEdges: Id[],
-  ): Promise<Outcome<DataRecord[]>> {
-    throw new Error('Not implemented')
+  ): Promise<Outcome<DataRecord[], RecordSaveFailure>> {
+    const saveResponse = await fetch(`${this.backendUrl()}/api/v1/tenant/${tenantId}/record`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${await this.accessToken(tenantId)}`,
+      },
+      body: JSON.stringify(
+        savableRecords(
+          records.map((esr) => esr.record),
+          edges,
+          deletedEdges,
+        ),
+      ),
+    })
+
+    if (saveResponse.ok) {
+      return outcomeFns.successful(records.map((esr) => esr.record))
+    } else {
+      const response = await saveResponse.json()
+      if (response._type === 'error.conflict') {
+        const conflict: ConflictErrorType = response
+        const model = modelFns.findById(models, modelIdFns.newInstance(conflict.conflictingModelId))
+        const valuePath = dataRecordValuePathFns.fromIds(
+          models,
+          model,
+          ...conflict.conflictingPath.split('.'),
+        )
+        const valueErrors: Map<DataRecordValuePath, string[]> = new Map()
+        valueErrors.set(valuePath, ['Must be unique'])
+        return outcomeFns.unsuccessful(
+          recordDataErrorFns.newInstance(
+            dataRecordIdFns.newInstance(conflict.conflictingRecordId),
+            valueErrors,
+          ),
+        )
+      }
+      return outcomeFns.unsuccessful(
+        justErrorMessage(`Failed to save report, got status code ${saveResponse.statusText}`),
+      )
+    }
   }
 
   async referencingRecords(

@@ -1,10 +1,17 @@
 import type { DataRecord, DataRecordId, Model, ModelEvent, ModelId } from '@cozemble/model-core'
-import { Id, RecordAndEdges, RecordGraphEdge, RecordsAndEdges } from '@cozemble/model-core'
+import {
+  DataRecordValuePath,
+  Id,
+  RecordAndEdges,
+  RecordGraphEdge,
+  RecordsAndEdges,
+} from '@cozemble/model-core'
 import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import type { RecordDeleteOutcome, RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
 import { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
 import { Outcome } from '@cozemble/lang-util'
+import { JustErrorMessage } from '@cozemble/lang-util/dist/esm'
 
 export interface TenantEntity {
   _type: string
@@ -18,6 +25,25 @@ export interface FetchTenantResponse {
   models: Model[]
   events: ModelEvent[]
   entities: TenantEntity[]
+}
+
+export interface RecordDataError {
+  _type: 'record.data.error'
+  recordId: DataRecordId
+  dataErrors: Map<DataRecordValuePath, string[]>
+}
+
+export type RecordSaveFailure = JustErrorMessage | RecordDataError
+
+export const recordDataErrorFns = {
+  newInstance: (
+    recordId: DataRecordId,
+    dataErrors: Map<DataRecordValuePath, string[]>,
+  ): RecordDataError => ({
+    _type: 'record.data.error',
+    recordId,
+    dataErrors,
+  }),
 }
 
 export interface Backend {
@@ -62,7 +88,7 @@ export interface Backend {
     records: EventSourcedDataRecord[],
     edges: RecordGraphEdge[],
     deletedEdges: Id[],
-  ): Promise<Outcome<DataRecord[]>>
+  ): Promise<Outcome<DataRecord[], RecordSaveFailure>>
 
   referencingRecords(
     tenantId: string,

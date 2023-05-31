@@ -1,6 +1,7 @@
 export interface ConflictErrorType {
   _type: 'error.conflict'
   conflictingRecordId: string
+  conflictingModelId: string
   conflictingPath: string
 }
 
