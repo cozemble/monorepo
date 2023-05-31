@@ -14,7 +14,6 @@ import type {
   RecordsAndEdges,
 } from '@cozemble/model-core'
 import type { AttachmentsManager, RecordSaveOutcome } from '@cozemble/data-paginated-editor'
-import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import type { FilterGroupList } from '@cozemble/data-filters-core'
 import { filterGroupListFns } from '@cozemble/data-filters-core'
 
@@ -58,14 +57,14 @@ export interface Backend extends AttachmentsManager, RecordSaver {
 }
 
 export const notImplementedBackend: Backend = {
-  async saveNewGraph(): Promise<Outcome<EventSourcedRecordGraph>> {
+  async saveNewGraph() {
     throw new Error('Not implemented')
   },
 
-  saveNewRecord(): Promise<RecordSaveOutcome> {
+  saveNewRecord() {
     throw new Error('Not implemented')
   },
-  saveExistingRecord(): Promise<RecordSaveOutcome> {
+  saveExistingRecord() {
     throw new Error('Not implemented')
   },
   saveModel: async () => {
@@ -74,7 +73,7 @@ export const notImplementedBackend: Backend = {
   saveModels: async () => {
     throw new Error('Not implemented')
   },
-  getRecords: async (modelId) => {
+  getRecords: async () => {
     throw new Error('Not implemented')
   },
   recordById: async () => {
@@ -83,21 +82,18 @@ export const notImplementedBackend: Backend = {
   async searchRecords() {
     throw new Error('Not implemented')
   },
-  async saveModelView(): Promise<JustErrorMessage | null> {
+  async saveModelView() {
     throw new Error('Not implemented')
   },
-  async uploadAttachments(
-    files: File[],
-    progressUpdater: (percent: number) => void,
-  ): Promise<UploadedAttachment[]> {
+  async uploadAttachments() {
     throw new Error('Not implemented')
   },
 
-  async deleteAttachments(attachmentIds: string[]): Promise<void> {
+  async deleteAttachments() {
     throw new Error('Not implemented')
   },
 
-  async getAttachmentViewUrls(attachmentIds: AttachmentIdAndFileName[]): Promise<string[]> {
+  async getAttachmentViewUrls() {
     throw new Error('Not implemented')
   },
 }
