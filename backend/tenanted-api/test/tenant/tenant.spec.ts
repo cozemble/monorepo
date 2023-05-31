@@ -10,10 +10,12 @@ import { dataRecordFns, modelFns } from '@cozemble/model-api'
 import {
   ModelEvent,
   modelEventIdFns,
+  recordAndEdges,
   systemConfigurationFns,
   timestampEpochMillis,
 } from '@cozemble/model-core'
 import {
+  getRecordsForModel,
   makeTenant,
   makeTenantMemberAccessToken,
   putModels,
@@ -21,7 +23,6 @@ import {
   simulateNewUser,
 } from './testHelpers'
 import { testEnv } from '../helper'
-import { recordAndEdges } from '@cozemble/model-core'
 
 const jwtSigningSecret = 'secret'
 const port = 3002
@@ -430,5 +431,34 @@ describe('with a migrated database', () => {
       },
     )
     await expect(putResponse.status).toBe(400)
+  })
+
+  test('can put records of differing models', async () => {
+    const { tenantId, bearer } = await simulateNewUser(port, jwtSigningSecret)
+    const [customerModel, productModel] = await putModels(
+      port,
+      tenantId,
+      [modelFns.newInstance('Customer'), modelFns.newInstance('Product')],
+      bearer,
+    )
+    const customerRecord = dataRecordFns.random(systemConfig, [customerModel], customerModel)
+    const productRecord = dataRecordFns.random(systemConfig, [productModel], productModel)
+
+    const putResponse = await fetch(
+      `http://localhost:3002/${testEnv}/api/v1/tenant/${tenantId}/record`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + bearer,
+        },
+        body: JSON.stringify(savableRecords([customerRecord, productRecord], [], [])),
+      },
+    )
+    await expect(putResponse.status).toBe(200)
+    const customerRecords = await getRecordsForModel(port, tenantId, customerModel.id, bearer)
+    const productRecords = await getRecordsForModel(port, tenantId, productModel.id, bearer)
+    expect(customerRecords.records).toEqual([customerRecord])
+    expect(productRecords.records).toEqual([productRecord])
   })
 })
