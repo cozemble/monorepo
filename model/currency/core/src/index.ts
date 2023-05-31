@@ -24,7 +24,7 @@ export const currencyPropertyType = propertyTypeFns.newInstance('currency.proper
 export interface CurrencyProperty extends Property {
   propertyType: { _type: 'property.type'; value: 'currency.property' }
   currency: string // Currency to be used for formatting (USD|EUR|GBP)
-  locale: string // Locale to be used for the currency formatting. (en_US|es_US|en_GB|de_DE)
+  locale: string // Locale to be used for the currency formatting. (en-US|es-US|en-GB|de-DE)
   format?: string | null // Use the unicode currency symbol (¤) for special formatting (¤#,##0.00)
 }
 
@@ -39,24 +39,33 @@ export function emptyProperty(name: string): CurrencyProperty {
     required: false,
     unique: false,
     currency: 'USD',
-    locale: 'en_US',
+    locale: 'en-US',
   }
 }
 
-export const currencyPropertyDescriptor: PropertyDescriptor<CurrencyProperty, number> = {
+function formatCurrency(value: number, currency = 'USD', locale = 'en-US'): string {
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency,
+  }).format(value)
+}
+
+export const currencyPropertyDescriptor: PropertyDescriptor = {
   _type: 'property.descriptor',
   propertyType: currencyPropertyType,
   name: { _type: 'dotted.name', value: 'Currency' },
   isRequireable: true,
   isUniqueable: false,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   validateProperty: function (_property: CurrencyProperty): Map<string, string> {
     return new Map<string, string>()
   },
-  randomValue: (systemConfiguration: SystemConfiguration): number => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  randomValue: (_systemConfiguration: SystemConfiguration): number => {
     return 0
   },
   validateValue: (
-    systemConfiguration: SystemConfiguration,
+    _systemConfiguration: SystemConfiguration,
     property: CurrencyProperty,
     value: number | null,
   ): string[] => {
@@ -66,7 +75,7 @@ export const currencyPropertyDescriptor: PropertyDescriptor<CurrencyProperty, nu
     return []
   },
   setValue: (
-    systemConfiguration: SystemConfiguration,
+    _systemConfiguration: SystemConfiguration,
     property: Property,
     record: DataRecord,
     value: number | null,
@@ -79,11 +88,20 @@ export const currencyPropertyDescriptor: PropertyDescriptor<CurrencyProperty, nu
       },
     }
   },
-  getValue: (systemConfiguration: SystemConfiguration, property: Property, record: DataRecord) => {
-    return record.values[property.id.value] ?? null
+  getValue: (
+    _systemConfiguration: SystemConfiguration,
+    property: CurrencyProperty,
+    record: DataRecord,
+  ) => {
+    const maybeValue = record.values[property.id.value] ?? null
+    if (maybeValue === null) {
+      return null
+    }
+
+    return formatCurrency(maybeValue, property.currency, property.locale)
   },
   newProperty: (
-    systemConfiguration: SystemConfiguration,
+    _systemConfiguration: SystemConfiguration,
     modelId: ModelId,
     propertyName: PropertyName,
     propertyId?: PropertyId,

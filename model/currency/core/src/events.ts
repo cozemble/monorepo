@@ -7,11 +7,6 @@ import {
   modelEventFns,
 } from '@cozemble/model-core'
 
-/**
- * currency
- * locale
- * format
- */
 export interface CurrencyModelChangedModelEvent extends ModelEvent {
   _type: 'currency.model.changed.model.event'
   propertyId: PropertyId

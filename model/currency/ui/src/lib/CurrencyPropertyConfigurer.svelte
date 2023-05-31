@@ -1,16 +1,32 @@
 <script lang="ts">
     import type {Model, SystemConfiguration} from "@cozemble/model-core";
-    import type {CurrencyProperty} from "@cozemble/model-currency-core";
+    import { type CurrencyProperty, currencyModelChangedModelEvent } from "@cozemble/model-currency-core";
     import { createEventDispatcher } from "svelte"
-    import { currencyPropertyType } from "@cozemble/model-currency-core"
     import type { Writable } from "svelte/store"
-import { value } from "@cozemble/lang-util"
 
     export let model: Model
     export let property: CurrencyProperty
     export let systemConfiguration: Writable<SystemConfiguration>
         
     const dispatch = createEventDispatcher()
+
+    function handleCurrencyChanged(event: Event) {
+        const target = event.target as HTMLInputElement
+        dispatch('modelChanged', currencyModelChangedModelEvent(
+            model.id, 
+            property.id, 
+            target.value, 
+            property.locale, null))
+    }
+
+    function handleLocalChanged(event: Event) {
+        const target = event.target as HTMLInputElement
+        dispatch('modelChanged', currencyModelChangedModelEvent(
+            model.id, 
+            property.id, 
+            property.currency, 
+            target.value, null)) // property.format
+    }
 
     let currencyObj = [
         {key: "USD", value: "US Dollar (USD)"},
@@ -31,16 +47,16 @@ import { value } from "@cozemble/lang-util"
     ]
 
     let localeObj = [
-        {key: "en_US", value: "English (United States)"},
-        {key: "es_US", value: "Spanish (United States)"},
-        {key: "en_GB", value: "English (United Kingdom)"},
-        {key: "es_ES", value: "Spanish (Spain)"},
-        {key: "de_DE", value: "German (Germany)"},
-        {key: "fr_FR", value: "French (France)"},
-        {key: "zh_CN", value: "Chinese (Simplified)"},
-        {key: "ru_RU", value: "Russian (Russia)"},
-        {key: "bn_IN", value: "Bengali (India)"},
-        {key: "da_DK", value: "Danish (Denmark)"}        
+        {key: "en-US", value: "English (United States)"},
+        {key: "es-US", value: "Spanish (United States)"},
+        {key: "en-GB", value: "English (United Kingdom)"},
+        {key: "es-ES", value: "Spanish (Spain)"},
+        {key: "de-DE", value: "German (Germany)"},
+        {key: "fr-FR", value: "French (France)"},
+        {key: "zh-CN", value: "Chinese (Simplified)"},
+        {key: "ru-RU", value: "Russian (Russia)"},
+        {key: "bn-IN", value: "Bengali (India)"},
+        {key: "da-DK", value: "Danish (Denmark)"}        
     ]
 
     let formatObj = [
@@ -58,7 +74,7 @@ import { value } from "@cozemble/lang-util"
     <!-- currency -->
     <label class="label" for="currency-selector">Currency Type</label>  
     <select data-choose-data id="currency-selector" class="select select-bordered" 
-        bind:value={$systemConfiguration.slotConfiguration[currencyPropertyType.value].configuration.currency}>
+        bind:value={property.currency} on:change={handleCurrencyChanged}>
         <option disabled selected>Select Currency</option>
         {#each currencyObj as c}
             <option value={c.key}>{c.value}</option>
@@ -68,7 +84,7 @@ import { value } from "@cozemble/lang-util"
     <!-- locale -->
     <label class="label" for="currency-locale-selector">Currency Locale</label>
     <select data-choose-data id="currency-locale-selector" class="select select-bordered" 
-        bind:value={$systemConfiguration}>
+        bind:value={property.locale} on:change={handleLocalChanged}>
         <option disabled selected>Select Locale</option>
         {#each localeObj as l}
             <option value={l.key}>{l.value}</option>
