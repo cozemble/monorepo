@@ -16,6 +16,8 @@ import type {
 import type { AttachmentsManager, RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import type { FilterGroupList } from '@cozemble/data-filters-core'
 import { filterGroupListFns } from '@cozemble/data-filters-core'
+import type { RecordSaveFailure } from '@cozemble/frontend-bff'
+import type { DataRecord } from '@cozemble/model-core'
 
 export interface FilterParams {
   search: string | null
@@ -38,6 +40,12 @@ export interface RecordSaver {
     edges: RecordGraphEdge[],
     deletedEdges: Id[],
   ): Promise<RecordSaveOutcome>
+
+  upsertRecords(
+    record: EventSourcedDataRecord[],
+    edges: RecordGraphEdge[],
+    deletedEdges: Id[],
+  ): Promise<Outcome<DataRecord[], RecordSaveFailure>>
 }
 
 export interface Backend extends AttachmentsManager, RecordSaver {
@@ -65,6 +73,9 @@ export const notImplementedBackend: Backend = {
     throw new Error('Not implemented')
   },
   saveExistingRecord() {
+    throw new Error('Not implemented')
+  },
+  upsertRecords() {
     throw new Error('Not implemented')
   },
   saveModel: async () => {

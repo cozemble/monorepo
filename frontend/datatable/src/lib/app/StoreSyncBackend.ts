@@ -6,10 +6,18 @@ import type {
 } from '@cozemble/model-event-sourced'
 import type { JustErrorMessage, Outcome } from '@cozemble/lang-util'
 import { allEventSourcedModels } from '../stores/allModels'
-import type { DataRecordId, Id, ModelId, ModelView, RecordGraphEdge } from '@cozemble/model-core'
+import type {
+  DataRecord,
+  DataRecordId,
+  Id,
+  ModelId,
+  ModelView,
+  RecordGraphEdge,
+} from '@cozemble/model-core'
 import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import { allModelViews } from '../stores/allModelViews'
 import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
+import type { RecordSaveFailure } from '@cozemble/frontend-bff'
 
 export function makeStoreSyncBackend(delegate: Backend): Backend {
   const backend = {
@@ -59,6 +67,14 @@ export function makeStoreSyncBackend(delegate: Backend): Backend {
       deletedEdges: Id[],
     ): Promise<RecordSaveOutcome> {
       return await delegate.saveExistingRecord(record, edges, deletedEdges)
+    },
+
+    async upsertRecords(
+      record: EventSourcedDataRecord[],
+      edges: RecordGraphEdge[],
+      deletedEdges: Id[],
+    ): Promise<Outcome<DataRecord[], RecordSaveFailure>> {
+      return await delegate.upsertRecords(record, edges, deletedEdges)
     },
 
     async searchRecords(modelId: ModelId, search: string) {
