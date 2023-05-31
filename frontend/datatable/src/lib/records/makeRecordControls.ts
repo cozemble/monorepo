@@ -58,7 +58,6 @@ export function makeRecordControls(
   ): Promise<JustErrorMessage | null> {
     const record = eventSourcedRecordGraphFns.recordWithId(recordGraph.get(), recordId)
     const maybeError = validateRecord(record)
-    console.log({ maybeError })
     if (maybeError) {
       return maybeError
     }
@@ -68,7 +67,6 @@ export function makeRecordControls(
       eventSourcedRecordGraphFns.getEdgesInvolvingRecord(recordGraph.get(), recordId),
       recordGraph.get().deletedEdges.map((e) => e.edge.id),
     )
-    console.log({ saveOutcome })
     if (saveOutcome._type === 'record.save.failed') {
       return justErrorMessage(saveOutcome.errors[0] ?? 'Unknown error when saving record')
     }
@@ -78,11 +76,9 @@ export function makeRecordControls(
 
   return {
     async saveRecord(recordId: DataRecordId) {
-      console.log('saveRecord', { recordId, subGraphCollectorsByRecordId })
       return await performRecordSave(recordSaver.saveExistingRecord, recordId)
     },
     async saveNewRecord(recordId: DataRecordId) {
-      console.log('saveNewRecord', { recordId, subGraphCollectorsByRecordId })
       const maybeError = await performRecordSave(recordSaver.saveNewRecord, recordId)
       if (maybeError) {
         return maybeError

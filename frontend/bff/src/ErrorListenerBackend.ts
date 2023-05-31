@@ -13,6 +13,7 @@ import { RecordDeleteOutcome, RecordSaveOutcome } from '@cozemble/data-paginated
 import { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import { BackendModel } from '@cozemble/backend-tenanted-api-types'
 import { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
+import { Outcome } from '@cozemble/lang-util'
 
 export type ErrorListener = (e: any) => void
 
@@ -139,6 +140,21 @@ export class ErrorListenerBackend implements Backend {
   ): Promise<RecordSaveOutcome> {
     try {
       return await this.backend.saveRecord(tenantId, models, newRecord, edges, deletedEdges)
+    } catch (e) {
+      this.errorListeners.forEach((l) => l(e))
+      throw e
+    }
+  }
+
+  async saveRecords(
+    tenantId: string,
+    models: Model[],
+    records: EventSourcedDataRecord[],
+    edges: RecordGraphEdge[],
+    deletedEdges: Id[],
+  ): Promise<Outcome<DataRecord[]>> {
+    try {
+      return await this.backend.saveRecords(tenantId, models, records, edges, deletedEdges)
     } catch (e) {
       this.errorListeners.forEach((l) => l(e))
       throw e

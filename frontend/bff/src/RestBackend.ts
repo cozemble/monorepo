@@ -22,6 +22,7 @@ import { dataRecordValuePathFns, modelFns } from '@cozemble/model-api'
 import { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
 import { RecordAndEdges } from '@cozemble/model-core'
 import { RecordsAndEdges } from '@cozemble/model-core'
+import { Outcome } from '@cozemble/lang-util'
 
 const axiosInstance = axios.create({
   validateStatus: function () {
@@ -211,12 +212,12 @@ export class RestBackend implements Backend {
   async saveRecord(
     tenantId: string,
     models: Model[],
-    newRecord: EventSourcedDataRecord,
+    record: EventSourcedDataRecord,
     edges: RecordGraphEdge[],
     deletedEdges: Id[],
   ): Promise<RecordSaveOutcome> {
-    const modelId = newRecord.record.modelId.value
-    const model = modelFns.findById(models, newRecord.record.modelId)
+    const modelId = record.record.modelId.value
+    const model = modelFns.findById(models, record.record.modelId)
     const saveResponse = await fetch(
       `${this.backendUrl()}/api/v1/tenant/${tenantId}/model/${modelId}/record`,
       {
@@ -225,11 +226,11 @@ export class RestBackend implements Backend {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${await this.accessToken(tenantId)}`,
         },
-        body: JSON.stringify(savableRecords([newRecord.record], edges, deletedEdges)),
+        body: JSON.stringify(savableRecords([record.record], edges, deletedEdges)),
       },
     )
     if (saveResponse.ok) {
-      return recordSaveSucceeded(newRecord.record)
+      return recordSaveSucceeded(record.record)
     } else {
       const response = await saveResponse.json()
       if (response._type === 'error.conflict') {
@@ -245,6 +246,16 @@ export class RestBackend implements Backend {
       }
       return recordSaveFailed([saveResponse.statusText], new Map())
     }
+  }
+
+  async saveRecords(
+    tenantId: string,
+    models: Model[],
+    records: EventSourcedDataRecord[],
+    edges: RecordGraphEdge[],
+    deletedEdges: Id[],
+  ): Promise<Outcome<DataRecord[]>> {
+    throw new Error('Not implemented')
   }
 
   async referencingRecords(

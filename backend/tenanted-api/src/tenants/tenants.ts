@@ -101,14 +101,13 @@ router.put('/:tenantId/model/:modelId/record', (req: Request, res: Response) => 
     return res.status(400).send()
   }
   const records: SavableRecords = req.body
-  console.log(`records: ${JSON.stringify(records)}`)
-
+  console.log({ records })
   return authenticatedDatabaseRequest(req, res, async (client) => {
     const result = await client.query(
       'select * from upsert_records_and_edges($1,text2Ltree($2), $3) as records;',
       [mandatory(req.env, `No env in request`), req.params.tenantId, JSON.stringify(records)],
     )
-    console.log(`upsert_records_and_edges result: ${JSON.stringify(result)}`)
+    console.log({ result: result.rows[0] })
     if (result.rows.length === 0 || result.rows[0].records === null) {
       return res.status(400).send()
     }
