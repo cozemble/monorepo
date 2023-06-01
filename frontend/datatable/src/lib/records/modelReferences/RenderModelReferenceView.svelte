@@ -7,21 +7,24 @@
     import {allModels} from "$lib/stores/allModels";
     import type {EventSourcedRecordGraph} from "@cozemble/model-event-sourced";
 
-    export let selectedRecordId: DataRecordId
+    export let recordId: DataRecordId
+    export let referencedRecordId: DataRecordId
     export let referencedModelId: ModelId
     export let summaryView: ModelHtmlTemplate
 
     const dataRecordViewerClient = dataRecordViewer.getClient()
     const recordGraph = modelRecordsContextFns.getEventSourcedRecordGraph()
+    const subGraphCollectorsByRecordId = modelRecordsContextFns.getSubGraphCollectorsByRecordId()
 
     let htmlRender: string | null = null
 
     async function computeHtml(models: Model[], graph: EventSourcedRecordGraph, referencedModelId: ModelId, selectedRecordId: DataRecordId) {
-        const referencedRecord = await getReferencedRecord(dataRecordViewerClient, graph, referencedModelId, selectedRecordId)
+        const referencedRecord = await getReferencedRecord(dataRecordViewerClient, graph, subGraphCollectorsByRecordId,referencedModelId, selectedRecordId)
+        console.log({referencedRecord, selectedRecordId})
         htmlRender = renderReferencedRecord(models, referencedRecord, summaryView)
     }
 
-    $: computeHtml($allModels, $recordGraph, referencedModelId, selectedRecordId)
+    $: computeHtml($allModels, $recordGraph, referencedModelId, referencedRecordId)
 
 </script>
 

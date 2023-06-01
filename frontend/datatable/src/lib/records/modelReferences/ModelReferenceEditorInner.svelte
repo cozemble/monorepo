@@ -18,6 +18,7 @@
     } from "@cozemble/model-event-sourced";
     import {inverseReferenceSetter} from "$lib/records/modelReferences/editorHelper";
     import {subGraphCollectorsByRecordIdFns} from "$lib/records/RecordControls";
+    import {singleRecordEditContext} from "$lib/records/contextHelper";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord
@@ -26,6 +27,7 @@
     const model = modelRecordsContextFns.getModel()
     const recordGraph = modelRecordsContextFns.getEventSourcedRecordGraph()
     const subGraphCollectors = modelRecordsContextFns.getSubGraphCollectorsByRecordId()
+    const rootRecordId = singleRecordEditContext.getRootRecordId()
     const modelReference = recordPath.lastElement as ModelReference
 
     $: selectedRecordIds = eventSourcedRecordGraphFns.referencedRecordIds($recordGraph, record.id, modelReference)
@@ -67,14 +69,13 @@
         if (createdGraph === null) {
             return
         }
-        subGraphCollectorsByRecordIdFns.addCreated(subGraphCollectors, record.id, createdGraph)
+        subGraphCollectorsByRecordIdFns.addCreated(subGraphCollectors, rootRecordId, createdGraph)
         const createdRecord = getCreatedRecord(createdGraph, editorParams.referencedModelId)
         if (createdRecord) {
             options.push(createdRecord)
         }
         setSelectedRecord(createdRecord)
     }
-
 
     function optionChanged(event: Event) {
         const target = event.target as HTMLSelectElement

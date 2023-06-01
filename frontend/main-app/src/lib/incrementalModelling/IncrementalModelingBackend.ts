@@ -4,10 +4,12 @@ import {
   eventSourcedDataRecordFns,
   type EventSourcedRecordGraph,
   eventSourcedRecordGraphFns,
+  timestampedRecordGraphEdgeFns,
 } from '@cozemble/model-event-sourced'
 import type { JustErrorMessage, Outcome } from '@cozemble/lang-util'
 import { justErrorMessage, outcomeFns } from '@cozemble/lang-util'
 import type {
+  DataRecord,
   DataRecordId,
   Id,
   Model,
@@ -19,10 +21,9 @@ import type {
 } from '@cozemble/model-core'
 import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
-import type { Backend } from '@cozemble/frontend-bff'
+import type { Backend, RecordSaveFailure } from '@cozemble/frontend-bff'
 import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
 import { toFilledFilterInstanceGroup } from '@cozemble/frontend-ui-blocks'
-import { timestampedRecordGraphEdgeFns } from '@cozemble/model-event-sourced'
 
 export class IncrementalModelingBackend implements DataTableBackend {
   constructor(
@@ -36,7 +37,6 @@ export class IncrementalModelingBackend implements DataTableBackend {
   }
 
   async saveNewGraph(graph: EventSourcedRecordGraph): Promise<Outcome<EventSourcedRecordGraph>> {
-    console.log('saveNewGraph', graph)
     const lastIndex = graph.records.length - 1
     for (let i = 0; i < graph.records.length; i++) {
       if (i === lastIndex) {
@@ -105,6 +105,20 @@ export class IncrementalModelingBackend implements DataTableBackend {
       this.tenantId,
       this.modelsProvider(),
       record,
+      edges,
+      deletedEdges,
+    )
+  }
+
+  async upsertRecords(
+    records: EventSourcedDataRecord[],
+    edges: RecordGraphEdge[],
+    deletedEdges: Id[],
+  ): Promise<Outcome<DataRecord[], RecordSaveFailure>> {
+    return this.backend.saveRecords(
+      this.tenantId,
+      this.modelsProvider(),
+      records,
       edges,
       deletedEdges,
     )

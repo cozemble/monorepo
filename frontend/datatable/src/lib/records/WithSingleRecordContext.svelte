@@ -15,7 +15,6 @@
     const records = modelRecordsContextFns.getRecords()
     const errorVisibilityByRecordId = modelRecordsContextFns.getErrorVisibilityByRecordId()
 
-    // const maybeExistingEditor = getContext(recordEditorClientContext)
     const maybeExistingEditor = singleRecordEditContext.optionalRecordEditorClient()
     if (!maybeExistingEditor) {
         const eventSourcedRecords = modelRecordsContextFns.getEventSourcedRecordGraph()
@@ -29,6 +28,7 @@
     if (rootRecordIndex === null) {
         rootRecordIndex = rowIndex
         singleRecordEditContext.setRootRecordIndex(rootRecordIndex)
+        singleRecordEditContext.setRootRecordId(recordId)
     }
     let maybeExistingErrorsForRecord = singleRecordEditContext.optionalErrorsForRecord()
     if (!maybeExistingErrorsForRecord) {

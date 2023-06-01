@@ -4,46 +4,43 @@ import type { RecordDeleteOutcome, RecordSaveOutcome } from '@cozemble/data-pagi
 import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
 
 export const notImplementedBackend: Backend = {
-  deleteAttachments(tenantId: string, attachmentIds: string[]): Promise<void> {
+  deleteAttachments() {
     throw new Error(`Not implemented`)
   },
-  deleteRecord(tenantId: string, modelId: string, record): Promise<RecordDeleteOutcome> {
+  deleteRecord() {
     throw new Error(`Not implemented`)
   },
-  fetchRecords(tenantId: string, modelId: string, search: string | null, filters: any) {
+  fetchRecords() {
     throw new Error(`Not implemented`)
   },
-  findRecordById(tenantId: string, modelId, recordId): Promise<null> {
+  findRecordById() {
     throw new Error(`Not implemented`)
   },
-  getAttachmentViewUrls(tenantId: string, attachments: []): Promise<string[]> {
+  getAttachmentViewUrls() {
     throw new Error(`Not implemented`)
   },
-  putModels(tenantId: string, models: BackendModel[]): Promise<any> {
+  putModels() {
     throw new Error(`Not implemented`)
   },
-  referencingRecords(tenantId: string, recordId, referencingModelId): Promise<[]> {
+  referencingRecords() {
     throw new Error(`Not implemented`)
   },
-  saveEntities(tenantId: string, entities: TenantEntity[]): Promise<any> {
+  saveEntities() {
     throw new Error(`Not implemented`)
   },
-  saveRecord(tenantId: string, models: [], newRecord): Promise<RecordSaveOutcome> {
+  saveRecord() {
     throw new Error(`Not implemented`)
   },
-  tradeAuthTokenForSession(
-    authorizationCode: string,
-  ): Promise<{ accessToken: string; refreshToken: string }> {
+  saveRecords() {
     throw new Error(`Not implemented`)
   },
-  uploadAttachments(
-    tenantId: string,
-    files: File[],
-    progressUpdater: (percent: number) => void,
-  ): Promise<[]> {
+  tradeAuthTokenForSession() {
     throw new Error(`Not implemented`)
   },
-  getTenantDetails: async (tenantId: string) => {
+  uploadAttachments() {
+    throw new Error(`Not implemented`)
+  },
+  getTenantDetails: async () => {
     throw new Error(`Not implemented`)
   },
 }
