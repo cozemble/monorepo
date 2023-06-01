@@ -313,8 +313,18 @@ export const modelReferenceFns = {
       referencedCardinality,
     )
   },
-  inverse(modelReference: ModelReference): ModelReference {
-    return { ...modelReference, inverse: true }
+  inverse(
+    modelReference: ModelReference,
+    referenceName: ModelReferenceName | string,
+  ): ModelReference {
+    const name =
+      typeof referenceName === 'string'
+        ? modelReferenceNameFns.newInstance(referenceName)
+        : referenceName
+    return { ...modelReference, inverse: true, name }
+  },
+  setOriginCardinality(modelReference: ModelReference, originCardinality: Cardinality) {
+    return { ...modelReference, originCardinality }
   },
 }
 

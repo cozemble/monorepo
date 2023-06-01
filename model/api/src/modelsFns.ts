@@ -11,6 +11,7 @@ import type {
 import {
   type DataRecordValuePath,
   emptyModel,
+  LeafModelSlot,
   modelNameFns,
   type ModelPath,
   type ModelPathElement,
@@ -29,7 +30,6 @@ import {
   singleCardinalityValuesForModelPathResponse,
 } from './valuesForModelPath'
 import { nestedModelFns } from './nestedModelFns'
-import { LeafModelSlot } from '@cozemble/model-core'
 
 export const modelOptions = {
   withId(id: ModelId): ModelOption {
@@ -158,6 +158,9 @@ export const modelFns = {
       ...model,
       slots: [...model.slots, property],
     }
+  },
+  applyOptions(model: Model, ...opts: ModelOption[]): Model {
+    return options.apply(model, ...opts)
   },
   allPaths(models: Model[], model: Model): ModelPath<ModelPathElement>[] {
     const slotPaths = model.slots.map((p) => modelPathFns.newInstance(p))

@@ -2,17 +2,17 @@
  * need to be able to configure cardinality on model reference slots
  * changing a booking from customer a to customer b leave the old reference to the booking in customer a
  * Inverse reference does not have the right model name in the slot configurer
+ * Creating a new customer for a new booking, clicking save on the new customer does not save or set the customer on the booking.
+    * this is because the save of the customer attempts to insert the edge to the booking, but the booking has not been saved yet, so the edge insert fails based on a database constraint
+    * really when I save the booking, that is when I should also save the customer and the edge
+ * When setting a reference from a has-many to a has-one, when the has-one is already set, the old reference is not removed. i.e. customer mike points to ticket 1 and ticket 2.  When editing customer tom to point to ticket 1, mike should no longer point to ticket 1
+    * this will require a model reference to know whether it is one-to-one, many-to-one, one-to-many or many-to-many.  Can model as originCardinality and referenceCardinality ?
+ * When changing a reference in a has-one relationship to a newly created record, the new edge gets saved twice
 
  * borders around select boxes in model slot configurer are gone
  * Need to be able to remove a reference in a many model reference slot
  * Need to be able to add a reference in a many model reference slot
  * Need to be able to change a reference in a many model reference slot
- * When changing a reference in a has-one relationship to a newly created record, the new edge gets saved twice
- * When setting a reference from a has-many to a has-one, when the has-one is already set, the old reference is not removed. i.e. customer mike points to ticket 1 and ticket 2.  When editing customer tom to point to ticket 1, mike should no longer point to ticket 1
-    * this will require a model reference to know whether it is one-to-one, many-to-one, one-to-many or many-to-many.  Can model as originCardinality and referenceCardinality ?
  * if the model of a reference record being created has nested models, the ui does not offer the option to expand
- * Creating a new customer for a new booking, clicking save on the new customer does not save or set the customer on the booking.
-    * this is because the save of the customer attempts to insert the edge to the booking, but the booking has not been saved yet, so the edge insert fails based on a database constraint
-    * really when I save the booking, that is when I should also save the customer and the edge
-    *
+
 
