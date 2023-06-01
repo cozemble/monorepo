@@ -1,13 +1,17 @@
-import { get, type Readable } from 'svelte/store'
+import { get, type Readable, type Writable } from 'svelte/store'
 
-import type { Model } from '@cozemble/model-core'
+import type { Model, NestedModelId } from '@cozemble/model-core'
+import type { EventSourcedModel } from '@cozemble/model-event-sourced'
 import { propertyDescriptors, propertyNameFns } from '@cozemble/model-core'
+import { modelFns, modelOptions, propertyFns } from '@cozemble/model-api'
 
 // TODO merge allModels store into here
 import { allEventSourcedModels } from '$lib/stores/allModels'
 import { systemConfiguration } from '$lib/stores/systemConfiguration'
 
 import * as methods from './methods'
+
+//
 
 export const addSlotToModel = async (modelStore: Readable<Model>) => {
   const model = get(modelStore)
@@ -22,6 +26,44 @@ export const addSlotToModel = async (modelStore: Readable<Model>) => {
       .newProperty(get(systemConfiguration), model.id, propertyNameFns.newInstance(fieldName)),
   )
 }
+
+export const addInnerTable = async (
+  esModelStore: Readable<EventSourcedModel>,
+  nestedModelBeingEditedStore: Writable<NestedModelId | null>,
+) => {
+  const esModel = get(esModelStore)
+
+  const nestedModelId = await methods.addNestedModel(
+    allEventSourcedModels,
+    esModel,
+    modelFns.newInstance('Inner table', modelOptions.withSlot(propertyFns.newInstance('Field 1'))),
+    'many',
+  )
+
+  nestedModelBeingEditedStore.set(nestedModelId)
+
+  return
+}
+
+export const addInnerRecord = async (
+  esModelStore: Readable<EventSourcedModel>,
+  nestedModelBeingEditedStore: Writable<NestedModelId | null>,
+) => {
+  const esModel = get(esModelStore)
+
+  const nestedModelId = await methods.addNestedModel(
+    allEventSourcedModels,
+    esModel,
+    modelFns.newInstance('Inner record', modelOptions.withSlot(propertyFns.newInstance('Field 1'))),
+    'one',
+  )
+
+  nestedModelBeingEditedStore.set(nestedModelId)
+
+  return
+}
+
+//
 
 export * as methods from './methods'
 export * as contexts from './contexts'

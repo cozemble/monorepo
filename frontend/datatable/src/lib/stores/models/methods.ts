@@ -1,4 +1,4 @@
-// * Refactored form lib/records/makeRecordControls.ts
+// * Refactored form lib/records/makeModelControls.ts
 
 import type { Writable } from 'svelte/store'
 

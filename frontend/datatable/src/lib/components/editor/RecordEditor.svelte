@@ -10,8 +10,6 @@ import { tick } from 'svelte'
 import { writable } from 'svelte/store'
 
 // Cozemble
-import { propertyDescriptors, propertyNameFns } from '@cozemble/model-core'
-import { modelFns, modelOptions, propertyFns } from '@cozemble/model-api'
 import { mandatory } from '@cozemble/lang-util'
 
 // stores
@@ -28,8 +26,8 @@ import { modelRecordsContextFns } from '$lib/records/modelRecordsContextFns'
 import DataEntryRow from '$lib/records/entry/DataEntryRow.svelte'
 import AddModelElementButton from './AddModelElementButton.svelte'
 import SlotEditModal from '$lib/records/SlotEditModal.svelte'
-import type {EventSourcedRecordGraph} from "@cozemble/model-event-sourced";
-import SlotTh from "$lib/records/cells/SlotTh.svelte";
+import type { EventSourcedRecordGraph } from '@cozemble/model-event-sourced'
+import SlotTh from '$lib/records/cells/SlotTh.svelte'
 
 export let oneOnly = false
 export let options: DataRecordsTableOptions = dataRecordsTableOptions(
@@ -45,19 +43,20 @@ const eventSourcedModel = modelRecordsContextFns.getEventSourcedModel()
 const model = modelRecordsContextFns.getModel()
 const eventSourcedRecords = modelRecordsContextFns.getEventSourcedRecordGraph()
 const records = modelRecordsContextFns.getRecords()
-const focus = modelRecordsContextFns.getFocus()
 const focusControls = modelRecordsContextFns.getFocusControls()
 const recordControls = modelRecordsContextFns.getRecordControls()
 const modelControls = modelRecordsContextFns.getModelControls()
 const dirtyRecords = modelRecordsContextFns.getDirtyRecords()
-const nestedModelBeingEdited =
-  modelRecordsContextFns.getNestedModelBeingEdited()
 const permitModelling = contextHelper.getPermitModelling()
 const permitRecordAdditions = modelRecordsContextFns.getPermitRecordAdditions()
 
 let slotBeingEdited: SlotBeingEdited | null = null
 
-const { model: model_r } = modelsStore_r.contexts.getAll()
+const {
+  model: model_r,
+  eventSourcedModel: eventSourcedModel_r,
+  nestedModelBeingEdited: nestedModelBeingEdited_r,
+} = modelsStore_r.contexts.getAll()
 
 //
 
@@ -75,31 +74,23 @@ function editSlot(clicked: Event, slot: ModelSlot) {
 }
 
 async function addInnerTable() {
-  const nestedModelId = await modelControls.addNestedModel(
-    $eventSourcedModel,
-    modelFns.newInstance(
-      'Inner table',
-      modelOptions.withSlot(propertyFns.newInstance('Field 1')),
-    ),
-    'many',
+  await modelsStore_r.addInnerTable(
+    eventSourcedModel_r,
+    nestedModelBeingEdited_r,
   )
+
   await tick()
   expandLastRow()
-  nestedModelBeingEdited.set(nestedModelId)
 }
 
 async function addInnerRecord() {
-  const nestedModelId = await modelControls.addNestedModel(
-    $eventSourcedModel,
-    modelFns.newInstance(
-      'Inner record',
-      modelOptions.withSlot(propertyFns.newInstance('Field 1')),
-    ),
-    'one',
+  await modelsStore_r.addInnerRecord(
+    eventSourcedModel_r,
+    nestedModelBeingEdited_r,
   )
+
   await tick()
   expandLastRow()
-  nestedModelBeingEdited.set(nestedModelId)
 }
 
 async function addSlotToModel() {
@@ -174,7 +165,10 @@ async function saveNewRecord(record: DataRecord, rootRecordIndex: number) {
 
 function recordHasEvents(rowIndex: number, graph: EventSourcedRecordGraph) {
   const records = graph.records
-  return mandatory(records[rowIndex], `No event sourced record at index ${rowIndex}`).events.length > 0
+  return (
+    mandatory(records[rowIndex], `No event sourced record at index ${rowIndex}`)
+      .events.length > 0
+  )
 }
 
 function isDirtyRecord(record: DataRecord, dirtyRecords: DataRecordId[]) {
