@@ -11,7 +11,6 @@ export interface SavableRecord {
 
 export interface SavableRecords {
   _type: 'savable.records'
-  uniquePaths: JsonPath[]
   records: SavableRecord[]
   edges: RecordGraphEdge[]
   deletedEdges: Id[]
@@ -21,11 +20,9 @@ export function savableRecords(
   records: SavableRecord[],
   edges: RecordGraphEdge[],
   deletedEdges: Id[],
-  uniquePaths: JsonPath[] = [],
 ): SavableRecords {
   return {
     _type: 'savable.records',
-    uniquePaths,
     records,
     edges,
     deletedEdges,

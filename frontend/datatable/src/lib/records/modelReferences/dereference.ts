@@ -2,42 +2,12 @@ import type { DataRecordEditorClient, DataRecordViewerClient } from '@cozemble/d
 import type { DataRecordId, ModelId, RecordAndEdges } from '@cozemble/model-core'
 import { recordAndEdges, recordGraphEdgeFns } from '@cozemble/model-core'
 import type { EventSourcedRecordGraph } from '@cozemble/model-event-sourced'
-
-export async function dereference(
-  client: DataRecordViewerClient | DataRecordEditorClient,
-  graph: EventSourcedRecordGraph,
-  referencedModelId: ModelId,
-  referencedRecords: DataRecordId[],
-  setter: (value: RecordAndEdges | null) => void,
-) {
-  if (referencedRecords.length === 0) {
-    setter(null)
-    return
-  }
-  if (referencedRecords.length === 1) {
-    const maybeInGraph = graph.relatedRecords.find((r) => r.id.value === referencedRecords[0].value)
-    if (maybeInGraph) {
-      setter(
-        recordAndEdges(
-          maybeInGraph,
-          recordGraphEdgeFns.forRecord(
-            graph.edges.map((e) => e.edge),
-            maybeInGraph.id,
-          ),
-        ),
-      )
-      return
-    }
-    const record = await client.recordById(referencedModelId, referencedRecords[0])
-    setter(record)
-  } else {
-    setter(null)
-  }
-}
+import type { SubGraphCollectorsByRecordId } from '$lib/records/RecordControls'
 
 export async function getReferencedRecord(
   client: DataRecordViewerClient | DataRecordEditorClient,
   graph: EventSourcedRecordGraph,
+  subGraphCollectorsByRecordId: SubGraphCollectorsByRecordId,
   referencedModelId: ModelId,
   recordId: DataRecordId,
 ): Promise<RecordAndEdges | null> {

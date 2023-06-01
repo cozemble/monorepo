@@ -5,14 +5,14 @@ import type { RecordErrorMap } from './helpers'
 import type { Readable } from 'svelte/store'
 import { readable } from 'svelte/store'
 import type { CombinedDataRecordEditorClient } from './makeCombinedDataRecordEditorClient'
+import type { DataRecordId } from '@cozemble/model-core'
 
 const singleRecordErrorContext = 'single.record.context.record.errors'
 const singleRecordErrorVisibilityContext = 'single.record.context.record.error.visibility.context'
 const recordEditorClientContext = 'com.cozemble.data.record.editor.client.context'
 const recordViewerClientContext = 'com.cozemble.data.record.viewer.client.context'
-
 const singleRecordRootRecordIndexContext = 'single.record.context.root.record.index'
-
+const singleRecordContextRootRecordId = 'single.record.context.root.record.id'
 export const singleRecordEditContext = {
   optionalRecordEditorClient(): DataRecordEditorClient | null {
     return getContext(recordEditorClientContext) || null
@@ -50,5 +50,11 @@ export const singleRecordEditContext = {
   },
   setErrorVisibilityForRecord(errorVisibility: Readable<boolean>) {
     setContext(singleRecordErrorVisibilityContext, errorVisibility)
+  },
+  setRootRecordId(recordId: DataRecordId) {
+    setContext(singleRecordContextRootRecordId, recordId)
+  },
+  getRootRecordId(): DataRecordId {
+    return mandatory(getContext(singleRecordContextRootRecordId), 'Root record id not found')
   },
 }

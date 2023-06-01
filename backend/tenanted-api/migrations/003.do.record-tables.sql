@@ -109,9 +109,11 @@ BEGIN
                     updated_count := updated_count + 1;
                 END IF;
             ELSE
-                RETURN jsonb_build_object('_type', 'error.conflict', 'conflictingRecordId', conflicting_record_id,
-                                          'conflictingPath',
-                                          path);
+                RETURN jsonb_build_object(
+                        '_type', 'error.conflict', 'conflictingRecordId', conflicting_record_id, 'conflictingModelId',
+                        p_model_id,
+                        'conflictingPath',
+                        path);
             END IF;
         END LOOP;
 

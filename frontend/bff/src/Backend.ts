@@ -1,10 +1,17 @@
 import type { DataRecord, DataRecordId, Model, ModelEvent, ModelId } from '@cozemble/model-core'
-import { Id, RecordAndEdges, RecordGraphEdge } from '@cozemble/model-core'
+import {
+  DataRecordValuePath,
+  Id,
+  RecordAndEdges,
+  RecordGraphEdge,
+  RecordsAndEdges,
+} from '@cozemble/model-core'
 import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import type { RecordDeleteOutcome, RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
 import { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
-import { RecordsAndEdges } from '@cozemble/model-core'
+import { Outcome } from '@cozemble/lang-util'
+import { JustErrorMessage } from '@cozemble/lang-util/dist/esm'
 
 export interface TenantEntity {
   _type: string
@@ -18,6 +25,25 @@ export interface FetchTenantResponse {
   models: Model[]
   events: ModelEvent[]
   entities: TenantEntity[]
+}
+
+export interface RecordDataError {
+  _type: 'record.data.error'
+  recordId: DataRecordId
+  dataErrors: Map<DataRecordValuePath, string[]>
+}
+
+export type RecordSaveFailure = JustErrorMessage | RecordDataError
+
+export const recordDataErrorFns = {
+  newInstance: (
+    recordId: DataRecordId,
+    dataErrors: Map<DataRecordValuePath, string[]>,
+  ): RecordDataError => ({
+    _type: 'record.data.error',
+    recordId,
+    dataErrors,
+  }),
 }
 
 export interface Backend {
@@ -56,6 +82,14 @@ export interface Backend {
     deletedEdges: Id[],
   ): Promise<RecordSaveOutcome>
 
+  saveRecords(
+    tenantId: string,
+    models: Model[],
+    records: EventSourcedDataRecord[],
+    edges: RecordGraphEdge[],
+    deletedEdges: Id[],
+  ): Promise<Outcome<DataRecord[], RecordSaveFailure>>
+
   referencingRecords(
     tenantId: string,
     recordId: DataRecordId, // Customer
@@ -72,46 +106,43 @@ export interface Backend {
 }
 
 export const notImplementedBackend: Backend = {
-  deleteAttachments(tenantId: string, attachmentIds: string[]): Promise<void> {
+  deleteAttachments() {
     throw new Error(`Not implemented`)
   },
-  deleteRecord(tenantId: string, modelId: string, record): Promise<RecordDeleteOutcome> {
+  deleteRecord() {
     throw new Error(`Not implemented`)
   },
-  fetchRecords(tenantId: string, modelId: string, search: string | null, filters: any) {
+  fetchRecords() {
     throw new Error(`Not implemented`)
   },
-  findRecordById(tenantId: string, modelId, recordId): Promise<null> {
+  findRecordById() {
     throw new Error(`Not implemented`)
   },
-  getAttachmentViewUrls(tenantId: string, attachments: []): Promise<string[]> {
+  getAttachmentViewUrls() {
     throw new Error(`Not implemented`)
   },
-  putModels(tenantId: string, models: BackendModel[]): Promise<any> {
+  putModels() {
     throw new Error(`Not implemented`)
   },
-  referencingRecords(tenantId: string, recordId, referencingModelId): Promise<[]> {
+  referencingRecords() {
     throw new Error(`Not implemented`)
   },
-  saveEntities(tenantId: string, entities: TenantEntity[]): Promise<any> {
+  saveEntities() {
     throw new Error(`Not implemented`)
   },
-  saveRecord(tenantId: string, models: [], newRecord): Promise<RecordSaveOutcome> {
+  saveRecord() {
     throw new Error(`Not implemented`)
   },
-  tradeAuthTokenForSession(
-    authorizationCode: string,
-  ): Promise<{ accessToken: string; refreshToken: string }> {
+  saveRecords() {
     throw new Error(`Not implemented`)
   },
-  uploadAttachments(
-    tenantId: string,
-    files: File[],
-    progressUpdater: (percent: number) => void,
-  ): Promise<[]> {
+  tradeAuthTokenForSession() {
     throw new Error(`Not implemented`)
   },
-  getTenantDetails: async (tenantId: string) => {
+  uploadAttachments() {
+    throw new Error(`Not implemented`)
+  },
+  getTenantDetails: async () => {
     throw new Error(`Not implemented`)
   },
 }

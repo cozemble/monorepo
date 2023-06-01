@@ -1,9 +1,11 @@
 import type { Backend, FetchTenantResponse, TenantEntity } from './Backend'
 import type { DataRecord, DataRecordId, Model, ModelId } from '@cozemble/model-core'
 import {
-  recordAndEdges,
+  Id,
   RecordAndEdges,
+  recordAndEdges,
   RecordGraphEdge,
+  recordGraphEdgeFns,
   RecordsAndEdges,
   recordsAndEdges,
 } from '@cozemble/model-core'
@@ -11,9 +13,10 @@ import type { RecordDeleteOutcome, RecordSaveOutcome } from '@cozemble/data-pagi
 import { recordSaveSucceeded } from '@cozemble/data-paginated-editor'
 import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
 import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
-import { uuids } from '@cozemble/lang-util'
+import { Outcome, uuids } from '@cozemble/lang-util'
 import { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
-import { recordGraphEdgeFns } from '@cozemble/model-core'
+import { outcomeFns } from '@cozemble/lang-util/dist/esm'
+import type { RecordSaveFailed, RecordSaveSucceeded } from '@cozemble/data-paginated-editor'
 
 const storageKey = 'cozemble.localstorage.backend'
 
@@ -136,16 +139,24 @@ export class LocalStorageBackend implements Backend {
     tenantId: string,
     models: Model[],
     newRecord: EventSourcedDataRecord,
+    edges: RecordGraphEdge[],
+    deletedEdges: Id[],
   ): Promise<RecordSaveOutcome> {
     const existingRecord = this.state.records.find((r) => r.id.value === newRecord.record.id.value)
     if (!existingRecord) {
       this._updateState((state) => ({
         ...state,
         records: [...state.records, newRecord.record],
+        edges: [...state.edges, ...edges].filter(
+          (e) => !deletedEdges.some((id) => id.value === e.id.value),
+        ),
       }))
     } else {
       this._updateState((state) => ({
         ...state,
+        edges: [...state.edges, ...edges].filter(
+          (e) => !deletedEdges.some((id) => id.value === e.id.value),
+        ),
         records: state.records.map((r) => {
           if (r.id.value === newRecord.record.id.value) {
             return newRecord.record
@@ -155,6 +166,28 @@ export class LocalStorageBackend implements Backend {
       }))
     }
     return recordSaveSucceeded(newRecord.record)
+  }
+
+  async saveRecords(
+    tenantId: string,
+    models: Model[],
+    records: EventSourcedDataRecord[],
+    edges: RecordGraphEdge[],
+    deletedEdges: Id[],
+  ): Promise<Outcome<DataRecord[]>> {
+    const outcomes: RecordSaveOutcome[] = []
+    for (let i = 0; i < records.length; i++) {
+      if (i === records.length - 1) {
+        outcomes.push(await this.saveRecord(tenantId, models, records[i], edges, deletedEdges))
+      } else {
+        outcomes.push(await this.saveRecord(tenantId, models, records[i], [], []))
+      }
+    }
+    const firstFail = outcomes.find((o) => o._type === 'record.save.failed')
+    if (firstFail) {
+      return outcomeFns.unsuccessful((firstFail as RecordSaveFailed).errors[0] ?? 'Unknown error')
+    }
+    return outcomeFns.successful(outcomes.map((o) => (o as RecordSaveSucceeded).record))
   }
 
   tradeAuthTokenForSession(
