@@ -6,7 +6,7 @@
 
     export let model: Model
     export let property: CurrencyProperty
-    export let systemConfiguration: Writable<SystemConfiguration>
+    // export let systemConfiguration: Writable<SystemConfiguration>
         
     const dispatch = createEventDispatcher()
 

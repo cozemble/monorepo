@@ -14,7 +14,6 @@ import {
   PropertyName,
   propertyNameFns,
   propertyTypeFns,
-  SlotConfiguration,
   SystemConfiguration,
 } from '@cozemble/model-core'
 import { currencyModelChangedModelEventDescriptor } from './events';
@@ -50,7 +49,15 @@ function formatCurrency(value: number, currency = 'USD', locale = 'en-US'): stri
   }).format(value)
 }
 
-export const currencyPropertyDescriptor: PropertyDescriptor = {
+interface CurrencyPropertyDescriptor<V = any> extends PropertyDescriptor {
+  getRawValue(
+    systemConfiguration: SystemConfiguration,
+    property: Property,
+    record: DataRecord,
+  ): V | null
+}
+
+export const currencyPropertyDescriptor: CurrencyPropertyDescriptor = {
   _type: 'property.descriptor',
   propertyType: currencyPropertyType,
   name: { _type: 'dotted.name', value: 'Currency' },
@@ -87,6 +94,18 @@ export const currencyPropertyDescriptor: PropertyDescriptor = {
         [property.id.value]: value,
       },
     }
+  },
+  getRawValue(
+    _systemConfiguration: SystemConfiguration,
+    property: CurrencyProperty,
+    record: DataRecord,
+  ) {
+    const maybeValue = record.values[property.id.value] ?? null
+    if (maybeValue === null) {
+      return null
+    }
+
+    return maybeValue
   },
   getValue: (
     _systemConfiguration: SystemConfiguration,

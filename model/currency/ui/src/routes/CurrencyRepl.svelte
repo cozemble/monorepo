@@ -38,6 +38,7 @@
         <tr>
             <td class="border">Left</td>
             <td class="border">
+                <!-- svelte-ignore a11y-click-events-have-key-events -->
                 <div class="flex w-full h-full " on:click={onShowEditor}>
                     <div>
                         {#if showEditor}
