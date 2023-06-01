@@ -1,6 +1,7 @@
 import {
   DataRecord,
   DataRecordId,
+  Id,
   Model,
   ModelReference,
   modelReferenceFns,
@@ -394,4 +395,10 @@ export const eventSourcedRecordGraphFns = {
     events: [],
     deletedEdges: [],
   }),
+  removeEdge(graph: EventSourcedRecordGraph, edgeId: Id): EventSourcedRecordGraph {
+    return {
+      ...graph,
+      edges: graph.edges.filter((edge) => edge.edge.id.value !== edgeId.value),
+    }
+  },
 }

@@ -6,6 +6,7 @@
         ModelReference,
         SystemConfiguration
     } from "@cozemble/model-core";
+    import {tinyValueFns} from "@cozemble/model-core";
     import {dataRecordEditor} from "@cozemble/data-editor-sdk";
     import {afterUpdate, onMount} from "svelte";
     import {type EditorParams, getCreatedRecord, makeSummaryView} from "./editorHelper";
@@ -65,11 +66,12 @@
 
 
     async function createNewRecord() {
-        const createdGraph = await dataRecordEditorClient.createNewRootRecord(editorParams.referencedModelId, inverseReferenceSetter(editorParams.referencedModelId, modelReference.id, record))
+        const edgeId = tinyValueFns.id()
+        const createdGraph = await dataRecordEditorClient.createNewRootRecord(editorParams.referencedModelId, inverseReferenceSetter(edgeId, editorParams.referencedModelId, modelReference.id, record))
         if (createdGraph === null) {
             return
         }
-        subGraphCollectorsByRecordIdFns.addCreated(subGraphCollectors, rootRecordId, createdGraph)
+        subGraphCollectorsByRecordIdFns.addCreated(subGraphCollectors, rootRecordId, eventSourcedRecordGraphFns.removeEdge(createdGraph, edgeId))
         const createdRecord = getCreatedRecord(createdGraph, editorParams.referencedModelId)
         if (createdRecord) {
             options.push(createdRecord)

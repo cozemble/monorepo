@@ -65,15 +65,6 @@ export function makeCombinedDataRecordEditorClient(
       ...modifiers: RecordGraphModifier[]
     ): Promise<EventSourcedRecordGraph | null> {
       return await createNewRootRecordFn(modelId, ...modifiers)
-      // if (!newGraph) {
-      //   return null
-      // }
-      // const outcome = await backend.saveNewGraph(newGraph)
-      // if (outcome._type === 'successful.outcome') {
-      //   return outcome.value
-      // } else {
-      //   throw new Error('Failed to save new record: ' + outcome.error.message)
-      // }
     },
 
     searchRecords(modelId: ModelId, search: string) {

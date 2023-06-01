@@ -1,6 +1,7 @@
 import type {
   DataRecord,
   DataRecordValuePath,
+  Id,
   Model,
   ModelHtmlTemplate,
   ModelId,
@@ -79,6 +80,7 @@ export function makeSummaryView(record: DataRecord, params: EditorParams): strin
 }
 
 export function inverseReferenceSetter(
+  edgeId: Id,
   targetModelId: ModelId, // e.g.booking
   modelReferenceId: ModelReferenceId, // the reference binding the two models
   originatingRecord: DataRecord, // customer
@@ -96,6 +98,7 @@ export function inverseReferenceSetter(
             createdRecord.modelId,
             originatingRecord.id,
             createdRecord.id,
+            edgeId,
           ),
         ),
       ],
