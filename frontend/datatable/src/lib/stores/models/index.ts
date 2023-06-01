@@ -63,6 +63,9 @@ export const addInnerRecord = async (
   return
 }
 
+export const modelEdited = async (model: EventSourcedModel) =>
+  await methods.modelEdited(allEventSourcedModels, model)
+
 //
 
 export * as methods from './methods'

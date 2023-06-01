@@ -14,14 +14,12 @@ import { mandatory } from '@cozemble/lang-util'
 
 // stores
 import { allEventSourcedModels } from '$lib/stores/allModels'
-import { systemConfiguration } from '$lib/stores/systemConfiguration'
 import { contextHelper } from '$lib/stores/contextHelper'
 import * as modelsStore_r from '$lib/stores/models'
 // records
 import type { SlotBeingEdited } from '$lib/records/helpers'
 import type { DataRecordsTableOptions } from '$lib/records/DataRecordsTableOptions'
 import { dataRecordsTableOptions } from '$lib/records/DataRecordsTableOptions'
-import { modelRecordsContextFns } from '$lib/records/modelRecordsContextFns'
 // components
 import DataEntryRow from '$lib/records/entry/DataEntryRow.svelte'
 import AddModelElementButton from './AddModelElementButton.svelte'
@@ -51,7 +49,6 @@ const {
   records,
   focusControls,
   recordControls,
-  modelControls,
   dirtyRecords,
   permitRecordAdditions,
 } = modelsStore_r.contexts.getAll()
@@ -107,7 +104,9 @@ async function addSlotToModel() {
 
 async function modelEdited(event: CustomEvent) {
   const edited = event.detail.model
-  await modelControls.modelEdited(edited)
+
+  await modelsStore_r.modelEdited(edited)
+
   slotBeingEdited = null
 }
 
@@ -125,11 +124,14 @@ function flashRow(rowIndex: number) {
   const row = document.querySelector(
     `tr[data-row-index="${rowIndex}"]`,
   ) as HTMLElement
+
   const extraClasses = ['border', 'border-primary', 'border-4']
+
   if (row) {
     for (const extraClass of extraClasses) {
       row.classList.add(extraClass)
     }
+
     setTimeout(() => {
       for (const extraClass of extraClasses) {
         row.classList.remove(extraClass)
