@@ -39,23 +39,21 @@ export let expandedRecordIds = writable([] as DataRecordId[])
 export let parentPath: DataRecordPathParentElement[] = []
 
 // context
-const eventSourcedModel = modelRecordsContextFns.getEventSourcedModel()
-const model = modelRecordsContextFns.getModel()
-const eventSourcedRecords = modelRecordsContextFns.getEventSourcedRecordGraph()
-const records = modelRecordsContextFns.getRecords()
-const focusControls = modelRecordsContextFns.getFocusControls()
-const recordControls = modelRecordsContextFns.getRecordControls()
-const modelControls = modelRecordsContextFns.getModelControls()
-const dirtyRecords = modelRecordsContextFns.getDirtyRecords()
 const permitModelling = contextHelper.getPermitModelling()
-const permitRecordAdditions = modelRecordsContextFns.getPermitRecordAdditions()
 
 let slotBeingEdited: SlotBeingEdited | null = null
 
 const {
-  model: model_r,
-  eventSourcedModel: eventSourcedModel_r,
-  nestedModelBeingEdited: nestedModelBeingEdited_r,
+  model,
+  eventSourcedModel,
+  nestedModelBeingEdited,
+  eventSourcedRecords,
+  records,
+  focusControls,
+  recordControls,
+  modelControls,
+  dirtyRecords,
+  permitRecordAdditions,
 } = modelsStore_r.contexts.getAll()
 
 //
@@ -74,32 +72,28 @@ function editSlot(clicked: Event, slot: ModelSlot) {
 }
 
 async function addInnerTable() {
-  await modelsStore_r.addInnerTable(
-    eventSourcedModel_r,
-    nestedModelBeingEdited_r,
-  )
+  await modelsStore_r.addInnerTable(eventSourcedModel, nestedModelBeingEdited)
 
   await tick()
   expandLastRow()
 }
 
 async function addInnerRecord() {
-  await modelsStore_r.addInnerRecord(
-    eventSourcedModel_r,
-    nestedModelBeingEdited_r,
-  )
+  await modelsStore_r.addInnerRecord(eventSourcedModel, nestedModelBeingEdited)
 
   await tick()
   expandLastRow()
 }
 
 async function addSlotToModel() {
-  await modelsStore_r.addSlotToModel(model_r)
+  await modelsStore_r.addSlotToModel(model)
 
   await tick()
+
   const element = document.querySelector(
     `th#field-${$model.slots.length}`,
   ) as HTMLElement
+
   if (element) {
     const slot = $model.slots[$model.slots.length - 1]
     slotBeingEdited = {
