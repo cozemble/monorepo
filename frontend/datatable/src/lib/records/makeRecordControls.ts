@@ -1,5 +1,6 @@
 import type { EventSourcedRecordGraphStore } from './EventSourcedRecordGraphStore'
 import type { RecordControls, SubGraphCollectorsByRecordId } from './RecordControls'
+import { subGraphCollectorFns } from './RecordControls'
 import type { Writable } from 'svelte/store'
 import type {
   DataRecordId,
@@ -14,8 +15,13 @@ import { modelFns } from '@cozemble/model-api'
 import type { ErrorVisibilityByRecordId } from './helpers'
 import type { RecordSaver } from '../backend/Backend'
 import type { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
-import { eventSourcedRecordGraphFns } from '@cozemble/model-event-sourced'
+import {
+  type EventSourcedRecordGraph,
+  eventSourcedRecordGraphFns,
+  timestampedRecordGraphEdgeFns,
+} from '@cozemble/model-event-sourced'
 import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
+import { mergeSubGraphs } from '$lib/records/modelReferences/mergeSubGraphs'
 
 function recordSaveTimestamp(
   lastSavedByRecordId: Writable<Map<string, number>>,
@@ -61,16 +67,32 @@ export function makeRecordControls(
     if (maybeError) {
       return maybeError
     }
+    const edges = eventSourcedRecordGraphFns.getEdgesInvolvingRecord(recordGraph.get(), recordId)
+    const deletedEdges = recordGraph.get().deletedEdges
 
-    const saveOutcome = await saveFunction(
-      record,
-      eventSourcedRecordGraphFns.getEdgesInvolvingRecord(recordGraph.get(), recordId),
-      recordGraph.get().deletedEdges.map((e) => e.edge.id),
+    const initialGraph: EventSourcedRecordGraph = {
+      ...eventSourcedRecordGraphFns.empty(),
+      records: [record],
+      edges: edges.map((e) => timestampedRecordGraphEdgeFns.newInstance(e)),
+      deletedEdges,
+    }
+    const flattenedGraph = mergeSubGraphs(recordId, initialGraph, subGraphCollectorsByRecordId)
+
+    const saveOutcome = await recordSaver.upsertRecords(
+      flattenedGraph.records,
+      flattenedGraph.edges.map((e) => e.edge),
+      flattenedGraph.deletedEdges.map((e) => e.edge.id),
     )
-    if (saveOutcome._type === 'record.save.failed') {
-      return justErrorMessage(saveOutcome.errors[0] ?? 'Unknown error when saving record')
+
+    if (saveOutcome._type === 'unsuccessful.outcome') {
+      if (saveOutcome.error._type === 'record.data.error') {
+        return justErrorMessage(`Error saving record ${saveOutcome.error.recordId.value}`)
+      } else {
+        return saveOutcome.error
+      }
     }
     recordSaveTimestamp(lastSavedByRecordId, record)
+    subGraphCollectorsByRecordId[recordId.value] = subGraphCollectorFns.empty()
     return null
   }
 

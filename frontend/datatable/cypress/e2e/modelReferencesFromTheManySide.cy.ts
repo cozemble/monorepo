@@ -47,6 +47,7 @@ describe('data table', () => {
     cy.get('button.save-view').click()
     cy.get(cellSelector('0-1')).should('contain', 'John Smith')
     cy.get('button.save').click()
+    cy.get(cellSelector('0-2')).should('contain', 'Booking #11')
     cy.get('button.save-root-record').click()
 
     cy.get(cellSelector('0-2')).should('contain', 'Booking #11')

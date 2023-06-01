@@ -374,4 +374,24 @@ export const eventSourcedRecordGraphFns = {
       )
     })
   },
+  merge: (
+    graph: EventSourcedRecordGraph,
+    other: EventSourcedRecordGraph,
+  ): EventSourcedRecordGraph => {
+    return {
+      ...graph,
+      records: [...graph.records, ...other.records],
+      edges: [...graph.edges, ...other.edges],
+      relatedRecords: [...graph.relatedRecords, ...other.relatedRecords],
+      events: [...graph.events, ...other.events],
+    }
+  },
+  empty: (): EventSourcedRecordGraph => ({
+    _type: 'event.sourced.record.graph',
+    records: [],
+    edges: [],
+    relatedRecords: [],
+    events: [],
+    deletedEdges: [],
+  }),
 }

@@ -1,7 +1,4 @@
 import { type Backend, ErrorListenerBackend } from '@cozemble/frontend-bff'
-import type { TenantEntity } from '@cozemble/frontend-bff'
-import type { RecordDeleteOutcome, RecordSaveOutcome } from '@cozemble/data-paginated-editor'
-import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
 
 export const notImplementedBackend: Backend = {
   deleteAttachments() {
