@@ -28,10 +28,13 @@ import {
   type RecordSaver,
 } from '$lib/backend/Backend'
 import { gettableWritable } from '$lib/editors/GettableWritable'
-import {eventSourcedDataRecordFns, eventSourcedRecordGraphFns} from "@cozemble/model-event-sourced";
-import {eventSourcedRecordGraphStore} from "$lib/records/EventSourcedRecordGraphStore";
-import type {RecordGraphLoader} from "$lib/records/RecordGraphLoader";
-import type {SubGraphCollectorsByRecordId} from "$lib/records/RecordControls";
+import {
+  eventSourcedDataRecordFns,
+  eventSourcedRecordGraphFns,
+} from '@cozemble/model-event-sourced'
+import { eventSourcedRecordGraphStore } from '$lib/records/EventSourcedRecordGraphStore'
+import type { RecordGraphLoader } from '$lib/records/RecordGraphLoader'
+import type { SubGraphCollectorsByRecordId } from '$lib/records/RecordControls'
 
 //
 
@@ -41,7 +44,12 @@ export let graphLoader: RecordGraphLoader = getRecordsForModel
 
 const systemConfigurationProvider = () => $systemConfiguration
 const modelsProvider = () => $allModels
-export let eventSourcedRecordGraph = eventSourcedRecordGraphStore(systemConfigurationProvider, modelsProvider, () => $model, $currentUserId)
+export let eventSourcedRecordGraph = eventSourcedRecordGraphStore(
+  systemConfigurationProvider,
+  modelsProvider,
+  () => $model,
+  $currentUserId,
+)
 export const recordSaver: RecordSaver = backend
 export const oneOnly = false
 export const permitRecordAdditions = true
@@ -53,19 +61,24 @@ const eventSourcedModel = derived(allEventSourcedModels, (models) =>
 const model = derived(eventSourcedModel, (model) => model.model)
 
 // records
-const records = derived(eventSourcedRecordGraph, graph => graph.records.map(r => r.record))
+const records = derived(eventSourcedRecordGraph, (graph) =>
+  graph.records.map((r) => r.record),
+)
 const errorVisibilityByRecordId = gettableWritable(
   new Map() as ErrorVisibilityByRecordId,
 )
 const lastSavedByRecordId = writable(new Map<string, number>())
-const dirtyRecords = derived([eventSourcedRecordGraph, lastSavedByRecordId], ([graph, lastSavedByRecordId]) => {
-    return eventSourcedRecordGraphFns.recordsChangedSince(graph, lastSavedByRecordId).map(r => r.record.id)
-})
+const dirtyRecords = derived(
+  [eventSourcedRecordGraph, lastSavedByRecordId],
+  ([graph, lastSavedByRecordId]) => {
+    return eventSourcedRecordGraphFns
+      .recordsChangedSince(graph, lastSavedByRecordId)
+      .map((r) => r.record.id)
+  },
+)
 
 // focus
-const focus = gettableWritable(
-    emptyDataTableFocus(() => $records),
-)
+const focus = gettableWritable(emptyDataTableFocus(() => $records))
 const focusControls = makeFocusControls(
   modelsProvider,
   () => $records,
@@ -81,7 +94,9 @@ let debounceTimeout: any
 
 // context <!-- TODO simplify -->
 modelRecordsContextFns.setEventSourcedModel(eventSourcedModel)
-modelRecordsContextFns.setSubGraphCollectorsByRecordId(subGraphCollectorsByRecordId)
+modelRecordsContextFns.setSubGraphCollectorsByRecordId(
+  subGraphCollectorsByRecordId,
+)
 modelRecordsContextFns.setModel(model)
 modelRecordsContextFns.setEventSourcedRecordGraph(eventSourcedRecordGraph)
 modelRecordsContextFns.setRecords(records)
@@ -96,7 +111,7 @@ modelRecordsContextFns.setRecordControls(
     errorVisibilityByRecordId,
     eventSourcedRecordGraph,
     lastSavedByRecordId,
-      subGraphCollectorsByRecordId
+    subGraphCollectorsByRecordId,
   ),
 )
 modelRecordsContextFns.setModelControls(
@@ -113,9 +128,10 @@ let someRecordsLoaded = false
 
 //
 
-const unsubAllEventSourcedModels = allModels.subscribe(models => {
-    eventSourcedRecordGraph.update(graph =>
-        eventSourcedRecordGraphFns.updateModelsInDataRecords(graph, models))
+const unsubAllEventSourcedModels = allModels.subscribe((models) => {
+  eventSourcedRecordGraph.update((graph) =>
+    eventSourcedRecordGraphFns.updateModelsInDataRecords(graph, models),
+  )
 })
 
 function newEmptyRecord(model: Model) {
@@ -126,24 +142,23 @@ function newEmptyRecord(model: Model) {
 }
 
 async function loadRecords(filterParams: FilterParams) {
-    loadingState.set('loading')
+  loadingState.set('loading')
 
-    let loadedGraph = await graphLoader(modelId, filterParams)
+  let loadedGraph = await graphLoader(modelId, filterParams)
 
-    if (oneOnly) {
-        eventSourcedRecordGraph.set(
-            loadedGraph,
-        )
-    } else {
-        loadedGraph = eventSourcedRecordGraphFns.appendRecord(loadedGraph, newEmptyRecord($model))
-        eventSourcedRecordGraph.set(
-            loadedGraph,
-        )
-    }
+  if (oneOnly) {
+    eventSourcedRecordGraph.set(loadedGraph)
+  } else {
+    loadedGraph = eventSourcedRecordGraphFns.appendRecord(
+      loadedGraph,
+      newEmptyRecord($model),
+    )
+    eventSourcedRecordGraph.set(loadedGraph)
+  }
 
-    someRecordsLoaded = true
+  someRecordsLoaded = true
 
-    loadingState.set('loaded')
+  loadingState.set('loaded')
 }
 
 /** unsubscribe from filterParams when they change, and load records */
