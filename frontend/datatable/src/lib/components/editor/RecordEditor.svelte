@@ -21,7 +21,7 @@ import type { SlotBeingEdited } from '$lib/records/helpers'
 import type { DataRecordsTableOptions } from '$lib/records/DataRecordsTableOptions'
 import { dataRecordsTableOptions } from '$lib/records/DataRecordsTableOptions'
 // components
-import DataEntryRow from '$lib/records/entry/DataEntryRow.svelte'
+import DataEntryRow from '$lib/records/entry/DataEntryRow_r.svelte'
 import AddModelElementButton from './AddModelElementButton.svelte'
 import SlotEditModal from '$lib/records/SlotEditModal.svelte'
 import type { EventSourcedRecordGraph } from '@cozemble/model-event-sourced'
