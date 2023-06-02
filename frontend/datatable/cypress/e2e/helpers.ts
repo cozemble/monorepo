@@ -25,7 +25,7 @@ export function cellSelector(cellIndex = '0-0') {
 }
 
 export function clickTable(index: number) {
-  cy.get('a.model-' + index).click()
+  cy.get('button.model-' + index).click()
 }
 
 export function expectText(selector: string, expected: string) {

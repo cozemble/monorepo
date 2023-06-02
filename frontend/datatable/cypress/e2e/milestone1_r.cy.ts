@@ -1,4 +1,4 @@
-import { clickAddField, clickAddSubrecord, editCell } from './helpers'
+import { clickAddField, clickAddSubrecord, editCell, clickTable } from './helpers'
 
 describe('data table', () => {
   it('supports building a simple customer and bookings database', () => {
@@ -89,5 +89,10 @@ describe('data table', () => {
     cy.focused().type('Rayleigh').realPress('Tab')
     cy.focused().type('Banana')
     cy.get('button.save-root-record').click()
+
+    clickTable(1)
+    cy.contains('Configure view').eq(0).click()
+    cy.contains('Date').click()
+    cy.get('button.save-view').click()
   })
 })
