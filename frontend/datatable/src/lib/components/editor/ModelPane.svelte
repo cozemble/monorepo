@@ -1,24 +1,24 @@
 <script lang="ts">
-import { modelIdFns } from '@cozemble/model-core'
-import { clickOutside } from '@cozemble/ui-atoms'
+  import { modelIdFns } from '@cozemble/model-core'
+  import { clickOutside } from '@cozemble/ui-atoms'
 
-// misc <!-- TODO simplify -->
-import type { DataTableFocusControls2 } from '../../focus/DataTableFocus'
-// stores
-import { recordFilteringComponentStore } from '../../stores/recordFilteringComponentStore'
-import { contextHelper } from '../../stores/contextHelper'
-// components
-import ModelPaneContext from './ModelRecordsContext.svelte'
-import ModelDevConsole from '../../models/ModelDevConsole.svelte'
-import RecordEditor from './RecordEditor.svelte'
+  // misc <!-- TODO simplify -->
+  import type { DataTableFocusControls2 } from '../../focus/DataTableFocus'
+  // stores
+  import { recordFilteringComponentStore } from '../../stores/recordFilteringComponentStore'
+  import { contextHelper } from '../../stores/contextHelper'
+  // components
+  import ModelPaneContext from './ModelRecordsContext.svelte'
+  import ModelDevConsole from '../../models/ModelDevConsole.svelte'
+  import RecordEditor from './RecordEditor.svelte'
 
-export let modelId: string
-const showDevConsole = contextHelper.getShowDevConsole()
+  export let modelId: string
+  const showDevConsole = contextHelper.getShowDevConsole()
 
-// <!-- TODO understand this -->
-function clickedOutsideTable(focusControls: DataTableFocusControls2) {
-  focusControls.clearFocus()
-}
+  // <!-- TODO understand this -->
+  function clickedOutsideTable(focusControls: DataTableFocusControls2) {
+    focusControls.clearFocus()
+  }
 </script>
 
 <div class="mt-2">
@@ -32,10 +32,7 @@ function clickedOutsideTable(focusControls: DataTableFocusControls2) {
         </div>
       </div>
 
-      <div
-        use:clickOutside
-        on:click_outside={() => clickedOutsideTable(focusControls)}
-      >
+      <div use:clickOutside on:click_outside={() => clickedOutsideTable(focusControls)}>
         <RecordEditor />
       </div>
     </div>
@@ -49,14 +46,14 @@ function clickedOutsideTable(focusControls: DataTableFocusControls2) {
 </div>
 
 <style>
-.grid-container {
-  display: grid;
-  grid-template-columns: max-content;
-  width: max-content;
-}
+  .grid-container {
+    display: grid;
+    grid-template-columns: max-content;
+    width: max-content;
+  }
 
-.child {
-  display: flex;
-  justify-content: space-between;
-}
+  .child {
+    display: flex;
+    justify-content: space-between;
+  }
 </style>

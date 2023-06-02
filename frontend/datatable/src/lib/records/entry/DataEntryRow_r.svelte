@@ -1,80 +1,80 @@
 <script lang="ts">
-import type { Writable } from 'svelte/store'
+  import type { Writable } from 'svelte/store'
 
-// Cozemble
-import type {
-  Cardinality,
-  DataRecord,
-  DataRecordId,
-  DataRecordPathParentElement,
-  Model,
-} from '@cozemble/model-core'
-import { dataRecordIdFns } from '@cozemble/model-core'
+  // Cozemble
+  import type {
+    Cardinality,
+    DataRecord,
+    DataRecordId,
+    DataRecordPathParentElement,
+    Model,
+  } from '@cozemble/model-core'
+  import { dataRecordIdFns } from '@cozemble/model-core'
 
-import type { DataRecordsTableOptions } from '../DataRecordsTableOptions'
+  import type { DataRecordsTableOptions } from '../DataRecordsTableOptions'
 
-// common
-import { modelRecordsContextFns } from '../modelRecordsContextFns'
-// stores
-import { introductionsState } from '../../stores/introductions'
-import { contextHelper } from '../../stores/contextHelper'
-// components
-import WithSingleRecordContext from '../WithSingleRecordContext_r.svelte'
-import NestedDataRecordsInContext from '../NestedDataRecordsInContext.svelte'
-import ExpandCollapseButton from '../ExpandCollapseButton.svelte'
-import AddSubItemDialogue from '../AddSubItemDialogue.svelte'
-import DataTd from '$lib/records/cells/DataTd.svelte'
+  // common
+  import { modelRecordsContextFns } from '../modelRecordsContextFns'
+  // stores
+  import { introductionsState } from '../../stores/introductions'
+  import { contextHelper } from '../../stores/contextHelper'
+  // components
+  import WithSingleRecordContext from '../WithSingleRecordContext_r.svelte'
+  import NestedDataRecordsInContext from '../NestedDataRecordsInContext.svelte'
+  import ExpandCollapseButton from '../ExpandCollapseButton.svelte'
+  import AddSubItemDialogue from '../AddSubItemDialogue.svelte'
+  import DataTd from '$lib/records/cells/DataTd.svelte'
 
-//
+  //
 
-export let parentPath: DataRecordPathParentElement[] = []
-export let options: DataRecordsTableOptions
-export let record: DataRecord
-export let rowIndex: number
-export let expandedRecordIds: Writable<DataRecordId[]>
-export let oneOnly: boolean
+  export let parentPath: DataRecordPathParentElement[] = []
+  export let options: DataRecordsTableOptions
+  export let record: DataRecord
+  export let rowIndex: number
+  export let expandedRecordIds: Writable<DataRecordId[]>
+  export let oneOnly: boolean
 
-// context
-const permitModelling = contextHelper.getPermitModelling()
-const modelControls = modelRecordsContextFns.getModelControls()
-const recordControls = modelRecordsContextFns.getRecordControls()
-const focusControls = modelRecordsContextFns.getFocusControls()
-const focus = modelRecordsContextFns.getFocus()
-const eventSourcedModel = modelRecordsContextFns.getEventSourcedModel()
-const model = modelRecordsContextFns.getModel()
+  // context
+  const permitModelling = contextHelper.getPermitModelling()
+  const modelControls = modelRecordsContextFns.getModelControls()
+  const recordControls = modelRecordsContextFns.getRecordControls()
+  const focusControls = modelRecordsContextFns.getFocusControls()
+  const focus = modelRecordsContextFns.getFocus()
+  const eventSourcedModel = modelRecordsContextFns.getEventSourcedModel()
+  const model = modelRecordsContextFns.getModel()
 
-let recordHavingSubItemAdded: string | null = null
+  let recordHavingSubItemAdded: string | null = null
 
-async function addNestedRecord(event: CustomEvent) {
-  return addNestedModel(event.detail, 'one')
-}
-
-async function addNestedTable(event: CustomEvent) {
-  return addNestedModel(event.detail, 'many')
-}
-
-function expandRecord(id: DataRecordId) {
-  expandedRecordIds.update((ids: DataRecordId[]) => [...ids, id])
-}
-
-async function addNestedModel(child: Model, cardinality: Cardinality) {
-  await modelControls.addNestedModel($eventSourcedModel, child, cardinality)
-
-  if (recordHavingSubItemAdded) {
-    expandRecord(dataRecordIdFns.newInstance(recordHavingSubItemAdded))
-    recordHavingSubItemAdded = null
+  async function addNestedRecord(event: CustomEvent) {
+    return addNestedModel(event.detail, 'one')
   }
-}
 
-async function save(record: DataRecord, rootRecordIndex: number) {
-  const outcome = await recordControls.saveRecord(record.id)
-
-  if (outcome) {
-    expandRecord(record.id)
-  } else {
-    focusControls.ensureNotFocusedOnRow(rootRecordIndex)
+  async function addNestedTable(event: CustomEvent) {
+    return addNestedModel(event.detail, 'many')
   }
-}
+
+  function expandRecord(id: DataRecordId) {
+    expandedRecordIds.update((ids: DataRecordId[]) => [...ids, id])
+  }
+
+  async function addNestedModel(child: Model, cardinality: Cardinality) {
+    await modelControls.addNestedModel($eventSourcedModel, child, cardinality)
+
+    if (recordHavingSubItemAdded) {
+      expandRecord(dataRecordIdFns.newInstance(recordHavingSubItemAdded))
+      recordHavingSubItemAdded = null
+    }
+  }
+
+  async function save(record: DataRecord, rootRecordIndex: number) {
+    const outcome = await recordControls.saveRecord(record.id)
+
+    if (outcome) {
+      expandRecord(record.id)
+    } else {
+      focusControls.ensureNotFocusedOnRow(rootRecordIndex)
+    }
+  }
 </script>
 
 <WithSingleRecordContext recordId={record.id} {rowIndex} let:rootRecordIndex>
@@ -107,10 +107,7 @@ async function save(record: DataRecord, rootRecordIndex: number) {
           <ExpandCollapseButton {expandedRecordIds} model={$model} {record} />
 
           {#if !oneOnly}
-            <button
-              class="btn btn-ghost btn-active btn-sm  mr-2"
-              on:click={() => alert('to do')}
-            >
+            <button class="btn btn-ghost btn-active btn-sm  mr-2" on:click={() => alert('to do')}>
               Delete
             </button>
           {/if}

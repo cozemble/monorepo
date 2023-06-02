@@ -1,26 +1,26 @@
 <script lang="ts">
-import type { Writable } from 'svelte/store'
+  import type { Writable } from 'svelte/store'
 
-import type { ModelId } from '@cozemble/model-core'
-import type { EventSourcedModel } from '@cozemble/model-event-sourced'
+  import type { ModelId } from '@cozemble/model-core'
+  import type { EventSourcedModel } from '@cozemble/model-event-sourced'
 
-import DownCaret from '../../../icons/DownCaret.svelte'
-import { contextHelper } from '../../../stores/contextHelper'
+  import DownCaret from '../../../icons/DownCaret.svelte'
+  import { contextHelper } from '../../../stores/contextHelper'
 
-export let esModel: EventSourcedModel
-export let index: number
-export let navbarState: Writable<string | null>
-export let onEditModel: (clicked: Event, modelIndex: number) => void
+  export let esModel: EventSourcedModel
+  export let index: number
+  export let navbarState: Writable<string | null>
+  export let onEditModel: (clicked: Event, modelIndex: number) => void
 
-const isModellingPermitted = contextHelper.getPermitModelling()
+  const isModellingPermitted = contextHelper.getPermitModelling()
 
-function onShow(modelId: ModelId) {
-  navbarState.set(modelId.value)
-}
+  function onShow(modelId: ModelId) {
+    navbarState.set(modelId.value)
+  }
 
-function onEdit(clicked: Event) {
-  onEditModel(clicked, index)
-}
+  function onEdit(clicked: Event) {
+    onEditModel(clicked, index)
+  }
 </script>
 
 <div class="flex items-center">

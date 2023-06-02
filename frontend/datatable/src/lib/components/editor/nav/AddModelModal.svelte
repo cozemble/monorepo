@@ -1,68 +1,80 @@
 <script lang="ts">
-import { createEventDispatcher, onMount } from 'svelte'
-import { writable } from 'svelte/store'
+  import { createEventDispatcher, onMount } from 'svelte'
+  import { writable } from 'svelte/store'
 
-import type { JustErrorMessage } from '@cozemble/lang-util'
-import { modelIdFns } from '@cozemble/model-core'
+  import type { JustErrorMessage } from '@cozemble/lang-util'
+  import { modelIdFns } from '@cozemble/model-core'
 
-import { positionModal } from '../../../modelUi'
-import { editableTableName } from '../../../models/editableTableName'
-import { allEventSourcedModels } from '../../../stores/allModels'
-import EditableStringInput from '../../../editors/EditableStringInput.svelte'
-import {modelFns, modelOptions} from "@cozemble/model-api";
-import {eventSourcedModelListEvents, eventSourcedModelListFns} from "@cozemble/model-event-sourced";
+  import { positionModal } from '../../../modelUi'
+  import { editableTableName } from '../../../models/editableTableName'
+  import { allEventSourcedModels } from '../../../stores/allModels'
+  import EditableStringInput from '../../../editors/EditableStringInput.svelte'
+  import { modelFns, modelOptions } from '@cozemble/model-api'
+  import {
+    eventSourcedModelListEvents,
+    eventSourcedModelListFns,
+  } from '@cozemble/model-event-sourced'
 
-export let anchorElement: HTMLElement
+  export let anchorElement: HTMLElement
 
-const tableName = editableTableName(`Table ${$allEventSourcedModels.models.length + 1}`, $allEventSourcedModels.models)
-const newTableNameErrors = tableName.errors
-const newTableName = tableName.value
+  const tableName = editableTableName(
+    `Table ${$allEventSourcedModels.models.length + 1}`,
+    $allEventSourcedModels.models,
+  )
+  const newTableNameErrors = tableName.errors
+  const newTableName = tableName.value
 
-const showErrors = writable(false)
-const dispatch = createEventDispatcher()
-let saveError: JustErrorMessage | null = null
-let addTableModal: HTMLDivElement
+  const showErrors = writable(false)
+  const dispatch = createEventDispatcher()
+  let saveError: JustErrorMessage | null = null
+  let addTableModal: HTMLDivElement
 
-//
+  //
 
-function cancelNewTable() {
-  dispatch('cancel')
-}
-
-function onKeyUp(event: KeyboardEvent) {
-  if (event.key === 'Escape') {
-    cancelNewTable()
+  function cancelNewTable() {
+    dispatch('cancel')
   }
-  if (event.key === 'Enter') {
-    saveNewTable()
-  }
-}
 
-async function saveNewTable() {
-  saveError = null
-
-  if ($newTableNameErrors.length > 0) {
-    showErrors.set(true)
-  } else {
-    if ($newTableName === null) {
-      throw new Error('newTableName is null')
+  function onKeyUp(event: KeyboardEvent) {
+    if (event.key === 'Escape') {
+      cancelNewTable()
     }
+    if (event.key === 'Enter') {
+      saveNewTable()
+    }
+  }
 
-    const newModelId = modelIdFns.newInstance()
-    const newModel = modelFns.newInstance($newTableName, modelOptions.withId(newModelId), modelOptions.withProperty(`Field 1`))
-    allEventSourcedModels.update(list => eventSourcedModelListFns.addEvent(list, eventSourcedModelListEvents.addModel(newModel)))
+  async function saveNewTable() {
+    saveError = null
 
-    const saveOutcome = await allEventSourcedModels.save()
-
-    if (saveOutcome === null) {
-      dispatch('added', { modelId: newModelId })
+    if ($newTableNameErrors.length > 0) {
+      showErrors.set(true)
     } else {
-      saveError = saveOutcome
+      if ($newTableName === null) {
+        throw new Error('newTableName is null')
+      }
+
+      const newModelId = modelIdFns.newInstance()
+      const newModel = modelFns.newInstance(
+        $newTableName,
+        modelOptions.withId(newModelId),
+        modelOptions.withProperty(`Field 1`),
+      )
+      allEventSourcedModels.update((list) =>
+        eventSourcedModelListFns.addEvent(list, eventSourcedModelListEvents.addModel(newModel)),
+      )
+
+      const saveOutcome = await allEventSourcedModels.save()
+
+      if (saveOutcome === null) {
+        dispatch('added', { modelId: newModelId })
+      } else {
+        saveError = saveOutcome
+      }
     }
   }
-}
 
-onMount(() => positionModal(addTableModal, anchorElement))
+  onMount(() => positionModal(addTableModal, anchorElement))
 </script>
 
 <svelte:window on:keyup={onKeyUp} />
@@ -74,17 +86,12 @@ onMount(() => positionModal(addTableModal, anchorElement))
     <div class="mt-2">
       <label class="label">Table name</label>
 
-      <EditableStringInput
-        value={tableName}
-        {showErrors}
-        extraClasses="first table-name"
-      />
+      <EditableStringInput value={tableName} {showErrors} extraClasses="first table-name" />
     </div>
 
     <div class="modal-action justify-center">
       <button class="btn btn-primary" on:click={saveNewTable}>Add table</button>
-      <button class="btn btn-secondary" on:click={cancelNewTable}>Cancel</button
-      >
+      <button class="btn btn-secondary" on:click={cancelNewTable}>Cancel</button>
     </div>
   </div>
 </div>

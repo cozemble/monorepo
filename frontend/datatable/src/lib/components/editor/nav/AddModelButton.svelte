@@ -1,27 +1,27 @@
 <script lang="ts">
-import { createEventDispatcher } from 'svelte'
+  import { createEventDispatcher } from 'svelte'
 
-import AddModelModal from './AddModelModal.svelte'
-import { allEventSourcedModels } from '../../../stores/allModels'
+  import AddModelModal from './AddModelModal.svelte'
+  import { allEventSourcedModels } from '../../../stores/allModels'
 
-const dispatch = createEventDispatcher()
+  const dispatch = createEventDispatcher()
 
-let rootDiv: HTMLDivElement
-let addingTable = false
+  let rootDiv: HTMLDivElement
+  let addingTable = false
 
-async function addModel() {
-  console.log('adding table')
-  addingTable = true
-}
+  async function addModel() {
+    console.log('adding table')
+    addingTable = true
+  }
 
-function cancel() {
-  addingTable = false
-}
+  function cancel() {
+    addingTable = false
+  }
 
-function onAdded(event: CustomEvent) {
-  dispatch('added', event.detail)
-  cancel()
-}
+  function onAdded(event: CustomEvent) {
+    dispatch('added', event.detail)
+    cancel()
+  }
 </script>
 
 <div bind:this={rootDiv}>
@@ -35,9 +35,5 @@ function onAdded(event: CustomEvent) {
 </div>
 
 {#if addingTable}
-  <AddModelModal
-    anchorElement={rootDiv}
-    on:cancel={cancel}
-    on:added={onAdded}
-  />
+  <AddModelModal anchorElement={rootDiv} on:cancel={cancel} on:added={onAdded} />
 {/if}
