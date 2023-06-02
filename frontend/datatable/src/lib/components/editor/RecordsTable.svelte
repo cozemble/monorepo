@@ -7,13 +7,13 @@
   // stores
   import { allEventSourcedModels } from '$lib/stores/allModels'
   import { contextHelper } from '$lib/stores/contextHelper'
-  import * as modelsStore_r from '$lib/stores/models'
+  import * as modelsStore from '$lib/stores/models'
   // records
   import type { SlotBeingEdited } from '$lib/records/helpers'
   import type { DataRecordsTableOptions } from '$lib/records/DataRecordsTableOptions'
   import { dataRecordsTableOptions } from '$lib/records/DataRecordsTableOptions'
   // components
-  import DataEntryRow from '$lib/records/entry/DataEntryRow_r.svelte'
+  import DataEntryRow from '$lib/records/entry/DataEntryRow.svelte'
   import AddModelElementButton from './AddModelElementButton.svelte'
   import SlotEditModal from '$lib/records/SlotEditModal.svelte'
   import SlotTh from '$lib/records/cells/SlotTh.svelte'
@@ -30,8 +30,7 @@
 
   let slotBeingEdited: SlotBeingEdited | null = null
 
-  const { model, eventSourcedModel, records, permitRecordAdditions } =
-    modelsStore_r.contexts.getAll()
+  const { model, eventSourcedModel, records, permitRecordAdditions } = modelsStore.contexts.getAll()
 
   //
 
