@@ -48,16 +48,11 @@ const slotSystemConfigurationDescriptorRegistry = new Map<
 export const slotSystemConfigurationDescriptors = {
   register: function (descriptor: SlotSystemConfigurationDescriptor) {
     slotSystemConfigurationDescriptorRegistry.set(descriptor.slotType, descriptor)
-    console.log('Registered slot system configuration descriptor', descriptor)
   },
   get: function (slotType: string): SlotSystemConfigurationDescriptor | null {
     return slotSystemConfigurationDescriptorRegistry.get(slotType) ?? null
   },
   list: function (): SlotSystemConfigurationDescriptor[] {
-    console.log(
-      'Listing slot system configuration descriptors',
-      slotSystemConfigurationDescriptorRegistry,
-    )
     return Array.from(slotSystemConfigurationDescriptorRegistry.values())
   },
 }

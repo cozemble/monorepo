@@ -31,8 +31,8 @@ import {
 import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import type { RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import { recordSaveSucceeded } from '@cozemble/data-paginated-editor'
-import { timestampedRecordGraphEdgeFns } from '@cozemble/model-event-sourced/dist/esm'
-import type { RecordSaveFailure } from '@cozemble/frontend-bff/dist/esm'
+import { timestampedRecordGraphEdgeFns } from '@cozemble/model-event-sourced'
+import type { RecordSaveFailure } from '@cozemble/frontend-bff'
 
 interface InMemoryBackendState {
   models: EventSourcedModel[]

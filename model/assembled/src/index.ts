@@ -65,7 +65,6 @@ export const slotViewerRegistry = {
     slotViewerMap.set(keyValue(slotKey), component)
   },
   forSlot: (slot: LeafModelSlot) => {
-    console.log('slotViewerRegistry.forSlot', { slot, slotViewerMap })
     return slotViewerMap.get(keyForSlot(slot)) ?? null
   },
 }

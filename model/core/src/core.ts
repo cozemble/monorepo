@@ -3,9 +3,7 @@ import { propertyDescriptors } from './propertyDescriptor'
 import { SystemConfiguration } from './systemConfiguration'
 import { TinyValue } from './TinyValue'
 
-export interface PropertyType extends TinyValue {
-  _type: 'property.type'
-}
+export type PropertyType = TinyValue<'property.type'>
 
 export const propertyTypeFns = {
   newInstance: (value: string): PropertyType => {
@@ -19,13 +17,9 @@ export const propertyTypeFns = {
   },
 }
 
-export interface PropertyId extends TinyValue {
-  _type: 'property.id'
-}
+export type PropertyId = TinyValue<'property.id'>
 
-export interface PropertyName extends TinyValue {
-  _type: 'property.name'
-}
+export type PropertyName = TinyValue<'property.name'>
 
 export const propertyNameFns = {
   newInstance: (value: string): PropertyName => {
@@ -46,9 +40,7 @@ export interface Property {
   unique: boolean
 }
 
-export interface ModelId extends TinyValue {
-  _type: 'model.id'
-}
+export type ModelId = TinyValue<'model.id'>
 
 export interface ModelIdAndName {
   _type: 'model.id.and.name'
@@ -409,9 +401,7 @@ export const dataRecordIdFns = {
   },
 }
 
-export interface TimestampEpochMillis extends TinyValue<number> {
-  _type: 'timestamp.epoch.millis'
-}
+export type TimestampEpochMillis = TinyValue<'timestamp.epoch.millis', number>
 
 export function timestampEpochMillis(value = clock.now().getTime()): TimestampEpochMillis {
   return {

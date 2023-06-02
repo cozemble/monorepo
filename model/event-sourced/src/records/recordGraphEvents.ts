@@ -1,8 +1,9 @@
 import {
   DataRecord,
+  DataRecordId,
   ModelReference,
-  TimestampEpochMillis,
   timestampEpochMillis,
+  TimestampEpochMillis,
 } from '@cozemble/model-core'
 
 export interface RecordReferencesChangedEvent {
@@ -10,7 +11,7 @@ export interface RecordReferencesChangedEvent {
   timestamp: TimestampEpochMillis
   recordBeingEdited: DataRecord
   modelReference: ModelReference
-  selection: DataRecord[]
+  selectedRecordIds: DataRecordId[]
 }
 
 export type RecordGraphEvent = RecordReferencesChangedEvent
@@ -19,12 +20,12 @@ export const recordGraphEvents = {
   recordReferencesChanged: (
     recordBeingEdited: DataRecord,
     modelReference: ModelReference,
-    selection: DataRecord[],
+    selectedRecordIds: DataRecordId[],
   ): RecordReferencesChangedEvent => ({
     _type: 'record.references.changed.event',
     timestamp: timestampEpochMillis(),
     recordBeingEdited,
     modelReference,
-    selection,
+    selectedRecordIds,
   }),
 }

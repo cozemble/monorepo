@@ -4,7 +4,6 @@
     import {eventSourcedRecordGraphFns} from "@cozemble/model-event-sourced";
     import {modelRecordsContextFns} from "$lib/records/modelRecordsContextFns";
     import RenderModelReferenceView from "$lib/records/modelReferences/RenderModelReferenceView.svelte";
-    import {afterUpdate} from "svelte";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord
@@ -14,8 +13,6 @@
     const modelReference = recordPath.lastElement as ModelReference
 
     $: selectedRecordIds = eventSourcedRecordGraphFns.referencedRecordIds($recordGraph, record.id, modelReference)
-    afterUpdate(() => console.log({selectedRecordIds, recordGraph: $recordGraph, record, modelReference}))
-
 </script>
 
 {#each selectedRecordIds as selectedRecordId}

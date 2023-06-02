@@ -27,7 +27,7 @@ import { recordSaveFailed, recordSaveSucceeded } from '@cozemble/data-paginated-
 import { justErrorMessage, mandatory, Outcome, outcomeFns } from '@cozemble/lang-util'
 import { dataRecordValuePathFns, modelFns } from '@cozemble/model-api'
 import { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
-import { dataRecordIdFns } from '@cozemble/model-core/dist/esm'
+import { dataRecordIdFns } from '@cozemble/model-core'
 
 const axiosInstance = axios.create({
   validateStatus: function () {

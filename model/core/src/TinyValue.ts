@@ -1,18 +1,17 @@
 import { uuids } from '@cozemble/lang-util'
 
-export interface TinyValue<T = string> {
-  value: T
+export interface TinyValue<T = string, V = string> {
+  _type: T
+  value: V
 }
 
-export interface Id extends TinyValue {
-  _type: 'id'
-}
-
-export interface Name extends TinyValue {
-  _type: 'name'
-}
+export type Id = TinyValue<'id'>
+export type Name = TinyValue<'name'>
 
 export const tinyValueFns = {
   id: (value: string = uuids.v4()): Id => ({ _type: 'id', value }),
   name: (value: string): Name => ({ _type: 'name', value }),
+  equals(a: TinyValue, b: TinyValue): boolean {
+    return a.value === b.value && a._type === b._type
+  },
 }

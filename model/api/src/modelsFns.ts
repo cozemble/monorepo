@@ -12,9 +12,12 @@ import {
   type DataRecordValuePath,
   emptyModel,
   LeafModelSlot,
+  ModelName,
   modelNameFns,
   type ModelPath,
   type ModelPathElement,
+  ModelPluralName,
+  modelPluralNameFns,
   ModelSlot,
   ModelSlotId,
   type NestedModel,
@@ -32,6 +35,15 @@ import {
 import { nestedModelFns } from './nestedModelFns'
 
 export const modelOptions = {
+  withSingularName(givenName: string | ModelName): ModelOption {
+    const name = typeof givenName === 'string' ? modelNameFns.newInstance(givenName) : givenName
+    return (model) => ({ ...model, name })
+  },
+  withPluralName(givenName: string | ModelPluralName): ModelOption {
+    const pluralName =
+      typeof givenName === 'string' ? modelPluralNameFns.newInstance(givenName) : givenName
+    return (model) => ({ ...model, pluralName })
+  },
   withId(id: ModelId): ModelOption {
     return (model) => ({ ...model, id })
   },

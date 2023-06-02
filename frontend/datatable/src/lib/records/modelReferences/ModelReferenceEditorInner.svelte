@@ -1,15 +1,9 @@
 <script lang="ts">
-    import type {
-        DataRecord,
-        DataRecordId,
-        DataRecordValuePath,
-        ModelReference,
-        SystemConfiguration
-    } from "@cozemble/model-core";
-    import {tinyValueFns} from "@cozemble/model-core";
+    import type {DataRecord, DataRecordValuePath, ModelReference, SystemConfiguration} from "@cozemble/model-core";
+    import {modelReferenceFns} from "@cozemble/model-core";
     import {dataRecordEditor} from "@cozemble/data-editor-sdk";
-    import {afterUpdate, onMount} from "svelte";
-    import {type EditorParams, getCreatedRecord, makeSummaryView} from "./editorHelper";
+    import {afterUpdate} from "svelte";
+    import type {EditorParams} from "./editorHelper";
     import {clickOutside} from "@cozemble/ui-atoms";
     import {modelRecordsContextFns} from "$lib/records/modelRecordsContextFns";
     import {
@@ -17,9 +11,9 @@
         dataRecordEditEvents,
         eventSourcedRecordGraphFns
     } from "@cozemble/model-event-sourced";
-    import {inverseReferenceSetter} from "$lib/records/modelReferences/editorHelper";
-    import {subGraphCollectorsByRecordIdFns} from "$lib/records/RecordControls";
-    import {singleRecordEditContext} from "$lib/records/contextHelper";
+    import ManyReferenceEditor from "$lib/records/modelReferences/ManyReferenceEditor.svelte";
+    import SingleReferenceSelector from "$lib/records/modelReferences/SingleReferenceSelector.svelte";
+    import type {DataRecordId} from "@cozemble/model-core";
 
     export let recordPath: DataRecordValuePath
     export let record: DataRecord
@@ -27,17 +21,12 @@
     export let systemConfiguration: SystemConfiguration
     const model = modelRecordsContextFns.getModel()
     const recordGraph = modelRecordsContextFns.getEventSourcedRecordGraph()
-    const subGraphCollectors = modelRecordsContextFns.getSubGraphCollectorsByRecordId()
-    const rootRecordId = singleRecordEditContext.getRootRecordId()
     const modelReference = recordPath.lastElement as ModelReference
+    const cardinality = modelReferenceFns.getCardinality(modelReference)
 
     $: selectedRecordIds = eventSourcedRecordGraphFns.referencedRecordIds($recordGraph, record.id, modelReference)
 
     const dataRecordEditorClient = dataRecordEditor.getClient()
-    let options: DataRecord[] = []
-    let searchTerm = ""
-
-    let htmlRender: string | null = null
 
     function cancel(event: MouseEvent) {
         event.preventDefault()
@@ -57,43 +46,13 @@
             dataRecordEditEvents.valueChanged(
                 record,
                 recordPath,
-                null,
-                selectedRecord,
+                selectedRecordIds,
+                selectedRecord ? [selectedRecord.id] : [],
                 'Tab',
             ),
         )
     }
 
-
-    async function createNewRecord() {
-        const edgeId = tinyValueFns.id()
-        const createdGraph = await dataRecordEditorClient.createNewRootRecord(editorParams.referencedModelId, inverseReferenceSetter(edgeId, editorParams.referencedModelId, modelReference.id, record))
-        if (createdGraph === null) {
-            return
-        }
-        subGraphCollectorsByRecordIdFns.addCreated(subGraphCollectors, rootRecordId, eventSourcedRecordGraphFns.removeEdge(createdGraph, edgeId))
-        const createdRecord = getCreatedRecord(createdGraph, editorParams.referencedModelId)
-        if (createdRecord) {
-            options.push(createdRecord)
-        }
-        setSelectedRecord(createdRecord)
-    }
-
-    function optionChanged(event: Event) {
-        const target = event.target as HTMLSelectElement
-        const selectedValue = target.value
-        if (selectedValue === "create.new.record") {
-            setTimeout(() => createNewRecord(), 0)
-        } else {
-            setSelectedRecord(options.find(option => option.id.value === selectedValue) ?? null)
-        }
-    }
-
-
-    onMount(async () => {
-        const found = await dataRecordEditorClient.searchRecords(editorParams.referencedModelId, searchTerm)
-        options = found.records
-    })
 
     function handleKeydown(event: KeyboardEvent) {
         if (event.key === "Escape") {
@@ -108,8 +67,24 @@
         }
     }
 
-    function isSelected(selectedRecordIds: DataRecordId[], recordId: DataRecordId | null): boolean {
-        return recordId !== null && selectedRecordIds.some(id => id.value === recordId.value)
+    function singleReferenceSelected(event: CustomEvent<{ record: DataRecord | null }>) {
+        const selectedRecord = event.detail.record
+        setSelectedRecord(selectedRecord)
+    }
+
+    function saveMany(event: CustomEvent<{ selectedRecordIds: DataRecordId[] }>) {
+        const newSelection = event.detail.selectedRecordIds
+        console.log({newSelection})
+        dataRecordEditorClient.dispatchEditEvent(
+            dataRecordEditEvents.valueChanged(
+                record,
+                recordPath,
+                selectedRecordIds,
+                newSelection,
+                'Tab',
+            ),
+        )
+        console.log('dispatched edit event')
     }
 
     afterUpdate(() => console.log({recordGraph: $recordGraph, selectedRecordIds, record, modelReference}))
@@ -118,25 +93,21 @@
 <svelte:window on:keydown={handleKeydown}/>
 <div use:clickOutside
      on:click_outside={close}>
-    {#if htmlRender}
-        {@html htmlRender}
-    {:else}
-        ----
-    {/if}
-    <div class="editor">
-        <select class="input input-bordered reference-selector" on:change={optionChanged}>
-            <option selected={selectedRecordIds.length === 0}>----</option>
-            <option value="create.new.record">Create a new {editorParams.referencedModel.name.value}</option>
-            {#each options as option}
-                {@const view = makeSummaryView(option, editorParams)}
-                <option value={option.id.value} selected={isSelected(selectedRecordIds,option.id)}>{view}</option>
-            {/each}
-        </select>
+    <div class="editor border border-base-300 rounded">
+        {#if cardinality === 'many'}
+            <ManyReferenceEditor {selectedRecordIds} {editorParams} {modelReference} {record} on:cancel={close}
+                                 on:save={saveMany}/>
+        {:else}
+            <SingleReferenceSelector {selectedRecordIds} {editorParams} {modelReference} {record}
+                                     on:selected={singleReferenceSelected}/>
+        {/if}
     </div>
 </div>
 
 <style>
     .editor {
         position: absolute;
+        border-width: 2px;
+        z-index: 100;
     }
 </style>

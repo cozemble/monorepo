@@ -20,7 +20,6 @@
 
     async function computeHtml(models: Model[], graph: EventSourcedRecordGraph, referencedModelId: ModelId, selectedRecordId: DataRecordId) {
         const referencedRecord = await getReferencedRecord(dataRecordViewerClient, graph, recordId,subGraphCollectorsByRecordId, referencedModelId, selectedRecordId)
-        console.log({referencedRecord, selectedRecordId})
         htmlRender = renderReferencedRecord(models, referencedRecord, summaryView)
     }
 

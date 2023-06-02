@@ -15,7 +15,7 @@ import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
 import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import { Outcome, uuids } from '@cozemble/lang-util'
 import { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
-import { outcomeFns } from '@cozemble/lang-util/dist/esm'
+import { outcomeFns } from '@cozemble/lang-util'
 import type { RecordSaveFailed, RecordSaveSucceeded } from '@cozemble/data-paginated-editor'
 
 const storageKey = 'cozemble.localstorage.backend'

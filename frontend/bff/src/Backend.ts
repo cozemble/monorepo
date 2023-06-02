@@ -11,7 +11,7 @@ import type { RecordDeleteOutcome, RecordSaveOutcome } from '@cozemble/data-pagi
 import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
 import { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
 import { Outcome } from '@cozemble/lang-util'
-import { JustErrorMessage } from '@cozemble/lang-util/dist/esm'
+import { JustErrorMessage } from '@cozemble/lang-util'
 
 export interface TenantEntity {
   _type: string

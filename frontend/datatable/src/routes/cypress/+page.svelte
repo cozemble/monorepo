@@ -7,9 +7,10 @@
     import {writable} from "svelte/store";
     import {backendFns, DataTable, eventSourcedModelStore} from "../../lib";
     import {testModelsLocalStorageKey} from "./testModels";
-    import {testRecordsLocalStorageKey} from "./testModels.js";
+    import {testEdgesLocalStorageKey, testModelViewsLocalStorageKey, testRecordsLocalStorageKey} from "./testModels.js";
     import {makeInMemoryBackend} from "../../lib/backend/InMemoryBackend";
     import DevOptions from "../DevOptions.svelte";
+    import type {TimestampedRecordGraphEdge} from "@cozemble/model-event-sourced";
 
     const modelViews = writable([] as ModelView[])
     let models = [] as EventSourcedModel[]
@@ -17,15 +18,19 @@
     const permitModelling = writable(true)
     const showDevConsole = writable(false)
 
-
     let mounted = false
     onMount(() => {
         registerEverything()
         const storedModelJson = localStorage.getItem(testModelsLocalStorageKey) ?? '[]'
         const storedRecordsJson = localStorage.getItem(testRecordsLocalStorageKey) ?? '[]'
+        const storedModelViewsJson = localStorage.getItem(testModelViewsLocalStorageKey) ?? '[]'
+        const storedEdgesJson = localStorage.getItem(testEdgesLocalStorageKey) ?? '[]'
         models = JSON.parse(storedModelJson)
+        const edges = JSON.parse(storedEdgesJson) as TimestampedRecordGraphEdge[]
         const records = JSON.parse(storedRecordsJson) as DataRecord[]
-        backendFns.setBackend(makeInMemoryBackend(models, records))
+        const parsedModelViews = JSON.parse(storedModelViewsJson) as ModelView[]
+        modelViews.set(parsedModelViews)
+        backendFns.setBackend(makeInMemoryBackend(models, records, edges, parsedModelViews))
         mounted = true
     })
 </script>

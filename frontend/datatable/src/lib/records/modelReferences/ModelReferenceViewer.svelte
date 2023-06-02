@@ -8,7 +8,6 @@
     import {modelFns} from "@cozemble/model-api";
     import type {ConfigureViewParams} from "./ConfigureViewParams";
     import {makeConfigureViewParams} from "./ConfigureViewParams";
-    import {afterUpdate} from "svelte";
     import {allModelViews} from "$lib/stores/allModelViews";
 
     export let recordPath: DataRecordValuePath
@@ -36,12 +35,6 @@
 
     }
 
-    function instructUser() {
-        if (editorParams && editorParams._type === 'user.instruction') {
-            dataRecordViewerClient.instructUser(editorParams)
-        }
-    }
-
     async function onConfigureView() {
         configureViewParams = await makeConfigureViewParams(dataRecordViewerClient, models, recordPath)
     }
@@ -54,8 +47,6 @@
         cancelConfigureViewModal()
         editorParams = assembleEditorParams(dataRecordViewerClient, recordPath, $allModelViews)
     }
-
-    afterUpdate(() => console.log({editorParams, record}))
 </script>
 
 <div bind:this={containerElement}>

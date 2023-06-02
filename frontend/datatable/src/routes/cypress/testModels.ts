@@ -1,10 +1,12 @@
 import { modelFns, modelOptions, nestedModelFns, propertyFns } from '@cozemble/model-api'
-import type { Model } from '@cozemble/model-core'
+import type { DataRecord, Model, ModelView } from '@cozemble/model-core'
 import { eventSourcedModelFns } from '@cozemble/model-event-sourced'
-import type { DataRecord } from '@cozemble/model-core'
+import type { TimestampedRecordGraphEdge } from '@cozemble/model-event-sourced'
 
 export const testModelsLocalStorageKey = 'com.cozemble.datatable.cypress.models'
+export const testModelViewsLocalStorageKey = 'com.cozemble.datatable.cypress.model.views'
 export const testRecordsLocalStorageKey = 'com.cozemble.datatable.cypress.records'
+export const testEdgesLocalStorageKey = 'com.cozemble.datatable.cypress.edges'
 
 export const addressModel = modelFns.newInstance(
   'Address',
@@ -28,4 +30,12 @@ export function storeModels(models: Model[]) {
 
 export function storeRecords(records: DataRecord[]) {
   localStorage.setItem(testRecordsLocalStorageKey, JSON.stringify(records))
+}
+
+export function storeModelViews(modelViews: ModelView[]) {
+  localStorage.setItem(testModelViewsLocalStorageKey, JSON.stringify(modelViews))
+}
+
+export function storeEdges(edges: TimestampedRecordGraphEdge[]) {
+  localStorage.setItem(testEdgesLocalStorageKey, JSON.stringify(edges))
 }

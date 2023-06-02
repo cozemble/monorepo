@@ -50,13 +50,13 @@ function updateEdge(
   if (event.modelReference.originModelId.value === edge.edge.originModelId.value) {
     return {
       ...edge,
-      edge: { ...edge.edge, originRecordId: event.selection[0].id },
+      edge: { ...edge.edge, originRecordId: event.selectedRecordIds[0] },
       timestamp: event.timestamp,
     }
   } else {
     return {
       ...edge,
-      edge: { ...edge.edge, referenceRecordId: event.selection[0].id },
+      edge: { ...edge.edge, referenceRecordId: event.selectedRecordIds[0] },
       timestamp: event.timestamp,
     }
   }
@@ -64,16 +64,19 @@ function updateEdge(
 
 function makeNewEdge(
   event: RecordReferencesChangedEvent,
-  selectedRecord: DataRecord,
+  selectedRecordId: DataRecordId,
 ): TimestampedRecordGraphEdge {
   if (event.modelReference.originModelId.value === event.recordBeingEdited.modelId.value) {
     return timestampedRecordGraphEdgeFns.newInstance(
       recordGraphEdgeFns.newInstance(
         event.modelReference.id,
         event.modelReference.originModelId,
-        selectedRecord.modelId,
+        mandatory(
+          event.modelReference.referencedModelIds[0],
+          `No referenced model id found for ${event.modelReference.id.value}`,
+        ),
         event.recordBeingEdited.id,
-        selectedRecord.id,
+        selectedRecordId,
       ),
       event.timestamp,
     )
@@ -81,9 +84,12 @@ function makeNewEdge(
   return timestampedRecordGraphEdgeFns.newInstance(
     recordGraphEdgeFns.newInstance(
       event.modelReference.id,
-      selectedRecord.modelId,
+      mandatory(
+        event.modelReference.referencedModelIds[0],
+        `No referenced model id found for ${event.modelReference.id.value}`,
+      ),
       event.recordBeingEdited.modelId,
-      selectedRecord.id,
+      selectedRecordId,
       event.recordBeingEdited.id,
     ),
     event.timestamp,
@@ -112,7 +118,7 @@ function handleHasOneReference(
   existingEdges: TimestampedRecordGraphEdge[],
   graph: EventSourcedRecordGraph,
 ) {
-  if (event.selection.length > 1) {
+  if (event.selectedRecordIds.length > 1) {
     throw new Error(
       `Cannot set multiple references for has-one relationship ${event.modelReference.id.value}`,
     )
@@ -129,7 +135,7 @@ function handleHasOneReference(
       edges: graph.edges.map((edge) => (edge === existingEdges[0] ? updatedEdge : edge)),
     }
   }
-  const newEdge = makeNewEdge(event, event.selection[0])
+  const newEdge = makeNewEdge(event, event.selectedRecordIds[0])
   return { ...graph, edges: [...graph.edges, newEdge] }
 }
 
@@ -196,9 +202,7 @@ function handleHasManyReference(
   event: RecordReferencesChangedEvent,
   existingEdges: TimestampedRecordGraphEdge[],
 ): EventSourcedRecordGraph {
-  const desiredEdgeState = event.selection.map((selectedRecord) =>
-    makeNewEdge(event, selectedRecord),
-  )
+  const desiredEdgeState = event.selectedRecordIds.map((id) => makeNewEdge(event, id))
   const deletedEdges = findDeletedEdges(existingEdges, desiredEdgeState).map((edge) => ({
     ...edge,
     timestamp: event.timestamp,
@@ -215,6 +219,16 @@ function handleHasManyReference(
       ),
   )
 
+  console.log({
+    graph,
+    existingEdges,
+    desiredEdgeState,
+    deletedEdges,
+    retainedEdges,
+    changedEdges,
+    newEdges,
+    unrelatedEdges,
+  })
   return {
     ...graph,
     edges: [...unrelatedEdges, ...retainedEdges, ...changedEdges, ...newEdges],
@@ -226,12 +240,13 @@ function handleRecordReferencedChanged(
   graph: EventSourcedRecordGraph,
   event: RecordReferencesChangedEvent,
 ): EventSourcedRecordGraph {
+  console.log({ event })
   const existingEdges = graph.edges.filter(
     (edge) =>
       edge.edge.modelReferenceId.value === event.modelReference.id.value &&
       recordGraphEdgeFns.involvesRecord(edge.edge, event.recordBeingEdited.id),
   )
-  if (event.selection.length === 0) {
+  if (event.selectedRecordIds.length === 0) {
     return deleteEdges(graph, existingEdges, event)
   }
   if (modelReferenceFns.getCardinality(event.modelReference) === 'one') {

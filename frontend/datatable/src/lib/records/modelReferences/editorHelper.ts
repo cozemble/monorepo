@@ -44,13 +44,13 @@ export function assembleEditorParams(
   if (!referencedModelId) {
     throw new Error('No referenced model id')
   }
-  const summaryView = modelViews.find(
-    (e) => e.modelId.value === referencedModelId.value && e.name.value === 'Summary View',
-  )
   const referencedModel = modelFns.findById(client.getModels(), referencedModelId)
   if (!referencedModel) {
     throw new Error('No referenced model')
   }
+  const summaryView = modelViews.find(
+    (e) => e.modelId.value === referencedModelId.value && e.name.value === 'Summary View',
+  )
   if (!summaryView) {
     return userInstructionFns.setupSummaryView(
       'No summary view configured for model ' + referencedModel.name.value,

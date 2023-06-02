@@ -79,7 +79,6 @@
     async function loadRecords(filterParams: FilterParams) {
         loadingState.set('loading')
         let loadedGraph = await graphLoader(modelId, filterParams)
-        console.log({loadedGraph})
         if (oneOnly) {
             eventSourcedRecordGraph.set(
                 loadedGraph,

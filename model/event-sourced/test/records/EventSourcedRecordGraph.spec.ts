@@ -55,13 +55,15 @@ describe('given customer and bookings models with a customer has-many bookings a
   const customer2 = dataRecordFns.random(systemConfiguration, models, customerModel.model)
   const booking1 = dataRecordFns.random(systemConfiguration, models, bookingModel.model)
   const booking2 = dataRecordFns.random(systemConfiguration, models, bookingModel.model)
+  const booking3 = dataRecordFns.random(systemConfiguration, models, bookingModel.model)
   customer1.id = dataRecordIdFns.newInstance('customer1')
   customer2.id = dataRecordIdFns.newInstance('customer2')
   booking1.id = dataRecordIdFns.newInstance('booking1')
   booking2.id = dataRecordIdFns.newInstance('booking2')
+  booking3.id = dataRecordIdFns.newInstance('booking3')
   const fromCustomerToBookingModelReference = customerModel.model.slots[0] as ModelReference
   const inverseCustomerToBookingModelReference = bookingModel.model.slots[0] as ModelReference
-  const records = [customer1, customer2, booking1, booking2]
+  const records = [customer1, customer2, booking1, booking2, booking3]
 
   const graph = eventSourcedRecordGraphFns.newInstance(
     records.map((r) => eventSourcedDataRecordFns.fromRecord(models, r)),
@@ -87,7 +89,7 @@ describe('given customer and bookings models with a customer has-many bookings a
         recordGraphEvents.recordReferencesChanged(
           booking1,
           inverseCustomerToBookingModelReference,
-          [customer1],
+          [customer1.id],
         ),
       )
       const edge = firstEdge(graphWithBookingWithCustomer)
@@ -105,7 +107,7 @@ describe('given customer and bookings models with a customer has-many bookings a
       const setTheCustomerEvent = recordGraphEvents.recordReferencesChanged(
         booking1,
         inverseCustomerToBookingModelReference,
-        [customer1],
+        [customer1.id],
       )
       const graphWithBookingWithCustomer = eventSourcedRecordGraphFns.addEvent(
         graph,
@@ -126,7 +128,7 @@ describe('given customer and bookings models with a customer has-many bookings a
         recordGraphEvents.recordReferencesChanged(
           booking1,
           inverseCustomerToBookingModelReference,
-          [customer1],
+          [customer1.id],
         ),
       )
       const booking1ToCustomer1Edge = firstEdge(booking1HasCustomer1)
@@ -134,7 +136,7 @@ describe('given customer and bookings models with a customer has-many bookings a
       const setBooking1ToCustomer2Event = recordGraphEvents.recordReferencesChanged(
         booking1,
         inverseCustomerToBookingModelReference,
-        [customer2],
+        [customer2.id],
       )
       const booking1HasCustomer2 = eventSourcedRecordGraphFns.addEvent(
         booking1HasCustomer1,
@@ -155,7 +157,7 @@ describe('given customer and bookings models with a customer has-many bookings a
           recordGraphEvents.recordReferencesChanged(
             booking1,
             inverseCustomerToBookingModelReference,
-            [customer1, customer2],
+            [customer1.id, customer2.id],
           ),
         )
         expect('should not get here').toBe('but did')
@@ -170,7 +172,7 @@ describe('given customer and bookings models with a customer has-many bookings a
         recordGraphEvents.recordReferencesChanged(
           booking1,
           inverseCustomerToBookingModelReference,
-          [customer1],
+          [customer1.id],
         ),
       )
       const booking1HasCustomer1AndBooking2HasCustomer1 = eventSourcedRecordGraphFns.addEvent(
@@ -178,7 +180,7 @@ describe('given customer and bookings models with a customer has-many bookings a
         recordGraphEvents.recordReferencesChanged(
           booking2,
           inverseCustomerToBookingModelReference,
-          [customer1],
+          [customer1.id],
         ),
       )
       expect(booking1HasCustomer1AndBooking2HasCustomer1.edges).toHaveLength(2)
@@ -214,7 +216,7 @@ describe('given customer and bookings models with a customer has-many bookings a
       const customerWithOneBooking = eventSourcedRecordGraphFns.addEvent(
         graph,
         recordGraphEvents.recordReferencesChanged(customer1, fromCustomerToBookingModelReference, [
-          booking1,
+          booking1.id,
         ]),
       )
       const customer1ToBooking1Edge = firstEdge(customerWithOneBooking)
@@ -232,8 +234,8 @@ describe('given customer and bookings models with a customer has-many bookings a
       const customerWithTwoBookings = eventSourcedRecordGraphFns.addEvent(
         graph,
         recordGraphEvents.recordReferencesChanged(customer1, fromCustomerToBookingModelReference, [
-          booking1,
-          booking2,
+          booking1.id,
+          booking2.id,
         ]),
       )
       const customer1ToBooking1Edge = firstEdge(customerWithTwoBookings)
@@ -253,7 +255,7 @@ describe('given customer and bookings models with a customer has-many bookings a
       const setCustomerToBooking1Event = recordGraphEvents.recordReferencesChanged(
         customer1,
         fromCustomerToBookingModelReference,
-        [booking1],
+        [booking1.id],
       )
       const customer1WithBooking1 = eventSourcedRecordGraphFns.addEvent(
         graph,
@@ -273,7 +275,7 @@ describe('given customer and bookings models with a customer has-many bookings a
       const customer1WithBooking1 = eventSourcedRecordGraphFns.addEvent(
         graph,
         recordGraphEvents.recordReferencesChanged(customer1, fromCustomerToBookingModelReference, [
-          booking1,
+          booking1.id,
         ]),
       )
       const customer1ToBooking1Edge = firstEdge(customer1WithBooking1)
@@ -281,7 +283,7 @@ describe('given customer and bookings models with a customer has-many bookings a
       const setCustomer1ToBooking2Event = recordGraphEvents.recordReferencesChanged(
         customer1,
         fromCustomerToBookingModelReference,
-        [booking2],
+        [booking2.id],
       )
       const customer1WithBooking2 = eventSourcedRecordGraphFns.addEvent(
         customer1WithBooking1,
@@ -300,7 +302,7 @@ describe('given customer and bookings models with a customer has-many bookings a
       const setCustomer1ToBooking1Event = recordGraphEvents.recordReferencesChanged(
         customer1,
         fromCustomerToBookingModelReference,
-        [booking1],
+        [booking1.id],
       )
       const customer1WithBooking1 = eventSourcedRecordGraphFns.addEvent(
         graph,
@@ -311,7 +313,7 @@ describe('given customer and bookings models with a customer has-many bookings a
       const setCustomer1ToBookings1And2Event = recordGraphEvents.recordReferencesChanged(
         customer1,
         fromCustomerToBookingModelReference,
-        [booking1, booking2],
+        [booking1.id, booking2.id],
       )
       const customer1WithBookings1And2 = eventSourcedRecordGraphFns.addEvent(
         customer1WithBooking1,
@@ -329,7 +331,7 @@ describe('given customer and bookings models with a customer has-many bookings a
       const setCustomer1ToBookings1And2Event = recordGraphEvents.recordReferencesChanged(
         customer1,
         fromCustomerToBookingModelReference,
-        [booking1, booking2],
+        [booking1.id, booking2.id],
       )
       const customer1WithBookings1And2 = eventSourcedRecordGraphFns.addEvent(
         graph,
@@ -343,7 +345,7 @@ describe('given customer and bookings models with a customer has-many bookings a
       const setCustomer1ToBookings1And2Event = recordGraphEvents.recordReferencesChanged(
         customer1,
         fromCustomerToBookingModelReference,
-        [booking1, booking2],
+        [booking1.id, booking2.id],
       )
       const customer1WithBookings1And2 = eventSourcedRecordGraphFns.addEvent(
         graph,
@@ -363,7 +365,7 @@ describe('given customer and bookings models with a customer has-many bookings a
       const setCustomer1ToBookings1And2Event = recordGraphEvents.recordReferencesChanged(
         customer1,
         fromCustomerToBookingModelReference,
-        [booking1, booking2],
+        [booking1.id, booking2.id],
       )
       const customer1WithBookings1And2 = eventSourcedRecordGraphFns.addEvent(
         graph,
@@ -386,7 +388,7 @@ describe('given customer and bookings models with a customer has-many bookings a
       const customer1HasBooking1Event = recordGraphEvents.recordReferencesChanged(
         customer1,
         fromCustomerToBookingModelReference,
-        [booking1],
+        [booking1.id],
       )
       const customer1HasBooking1 = eventSourcedRecordGraphFns.addEvent(
         graph,
@@ -395,7 +397,7 @@ describe('given customer and bookings models with a customer has-many bookings a
       const customer2HasBooking2Event = recordGraphEvents.recordReferencesChanged(
         customer2,
         fromCustomerToBookingModelReference,
-        [booking2],
+        [booking2.id],
       )
       const finalGraph = eventSourcedRecordGraphFns.addEvent(
         customer1HasBooking1,
@@ -421,7 +423,7 @@ describe('given customer and bookings models with a customer has-many bookings a
       const setCustomer1ToBookings1And2Event = recordGraphEvents.recordReferencesChanged(
         customer1,
         fromCustomerToBookingModelReference,
-        [booking1, booking2],
+        [booking1.id, booking2.id],
       )
       const customer1WithBookings1And2 = eventSourcedRecordGraphFns.addEvent(
         graph,
@@ -430,7 +432,7 @@ describe('given customer and bookings models with a customer has-many bookings a
       const setCustomer2ToBookings1Event = recordGraphEvents.recordReferencesChanged(
         customer2,
         fromCustomerToBookingModelReference,
-        [booking1],
+        [booking1.id],
       )
       const finalGraph = eventSourcedRecordGraphFns.addEvent(
         customer1WithBookings1And2,
@@ -450,6 +452,45 @@ describe('given customer and bookings models with a customer has-many bookings a
         }),
       )
       expect(finalGraph.deletedEdges).toEqual([])
+    })
+
+    test("adding a booking to a customer that is already assigned to another customer removes the booking from the other customer's bookings", () => {
+      const customersWithBookings = eventSourcedRecordGraphFns.addEvents(
+        graph,
+        recordGraphEvents.recordReferencesChanged(customer1, fromCustomerToBookingModelReference, [
+          booking1.id,
+          booking2.id,
+        ]),
+        recordGraphEvents.recordReferencesChanged(customer2, fromCustomerToBookingModelReference, [
+          booking3.id,
+        ]),
+      )
+      const mutated = eventSourcedRecordGraphFns.addEvent(
+        customersWithBookings,
+        recordGraphEvents.recordReferencesChanged(customer2, fromCustomerToBookingModelReference, [
+          booking3.id,
+          booking1.id,
+        ]),
+      )
+      expect(mutated.edges).toHaveLength(3)
+      expect(mutated.edges[0].edge).toEqual(
+        expect.objectContaining({
+          originRecordId: customer1.id,
+          referenceRecordId: booking2.id,
+        }),
+      )
+      expect(mutated.edges[1].edge).toEqual(
+        expect.objectContaining({
+          originRecordId: customer2.id,
+          referenceRecordId: booking3.id,
+        }),
+      )
+      expect(mutated.edges[2].edge).toEqual(
+        expect.objectContaining({
+          originRecordId: customer2.id,
+          referenceRecordId: booking1.id,
+        }),
+      )
     })
   })
 })
