@@ -66,34 +66,56 @@ function makeNewEdge(
   event: RecordReferencesChangedEvent,
   selectedRecordId: DataRecordId,
 ): TimestampedRecordGraphEdge {
-  if (event.modelReference.originModelId.value === event.recordBeingEdited.modelId.value) {
-    return timestampedRecordGraphEdgeFns.newInstance(
-      recordGraphEdgeFns.newInstance(
-        event.modelReference.id,
-        event.modelReference.originModelId,
-        mandatory(
-          event.modelReference.referencedModelIds[0],
-          `No referenced model id found for ${event.modelReference.id.value}`,
-        ),
-        event.recordBeingEdited.id,
-        selectedRecordId,
-      ),
-      event.timestamp,
-    )
-  }
+  const originRecordId =
+    event.modelReference.originModelId.value === event.recordBeingEdited.modelId.value
+      ? event.recordBeingEdited.id
+      : selectedRecordId
+  const referenceRecordId =
+    event.modelReference.originModelId.value === event.recordBeingEdited.modelId.value
+      ? selectedRecordId
+      : event.recordBeingEdited.id
   return timestampedRecordGraphEdgeFns.newInstance(
     recordGraphEdgeFns.newInstance(
       event.modelReference.id,
+      event.modelReference.originModelId,
       mandatory(
         event.modelReference.referencedModelIds[0],
         `No referenced model id found for ${event.modelReference.id.value}`,
       ),
-      event.recordBeingEdited.modelId,
-      selectedRecordId,
-      event.recordBeingEdited.id,
+      originRecordId,
+      referenceRecordId,
     ),
     event.timestamp,
   )
+
+  // if (event.modelReference.originModelId.value === event.recordBeingEdited.modelId.value) {
+  //   return timestampedRecordGraphEdgeFns.newInstance(
+  //     recordGraphEdgeFns.newInstance(
+  //       event.modelReference.id,
+  //       event.modelReference.originModelId,
+  //       mandatory(
+  //         event.modelReference.referencedModelIds[0],
+  //         `No referenced model id found for ${event.modelReference.id.value}`,
+  //       ),
+  //       event.recordBeingEdited.id,
+  //       selectedRecordId,
+  //     ),
+  //     event.timestamp,
+  //   )
+  // }
+  // return timestampedRecordGraphEdgeFns.newInstance(
+  //   recordGraphEdgeFns.newInstance(
+  //     event.modelReference.id,
+  //     mandatory(
+  //       event.modelReference.referencedModelIds[0],
+  //       `No referenced model id found for ${event.modelReference.id.value}`,
+  //     ),
+  //     event.recordBeingEdited.modelId,
+  //     selectedRecordId,
+  //     event.recordBeingEdited.id,
+  //   ),
+  //   event.timestamp,
+  // )
 }
 
 function deleteEdges(
@@ -219,16 +241,6 @@ function handleHasManyReference(
       ),
   )
 
-  console.log({
-    graph,
-    existingEdges,
-    desiredEdgeState,
-    deletedEdges,
-    retainedEdges,
-    changedEdges,
-    newEdges,
-    unrelatedEdges,
-  })
   return {
     ...graph,
     edges: [...unrelatedEdges, ...retainedEdges, ...changedEdges, ...newEdges],
@@ -240,7 +252,6 @@ function handleRecordReferencedChanged(
   graph: EventSourcedRecordGraph,
   event: RecordReferencesChangedEvent,
 ): EventSourcedRecordGraph {
-  console.log({ event })
   const existingEdges = graph.edges.filter(
     (edge) =>
       edge.edge.modelReferenceId.value === event.modelReference.id.value &&

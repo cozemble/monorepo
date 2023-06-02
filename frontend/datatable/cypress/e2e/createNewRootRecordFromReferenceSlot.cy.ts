@@ -18,6 +18,7 @@ describe('data table', () => {
     cy.get('input.property-name').type('{selectall}Customer')
     cy.get('select.property-type').select('Link to another record')
     cy.get('select.referenced-model').select('Customers')
+    cy.get('input[name="cardinality"][value="one"]').click()
     cy.get('button.save-property').click()
 
     cy.contains('Configure view').click()

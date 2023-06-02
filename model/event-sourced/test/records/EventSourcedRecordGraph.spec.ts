@@ -17,6 +17,9 @@ import {
   timestampedRecordGraphEdgeFns,
 } from '../../src'
 import { mandatory, time } from '@cozemble/lang-util'
+import { recordGraphEdgeFns, tinyValueFns } from '@cozemble/model-core/dist/esm'
+import { propertyFns, propertyOptions } from '@cozemble/model-api/dist/esm'
+import { registerStringProperty } from '@cozemble/model-string-core/dist/esm'
 
 describe('given customer and bookings models with a customer has-many bookings and a booking has-one customer', () => {
   const modelReferenceId = modelReferenceIdFns.newInstance('fromBookingToCustomer')
@@ -493,6 +496,122 @@ describe('given customer and bookings models with a customer has-many bookings a
       )
     })
   })
+})
+
+test('actual failure case from cypress test', () => {
+  registerStringProperty()
+  let customerModel = modelFns.newInstance(
+    'Customers',
+    modelOptions.withProperties(
+      propertyFns.newInstance('First name', propertyOptions.required),
+      propertyFns.newInstance('Last name'),
+    ),
+    modelOptions.withSingularName('Customer'),
+  )
+  customerModel.id.value = 'customers'
+  const invoiceModelId = modelIdFns.newInstance('invoices')
+
+  const invoiceToCustomerReference = modelReferenceFns.setOriginCardinality(
+    modelReferenceFns.newInstance(invoiceModelId, [customerModel.id], 'Customer'),
+    'one',
+  )
+  const customerToInvoicesReference = modelReferenceFns.inverse(
+    invoiceToCustomerReference,
+    'Invoices',
+  )
+  const invoiceModel = modelFns.newInstance(
+    'Invoices',
+    modelOptions.withId(invoiceModelId),
+    modelOptions.withProperty(propertyFns.newInstance('Invoice ID', propertyOptions.required)),
+    modelOptions.withSlot(invoiceToCustomerReference),
+    modelOptions.withSingularName('Invoice'),
+  )
+  customerModel = modelFns.applyOptions(
+    customerModel,
+    modelOptions.withSlot(customerToInvoicesReference),
+  )
+
+  const models = [customerModel, invoiceModel]
+  const systemConfiguration = systemConfigurationFns.empty()
+
+  const customerRecord1 = dataRecordFns.random(systemConfiguration, models, customerModel, {
+    'First name': 'John',
+    'Last name': 'Smith',
+  })
+  customerRecord1.id.value = 'customer1'
+  const customerRecord2 = dataRecordFns.random(systemConfiguration, models, customerModel, {
+    'First name': 'Jane',
+    'Last name': 'Doe',
+  })
+
+  const invoiceRecord11 = dataRecordFns.random(systemConfiguration, models, invoiceModel, {
+    'Invoice ID': 'Invoice #11',
+  })
+  const invoiceRecord12 = dataRecordFns.random(systemConfiguration, models, invoiceModel, {
+    'Invoice ID': 'Invoice #12',
+  })
+  const invoiceRecord13 = dataRecordFns.random(systemConfiguration, models, invoiceModel, {
+    'Invoice ID': 'Invoice #13',
+  })
+  customerRecord1.id.value = 'johnSmith'
+  customerRecord2.id.value = 'janeDoe'
+  invoiceRecord11.id.value = 'invoice11'
+  invoiceRecord12.id.value = 'invoice12'
+  invoiceRecord13.id.value = 'invoice13'
+
+  const customer1ToBooking1Edge = timestampedRecordGraphEdgeFns.newInstance(
+    recordGraphEdgeFns.newInstance(
+      customerToInvoicesReference.id,
+      invoiceModel.id,
+      customerModel.id,
+      invoiceRecord11.id,
+      customerRecord1.id,
+      tinyValueFns.id('originallyCustomer1ToInvoice11'),
+    ),
+  )
+  const customer1ToBooking2Edge = timestampedRecordGraphEdgeFns.newInstance(
+    recordGraphEdgeFns.newInstance(
+      customerToInvoicesReference.id,
+      invoiceModel.id,
+      customerModel.id,
+      invoiceRecord12.id,
+      customerRecord1.id,
+      tinyValueFns.id('originallyCustomer1ToInvoice12'),
+    ),
+  )
+  const customer1ToBooking3Edge = timestampedRecordGraphEdgeFns.newInstance(
+    recordGraphEdgeFns.newInstance(
+      customerToInvoicesReference.id,
+      invoiceModel.id,
+      customerModel.id,
+      invoiceRecord13.id,
+      customerRecord2.id,
+      tinyValueFns.id('originallyCustomer2ToBooking13'),
+    ),
+  )
+  const records = [
+    customerRecord1,
+    customerRecord2,
+    invoiceRecord11,
+    invoiceRecord12,
+    invoiceRecord13,
+  ]
+  const edges = [customer1ToBooking1Edge, customer1ToBooking2Edge, customer1ToBooking3Edge]
+
+  const graph = eventSourcedRecordGraphFns.newInstance(
+    records.map((r) => eventSourcedDataRecordFns.fromRecord(models, r)),
+    edges,
+    [],
+  )
+  const mutated = eventSourcedRecordGraphFns.addEvent(
+    graph,
+    recordGraphEvents.recordReferencesChanged(customerRecord2, customerToInvoicesReference, [
+      invoiceRecord11.id,
+      invoiceRecord13.id,
+    ]),
+  )
+  expect(mutated.edges).toHaveLength(3)
+  expect(mutated.deletedEdges).toHaveLength(0)
 })
 
 function firstEdge(graphWithBookingWithCustomer: EventSourcedRecordGraph) {

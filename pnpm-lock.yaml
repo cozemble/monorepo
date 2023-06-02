@@ -1443,6 +1443,9 @@ importers:
         specifier: workspace:*
         version: link:../core
     devDependencies:
+      '@cozemble/model-string-core':
+        specifier: workspace:*
+        version: link:../string/core
       typescript:
         specifier: ^5.0.2
         version: 5.0.2

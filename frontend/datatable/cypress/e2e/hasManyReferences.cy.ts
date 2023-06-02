@@ -174,9 +174,9 @@ describe('with one customer having two invoices and another customer having one 
     cy.get('button.remove-reference-0').click()
     cy.get('button.save-references').click()
     cy.get('.existing-references').should('not.exist')
-    cy.get(cellSelector('0-2')).should('have.text', 'Invoice #12')
+    expectText(cellSelector('0-2'), 'Invoice #12')
     cy.get('button.save-root-record').click()
-    cy.get(cellSelector('0-2')).should('have.text', 'Invoice #12')
+    expectText(cellSelector('0-2'), 'Invoice #12')
   })
 
   it('can move an invoice from the customer with two to the customer with one', () => {
@@ -186,6 +186,6 @@ describe('with one customer having two invoices and another customer having one 
     cy.get('select.reference-selector').select('Invoice #11')
     cy.get('button.save-references').click()
     expectText(cellSelector('0-2'), 'Invoice #12')
-    // expectText(cellSelector('1-2'), 'Invoice #13 Invoice #11')
+    expectText(cellSelector('1-2'), 'Invoice #13 Invoice #11')
   })
 })

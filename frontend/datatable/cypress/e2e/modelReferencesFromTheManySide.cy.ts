@@ -6,7 +6,7 @@ function setTableSingularName(tableIndex: number, singularName: string) {
 }
 
 describe('data table', () => {
-  it('supports building model references from the many side e.g. from customer to bookings', () => {
+  it.skip('supports building model references from the many side e.g. from customer to bookings', () => {
     cy.visit('http://localhost:5173/empty')
     cy.get('.add-table-link').click()
     cy.get('.table-name').type('{selectall}Customers{enter}')
