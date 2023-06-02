@@ -14,14 +14,9 @@
       "options": {
         "printWidth": 1000
       }
-    },
-    {
-      "files": "*.svelte",
-      "options": {
-        "printWidth": 80
-      }
     }
   ],
   "svelteStrictMode": false,
-  "svelteIndentScriptAndStyle": false
+  "svelteIndentScriptAndStyle": true,
+  "svelteSortOrder": "scripts-options-markup-styles"
 }
