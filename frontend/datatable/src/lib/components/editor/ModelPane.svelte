@@ -8,9 +8,9 @@
   import { recordFilteringComponentStore } from '../../stores/recordFilteringComponentStore'
   import { contextHelper } from '../../stores/contextHelper'
   // components
-  import ModelPaneContext from './ModelRecordsContext.svelte'
+  import ModelPaneContext from '../../records/ModelRecordsContext.svelte'
   import ModelDevConsole from '../../models/ModelDevConsole.svelte'
-  import RecordEditor from './RecordEditor.svelte'
+  import RecordsTable from './RecordsTable.svelte'
 
   export let modelId: string
   const showDevConsole = contextHelper.getShowDevConsole()
@@ -33,7 +33,7 @@
       </div>
 
       <div use:clickOutside on:click_outside={() => clickedOutsideTable(focusControls)}>
-        <RecordEditor />
+        <RecordsTable />
       </div>
     </div>
 

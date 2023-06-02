@@ -7,7 +7,7 @@ import type { DataRecord, DataRecordId, Model, NestedModelId } from '@cozemble/m
 import type { EventSourcedRecordGraphStore } from '../../records/EventSourcedRecordGraphStore'
 
 import type { DataTableFocus, DataTableFocusControls2 } from '$lib/focus/DataTableFocus'
-import type { RecordControls } from '$lib/records/RecordControls'
+import type { RecordControls, SubGraphCollectorsByRecordId } from '$lib/records/RecordControls'
 import type { ModelControls } from '$lib/records/ModelControls'
 import type { ErrorVisibilityByRecordId } from '$lib/records/helpers'
 import type { GettableWritable } from '$lib/editors/GettableWritable'
@@ -52,6 +52,9 @@ export const filterParams = createContext<Writable<FilterParams>>('filterParams'
 export const nestedModelBeingEdited =
   createContext<Writable<NestedModelId | null>>('nestedModelBeingEdited')
 export const permitRecordAdditions = createContext<Writable<boolean>>('permitRecordAdditions')
+export const setSubGraphCollectorsByRecordId = createContext<SubGraphCollectorsByRecordId>(
+  'subGraphCollectorsByRecordId',
+)
 
 export const getAll = () => ({
   eventSourcedModel: eventSourcedModel.get(),
@@ -67,4 +70,5 @@ export const getAll = () => ({
   filterParams: filterParams.get(),
   nestedModelBeingEdited: nestedModelBeingEdited.get(),
   permitRecordAdditions: permitRecordAdditions.get(),
+  subGraphCollectorsByRecordId: setSubGraphCollectorsByRecordId.get(),
 })
