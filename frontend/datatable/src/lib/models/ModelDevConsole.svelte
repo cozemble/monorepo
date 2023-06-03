@@ -13,6 +13,7 @@
     const eventSourcedRecords = modelRecordsContextFns.getEventSourcedRecordGraph()
     const filterParams = modelRecordsContextFns.getFilterParams()
     const focus = modelRecordsContextFns.getFocus()
+    const subgraphs = modelRecordsContextFns.getSubGraphCollectorsByRecordId()
     const tab = writable('model' as string)
 
     $: json =
@@ -33,7 +34,9 @@
                             : $tab === 'focus'
                                 ? $focus :
                                     $tab === 'backend'
-                                        ? backend
+                                        ? backend:
+                                    $tab === 'subGraphs'
+                                        ? subgraphs
                                 : null
 
     $: content = {
@@ -66,6 +69,7 @@
     <ModelDevConsoleOption id="filterParams" label="Filter params" {tab}/>
     <ModelDevConsoleOption id="focus" label="Focus" {tab}/>
     <ModelDevConsoleOption id="backend" label="Backend" {tab}/>
+    <ModelDevConsoleOption id="subGraphs" label="Sub graphs" {tab}/>
 </div>
 <div class="text-xs">
     <JSONEditor {content}/>

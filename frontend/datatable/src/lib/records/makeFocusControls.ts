@@ -36,7 +36,6 @@ export function makeFocusControls(
 
     keydown(event: KeyboardEvent): void {
       const focusValue = focus.get()
-      console.log({ focusValue, event })
       if (!focusValue.isEditing && event.key === 'Enter') {
         event.stopPropagation()
         event.preventDefault()

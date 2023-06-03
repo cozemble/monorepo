@@ -26,7 +26,6 @@
     }
 
     function onKeydown(event: KeyboardEvent) {
-        console.log({isFocused, isEditing, event})
         if (isFocused) {
             focusControls.keydown(event)
         }

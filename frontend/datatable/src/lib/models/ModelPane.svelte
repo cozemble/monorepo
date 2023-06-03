@@ -3,20 +3,22 @@
     import DataRecordsTableInContext from "../records/DataRecordsTableInContext.svelte";
     import ModelPaneContext from "../records/ModelRecordsContext.svelte"
     import {recordFilteringComponentStore} from "../stores/recordFilteringComponentStore";
-    import {clickOutside} from "@cozemble/ui-atoms";
+    import {clickOutsideWhenVisible} from "@cozemble/ui-atoms";
     import type {DataTableFocusControls2} from "../focus/DataTableFocus";
     import {contextHelper} from "../stores/contextHelper";
     import ModelDevConsole from "./ModelDevConsole.svelte";
 
     export let modelId: string
     const showDevConsole = contextHelper.getShowDevConsole()
+    let container: HTMLDivElement
+
 
     function clickedOutsideTable(focusControls: DataTableFocusControls2) {
         focusControls.clearFocus()
     }
 </script>
 
-<div class="mt-2">
+<div class="mt-2" bind:this={container}>
     <ModelPaneContext modelId={modelIdFns.newInstance(modelId)} let:focusControls>
         <div class="grid-container">
             <div>
@@ -26,7 +28,7 @@
                     {/if}
                 </div>
             </div>
-            <div use:clickOutside
+            <div use:clickOutsideWhenVisible
                  on:click_outside={() => clickedOutsideTable(focusControls)}>
                 <DataRecordsTableInContext/>
             </div>

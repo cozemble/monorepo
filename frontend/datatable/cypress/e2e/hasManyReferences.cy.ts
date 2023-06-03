@@ -94,11 +94,15 @@ function makeFixtureData() {
   const invoiceRecord13 = dataRecordFns.random(systemConfiguration, models, invoiceModel, {
     'Invoice ID': 'Invoice #13',
   })
+  const invoiceRecord14 = dataRecordFns.random(systemConfiguration, models, invoiceModel, {
+    'Invoice ID': 'Invoice #14',
+  })
   customerRecord1.id.value = 'johnSmith'
   customerRecord2.id.value = 'janeDoe'
   invoiceRecord11.id.value = 'invoice11'
   invoiceRecord12.id.value = 'invoice12'
   invoiceRecord13.id.value = 'invoice13'
+  invoiceRecord14.id.value = 'invoice14'
   const customer1ToBooking1Edge = timestampedRecordGraphEdgeFns.newInstance(
     recordGraphEdgeFns.newInstance(
       customerToInvoicesReference.id,
@@ -133,7 +137,14 @@ function makeFixtureData() {
   return {
     models,
     modelViews,
-    records: [customerRecord1, customerRecord2, invoiceRecord11, invoiceRecord12, invoiceRecord13],
+    records: [
+      customerRecord1,
+      customerRecord2,
+      invoiceRecord11,
+      invoiceRecord12,
+      invoiceRecord13,
+      invoiceRecord14,
+    ],
     edges: [customer1ToBooking1Edge, customer1ToBooking2Edge, customer1ToBooking3Edge],
   }
 }
@@ -187,5 +198,41 @@ describe('with one customer having two invoices and another customer having one 
     cy.get('button.save-references').click()
     expectText(cellSelector('0-2'), 'Invoice #12')
     expectText(cellSelector('1-2'), 'Invoice #13 Invoice #11')
+  })
+
+  it('can add an existing invoice to the customer with one', () => {
+    cy.visit('http://localhost:5173/cypress')
+    cy.contains('Customers').click()
+    editCell('1-2')
+    cy.get('select.reference-selector').select('Invoice #14')
+    cy.get('button.save-references').click()
+    expectText(cellSelector('0-2'), 'Invoice #11 Invoice #12')
+    expectText(cellSelector('1-2'), 'Invoice #13 Invoice #14')
+    cy.get('button.save-root-record').click()
+    expectText(cellSelector('0-2'), 'Invoice #11 Invoice #12')
+    expectText(cellSelector('1-2'), 'Invoice #13 Invoice #14')
+  })
+
+  it.only('can add a new invoice to the customer with one', () => {
+    cy.visit('http://localhost:5173/cypress')
+    cy.contains('Customers').click()
+    editCell('1-2')
+    cy.get('select.reference-selector').select('Create a new Invoice')
+    cy.focused().should('have.attr', 'contenteditable', 'true')
+    cy.focused().type('Invoice #15').realPress('Enter')
+    cy.get(cellSelector('0-1')).should('contain', 'Jane Doe')
+    cy.get('button.save').click()
+
+    cy.get('select.reference-selector').select('Create a new Invoice')
+    cy.focused().should('have.attr', 'contenteditable', 'true')
+    cy.focused().type('Invoice #16').realPress('Enter')
+    cy.get(cellSelector('0-1')).should('contain', 'Jane Doe')
+    cy.get('button.save').click()
+
+    cy.get('button.save-references').click()
+    expectText(cellSelector('1-2'), 'Invoice #13 Invoice #15 Invoice #16')
+    cy.get('button.save-root-record').click()
+    expectText(cellSelector('0-2'), 'Invoice #11 Invoice #12')
+    expectText(cellSelector('1-2'), 'Invoice #13 Invoice #15 Invoice #16')
   })
 })

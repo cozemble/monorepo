@@ -7,7 +7,7 @@
     import {type EditorParams, makeSummaryView} from "./editorHelper";
     import {dereference} from "$lib/modelReferences/dereference";
     import {renderReference} from "$lib/modelReferences/renderReference";
-    import {clickOutside} from "@cozemble/ui-atoms";
+    import {clickOutsideWhenVisible} from "@cozemble/ui-atoms";
     import {dataRecordControlEvents, dataRecordEditEvents} from "@cozemble/model-event-sourced";
 
     export let recordPath: DataRecordValuePath
@@ -121,7 +121,7 @@
 </script>
 
 <svelte:window on:keydown={handleKeydown}/>
-<div use:clickOutside
+<div use:clickOutsideWhenVisible
      on:click_outside={close}>
     {#if htmlRender}
         {@html htmlRender}

@@ -14,7 +14,7 @@
     import {eventSourcedRecordGraphFns} from "@cozemble/model-event-sourced";
     import {createEventDispatcher, onMount} from "svelte";
     import {dataRecordEditor} from "@cozemble/data-editor-sdk";
-    import type {ModelReference} from "@cozemble/model-core/dist/esm";
+    import type {ModelReference} from "@cozemble/model-core";
 
     export let editorParams: EditorParams
     export let selectedRecordIds: DataRecordId[] = []
@@ -49,6 +49,7 @@
         const selectedValue = target.value
         if (selectedValue === "create.new.record") {
             setTimeout(() => createNewRecord(), 0)
+            target.value = "0"
         } else {
             dispatch('selected', {record: options.find(option => option.id.value === selectedValue) ?? null})
         }
@@ -65,7 +66,7 @@
 </script>
 
 <select class="input input-bordered reference-selector" on:change={optionChanged}>
-    <option selected={selectedRecordIds.length === 0}>----</option>
+    <option value="0" selected={selectedRecordIds.length === 0}>----</option>
     <option value="create.new.record">Create a new {editorParams.referencedModel.name.value}</option>
     {#each options as option}
         {@const view = makeSummaryView(option, editorParams)}

@@ -2,7 +2,7 @@
     import type {DataRecord, DataRecordValuePath, SystemConfiguration} from "@cozemble/model-core";
     import type {UserInstruction} from "@cozemble/data-editor-sdk";
     import {dataRecordEditor} from "@cozemble/data-editor-sdk";
-    import {onMount} from "svelte";
+    import {onDestroy, onMount} from "svelte";
     import type {EditorParams} from "./editorHelper";
     import {assembleEditorParams} from "./editorHelper";
     import ModelReferenceEditorInner from "./ModelReferenceEditorInner.svelte";
@@ -21,7 +21,6 @@
     let editorParams: EditorParams | UserInstruction | null = null
     let error: string | null = null
     let configureViewParams: ConfigureViewParams | null = null
-
 
     onMount(() => {
         try {
@@ -50,6 +49,7 @@
     function takeFocus(el: HTMLElement) {
         el.focus()
     }
+
 </script>
 
 {#if editorParams}

@@ -13,6 +13,7 @@
     const modelReference = recordPath.lastElement as ModelReference
 
     $: selectedRecordIds = eventSourcedRecordGraphFns.referencedRecordIds($recordGraph, record.id, modelReference)
+
 </script>
 
 {#each selectedRecordIds as selectedRecordId}

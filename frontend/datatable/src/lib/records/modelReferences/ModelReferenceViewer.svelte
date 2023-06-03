@@ -47,6 +47,7 @@
         cancelConfigureViewModal()
         editorParams = assembleEditorParams(dataRecordViewerClient, recordPath, $allModelViews)
     }
+
 </script>
 
 <div bind:this={containerElement}>

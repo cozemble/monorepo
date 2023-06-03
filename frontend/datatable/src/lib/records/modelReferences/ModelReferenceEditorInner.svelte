@@ -4,7 +4,7 @@
     import {dataRecordEditor} from "@cozemble/data-editor-sdk";
     import {afterUpdate} from "svelte";
     import type {EditorParams} from "./editorHelper";
-    import {clickOutside} from "@cozemble/ui-atoms";
+    import {clickOutsideWhenVisible} from "@cozemble/ui-atoms";
     import {modelRecordsContextFns} from "$lib/records/modelRecordsContextFns";
     import {
         dataRecordControlEvents,
@@ -74,7 +74,6 @@
 
     function saveMany(event: CustomEvent<{ selectedRecordIds: DataRecordId[] }>) {
         const newSelection = event.detail.selectedRecordIds
-        console.log({newSelection})
         dataRecordEditorClient.dispatchEditEvent(
             dataRecordEditEvents.valueChanged(
                 record,
@@ -84,15 +83,17 @@
                 'Tab',
             ),
         )
-        console.log('dispatched edit event')
     }
 
-    afterUpdate(() => console.log({recordGraph: $recordGraph, selectedRecordIds, record, modelReference}))
+    function clickedOutside() {
+        close()
+    }
+
 </script>
 
 <svelte:window on:keydown={handleKeydown}/>
-<div use:clickOutside
-     on:click_outside={close}>
+<div use:clickOutsideWhenVisible
+     on:click_outside={clickedOutside}>
     <div class="editor border border-base-300 rounded">
         {#if cardinality === 'many'}
             <ManyReferenceEditor {selectedRecordIds} {editorParams} {modelReference} {record} on:cancel={close}

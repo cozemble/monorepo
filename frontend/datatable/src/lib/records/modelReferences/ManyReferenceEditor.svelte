@@ -31,6 +31,7 @@
     function save() {
         dispatch("save", {selectedRecordIds})
     }
+
 </script>
 
 <div class="p-2 border rounded bg-base-100 pl-4 pr-4 pb-8">
@@ -49,7 +50,9 @@
     </div>
     <div class="mt-4">
         <div class="font-bold mb-2">Add another</div>
-        <SingleReferenceSelector {selectedRecordIds} {editorParams} {record} {modelReference} showSelected={false}
+        <SingleReferenceSelector selectedRecordIds={[]} {editorParams} {record}
+                                 {modelReference}
+                                 showSelected={false}
                                  on:selected={referenceAdded}/>
     </div>
     <div class="mt-4 flex justify-center">

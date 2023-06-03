@@ -19,7 +19,7 @@
     let htmlRender: string | null = null
 
     async function computeHtml(models: Model[], graph: EventSourcedRecordGraph, referencedModelId: ModelId, selectedRecordId: DataRecordId) {
-        const referencedRecord = await getReferencedRecord(dataRecordViewerClient, graph, recordId,subGraphCollectorsByRecordId, referencedModelId, selectedRecordId)
+        const referencedRecord = await getReferencedRecord(dataRecordViewerClient, graph, recordId, subGraphCollectorsByRecordId, referencedModelId, selectedRecordId)
         htmlRender = renderReferencedRecord(models, referencedRecord, summaryView)
     }
 

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { modelIdFns } from '@cozemble/model-core'
-  import { clickOutside } from '@cozemble/ui-atoms'
+  import { clickOutsideWhenVisible } from '@cozemble/ui-atoms'
 
   // misc <!-- TODO simplify -->
   import type { DataTableFocusControls2 } from '../../focus/DataTableFocus'
@@ -32,7 +32,7 @@
         </div>
       </div>
 
-      <div use:clickOutside on:click_outside={() => clickedOutsideTable(focusControls)}>
+      <div use:clickOutsideWhenVisible on:click_outside={() => clickedOutsideTable(focusControls)}>
         <RecordsTable />
       </div>
     </div>
