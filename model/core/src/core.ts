@@ -469,6 +469,15 @@ export interface DottedName extends TinyValue {
   _type: 'dotted.name'
 }
 
+export const dottedNameFns = {
+  newInstance: (value: string): DottedName => {
+    return {
+      _type: 'dotted.name',
+      value,
+    }
+  },
+}
+
 export type ModelOption = Option<Model>
 export type PropertyOption = Option<Property>
 

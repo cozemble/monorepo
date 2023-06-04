@@ -213,7 +213,7 @@ describe('with one customer having two invoices and another customer having one 
     expectText(cellSelector('1-2'), 'Invoice #13 Invoice #14')
   })
 
-  it.only('can add a new invoice to the customer with one', () => {
+  it('can add a new invoice to the customer with one', () => {
     cy.visit('http://localhost:5173/cypress')
     cy.contains('Customers').click()
     editCell('1-2')
