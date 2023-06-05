@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "packageManager": "pnpm@7.27.1",
+  "packageManager": "pnpm@8.6.0",
   "scripts": {
     "build": "turbo run build",
     "test": "turbo run test",
@@ -33,7 +33,5 @@
     "prettier": "^2.8.2",
     "prettier-plugin-svelte": "^2.9.0",
     "turbo": "latest"
-  },
-  "dependencies": {
   }
 }
