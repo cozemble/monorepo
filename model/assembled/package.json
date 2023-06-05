@@ -23,7 +23,9 @@
     "@cozemble/model-integer-ui": "workspace:*",
     "@cozemble/model-integer-core": "workspace:*",
     "@cozemble/model-decimal-ui": "workspace:*",
-    "@cozemble/model-decimal-core": "workspace:*",    
+    "@cozemble/model-decimal-core": "workspace:*",
+    "@cozemble/model-currency-ui": "workspace:*",
+    "@cozemble/model-currency-core": "workspace:*",
     "@cozemble/model-attachment-core": "workspace:*",
     "@cozemble/model-attachment-ui": "workspace:*"
   }

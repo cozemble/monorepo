@@ -15,8 +15,8 @@
 </script>
 
 <div class="mt-3">
-    <label class="label">Number of Decimal Places</label>
-    <input type="number" class="input input-bordered" value={property.numberOfDecimalPlaces}
+    <label class="label" for="decimal-number-label">Number of Decimal Places</label>
+    <input type="number" class="input input-bordered" id="decimal-number-label" value={property.numberOfDecimalPlaces}
         on:change={numberOfDecimalPlaceChanged} />
 </div>
 

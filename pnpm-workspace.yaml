@@ -6,6 +6,7 @@ packages:
   - 'lang/*'
   - 'model/*'
   - 'model/string/*'
+  - 'model/currency/*'
   - 'model/date/*'
   - 'model/integer/*'
   - 'model/decimal/*'
