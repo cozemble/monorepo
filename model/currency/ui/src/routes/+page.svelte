@@ -1,14 +1,14 @@
 <script lang="ts">
     import type {ModelEvent} from "@cozemble/model-core";
     import {
-        type DataRecord, type Model, modelEventDescriptors, type
+        type Model, modelEventDescriptors, type
             ModelView, systemConfigurationFns
     } from "@cozemble/model-core";
     import {dataRecordFns, dataRecordValuePathFns, modelFns, modelOptions} from "@cozemble/model-api";
     import type {DataRecordEditorClient, UploadedAttachment} from "@cozemble/data-editor-sdk";
     import {dataRecordEditorHost, type DataRecordViewerClient, dataRecordViewerHost} from "@cozemble/data-editor-sdk";
     import type {JustErrorMessage} from "@cozemble/lang-util";
-    import {type CurrencyProperty, emptyProperty, registerCurrencyProperty} from "@cozemble/model-integer-core";
+    import {type CurrencyProperty, emptyProperty, registerCurrencyProperty} from "@cozemble/model-currency-core";
     import CurrencyRepl from "./CurrencyRepl.svelte";
 
     registerCurrencyProperty()
@@ -24,7 +24,7 @@
     }
 
     const dataRecordEditorClient: DataRecordEditorClient = {
-        recordById(): Promise<DataRecord | null> {
+        recordById() {
             throw new Error("Not implemented")
         },
 
@@ -34,11 +34,11 @@
         dispatchEditEvent(): void {
         },
 
-        createNewRootRecord(): Promise<DataRecord | null> {
+        createNewRootRecord() {
             throw new Error("Not implemented")
         },
 
-        searchRecords(): Promise<DataRecord[]> {
+        searchRecords() {
             throw new Error("Not implemented")
         },
 
@@ -50,7 +50,7 @@
             throw new Error("Not implemented")
         },
 
-        saveModelView(modelView: ModelView): Promise<JustErrorMessage | null> {
+        saveModelView(): Promise<JustErrorMessage | null> {
             throw new Error("Not implemented")
         },
 
@@ -85,11 +85,11 @@
             throw new Error("Not implemented")
         },
 
-        searchRecords(): Promise<DataRecord[]> {
+        searchRecords() {
             throw new Error("Not implemented")
         },
 
-        recordById(): Promise<DataRecord | null> {
+        recordById() {
             throw new Error("Not implemented")
         },
 
