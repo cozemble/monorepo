@@ -9,6 +9,7 @@ import {
   PropertyConfigurer as DatePropertyConfigurer,
   PropertyEditor as DatePropertyEditor,
   PropertyViewer as DatePropertyViewer,
+  registerDateSystemConfiguration,
 } from '@cozemble/model-date-ui'
 import {
   PropertyConfigurer as IntegerPropertyConfigurer,
@@ -28,7 +29,6 @@ import {
   AttachmentPropertyEditor,
   AttachmentPropertyViewer,
 } from '@cozemble/model-attachment-ui'
-import { registerDateSystemConfiguration } from '@cozemble/model-date-ui'
 import { integerPropertyType, registerIntegerProperty } from '@cozemble/model-integer-core'
 import { decimalPropertyType, registerDecimalProperty } from '@cozemble/model-decimal-core'
 import { currencyPropertyType, registerCurrencyProperty } from '@cozemble/model-currency-core'
@@ -72,6 +72,13 @@ export const slotViewerRegistry = {
   },
   forSlot: (slot: LeafModelSlot) => {
     return slotViewerMap.get(keyForSlot(slot)) ?? null
+  },
+  contractForSlot: (slot: LeafModelSlot): 'simpler' | 'default' => {
+    // remove this once all slots are moved over to the new simpler view
+    if (slot._type === 'property' && slot.propertyType.value === 'string.property') {
+      return 'simpler'
+    }
+    return 'default'
   },
 }
 
