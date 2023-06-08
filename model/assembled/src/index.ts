@@ -82,6 +82,12 @@ export const slotEditorRegistry = {
   forSlot: (slot: LeafModelSlot) => {
     return slotEditorMap.get(keyForSlot(slot)) ?? null
   },
+  contractForSlot(slot: LeafModelSlot): 'simple' | 'classic' {
+    if (slot._type === 'property' && slot.propertyType.value === 'string.property') {
+      return 'simple'
+    }
+    return 'classic'
+  },
 }
 
 export function registerAllProperties() {

@@ -4,7 +4,7 @@
     import type {IntegerProperty} from "@cozemble/model-integer-core";
     import IntegerPropertyConfigurer from "$lib/IntegerPropertyConfigurer.svelte";
     import IntegerPropertyEditor from "$lib/IntegerPropertyEditor.svelte";
-    import IntegerPropertyViewer from "$lib/IntegerPropertyViewer.svelte";
+    import IntegerPropertyViewer from "$lib/IntegerPropertyViewerWrapper.svelte";
 
     export let model: Model
     export let property: IntegerProperty

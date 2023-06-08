@@ -2,7 +2,7 @@
     import type {DataRecord, DataRecordValuePath, Model, ModelEvent} from "@cozemble/model-core";
     import {systemConfigurationFns} from "@cozemble/model-core";
     import type {DecimalProperty} from "@cozemble/model-decimal-core";
-    import DecimalPropertyViewer from "../lib/DecimalPropertyViewer.svelte";
+    import DecimalPropertyViewer from "$lib/DecimalPropertyViewerWrapper.svelte";
     import DecimalPropertyEditor from "../lib/DecimalPropertyEditor.svelte";
     import DecimalPropertyConfigurer from "../lib/DecimalPropertyConfigurer.svelte";
 

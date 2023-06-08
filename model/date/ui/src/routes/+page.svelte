@@ -4,7 +4,7 @@
     import type {DataRecord, Model, ModelView} from "@cozemble/model-core";
     import {systemConfigurationFns} from "@cozemble/model-core";
     import {dataRecordFns, dataRecordValuePathFns, modelFns, modelOptions} from "@cozemble/model-api";
-    import DatePropertyViewer from "../lib/DatePropertyViewer.svelte";
+    import DatePropertyViewer from "$lib/DatePropertyViewerWrapper.svelte";
     import DatePropertyEditor from "../lib/DatePropertyEditor.svelte";
     import {
         type DataRecordEditorClient,

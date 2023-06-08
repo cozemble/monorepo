@@ -3,7 +3,7 @@ import { slotSystemConfigurationDescriptors } from '@cozemble/model-core'
 import DateSystemConfigurationComponent from './DateSystemConfigurationComponent.svelte'
 
 export { default as PropertyConfigurer } from './DatePropertyConfigurer.svelte'
-export { default as PropertyViewer } from './SimplerDatePropertyViewer.svelte'
+export { default as PropertyViewer } from './DatePropertyViewer.svelte'
 export { default as PropertyEditor } from './DatePropertyEditor.svelte'
 
 export const datePropertySystemConfigurationDescriptor: SlotSystemConfigurationDescriptor = {

@@ -9,7 +9,7 @@
     import {dataRecordEditorHost, type DataRecordViewerClient, dataRecordViewerHost} from "@cozemble/data-editor-sdk";
     import type {JustErrorMessage} from "@cozemble/lang-util";
     import {AttachmentPropertyEditor} from "$lib";
-    import AttachmentPropertyViewer from "$lib/AttachmentPropertyViewer.svelte";
+    import AttachmentPropertyViewer from "$lib/AttachmentPropertyViewerWrapper.svelte";
 
     registerAttachmentProperty()
     const property: AttachmentProperty = emptyProperty("Pictures")
@@ -42,15 +42,15 @@
             throw new Error("Not implemented")
         },
 
-        getModels(): Model[] {
+        getModels() {
             throw new Error("Not implemented")
         },
 
-        getModelViews(): ModelView[] {
+        getModelViews() {
             throw new Error("Not implemented")
         },
 
-        saveModelView(): Promise<JustErrorMessage | null> {
+        saveModelView() {
             throw new Error("Not implemented")
         },
 
