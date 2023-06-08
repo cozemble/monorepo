@@ -1,15 +1,15 @@
 <script lang="ts">
     import {type AttachmentProperty, emptyProperty, registerAttachmentProperty} from "@cozemble/model-attachment-core";
     import {
-        type DataRecord, type Model, type
+        type Model, type
             ModelView, systemConfigurationFns
     } from "@cozemble/model-core";
     import {dataRecordFns, dataRecordValuePathFns, modelFns, modelOptions} from "@cozemble/model-api";
     import type {DataRecordEditorClient, UploadedAttachment} from "@cozemble/data-editor-sdk";
     import {dataRecordEditorHost, type DataRecordViewerClient, dataRecordViewerHost} from "@cozemble/data-editor-sdk";
-    import {AttachmentPropertyEditor, AttachmentPropertyViewer} from "../lib";
     import type {JustErrorMessage} from "@cozemble/lang-util";
-    import type {EventSourcedRecordGraph} from "@cozemble/model-event-sourced";
+    import {AttachmentPropertyEditor} from "$lib";
+    import AttachmentPropertyViewer from "$lib/AttachmentPropertyViewer.svelte";
 
     registerAttachmentProperty()
     const property: AttachmentProperty = emptyProperty("Pictures")

@@ -75,7 +75,11 @@ export const slotViewerRegistry = {
   },
   contractForSlot: (slot: LeafModelSlot): 'simpler' | 'default' => {
     // remove this once all slots are moved over to the new simpler view
-    if (slot._type === 'property' && slot.propertyType.value === 'string.property') {
+    if (
+      slot._type === 'property' &&
+      (slot.propertyType.value === 'string.property' ||
+        slot.propertyType.value === 'attachment.property')
+    ) {
       return 'simpler'
     }
     return 'default'

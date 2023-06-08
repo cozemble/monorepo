@@ -1,9 +1,8 @@
 <script lang="ts">
     import type {StringProperty} from "@cozemble/model-string-core";
 
-    export let value: string
+    export let value: string | null
     export let property: StringProperty
-
 </script>
 
 {#if value}

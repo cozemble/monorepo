@@ -17,7 +17,7 @@
 
     const propertyDescriptor = propertyDescriptors.mandatory(property)
 
-    $: value = (propertyDescriptor.getValue(systemConfiguration, property, record) ?? '') as string
+    $: value = propertyDescriptor.getValue(systemConfiguration, property, record) ?? null
     $: viewer = slotViewerRegistry.forSlot(modelSlot)
 
 </script>
