@@ -1,11 +1,24 @@
 <script lang="ts">
+    import type {DataRecord, DataRecordValuePath, SystemConfiguration} from '@cozemble/model-core'
+    import {propertyDescriptors} from "@cozemble/model-core";
+    import {dataRecordEditor} from '@cozemble/data-editor-sdk'
     import type {DecimalProperty} from "@cozemble/model-decimal-core";
+    import {dataRecordEditEvents} from "@cozemble/model-event-sourced";
+    import DecimalPropertyEditor from "$lib/DecimalPropertyEditor.svelte";
 
-    export let value: number | null
-    export let property: DecimalProperty
-    export let changeHandler: (value: number | null, submitEvent: KeyboardEvent | null) => void
+    export let recordPath: DataRecordValuePath
+    export let record: DataRecord
+    export let systemConfiguration: SystemConfiguration
 
+    const property = recordPath.lastElement as DecimalProperty
+    const propertyDescriptor = propertyDescriptors.mandatory(property)
+
+    $: value = propertyDescriptor.getValue(systemConfiguration, property, record) ?? null
     $: numberOfDecimalPlaces = property.numberOfDecimalPlaces
+
+    const dataRecordEditorClient = dataRecordEditor.getClient()
+    const initialValue = propertyDescriptor.getValue(systemConfiguration, property, record) ?? null
+    let editableValue = initialValue
 
     function decimalChanged(event: Event) {
         const target = event.target as HTMLInputElement
@@ -14,7 +27,19 @@
         if (newValue === null || isNaN(newValue)) {
             newValue = null
         }
-        changeHandler(newValue, null)
+
+        if (newValue !== editableValue) {
+            editableValue = newValue
+            dataRecordEditorClient.dispatchEditEvent(
+                dataRecordEditEvents.valueChanged(
+                    record,
+                    recordPath,
+                    initialValue,
+                    newValue,
+                    null
+                ),
+            )
+        }
     }
 
     function validateInput(event: KeyboardEvent) {
@@ -48,7 +73,7 @@
 <input
         class="input input-bordered"
         type="text"
-        {value}
+        value={editableValue}
         on:input={validatePaste}
         on:keydown={validateInput}
         on:change={decimalChanged}/>

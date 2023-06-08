@@ -10,6 +10,8 @@
     import type {JustErrorMessage} from "@cozemble/lang-util";
     import {AttachmentPropertyEditor} from "$lib";
     import AttachmentPropertyViewer from "$lib/AttachmentPropertyViewerWrapper.svelte";
+    import {propertyDescriptors} from "@cozemble/model-core";
+    import {dataRecordEditEvents} from "@cozemble/model-event-sourced";
 
     registerAttachmentProperty()
     const property: AttachmentProperty = emptyProperty("Pictures")
@@ -17,6 +19,8 @@
     const recordPath = dataRecordValuePathFns.newInstance(property)
     const model = modelFns.newInstance("Test model", modelOptions.withSlot(property))
     const record = dataRecordFns.random(systemConfiguration, [model], model)
+    const propertyDescriptor = propertyDescriptors.mandatory(property)
+
     let showEditor = false
 
     function onShowEditor() {
@@ -114,6 +118,23 @@
 
     dataRecordViewerHost.setClient(viewer)
 
+    $: value = propertyDescriptor.getValue(systemConfiguration, property, record) ?? null
+
+    function changeHandler(newValue: any | null, submitEvent: KeyboardEvent | null) {
+        if (newValue !== value) {
+            dataRecordEditorClient.dispatchEditEvent(
+                dataRecordEditEvents.valueChanged(
+                    record,
+                    recordPath,
+                    value,
+                    newValue,
+                    null,
+                ),
+            )
+        }
+    }
+
+
 </script>
 
 <div class="m-4">
@@ -125,7 +146,7 @@
                     <div>
                         {#if showEditor}
                             <div>
-                                <AttachmentPropertyEditor {record} {recordPath} {systemConfiguration}/>
+                                <AttachmentPropertyEditor {value} {changeHandler}/>
                             </div>
                         {:else}
                             <div class="w-full h-full">

@@ -1,10 +1,12 @@
 <script lang="ts">
     import type {DataRecord, DataRecordValuePath, Model, ModelEvent} from "@cozemble/model-core";
-    import {systemConfigurationFns} from "@cozemble/model-core";
+    import {propertyDescriptors, systemConfigurationFns} from "@cozemble/model-core";
     import type {DecimalProperty} from "@cozemble/model-decimal-core";
     import DecimalPropertyViewer from "$lib/DecimalPropertyViewerWrapper.svelte";
-    import DecimalPropertyEditor from "../lib/DecimalPropertyEditor.svelte";
     import DecimalPropertyConfigurer from "../lib/DecimalPropertyConfigurer.svelte";
+    import DecimalPropertyEditor from "$lib/DecimalPropertyEditor.svelte";
+    import {dataRecordEditor} from "@cozemble/data-editor-sdk";
+    import {dataRecordEditEvents} from "@cozemble/model-event-sourced";
 
     export let model: Model
     export let property: DecimalProperty
@@ -12,6 +14,8 @@
     export let record: DataRecord
     export let modelEvents: ModelEvent[]
     const systemConfiguration = systemConfigurationFns.empty()
+    const propertyDescriptor = propertyDescriptors.mandatory(property)
+    const dataRecordEditorClient = dataRecordEditor.getClient()
 
     let showEditor = false
 
@@ -19,6 +23,22 @@
         showEditor = true
     }
 
+
+    $: value = propertyDescriptor.getValue(systemConfiguration, property, record) ?? null
+
+    function changeHandler(newValue: number | null, submitEvent: KeyboardEvent | null) {
+        if (newValue !== value) {
+            dataRecordEditorClient.dispatchEditEvent(
+                dataRecordEditEvents.valueChanged(
+                    record,
+                    recordPath,
+                    value,
+                    newValue,
+                    null,
+                ),
+            )
+        }
+    }
 </script>
 
 <div class="m-4">
@@ -42,7 +62,7 @@
                     <div>
                         {#if showEditor}
                             <div>
-                                <DecimalPropertyEditor {record} {recordPath} {systemConfiguration}/>
+                                <DecimalPropertyEditor {value} {property} {changeHandler}/>
                             </div>
                         {:else}
                             <div class="w-full h-full">

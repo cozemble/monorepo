@@ -1,14 +1,10 @@
 <script lang="ts">
-    import type {DataRecord, DataRecordValuePath, SystemConfiguration} from '@cozemble/model-core'
     import {dataRecordEditor} from "@cozemble/data-editor-sdk";
-    import type {AttachmentReference} from "@cozemble/model-attachment-core";
+    import type {AttachmentList, AttachmentReference} from "@cozemble/model-attachment-core";
     import ShowAttachmentThumbs from "./ShowAttachmentThumbs.svelte";
-    import {getAttachments} from "./helpers";
-    import {dataRecordEditEvents} from "@cozemble/model-event-sourced";
 
-    export let recordPath: DataRecordValuePath
-    export let record: DataRecord
-    export let systemConfiguration: SystemConfiguration
+    export let value: AttachmentList | null
+    export let changeHandler: (value: AttachmentList | null, submitEvent: KeyboardEvent | null) => void
 
     let error: string | null = null
     let uploadProgress = 0
@@ -16,7 +12,10 @@
 
     const dataRecordEditorClient = dataRecordEditor.getClient()
 
-    $: attachments = getAttachments(systemConfiguration, recordPath, record)
+    $: attachments = (value ?? {
+        _type: 'attachment.list',
+        attachmentReferences: [],
+    }) as AttachmentList
 
     function uploadProgressUpdate(percentage: number) {
         uploadProgress = percentage
@@ -47,16 +46,9 @@
                 ...attachments,
                 attachmentReferences: [...attachments.attachmentReferences, ...newAttachmentRefs]
             }
-            dataRecordEditorClient.dispatchEditEvent(
-                dataRecordEditEvents.valueChanged(
-                    record,
-                    recordPath,
-                    attachments,
-                    newAttachments,
-                    "Tab",
-                ),
-            )
+            changeHandler(newAttachments, null)
             attachments = newAttachments
+
         } catch (e: any) {
             console.log({e})
             error = e.message
@@ -111,19 +103,6 @@
         background-color: #4caf50;
         height: 100%;
         transition: width 0.4s ease;
-    }
-
-    .attachment-container {
-        display: inline-block;
-        margin: 0.5rem;
-        border: 2px solid #ccc;
-        border-radius: 0.25rem;
-        padding: 0.5rem;
-        cursor: pointer;
-    }
-
-    .attachment-container.selected {
-        border-color: #000;
     }
 
     .upload-container {

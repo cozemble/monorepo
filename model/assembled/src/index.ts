@@ -83,7 +83,13 @@ export const slotEditorRegistry = {
     return slotEditorMap.get(keyForSlot(slot)) ?? null
   },
   contractForSlot(slot: LeafModelSlot): 'simple' | 'classic' {
-    if (slot._type === 'property' && slot.propertyType.value === 'string.property') {
+    if (
+      slot._type === 'property' &&
+      (slot.propertyType.value === 'string.property' ||
+        slot.propertyType.value === 'attachment.property' ||
+        slot.propertyType.value === 'integer.property' ||
+        slot.propertyType.value === 'decimal.property')
+    ) {
       return 'simple'
     }
     return 'classic'

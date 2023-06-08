@@ -3,7 +3,7 @@
 
     export let value: string | null
     export let property: StringProperty
-    export let changeHandler: (value: string, submitEvent: KeyboardEvent | null) => void
+    export let changeHandler: (value: string|null, submitEvent: KeyboardEvent | null) => void
     export let closeHandler: () => void
 
     $: nullSafeValue = value ?? ''

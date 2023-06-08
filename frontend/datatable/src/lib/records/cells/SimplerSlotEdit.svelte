@@ -60,7 +60,6 @@
                 dataRecordControlEvents.moveFocus(record, recordPath, shiftKeyPressed ? 'left' : 'right'),
             )
         }
-
     }
 </script>
 
