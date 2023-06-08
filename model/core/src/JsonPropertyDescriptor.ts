@@ -93,27 +93,17 @@ export const stringPropertyDescriptor: JsonPropertyDescriptor<StringProperty, st
   configurationSchema: {
     type: 'object',
     properties: {
-      multiline: {
-        type: 'boolean',
-        title: 'Are multiple lines permitted',
+      title: {
+        title: 'Explain what this property is for',
+        type: 'string',
       },
-      regexValidations: {
-        type: 'array',
-        title: 'Validations based on regular expressions',
-        items: {
-          type: 'object',
-          required: ['regex', 'explainer'],
-          properties: {
-            regex: {
-              type: 'string',
-              title: 'The regular expression to validate against',
-            },
-            explainer: {
-              type: 'string',
-              title: 'Explain the validation to a user in case it fails',
-            },
-          },
-        },
+      multiline: {
+        title: 'Whether to allow multiple lines of text',
+        type: 'boolean',
+      },
+      pattern: {
+        title: 'A regular expression to validate against',
+        type: 'string',
       },
     },
   },

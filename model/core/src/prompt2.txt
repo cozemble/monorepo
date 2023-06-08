@@ -1,0 +1,13 @@
+If I was to ask you to generate a database table for an Invoice, what columns would you put in the table?
+Return your answer as a json document containing six properties
+The first property is "column name".
+The second property is the "description"
+The third property is the "data type"
+The fourth property is an example value
+The fifth property is the "required" flag, containing either "true" or "false"
+The sixth property is the "unique" flag, containing either "true" or "false"
+The allowed data types are: string, integer, decimal, date, time, boolean, jsonb and foreign_key.
+Use foreign key for any columns that you think should reference another table.
+Use jsonb when you think the column should contain a JSON object with multiple properties.
+Return the 15 most common columns.
+Do not include timestamp columns that track record creation and modification times
