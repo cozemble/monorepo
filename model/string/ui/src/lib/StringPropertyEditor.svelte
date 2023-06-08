@@ -1,27 +1,17 @@
 <script lang="ts">
-    import type {DataRecord, DataRecordValuePath, SystemConfiguration} from '@cozemble/model-core'
-    import {propertyDescriptors} from "@cozemble/model-core";
-    import {dataRecordEditor} from '@cozemble/data-editor-sdk'
     import type {StringProperty} from "@cozemble/model-string-core";
-    import {dataRecordControlEvents, dataRecordEditEvents} from "@cozemble/model-event-sourced";
 
-    export let recordPath: DataRecordValuePath
-    export let record: DataRecord
-    export let systemConfiguration: SystemConfiguration
-
-    const property = recordPath.lastElement as StringProperty
-    const propertyDescriptor = propertyDescriptors.mandatory(property)
-
-    const dataRecordEditorClient = dataRecordEditor.getClient()
-    const initialValue = propertyDescriptor.getValue(systemConfiguration, property, record) ?? null
-    let editableValue = (propertyDescriptor.getValue(systemConfiguration, property, record) ?? '') as string
+    export let value: string
+    export let property: StringProperty
+    export let changeHandler: (value: string, submitEvent: KeyboardEvent | null) => void
+    export let closeHandler: () => void
 
     let valueContainerDomElement: HTMLDivElement | null
 
     function init(el: HTMLDivElement) {
         valueContainerDomElement = el
         el.focus()
-        el.innerHTML = editableValue.replace(/\n/g, '<br>');
+        el.innerHTML = value.replace(/\n/g, '<br>');
         setEndOfContenteditable(el)
     }
 
@@ -40,25 +30,9 @@
         }
     }
 
-    function handleEditFinished(terminatingKey: 'Enter' | 'Tab' | null = null, shiftKeyPressed = false) {
+    function handleEditFinished(event: KeyboardEvent | null = null) {
         if (valueContainerDomElement) {
-            const newValue = valueContainerDomElement.innerText
-            if (newValue !== editableValue) {
-                editableValue = newValue
-                dataRecordEditorClient.dispatchEditEvent(
-                    dataRecordEditEvents.valueChanged(
-                        record,
-                        recordPath,
-                        initialValue,
-                        newValue,
-                        terminatingKey,
-                    ),
-                )
-            } else if (terminatingKey === 'Tab') {
-                dataRecordEditorClient.dispatchControlEvent(
-                    dataRecordControlEvents.moveFocus(record, recordPath, shiftKeyPressed ? 'left' : 'right'),
-                )
-            }
+            changeHandler(valueContainerDomElement.innerText, event)
         }
     }
 
@@ -72,13 +46,11 @@
         if (event.key === 'Enter' || event.key === 'Tab') {
             event.preventDefault()
             event.stopPropagation()
-            handleEditFinished(event.key, event.shiftKey)
+            handleEditFinished(event)
         } else if (event.key === 'Escape') {
             event.preventDefault()
             event.stopPropagation()
-            dataRecordEditorClient.dispatchControlEvent(
-                dataRecordControlEvents.editAborted(record, recordPath),
-            )
+            closeHandler()
         }
     }
 </script>
@@ -89,7 +61,7 @@
      contenteditable="true"
      use:init
      on:blur={() => handleEditFinished()}>
-    {editableValue}
+    {value}
 </div>
 
 <style>
