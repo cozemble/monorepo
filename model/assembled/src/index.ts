@@ -78,6 +78,10 @@ export const slotViewerRegistry = {
     if (
       slot._type === 'property' &&
       (slot.propertyType.value === 'string.property' ||
+        slot.propertyType.value === 'currency.property' ||
+        slot.propertyType.value === 'date.property' ||
+        slot.propertyType.value === 'decimal.property' ||
+        slot.propertyType.value === 'integer.property' ||
         slot.propertyType.value === 'attachment.property')
     ) {
       return 'simpler'

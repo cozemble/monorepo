@@ -1,9 +1,8 @@
 <script lang="ts">
-    import type {AttachmentList, AttachmentProperty} from "@cozemble/model-attachment-core";
+    import type {AttachmentList} from "@cozemble/model-attachment-core";
     import ShowAttachmentThumbs from "./ShowAttachmentThumbs.svelte";
 
     export let value: AttachmentList | null
-    export let property: AttachmentProperty
 
     $: attachmentList = value ?? {
         _type: 'attachment.list',
