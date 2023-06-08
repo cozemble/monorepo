@@ -5,7 +5,6 @@
         LeafModelSlot,
         SystemConfiguration
     } from '@cozemble/model-core'
-    import {slotViewerRegistry} from '@cozemble/model-assembled'
     import ClassicSlotView from "./ClassicSlotView.svelte";
     import SimplerSlotView from "./SimplerSlotView.svelte";
 
@@ -14,11 +13,10 @@
     export let systemConfiguration: SystemConfiguration
     export let parentPath: DataRecordPathParentElement[]
 
-    $: contract = slotViewerRegistry.contractForSlot(modelSlot)
 </script>
 
-{#if contract === 'default'}
-    <ClassicSlotView {modelSlot} {record} {systemConfiguration} {parentPath}/>
-{:else}
+{#if modelSlot._type === 'property'}
     <SimplerSlotView {modelSlot} {record} {systemConfiguration} {parentPath}/>
+{:else}
+    <ClassicSlotView {modelSlot} {record} {systemConfiguration} {parentPath}/>
 {/if}

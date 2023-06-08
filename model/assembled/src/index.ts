@@ -73,21 +73,6 @@ export const slotViewerRegistry = {
   forSlot: (slot: LeafModelSlot) => {
     return slotViewerMap.get(keyForSlot(slot)) ?? null
   },
-  contractForSlot: (slot: LeafModelSlot): 'simpler' | 'default' => {
-    // remove this once all slots are moved over to the new simpler view
-    if (
-      slot._type === 'property' &&
-      (slot.propertyType.value === 'string.property' ||
-        slot.propertyType.value === 'currency.property' ||
-        slot.propertyType.value === 'date.property' ||
-        slot.propertyType.value === 'decimal.property' ||
-        slot.propertyType.value === 'integer.property' ||
-        slot.propertyType.value === 'attachment.property')
-    ) {
-      return 'simpler'
-    }
-    return 'default'
-  },
 }
 
 export const slotEditorRegistry = {
