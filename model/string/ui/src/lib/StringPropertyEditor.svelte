@@ -1,17 +1,19 @@
 <script lang="ts">
     import type {StringProperty} from "@cozemble/model-string-core";
 
-    export let value: string
+    export let value: string | null
     export let property: StringProperty
     export let changeHandler: (value: string, submitEvent: KeyboardEvent | null) => void
     export let closeHandler: () => void
+
+    $: nullSafeValue = value ?? ''
 
     let valueContainerDomElement: HTMLDivElement | null
 
     function init(el: HTMLDivElement) {
         valueContainerDomElement = el
         el.focus()
-        el.innerHTML = value.replace(/\n/g, '<br>');
+        el.innerHTML = nullSafeValue.replace(/\n/g, '<br>');
         setEndOfContenteditable(el)
     }
 
@@ -61,7 +63,7 @@
      contenteditable="true"
      use:init
      on:blur={() => handleEditFinished()}>
-    {value}
+    {nullSafeValue}
 </div>
 
 <style>
