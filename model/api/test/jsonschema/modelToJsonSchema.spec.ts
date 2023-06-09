@@ -35,6 +35,7 @@ export type JsonTypeConfiguration =
 
 export interface JsonProperty<T = JsonType, C = JsonTypeConfiguration> extends Property {
   propertyType: { _type: 'property.type'; value: 'json.property' }
+  title?: string
   jsonType: T
   configuration: C
 }
@@ -70,6 +71,12 @@ function modelToJsonSchema(model: Model) {
         if (configuration.pattern) {
           properties[jsonSlot.name.value].pattern = configuration.pattern
         }
+        if (jsonSlot.unique) {
+          properties[jsonSlot.name.value].unique = true
+        }
+        if (jsonSlot.title) {
+          properties[jsonSlot.name.value].title = jsonSlot.title
+        }
       }
       return properties
     }, {}),
@@ -89,6 +96,20 @@ test('can write a model with a single string property to json schema', () => {
   )
   const jsonSchema = modelToJsonSchema(model)
   expect(jsonSchema.properties).toEqual(expect.objectContaining({ email: { type: 'string' } }))
+})
+
+test('can write title for a property', () => {
+  const model = modelFns.newInstance(
+    'Model',
+    modelOptions.withProperty({
+      ...jsonPropertyFns.string('email'),
+      title: 'A valid email address',
+    } as JsonProperty),
+  )
+  const jsonSchema = modelToJsonSchema(model)
+  expect(jsonSchema.properties).toEqual(
+    expect.objectContaining({ email: { type: 'string', title: 'A valid email address' } }),
+  )
 })
 
 test('by default a property is optional', () => {
@@ -138,4 +159,20 @@ test('can mark a property as required', () => {
   )
   const jsonSchema = modelToJsonSchema(model)
   expect(jsonSchema.required).toEqual(['email'])
+})
+
+test('can mark a property as unique', () => {
+  const model = modelFns.newInstance(
+    'Model',
+    modelOptions.withProperty({ ...jsonPropertyFns.string('email'), unique: true }),
+  )
+  const jsonSchema = modelToJsonSchema(model)
+  expect(jsonSchema.properties).toEqual(
+    expect.objectContaining({
+      email: {
+        type: 'string',
+        unique: true,
+      },
+    }),
+  )
 })
