@@ -90,3 +90,16 @@ test('fromDottedPath two levels deep', () => {
   const line1 = modelFns.elementByName(addressModel, 'Line 1') as Property
   expect(path).toEqual(dataRecordValuePathFns.newInstance(line1, customer, address))
 })
+
+test('elementByName errors is name is ambiguous', () => {
+  const model = modelFns.newInstance(
+    'Model',
+    modelOptions.withProperties(propertyFns.newInstance('Name'), propertyFns.newInstance('Name')),
+  )
+  try {
+    modelFns.elementByName(model, 'Name')
+    expect(true).toEqual(false)
+  } catch (e) {
+    expect(e.message).toMatch('Multiple model elements found with name')
+  }
+})

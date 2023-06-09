@@ -148,7 +148,7 @@ export function valuesForModelPath(
       const dataRecordPath = dataRecordValuePathFns.fromDottedPath(
         models,
         model,
-        modelPathFns.toDottedNamePath(path),
+        modelPathFns.toDottedIdPath(path),
       )
       return singleCardinalityValuesForModelPathResponse(
         dataRecordRecordPathAndValue(dataRecordPath, null),
