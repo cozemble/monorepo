@@ -9,7 +9,6 @@
     "prepublishOnly": "npm run package",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch --threshold error",
-    "cypress": "./scripts/run-cypress.sh",
     "test": "svelte-check --tsconfig ./tsconfig.json --threshold error"
   },
   "exports": {
