@@ -16,6 +16,7 @@
         registerJsonPropertyViewers
     } from "$lib/properties/registerJsonPropertyViewers";
     import {dataRecordFns} from "@cozemble/model-api";
+    import type {Writable} from "svelte/store";
 
     let models: Model[] = []
     export const eventSourcedModels = eventSourcedModelStore([] as EventSourcedModel[])
@@ -24,31 +25,7 @@
     const permitModelling = writable(true)
     const showDevConsole = writable(false)
 
-    export const bikeCheckSchema: JsonSchema = {
-        $schema: 'http://json-schema.org/draft-07/schema#',
-        $id: 'bike-check-schema.json',
-        type: 'object',
-        title: 'Bike Check',
-        properties: {
-            customerId: {
-                $ref: 'https://cozemble.com/types/reference/data.json#/definitions/reference',
-            },
-            dropOffDate: {
-                $ref: 'https://cozemble.com/types/date/data.json#/definitions/date',
-            },
-            dropOffTime: {
-                $ref: 'https://cozemble.com/types/time/data.json#/definitions/time',
-            },
-            make: {
-                type: 'string',
-            },
-            model: {
-                type: 'string',
-            },
-            picture: {$ref: 'https://cozemble.com/types/attachment/data.json#/definitions/attachment'},
-        },
-    }
-
+    const navbarState: Writable<string | null> = writable(null)
     onMount(() => {
         registerJsonProperties()
         registerJsonPropertyViewers()
@@ -61,6 +38,7 @@
         const esms = models.map(m => eventSourcedModelFns.newInstance(m))
         eventSourcedModels.set(eventSourcedModelListFns.newInstance(esms))
         backendFns.setBackend(makeInMemoryBackend(esms, [customer1]))
+        navbarState.set(customerModel.id.value)
     })
 
 </script>
@@ -71,5 +49,6 @@
                {systemConfiguration}
                {permitModelling}
                {showDevConsole}
+               {navbarState}
                userId="test"/>
 {/if}

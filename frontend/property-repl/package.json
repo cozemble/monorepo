@@ -57,6 +57,7 @@
     "@cozemble/model-event-sourced": "workspace:*",
     "@cozemble/model-api": "workspace:*",
     "@cozemble/model-assembled": "workspace:*",
+    "@cozemble/model-string-ui": "workspace:*",
     "ajv": "^8.12.0",
     "daisyui": "^2.47.0"
   }

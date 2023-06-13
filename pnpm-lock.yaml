@@ -888,6 +888,9 @@ importers:
       '@cozemble/model-event-sourced':
         specifier: workspace:*
         version: link:../../model/event-sourced
+      '@cozemble/model-string-ui':
+        specifier: workspace:*
+        version: link:../../model/string/ui
       '@cozemble/ui-atoms':
         specifier: workspace:*
         version: link:../../ui/atoms
