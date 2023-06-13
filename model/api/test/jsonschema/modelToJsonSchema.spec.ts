@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest'
 import { modelFns, modelOptions, nestedModelFns, propertyFns } from '../../src'
-import { Model, ModelId, Property } from '@cozemble/model-core'
+import { Model, Property } from '@cozemble/model-core'
 
 export type JsonType = 'string' | 'integer' | 'number' | 'boolean' | 'object'
 
@@ -22,17 +22,11 @@ export interface BooleanTypeConfiguration {
   _type: 'boolean.type.configuration'
 }
 
-export interface ObjectTypeConfiguration {
-  _type: 'object.type.configuration'
-  referencedModelId: ModelId
-}
-
 export type JsonTypeConfiguration =
   | StringTypeConfiguration
   | IntegerTypeConfiguration
   | NumberTypeConfiguration
   | BooleanTypeConfiguration
-  | ObjectTypeConfiguration
 
 export interface JsonProperty<T = JsonType, C = JsonTypeConfiguration> extends Property {
   propertyType: { _type: 'property.type'; value: 'json.property' }
@@ -84,18 +78,6 @@ export const jsonPropertyFns = {
       propertyType: { _type: 'property.type', value: 'json.property' },
       jsonType: 'boolean',
       configuration: { _type: 'boolean.type.configuration', ...configuration },
-    }
-  },
-  object: (
-    name: string,
-    referencedModelId: ModelId,
-    configuration: Partial<ObjectTypeConfiguration> = {},
-  ): JsonProperty<'object', ObjectTypeConfiguration> => {
-    return {
-      ...propertyFns.newInstance(name),
-      propertyType: { _type: 'property.type', value: 'json.property' },
-      jsonType: 'object',
-      configuration: { _type: 'object.type.configuration', referencedModelId, ...configuration },
     }
   },
 }

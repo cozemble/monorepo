@@ -62,6 +62,7 @@ export {
   nestedModelIdFns,
   LeafModelSlotId,
   modelReferenceValuePlaceholder,
+  dottedNameFns,
 } from './core'
 
 export { propertyDescriptors } from './propertyDescriptor'

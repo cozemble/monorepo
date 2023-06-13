@@ -88,7 +88,8 @@ export const slotEditorRegistry = {
       (slot.propertyType.value === 'string.property' ||
         slot.propertyType.value === 'attachment.property' ||
         slot.propertyType.value === 'integer.property' ||
-        slot.propertyType.value === 'decimal.property')
+        slot.propertyType.value === 'decimal.property' ||
+        slot.propertyType.value.startsWith('json.'))
     ) {
       return 'simple'
     }
