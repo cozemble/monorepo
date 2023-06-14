@@ -1,13 +1,13 @@
 <script lang="ts">
 
-    import type {JsonSchema} from "$lib/types/types";
     import type {Model, ModelView} from "@cozemble/model-core";
     import {systemConfigurationFns} from "@cozemble/model-core";
     import {onMount} from "svelte";
-    import {modelFns} from "@cozemble/model-api";
+    import {dataRecordFns, modelFns} from "@cozemble/model-api";
     import {backendFns, DataTable, eventSourcedModelStore, makeInMemoryBackend} from "@cozemble/frontend-datatable";
     import type {EventSourcedModel} from "@cozemble/model-event-sourced";
     import {eventSourcedModelFns, eventSourcedModelListFns} from "@cozemble/model-event-sourced";
+    import type {Writable} from "svelte/store";
     import {writable} from "svelte/store";
     import {jsonProperty, registerJsonProperties} from "$lib/properties/JsonProperty";
     import {
@@ -15,8 +15,7 @@
         registerJsonPropertyEditors,
         registerJsonPropertyViewers
     } from "$lib/properties/registerJsonPropertyViewers";
-    import {dataRecordFns} from "@cozemble/model-api";
-    import type {Writable} from "svelte/store";
+    import {propertyDescriptors} from "@cozemble/model-core";
 
     let models: Model[] = []
     export const eventSourcedModels = eventSourcedModelStore([] as EventSourcedModel[])
@@ -31,6 +30,8 @@
         registerJsonPropertyViewers()
         registerJsonPropertyEditors()
         registerJsonPropertyConfigurers()
+        const listed = propertyDescriptors.list()
+        console.log({listed})
         const customerModel = modelFns.newInstance("Customer")
         customerModel.slots = [jsonProperty.string("First name"), jsonProperty.string("Last name")]
         const customer1 = dataRecordFns.random(systemConfiguration, [customerModel], customerModel)

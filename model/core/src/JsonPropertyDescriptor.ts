@@ -3,6 +3,43 @@ import { SystemConfiguration } from './systemConfiguration'
 import { ModelEvent, modelEventFns } from './events'
 import { propertyIdFns } from './propertyIdFns'
 import ajv from 'ajv'
+import { TinyValue } from './TinyValue'
+
+export type JsonDataType = TinyValue<
+  'json.data.type',
+  'string' | 'integer' | 'number' | 'boolean' | 'object' | 'array' | 'null'
+>
+
+export const jsonDataTypes = {
+  string: {
+    _type: 'json.data.type',
+    value: 'string',
+  } as JsonDataType,
+  integer: {
+    _type: 'json.data.type',
+    value: 'integer',
+  } as JsonDataType,
+  number: {
+    _type: 'json.data.type',
+    value: 'number',
+  } as JsonDataType,
+  boolean: {
+    _type: 'json.data.type',
+    value: 'boolean',
+  } as JsonDataType,
+  object: {
+    _type: 'json.data.type',
+    value: 'object',
+  } as JsonDataType,
+  array: {
+    _type: 'json.data.type',
+    value: 'array',
+  } as JsonDataType,
+  null: {
+    _type: 'json.data.type',
+    value: 'null',
+  } as JsonDataType,
+}
 
 export type BasicJsonType = 'string' | 'integer' | 'number' | 'boolean' | 'object'
 export type TypescriptType = string | number | boolean | any

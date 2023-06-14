@@ -9,7 +9,7 @@
 
     $: displayable = value ?? ''
 </script>
-{#if property.jsonType === 'string'}
+{#if property.jsonType.value === 'string'}
     <JsonStringEditor {property} {value} {changeHandler} {closeHandler}/>
 {:else}
     <p>Unhandled json type: {property.jsonType}</p>

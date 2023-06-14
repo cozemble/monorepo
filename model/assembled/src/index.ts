@@ -37,6 +37,7 @@ import {
   PropertyEditor as CurrencyPropertyEditor,
   PropertyViewer as CurrencyPropertyViewer,
 } from '@cozemble/model-currency-ui'
+import { JsonDataType } from '@cozemble/model-core'
 
 export { propertyDescriptors } from '@cozemble/model-core'
 
@@ -53,7 +54,7 @@ export const propertyConfigurerRegistry = {
   },
 }
 
-export type SlotKey = PropertyType | 'model.reference'
+export type SlotKey = PropertyType | JsonDataType | 'model.reference'
 
 function keyValue(slotKey: SlotKey) {
   return typeof slotKey === 'string' ? slotKey : slotKey.value
@@ -61,6 +62,8 @@ function keyValue(slotKey: SlotKey) {
 
 function keyForSlot(slot: LeafModelSlot): string {
   if (slot._type === 'property') {
+    if (slot.propertyType.value === 'json.string.property') {
+    }
     return slot.propertyType.value
   }
   return 'model.reference'

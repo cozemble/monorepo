@@ -4,16 +4,15 @@
     import {propertyConfigurationSchemas} from "$lib/properties/JsonProperty";
     import {ObjectEditorWrapper} from "@cozemble/data-editor";
     import {writable} from "svelte/store";
-    import type {JsonSchema} from "$lib/types/types";
     import {onDestroy} from "svelte";
+    import {afterUpdate} from "svelte";
 
     export let model: Model
     export let property: JsonProperty
-    const configSchema: JsonSchema | null = propertyConfigurationSchemas.get(property.propertyType)
+    $: configSchema = propertyConfigurationSchemas.get(property.propertyType)
 
     const configuration = writable({...property.configuration})
     const errors = writable({})
-    console.log({configSchema})
     const unsub = configuration.subscribe((value) => {
         console.log({value})
         for (const key of Object.keys(property.configuration)) {
@@ -24,11 +23,13 @@
         console.log({property})
     });
     onDestroy(unsub)
+    afterUpdate(() => console.log({configSchema,model, property, configuration:$configuration, errors:$errors}))
 </script>
 
-
-<ObjectEditorWrapper
-        schema={configSchema}
-        title={'Options'}
-        bind:value={$configuration}
-        errors={$errors}/>
+{#if configSchema}
+    <ObjectEditorWrapper
+            schema={configSchema}
+            title={'Options'}
+            bind:value={$configuration}
+            errors={$errors}/>
+{/if}
