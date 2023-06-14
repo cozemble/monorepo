@@ -41,6 +41,16 @@ export const jsonDataTypes = {
   } as JsonDataType,
 }
 
+export interface JsonProperty<T extends JsonDataType = typeof jsonDataTypes.string, V = any>
+  extends Property {
+  jsonType: T
+  configuration: any
+}
+
+export function isJsonProperty(obj: any): obj is JsonProperty {
+  return obj && typeof obj === 'object' && 'jsonType' in obj && 'configuration' in obj
+}
+
 export type BasicJsonType = 'string' | 'integer' | 'number' | 'boolean' | 'object'
 export type TypescriptType = string | number | boolean | any
 

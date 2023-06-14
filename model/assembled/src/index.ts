@@ -1,5 +1,5 @@
 import type { PropertyType } from '@cozemble/model-core'
-import { LeafModelSlot } from '@cozemble/model-core'
+import { JsonDataType, LeafModelSlot } from '@cozemble/model-core'
 import {
   PropertyConfigurer as StringPropertyConfigurer,
   PropertyEditor as StringPropertyEditor,
@@ -37,7 +37,7 @@ import {
   PropertyEditor as CurrencyPropertyEditor,
   PropertyViewer as CurrencyPropertyViewer,
 } from '@cozemble/model-currency-ui'
-import { JsonDataType } from '@cozemble/model-core'
+import { isJsonProperty } from '@cozemble/model-core/dist/esm'
 
 export { propertyDescriptors } from '@cozemble/model-core'
 
@@ -61,9 +61,10 @@ function keyValue(slotKey: SlotKey) {
 }
 
 function keyForSlot(slot: LeafModelSlot): string {
+  if (isJsonProperty(slot)) {
+    return slot.jsonType.value
+  }
   if (slot._type === 'property') {
-    if (slot.propertyType.value === 'json.string.property') {
-    }
     return slot.propertyType.value
   }
   return 'model.reference'

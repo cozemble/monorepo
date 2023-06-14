@@ -115,4 +115,4 @@ export { Id, tinyValueFns, TinyValue, Name } from './TinyValue'
 
 export { modelIdFns } from './modelIdFns'
 
-export { JsonDataType, jsonDataTypes } from './JsonPropertyDescriptor'
+export { JsonDataType, jsonDataTypes, JsonProperty, isJsonProperty } from './JsonPropertyDescriptor'

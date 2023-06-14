@@ -1,11 +1,11 @@
 import type {
   DataRecord,
   JsonDataType,
+  JsonProperty,
   Model,
   ModelEvent,
   ModelEventDescriptor,
   ModelId,
-  Property,
   PropertyDescriptor,
   PropertyId,
   PropertyName,
@@ -14,6 +14,7 @@ import type {
 } from '@cozemble/model-core'
 import {
   dottedNameFns,
+  jsonDataTypes,
   modelEventDescriptors,
   modelEventFns,
   propertyDescriptors,
@@ -22,7 +23,6 @@ import {
 } from '@cozemble/model-core'
 import { propertyFns } from '@cozemble/model-api'
 import type { JsonSchema } from '$lib/types/types'
-import { jsonDataTypes } from '@cozemble/model-core'
 
 const stringPropertyConfigurationSchema: JsonSchema = {
   $schema: 'http://json-schema.org/draft-07/schema#',
@@ -46,12 +46,6 @@ const stringPropertyConfigurationSchema: JsonSchema = {
       type: 'string',
     },
   },
-}
-
-export interface JsonProperty<T extends JsonDataType = typeof jsonDataTypes.string, V = any>
-  extends Property {
-  jsonType: T
-  configuration: any
 }
 
 export const propertyConfigurationSchemaMap = new Map<string, JsonSchema>()
@@ -220,7 +214,7 @@ export const jsonStringPropertyDescriptor: PropertyDescriptor<JsonStringProperty
 }
 
 const phoneNumberConfiguration = {
-  pattern: '^\\+?[\\d\\s\\-\\(\\)]{7,20}$\n',
+  pattern: '^\\+?[\\d\\s\\-\\(\\)]{7,20}$',
   patternExplanation: 'Must be a valid phone number',
   multipleLines: false,
   prefix: '',
