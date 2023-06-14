@@ -1,7 +1,7 @@
 import {
   type JsonStringProperty,
   jsonStringPropertyDescriptor,
-} from '$lib/properties/JsonStringProperty'
+} from '$lib/properties/string/JsonStringProperty'
 import type { NewJsonPropertyModelEvent } from '$lib/properties/events'
 import type { PropertyDescriptor, PropertyType } from '@cozemble/model-core'
 import {

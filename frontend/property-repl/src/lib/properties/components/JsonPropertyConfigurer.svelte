@@ -4,6 +4,7 @@
     import {ObjectEditorWrapper} from "@cozemble/data-editor";
     import {writable} from "svelte/store";
     import {onDestroy} from "svelte";
+    import {afterUpdate} from "svelte";
 
     export let model: Model
     export let property: JsonProperty
@@ -19,6 +20,8 @@
         Object.assign(property.configuration, value);
     });
     onDestroy(unsub)
+
+    afterUpdate(() => console.log({property, configSchema, configuration:$configuration, errors:$errors}))
 </script>
 
 {#if configSchema}

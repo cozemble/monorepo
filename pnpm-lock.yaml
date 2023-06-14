@@ -885,6 +885,9 @@ importers:
       '@cozemble/model-core':
         specifier: workspace:*
         version: link:../../model/core
+      '@cozemble/model-decimal-ui':
+        specifier: workspace:*
+        version: link:../../model/decimal/ui
       '@cozemble/model-event-sourced':
         specifier: workspace:*
         version: link:../../model/event-sourced

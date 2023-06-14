@@ -1,4 +1,4 @@
-import { jsonStringPropertyType } from '$lib/properties/JsonStringProperty'
+import { jsonStringPropertyType } from '$lib/properties/string/JsonStringProperty'
 import {
   type JsonDataType,
   jsonDataTypes,

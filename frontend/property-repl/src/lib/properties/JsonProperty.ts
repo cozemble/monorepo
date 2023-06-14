@@ -2,13 +2,14 @@ import type { PropertyType } from '@cozemble/model-core'
 import { jsonDataTypes } from '@cozemble/model-core'
 import { propertyFns } from '@cozemble/model-api'
 import type { JsonSchema } from '$lib/types/types'
-import type { JsonStringProperty } from '$lib/properties/JsonStringProperty'
+import type { JsonStringProperty } from '$lib/properties/string/JsonStringProperty'
 import {
   jsonStringPropertyType,
   registerJsonStringProperty,
-} from '$lib/properties/JsonStringProperty'
+} from '$lib/properties/string/JsonStringProperty'
 import { registerJsonPropertyEvents } from '$lib/properties/events'
 import { registerDerivedProperties } from '$lib/properties/derived/derivedProperties'
+import { registerJsonNumberProperty } from '$lib/properties/number/JsonNumberProperty'
 
 export const propertyConfigurationSchemaMap = new Map<string, JsonSchema>()
 
@@ -34,6 +35,7 @@ export const jsonProperty = {
 
 export function registerJsonProperties() {
   registerJsonStringProperty()
+  registerJsonNumberProperty()
   registerJsonPropertyEvents()
   registerDerivedProperties()
 }
