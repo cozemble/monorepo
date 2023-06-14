@@ -1,11 +1,11 @@
 <script lang="ts">
     import type {Model} from "@cozemble/model-core";
-    import type {JsonProperty} from "$lib/properties/JsonProperty";
     import {propertyConfigurationSchemas} from "$lib/properties/JsonProperty";
     import {ObjectEditorWrapper} from "@cozemble/data-editor";
     import {writable} from "svelte/store";
     import {onDestroy} from "svelte";
     import {afterUpdate} from "svelte";
+    import type {JsonProperty} from "@cozemble/model-core";
 
     export let model: Model
     export let property: JsonProperty

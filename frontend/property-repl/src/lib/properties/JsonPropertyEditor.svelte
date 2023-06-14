@@ -1,6 +1,6 @@
 <script lang="ts">
-    import type {JsonProperty} from "$lib/properties/JsonProperty";
     import JsonStringEditor from "$lib/properties/JsonStringEditor.svelte";
+    import type {JsonProperty} from "@cozemble/model-core";
 
     export let property: JsonProperty
     export let value: any | null
