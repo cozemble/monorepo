@@ -12,7 +12,7 @@ import {
   type PropertyName,
   type SystemConfiguration,
 } from '@cozemble/model-core'
-import { propertyDescriptors } from '@cozemble/model-core/dist/esm'
+import { propertyDescriptors } from '@cozemble/model-core'
 import type { NewJsonPropertyModelEvent } from '$lib/properties/events'
 import { propertyConfigurationSchemas } from '$lib/properties/JsonProperty'
 

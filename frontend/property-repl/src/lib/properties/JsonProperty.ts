@@ -10,6 +10,7 @@ import {
 import { registerJsonPropertyEvents } from '$lib/properties/events'
 import { registerDerivedProperties } from '$lib/properties/derived/derivedProperties'
 import { registerJsonNumberProperty } from '$lib/properties/number/JsonNumberProperty'
+import { registerJsonDateProperty } from '$lib/properties/date/JsonDateProperty'
 
 export const propertyConfigurationSchemaMap = new Map<string, JsonSchema>()
 
@@ -36,6 +37,7 @@ export const jsonProperty = {
 export function registerJsonProperties() {
   registerJsonStringProperty()
   registerJsonNumberProperty()
+  registerJsonDateProperty()
   registerJsonPropertyEvents()
   registerDerivedProperties()
 }

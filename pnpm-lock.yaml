@@ -903,6 +903,9 @@ importers:
       daisyui:
         specifier: ^2.47.0
         version: 2.47.0(autoprefixer@10.4.13)(postcss@8.4.23)
+      date-fns:
+        specifier: ^2.29.3
+        version: 2.29.3
     devDependencies:
       '@originjs/vite-plugin-commonjs':
         specifier: ^1.0.3

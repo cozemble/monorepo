@@ -37,7 +37,7 @@ import {
   PropertyEditor as CurrencyPropertyEditor,
   PropertyViewer as CurrencyPropertyViewer,
 } from '@cozemble/model-currency-ui'
-import { isJsonProperty } from '@cozemble/model-core/dist/esm'
+import { isJsonProperty } from '@cozemble/model-core'
 
 export { propertyDescriptors } from '@cozemble/model-core'
 
@@ -70,12 +70,28 @@ function keyForSlot(slot: LeafModelSlot): string {
   return 'model.reference'
 }
 
+function orderedLookupOptions(slot: LeafModelSlot): string[] {
+  if (isJsonProperty(slot)) {
+    return [slot.propertyType.value, slot.jsonType.value]
+  }
+  if (slot._type === 'property') {
+    return [slot.propertyType.value]
+  }
+  return ['model.reference']
+}
+
 export const slotViewerRegistry = {
   register: (slotKey: SlotKey, component: any) => {
     slotViewerMap.set(keyValue(slotKey), component)
   },
   forSlot: (slot: LeafModelSlot) => {
-    return slotViewerMap.get(keyForSlot(slot)) ?? null
+    for (const key of orderedLookupOptions(slot)) {
+      const viewer = slotViewerMap.get(key)
+      if (viewer) {
+        return viewer
+      }
+    }
+    return null
   },
 }
 
@@ -84,7 +100,14 @@ export const slotEditorRegistry = {
     slotEditorMap.set(keyValue(slotKey), component)
   },
   forSlot: (slot: LeafModelSlot) => {
-    return slotEditorMap.get(keyForSlot(slot)) ?? null
+    for (const key of orderedLookupOptions(slot)) {
+      const editor = slotEditorMap.get(key)
+      console.log({ key, editor })
+      if (editor) {
+        return editor
+      }
+    }
+    return null
   },
   contractForSlot(slot: LeafModelSlot): 'simple' | 'classic' {
     if (

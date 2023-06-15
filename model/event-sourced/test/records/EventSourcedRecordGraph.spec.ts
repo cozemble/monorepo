@@ -17,9 +17,9 @@ import {
   timestampedRecordGraphEdgeFns,
 } from '../../src'
 import { mandatory, time } from '@cozemble/lang-util'
-import { recordGraphEdgeFns, tinyValueFns } from '@cozemble/model-core/dist/esm'
-import { propertyFns, propertyOptions } from '@cozemble/model-api/dist/esm'
-import { registerStringProperty } from '@cozemble/model-string-core/dist/esm'
+import { recordGraphEdgeFns, tinyValueFns } from '@cozemble/model-core'
+import { propertyFns, propertyOptions } from '@cozemble/model-api'
+import { registerStringProperty } from '@cozemble/model-string-core'
 
 describe('given customer and bookings models with a customer has-many bookings and a booking has-one customer', () => {
   const modelReferenceId = modelReferenceIdFns.newInstance('fromBookingToCustomer')

@@ -13,13 +13,9 @@ import {
   summaryViewFns,
 } from '@cozemble/model-core'
 import { modelFns, modelOptions, propertyFns, propertyOptions } from '@cozemble/model-api'
-import { timestampedRecordGraphEdgeFns } from '@cozemble/model-event-sourced/dist/esm'
-import {
-  recordGraphEdgeFns,
-  systemConfigurationFns,
-  tinyValueFns,
-} from '@cozemble/model-core/dist/esm'
-import { dataRecordFns } from '@cozemble/model-api/dist/esm'
+import { timestampedRecordGraphEdgeFns } from '@cozemble/model-event-sourced'
+import { recordGraphEdgeFns, systemConfigurationFns, tinyValueFns } from '@cozemble/model-core'
+import { dataRecordFns } from '@cozemble/model-api'
 import { cellSelector, editCell, expectText } from './helpers'
 
 function makeFixtureData() {

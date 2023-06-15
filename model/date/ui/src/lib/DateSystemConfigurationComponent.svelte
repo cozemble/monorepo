@@ -4,7 +4,6 @@
     import type {Writable} from "svelte/store";
 
     export let systemConfiguration: Writable<SystemConfiguration>
-    console.log({systemConfiguration})
 </script>
 <label>Date format:</label>
 <input type="text" class="input input-bordered w-full max-w-xs"

@@ -22,7 +22,7 @@
     const systemConfiguration = systemConfigurationFns.empty()
     const writableModelViews = writable([] as ModelView[])
     const permitModelling = writable(true)
-    const showDevConsole = writable(false)
+    const showDevConsole = writable(true)
 
     const navbarState: Writable<string | null> = writable(null)
     onMount(() => {
@@ -31,7 +31,6 @@
         registerJsonPropertyEditors()
         registerJsonPropertyConfigurers()
         const listed = propertyDescriptors.list()
-        console.log({listed})
         const customerModel = modelFns.newInstance("Customer")
         customerModel.slots = [jsonProperty.string("First name"), jsonProperty.string("Last name")]
         const customer1 = dataRecordFns.random(systemConfiguration, [customerModel], customerModel)
