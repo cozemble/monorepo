@@ -81,6 +81,7 @@ function validateValues(
       property,
       value.value.value,
     )
+    console.log({ property, propertyDescriptor, propertyErrors, value })
     if (propertyErrors.length > 0) {
       errors.set(value.value.path, propertyErrors)
     }

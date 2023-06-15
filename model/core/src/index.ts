@@ -123,4 +123,5 @@ export {
   JsonSchema,
   isJsonPropertyDescriptor,
   JsonPropertyDescriptor,
+  jsonSchemaFns,
 } from './JsonPropertyDescriptor'

@@ -93,15 +93,24 @@ export const jsonNumberPropertyDescriptor: JsonPropertyDescriptor<JsonNumberProp
     property: JsonNumberProperty,
     value: number | null,
   ): string[] => {
+    console.log({ value, property })
     if (property.required) {
       if (value === null || value === undefined) {
         return ['Required']
       }
     }
-    if (value && property.configuration.minValue && value < property.configuration.minValue) {
+    if (
+      value !== null &&
+      property.configuration.minValue &&
+      value < property.configuration.minValue
+    ) {
       return [`Value must be greater than ${property.configuration.minValue}`]
     }
-    if (value && property.configuration.maxValue && value > property.configuration.maxValue) {
+    if (
+      value !== null &&
+      property.configuration.maxValue &&
+      value > property.configuration.maxValue
+    ) {
       return [`Value must be less than ${property.configuration.maxValue}`]
     }
 

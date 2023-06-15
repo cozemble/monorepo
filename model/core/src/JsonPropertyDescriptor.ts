@@ -80,6 +80,14 @@ export type JsonSchema = {
   [key: string]: any
 }
 
+export const jsonSchemaFns = {
+  dropProperty(schema: JsonSchema, propertyName: string): JsonSchema {
+    const newSchema = { ...schema }
+    delete newSchema.properties[propertyName]
+    return newSchema
+  },
+}
+
 export interface JsonPropertyDescriptor<T extends JsonProperty, V, C = any>
   extends PropertyDescriptor<T, V> {
   isJsonPropertyDescriptor: true

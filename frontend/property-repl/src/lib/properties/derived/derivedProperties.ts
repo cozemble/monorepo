@@ -1,6 +1,12 @@
 import { propertyDescriptors } from '@cozemble/model-core'
-import { makeDerivedStringProperty } from '$lib/properties/derived/makeDerivedProperty'
+import {
+  makeDerivedNumberProperty,
+  makeDerivedStringProperty,
+} from '$lib/properties/derived/makeDerivedProperty'
 import type { StringPropertyConfiguration } from '$lib/properties/string/JsonStringProperty'
+import type { NumberPropertyConfiguration } from '$lib/properties/number/JsonNumberProperty'
+import { numberPropertyConfigurationSchema } from '$lib/properties/number/JsonNumberProperty'
+import { jsonSchemaFns } from '@cozemble/model-core'
 
 const phoneNumberConfiguration: StringPropertyConfiguration = {
   _type: 'string.property.configuration',
@@ -40,6 +46,20 @@ const phoneNumberPropertyDescriptor = makeDerivedStringProperty(
   null,
 )
 
+const integerConfiguration: NumberPropertyConfiguration = {
+  _type: 'number.property.configuration',
+  decimalPlaces: 0,
+}
+
+const integerPropertyDescriptor = makeDerivedNumberProperty(
+  'Integer',
+  'json.integer.property',
+  integerConfiguration,
+  [123, 0, -123, 1234567890, -1234567890],
+  jsonSchemaFns.dropProperty(numberPropertyConfigurationSchema, 'decimalPlaces'),
+)
+
 export function registerDerivedProperties() {
   propertyDescriptors.register(phoneNumberPropertyDescriptor)
+  propertyDescriptors.register(integerPropertyDescriptor)
 }

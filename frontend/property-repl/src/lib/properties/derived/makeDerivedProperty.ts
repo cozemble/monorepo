@@ -24,7 +24,7 @@ import {
   type NumberPropertyConfiguration,
   numberPropertyConfigurationSchema,
 } from '$lib/properties/number/JsonNumberProperty'
-import type { JsonSchema } from '@cozemble/model-core/dist/esm'
+import type { JsonDataType, JsonSchema } from '@cozemble/model-core/dist/esm'
 
 export function makeDerivedStringProperty(
   name: string,
@@ -40,6 +40,7 @@ export function makeDerivedStringProperty(
       configuration,
       exampleProvider,
       jsonStringPropertyDescriptor,
+      jsonDataTypes.string,
     ),
     configurationSchema,
   }
@@ -59,6 +60,7 @@ export function makeDerivedNumberProperty(
       configuration,
       exampleProvider,
       jsonNumberPropertyDescriptor,
+      jsonDataTypes.number,
     ),
     configurationSchema,
   }
@@ -70,6 +72,7 @@ function makeDerivedProperty<T extends JsonProperty, V, C>(
   configuration: any,
   exampleProvider: V[] | ((systemConfiguration: SystemConfiguration) => V),
   baseType: JsonPropertyDescriptor<T, V>,
+  jsonType: JsonDataType,
 ): JsonPropertyDescriptor<T, V, C> {
   const thisPropertyType: PropertyType = {
     _type: 'property.type',
@@ -97,7 +100,7 @@ function makeDerivedProperty<T extends JsonProperty, V, C>(
         ...modelEventFns.coreParts(modelId),
         propertyName,
         propertyType: thisPropertyType,
-        jsonType: jsonDataTypes.string,
+        jsonType,
         propertyId: propertyId ?? propertyIdFns.newInstance(),
         configuration: configuration,
       }
