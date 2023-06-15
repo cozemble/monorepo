@@ -92,6 +92,7 @@ export interface JsonPropertyDescriptor<T extends JsonProperty, V, C = any>
   extends PropertyDescriptor<T, V> {
   isJsonPropertyDescriptor: true
   configurationSchema?: JsonSchema | null
+  systemConfigurationSchema?: JsonSchema | null
   fixedConfiguration?: C
 }
 
@@ -102,4 +103,16 @@ export function isJsonPropertyDescriptor(obj: any): obj is JsonPropertyDescripto
     'isJsonPropertyDescriptor' in obj &&
     obj.isJsonPropertyDescriptor === true
   )
+}
+
+export const jsonPropertyDescriptorFns = {
+  withSystemConfigurationSchema<T extends JsonProperty, V, C>(
+    descriptor: JsonPropertyDescriptor<T, V, C>,
+    systemConfigurationSchema: JsonSchema | null,
+  ): JsonPropertyDescriptor<T, V, C> {
+    return {
+      ...descriptor,
+      systemConfigurationSchema,
+    }
+  },
 }

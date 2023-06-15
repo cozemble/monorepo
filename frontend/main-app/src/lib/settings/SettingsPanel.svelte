@@ -24,7 +24,7 @@
 {/each}
 
 <div class="mt-3">
-<ThemeChange />
+    <ThemeChange/>
 </div>
 <div class="mt-3">
     <button class="btn" on:click={save}>Save</button>
