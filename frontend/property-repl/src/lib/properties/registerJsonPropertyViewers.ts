@@ -7,8 +7,6 @@ import JsonPropertyViewer from '$lib/properties/components/JsonPropertyViewer.sv
 import JsonPropertyEditor from '$lib/properties/components/JsonPropertyEditor.svelte'
 import JsonPropertyConfigurer from '$lib/properties/components/JsonPropertyConfigurer.svelte'
 import { jsonDataTypes } from '@cozemble/model-core'
-import { jsonStringPropertyType } from '$lib/properties/string/JsonStringProperty'
-import { jsonNumberPropertyType } from '$lib/properties/number/JsonNumberProperty'
 
 export function registerJsonPropertyViewers() {
   slotViewerRegistry.register(jsonDataTypes.string, JsonPropertyViewer)
@@ -21,6 +19,6 @@ export function registerJsonPropertyEditors() {
 }
 
 export function registerJsonPropertyConfigurers() {
-  propertyConfigurerRegistry.register(jsonStringPropertyType, JsonPropertyConfigurer)
-  propertyConfigurerRegistry.register(jsonNumberPropertyType, JsonPropertyConfigurer)
+  propertyConfigurerRegistry.register(jsonDataTypes.string, JsonPropertyConfigurer)
+  propertyConfigurerRegistry.register(jsonDataTypes.number, JsonPropertyConfigurer)
 }

@@ -1,7 +1,9 @@
 import { propertyDescriptors } from '@cozemble/model-core'
 import { makeDerivedStringProperty } from '$lib/properties/derived/makeDerivedProperty'
+import type { StringPropertyConfiguration } from '$lib/properties/string/JsonStringProperty'
 
-const phoneNumberConfiguration = {
+const phoneNumberConfiguration: StringPropertyConfiguration = {
+  _type: 'string.property.configuration',
   pattern: '^\\+?[\\d\\s\\-\\(\\)]{7,20}$',
   patternExplanation: 'Must be a valid phone number',
   multipleLines: false,
@@ -35,6 +37,7 @@ const phoneNumberPropertyDescriptor = makeDerivedStringProperty(
     '+54 11 4123 4567', // International format (Argentina)
     '011 4123-4567', // Local format (Argentina)
   ],
+  null,
 )
 
 export function registerDerivedProperties() {

@@ -1,5 +1,5 @@
 import type { PropertyType } from '@cozemble/model-core'
-import { JsonDataType, LeafModelSlot } from '@cozemble/model-core'
+import { isJsonProperty, JsonDataType, LeafModelSlot } from '@cozemble/model-core'
 import {
   PropertyConfigurer as StringPropertyConfigurer,
   PropertyEditor as StringPropertyEditor,
@@ -37,7 +37,6 @@ import {
   PropertyEditor as CurrencyPropertyEditor,
   PropertyViewer as CurrencyPropertyViewer,
 } from '@cozemble/model-currency-ui'
-import { isJsonProperty } from '@cozemble/model-core'
 
 export { propertyDescriptors } from '@cozemble/model-core'
 
@@ -46,11 +45,21 @@ const slotViewerMap = new Map<string, any>()
 const slotEditorMap = new Map<string, any>()
 
 export const propertyConfigurerRegistry = {
-  register: (propertyType: PropertyType, component: any) => {
-    propertyConfigurerMap.set(propertyType.value, component)
+  register: (slotType: PropertyType | JsonDataType, component: any) => {
+    propertyConfigurerMap.set(slotType.value, component)
   },
   get: (propertyType: PropertyType) => {
     return propertyConfigurerMap.get(propertyType.value) ?? null
+  },
+  forSlot: (slot: LeafModelSlot) => {
+    for (const key of orderedLookupOptions(slot)) {
+      const configurer = propertyConfigurerMap.get(key) ?? null
+      console.log({ key, configurer, slot, propertyConfigurerMap })
+      if (configurer) {
+        return configurer
+      }
+    }
+    return null
   },
 }
 
@@ -58,16 +67,6 @@ export type SlotKey = PropertyType | JsonDataType | 'model.reference'
 
 function keyValue(slotKey: SlotKey) {
   return typeof slotKey === 'string' ? slotKey : slotKey.value
-}
-
-function keyForSlot(slot: LeafModelSlot): string {
-  if (isJsonProperty(slot)) {
-    return slot.jsonType.value
-  }
-  if (slot._type === 'property') {
-    return slot.propertyType.value
-  }
-  return 'model.reference'
 }
 
 function orderedLookupOptions(slot: LeafModelSlot): string[] {

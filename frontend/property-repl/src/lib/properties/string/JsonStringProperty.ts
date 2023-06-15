@@ -1,22 +1,24 @@
-import type { JsonSchema } from '$lib/types/types'
-import type { JsonProperty, PropertyType } from '@cozemble/model-core'
+import type {
+  JsonProperty,
+  JsonPropertyDescriptor,
+  JsonSchema,
+  PropertyType,
+} from '@cozemble/model-core'
 import {
   type DataRecord,
   dottedNameFns,
   jsonDataTypes,
   modelEventFns,
   type ModelId,
-  type PropertyDescriptor,
+  propertyDescriptors,
   type PropertyId,
   propertyIdFns,
   type PropertyName,
   type SystemConfiguration,
 } from '@cozemble/model-core'
-import { propertyDescriptors } from '@cozemble/model-core'
 import type { NewJsonPropertyModelEvent } from '$lib/properties/events'
-import { propertyConfigurationSchemas } from '$lib/properties/JsonProperty'
 
-const stringPropertyConfigurationSchema: JsonSchema = {
+export const stringPropertyConfigurationSchema: JsonSchema = {
   $schema: 'http://json-schema.org/draft-07/schema#',
   $id: 'https://cozemble.com/schemas/property/json/string',
   type: 'object',
@@ -40,15 +42,30 @@ const stringPropertyConfigurationSchema: JsonSchema = {
   },
 }
 
-export type JsonStringProperty = JsonProperty<typeof jsonDataTypes.string, string>
+export interface StringPropertyConfiguration {
+  _type: 'string.property.configuration'
+  pattern?: string
+  patternExplanation?: string
+  multipleLines?: boolean
+  prefix?: string
+  suffix?: string
+}
+
+export type JsonStringProperty = JsonProperty<
+  typeof jsonDataTypes.string,
+  string,
+  StringPropertyConfiguration
+>
 
 export const jsonStringPropertyType: PropertyType = {
   _type: 'property.type',
   value: 'json.string.property',
 }
 
-export const jsonStringPropertyDescriptor: PropertyDescriptor<JsonStringProperty, string> = {
+export const jsonStringPropertyDescriptor: JsonPropertyDescriptor<JsonStringProperty, string> = {
   _type: 'property.descriptor',
+  isJsonPropertyDescriptor: true,
+  configurationSchema: stringPropertyConfigurationSchema,
   propertyType: jsonStringPropertyType,
   name: dottedNameFns.newInstance('String'),
   isRequireable: true,
@@ -126,5 +143,4 @@ export const jsonStringPropertyDescriptor: PropertyDescriptor<JsonStringProperty
 export function registerJsonStringProperty() {
   propertyDescriptors.register(jsonStringPropertyDescriptor)
   propertyDescriptors.setDefault(jsonStringPropertyDescriptor)
-  propertyConfigurationSchemas.register(jsonStringPropertyType, stringPropertyConfigurationSchema)
 }

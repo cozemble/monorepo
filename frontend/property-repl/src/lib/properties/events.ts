@@ -50,6 +50,7 @@ export const newJsonPropertyModelEventDescriptor: ModelEventDescriptor = {
       propertyType: event.propertyType,
       jsonType: event.jsonType,
     }
+    console.log({ newProperty, model, event })
     if (model.slots.some((p) => p.id.value === event.propertyId.value)) {
       newProperty = { ...newProperty, id: event.propertyId }
       return {

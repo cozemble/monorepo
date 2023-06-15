@@ -1,9 +1,16 @@
-import type { JsonStringProperty } from '$lib/properties/string/JsonStringProperty'
-import { jsonStringPropertyDescriptor } from '$lib/properties/string/JsonStringProperty'
+import type {
+  JsonStringProperty,
+  StringPropertyConfiguration,
+} from '$lib/properties/string/JsonStringProperty'
+import {
+  jsonStringPropertyDescriptor,
+  stringPropertyConfigurationSchema,
+} from '$lib/properties/string/JsonStringProperty'
 import type { NewJsonPropertyModelEvent } from '$lib/properties/events'
 import type {
+  JsonProperty,
+  JsonPropertyDescriptor,
   ModelId,
-  PropertyDescriptor,
   PropertyId,
   PropertyName,
   PropertyType,
@@ -11,23 +18,69 @@ import type {
 } from '@cozemble/model-core'
 import { dottedNameFns, jsonDataTypes, modelEventFns, propertyIdFns } from '@cozemble/model-core'
 import { random } from '@cozemble/lang-util'
+import {
+  type JsonNumberProperty,
+  jsonNumberPropertyDescriptor,
+  type NumberPropertyConfiguration,
+  numberPropertyConfigurationSchema,
+} from '$lib/properties/number/JsonNumberProperty'
+import type { JsonSchema } from '@cozemble/model-core/dist/esm'
 
 export function makeDerivedStringProperty(
   name: string,
   type: string,
   configuration: any,
   exampleProvider: string[] | ((systemConfiguration: SystemConfiguration) => string),
-): PropertyDescriptor<JsonStringProperty, string> {
-  const thisPropertyTyoe: PropertyType = {
+  configurationSchema: JsonSchema | null = stringPropertyConfigurationSchema,
+): JsonPropertyDescriptor<JsonStringProperty, string, StringPropertyConfiguration> {
+  return {
+    ...makeDerivedProperty(
+      name,
+      type,
+      configuration,
+      exampleProvider,
+      jsonStringPropertyDescriptor,
+    ),
+    configurationSchema,
+  }
+}
+
+export function makeDerivedNumberProperty(
+  name: string,
+  type: string,
+  configuration: any,
+  exampleProvider: number[] | ((systemConfiguration: SystemConfiguration) => number),
+  configurationSchema: JsonSchema | null = numberPropertyConfigurationSchema,
+): JsonPropertyDescriptor<JsonNumberProperty, number, NumberPropertyConfiguration> {
+  return {
+    ...makeDerivedProperty<JsonNumberProperty, number, NumberPropertyConfiguration>(
+      name,
+      type,
+      configuration,
+      exampleProvider,
+      jsonNumberPropertyDescriptor,
+    ),
+    configurationSchema,
+  }
+}
+
+function makeDerivedProperty<T extends JsonProperty, V, C>(
+  name: string,
+  type: string,
+  configuration: any,
+  exampleProvider: V[] | ((systemConfiguration: SystemConfiguration) => V),
+  baseType: JsonPropertyDescriptor<T, V>,
+): JsonPropertyDescriptor<T, V, C> {
+  const thisPropertyType: PropertyType = {
     _type: 'property.type',
     value: type,
   }
 
   return {
-    ...jsonStringPropertyDescriptor,
-    propertyType: thisPropertyTyoe,
+    ...baseType,
+    propertyType: thisPropertyType,
     name: dottedNameFns.newInstance(name),
-    randomValue: (systemConfiguration: SystemConfiguration): string => {
+    randomValue: (systemConfiguration: SystemConfiguration): V => {
       if (typeof exampleProvider === 'function') {
         return exampleProvider(systemConfiguration)
       }
@@ -43,7 +96,7 @@ export function makeDerivedStringProperty(
         _type: 'new.json.property.model.event',
         ...modelEventFns.coreParts(modelId),
         propertyName,
-        propertyType: thisPropertyTyoe,
+        propertyType: thisPropertyType,
         jsonType: jsonDataTypes.string,
         propertyId: propertyId ?? propertyIdFns.newInstance(),
         configuration: configuration,

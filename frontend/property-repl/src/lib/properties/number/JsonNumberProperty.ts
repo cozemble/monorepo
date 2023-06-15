@@ -1,22 +1,24 @@
-import type { JsonSchema } from '$lib/types/types'
-import type { JsonProperty, PropertyType } from '@cozemble/model-core'
+import type {
+  JsonProperty,
+  JsonPropertyDescriptor,
+  JsonSchema,
+  PropertyType,
+} from '@cozemble/model-core'
 import {
   type DataRecord,
   dottedNameFns,
   jsonDataTypes,
   modelEventFns,
   type ModelId,
-  type PropertyDescriptor,
+  propertyDescriptors,
   type PropertyId,
   propertyIdFns,
   type PropertyName,
   type SystemConfiguration,
 } from '@cozemble/model-core'
-import { propertyDescriptors } from '@cozemble/model-core'
 import type { NewJsonPropertyModelEvent } from '$lib/properties/events'
-import { propertyConfigurationSchemas } from '$lib/properties/JsonProperty'
 
-const numberPropertyConfigurationSchema: JsonSchema = {
+export const numberPropertyConfigurationSchema: JsonSchema = {
   $schema: 'http://json-schema.org/draft-07/schema#',
   $id: 'https://cozemble.com/schemas/property/json/number',
   type: 'object',
@@ -34,20 +36,30 @@ const numberPropertyConfigurationSchema: JsonSchema = {
   },
 }
 
-const emptyNumberPropertyConfiguration = {
-  minValue: {},
-  maxValue: {},
+export interface NumberPropertyConfiguration {
+  _type: 'number.property.configuration'
+  decimalPlaces?: number
+  minValue?: number
+  maxValue?: number
 }
 
-export type JsonNumberProperty = JsonProperty<typeof jsonDataTypes.number, number>
+const emptyNumberPropertyConfiguration = {}
+
+export type JsonNumberProperty = JsonProperty<
+  typeof jsonDataTypes.number,
+  number,
+  NumberPropertyConfiguration
+>
 
 export const jsonNumberPropertyType: PropertyType = {
   _type: 'property.type',
   value: 'json.number.property',
 }
 
-export const jsonNumberPropertyDescriptor: PropertyDescriptor<JsonNumberProperty, number> = {
+export const jsonNumberPropertyDescriptor: JsonPropertyDescriptor<JsonNumberProperty, number> = {
   _type: 'property.descriptor',
+  isJsonPropertyDescriptor: true,
+  configurationSchema: numberPropertyConfigurationSchema,
   propertyType: jsonNumberPropertyType,
   name: dottedNameFns.newInstance('Number'),
   isRequireable: true,
@@ -117,5 +129,4 @@ export const jsonNumberPropertyDescriptor: PropertyDescriptor<JsonNumberProperty
 
 export function registerJsonNumberProperty() {
   propertyDescriptors.register(jsonNumberPropertyDescriptor)
-  propertyConfigurationSchemas.register(jsonNumberPropertyType, numberPropertyConfigurationSchema)
 }

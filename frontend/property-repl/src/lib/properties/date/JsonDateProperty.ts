@@ -1,5 +1,4 @@
-import type { JsonSchema } from '$lib/types/types'
-import type { SystemConfiguration } from '@cozemble/model-core'
+import type { JsonSchema, SystemConfiguration } from '@cozemble/model-core'
 import { propertyDescriptors } from '@cozemble/model-core'
 import { format } from 'date-fns'
 import { makeDerivedStringProperty } from '$lib/properties/derived/makeDerivedProperty'
