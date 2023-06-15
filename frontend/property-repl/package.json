@@ -59,6 +59,8 @@
     "@cozemble/model-assembled": "workspace:*",
     "@cozemble/model-string-ui": "workspace:*",
     "@cozemble/model-decimal-ui": "workspace:*",
+    "@cozemble/model-properties-core": "workspace:*",
+    "@cozemble/model-properties-ui": "workspace:*",
     "ajv": "^8.12.0",
     "daisyui": "^2.47.0",
     "date-fns": "^2.29.3"

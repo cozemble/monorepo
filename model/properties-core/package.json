@@ -1,5 +1,5 @@
 {
-  "name": "@cozemble/model-core",
+  "name": "@cozemble/model-properties-core",
   "version": "1.0.0",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -16,6 +16,9 @@
     "vitest": "^0.26.3"
   },
   "dependencies": {
-    "@cozemble/lang-util": "workspace:*"
+    "@cozemble/lang-util": "workspace:*",
+    "@cozemble/model-core": "workspace:*",
+    "date-fns": "^2.29.3"
+
   }
 }

@@ -1,9 +1,7 @@
 import type { JsonSchema, SystemConfiguration } from '@cozemble/model-core'
 import { jsonPropertyDescriptorFns, propertyDescriptors } from '@cozemble/model-core'
 import { format } from 'date-fns'
-import { makeDerivedStringProperty } from '$lib/properties/derived/makeDerivedProperty'
-import { slotEditorRegistry } from '@cozemble/model-assembled'
-import JsonDateEditor from '$lib/properties/date/JsonDateEditor.svelte'
+import { makeDerivedStringProperty } from '../derived/makeDerivedProperty'
 
 const defaultDateFormat = 'yyyy-MM-dd'
 
@@ -32,7 +30,7 @@ function formatDate(systemConfiguration: SystemConfiguration, date: Date): strin
   return format(date, systemConfigurationDateFormat(systemConfiguration))
 }
 
-const jsonDatePropertyDescriptor = jsonPropertyDescriptorFns.withSystemConfigurationSchema(
+export const jsonDatePropertyDescriptor = jsonPropertyDescriptorFns.withSystemConfigurationSchema(
   makeDerivedStringProperty('Date', propertyType, {}, (systemConfiguration) =>
     formatDate(systemConfiguration, new Date()),
   ),
@@ -41,5 +39,4 @@ const jsonDatePropertyDescriptor = jsonPropertyDescriptorFns.withSystemConfigura
 
 export function registerJsonDateProperty() {
   propertyDescriptors.register(jsonDatePropertyDescriptor)
-  slotEditorRegistry.register(jsonDatePropertyDescriptor.propertyType, JsonDateEditor)
 }

@@ -8,7 +8,6 @@
     export let changeHandler: (value: any | null, submitEvent: KeyboardEvent | null) => void
     export let closeHandler: () => void
 
-    $: displayable = value ?? ''
 </script>
 {#if property.jsonType.value === 'string'}
     <JsonStringEditor {property} {value} {changeHandler} {closeHandler}/>

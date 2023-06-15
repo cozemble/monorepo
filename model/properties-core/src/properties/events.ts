@@ -1,4 +1,3 @@
-import { jsonStringPropertyType } from '$lib/properties/string/JsonStringProperty'
 import {
   type JsonDataType,
   jsonDataTypes,
@@ -13,6 +12,7 @@ import {
   propertyNameFns,
   type PropertyType,
 } from '@cozemble/model-core'
+import { jsonStringPropertyType } from './string/JsonStringProperty'
 
 export interface NewJsonPropertyModelEvent extends ModelEvent {
   _type: 'new.json.property.model.event'

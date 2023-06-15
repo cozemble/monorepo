@@ -9,13 +9,18 @@
     import {eventSourcedModelFns, eventSourcedModelListFns} from "@cozemble/model-event-sourced";
     import type {Writable} from "svelte/store";
     import {writable} from "svelte/store";
-    import {jsonProperty, registerJsonProperties} from "$lib/properties/JsonProperty";
+    import {propertyDescriptors} from "@cozemble/model-core";
+    import {registerJsonProperties} from "@cozemble/model-properties-core";
     import {
         registerJsonPropertyConfigurers,
         registerJsonPropertyEditors,
         registerJsonPropertyViewers
-    } from "$lib/properties/registerJsonPropertyViewers";
-    import {propertyDescriptors} from "@cozemble/model-core";
+    } from "@cozemble/model-properties-ui";
+    import {
+        propertyConfigurerRegistry,
+        slotEditorRegistry,
+        slotViewerRegistry
+    } from "@cozemble/model-assembled";
 
     let models: Model[] = []
     export const eventSourcedModels = eventSourcedModelStore([] as EventSourcedModel[])
@@ -27,12 +32,10 @@
     const navbarState: Writable<string | null> = writable(null)
     onMount(() => {
         registerJsonProperties()
-        registerJsonPropertyViewers()
-        registerJsonPropertyEditors()
-        registerJsonPropertyConfigurers()
-        const listed = propertyDescriptors.list()
+        registerJsonPropertyViewers(slotViewerRegistry)
+        registerJsonPropertyEditors(slotEditorRegistry)
+        registerJsonPropertyConfigurers(propertyConfigurerRegistry)
         const customerModel = modelFns.newInstance("Customer")
-        customerModel.slots = [jsonProperty.string("First name"), jsonProperty.string("Last name")]
         const customer1 = dataRecordFns.random(systemConfiguration, [customerModel], customerModel)
         models = [customerModel]
         const esms = models.map(m => eventSourcedModelFns.newInstance(m))

@@ -1,15 +1,8 @@
 import type {
-  JsonStringProperty,
-  StringPropertyConfiguration,
-} from '$lib/properties/string/JsonStringProperty'
-import {
-  jsonStringPropertyDescriptor,
-  stringPropertyConfigurationSchema,
-} from '$lib/properties/string/JsonStringProperty'
-import type { NewJsonPropertyModelEvent } from '$lib/properties/events'
-import type {
+  JsonDataType,
   JsonProperty,
   JsonPropertyDescriptor,
+  JsonSchema,
   ModelId,
   PropertyId,
   PropertyName,
@@ -19,12 +12,18 @@ import type {
 import { dottedNameFns, jsonDataTypes, modelEventFns, propertyIdFns } from '@cozemble/model-core'
 import { random } from '@cozemble/lang-util'
 import {
-  type JsonNumberProperty,
+  JsonStringProperty,
+  jsonStringPropertyDescriptor,
+  StringPropertyConfiguration,
+  stringPropertyConfigurationSchema,
+} from '../string/JsonStringProperty'
+import {
+  JsonNumberProperty,
   jsonNumberPropertyDescriptor,
-  type NumberPropertyConfiguration,
+  NumberPropertyConfiguration,
   numberPropertyConfigurationSchema,
-} from '$lib/properties/number/JsonNumberProperty'
-import type { JsonDataType, JsonSchema } from '@cozemble/model-core/dist/esm'
+} from '../number/JsonNumberProperty'
+import { NewJsonPropertyModelEvent } from '../events'
 
 export function makeDerivedStringProperty(
   name: string,
