@@ -5,7 +5,6 @@ packages:
   - 'graphql/*'
   - 'lang/*'
   - 'model/*'
-  - 'model/string/*'
   - 'model/currency/*'
   - 'model/attachment/*'
   - 'scripts/*'
