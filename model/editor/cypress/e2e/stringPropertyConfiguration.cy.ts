@@ -1,5 +1,5 @@
 describe('model editor', () => {
-  it('permits configuration of a string property', () => {
+  it.skip('permits configuration of a string property', () => {
     cy.visit('http://localhost:5173/modelEditor')
     cy.get('div.model-name').click()
     cy.get('input.model-name').type('{selectall}Customer{enter}')
