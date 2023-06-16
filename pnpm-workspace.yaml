@@ -1,12 +1,10 @@
 packages:
   - 'backend/*'
-  - 'frontend/*'
   - 'data/*'
-  - 'graphql/*'
+  - 'frontend/*'
   - 'lang/*'
   - 'model/*'
   - 'model/currency/*'
   - 'model/attachment/*'
   - 'scripts/*'
-  - 'sql/*'
   - 'ui/*'
