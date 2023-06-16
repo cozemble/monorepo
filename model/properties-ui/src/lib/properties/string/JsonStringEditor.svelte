@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {GenericStringEditor} from "@cozemble/model-string-ui";
+    import GenericStringEditor from "./GenericStringEditor.svelte";
     import type {JsonProperty} from "@cozemble/model-core";
 
     export let property: JsonProperty

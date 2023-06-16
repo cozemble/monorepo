@@ -28,8 +28,6 @@
   "dependencies": {
     "@cozemble/model-core": "workspace:*",
     "@cozemble/model-properties-core": "workspace:*",
-    "@cozemble/model-string-ui": "workspace:*",
-    "@cozemble/model-decimal-ui": "workspace:*",
     "@cozemble/data-editor": "workspace:*"
   }
 }

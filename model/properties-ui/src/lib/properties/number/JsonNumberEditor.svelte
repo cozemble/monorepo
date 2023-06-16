@@ -1,6 +1,6 @@
 <script lang="ts">
     import type {JsonProperty} from "@cozemble/model-core";
-    import {GenericDecimalEditor} from "@cozemble/model-decimal-ui";
+    import GenericDecimalEditor from "./GenericDecimalEditor.svelte";
     import JsonIntegerEditor from "$lib/properties/number/JsonIntegerEditor.svelte";
 
     export let property: JsonProperty

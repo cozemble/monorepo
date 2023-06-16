@@ -1,4 +1,0 @@
-export { default as PropertyConfigurer } from './DecimalPropertyConfigurer.svelte'
-export { default as PropertyViewer } from './DecimalPropertyViewer.svelte'
-export { default as PropertyEditor } from './DecimalPropertyEditorWrapper.svelte'
-export { default as GenericDecimalEditor } from './GenericDecimalEditor.svelte'
