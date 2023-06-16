@@ -1,10 +1,10 @@
 import { expect, test } from 'vitest'
 import { dataRecordFns, dataRecordPathElementFns } from '../../src'
 import { addressModel, customerModel, invoiceModel, invoiceModels } from '../../src/invoiceModel'
-import { registerStringProperty } from '@cozemble/model-string-core'
+import { registerJsonStringProperty } from '@cozemble/model-properties-core'
 import { systemConfigurationFns } from '@cozemble/model-core'
 
-registerStringProperty()
+registerJsonStringProperty()
 const systemConfig = systemConfigurationFns.empty()
 
 const customerRelationship = invoiceModel.nestedModels[0]

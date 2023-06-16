@@ -13,9 +13,9 @@ import {
   nestedRecordArrayPathElement,
   systemConfigurationFns,
 } from '@cozemble/model-core'
-import { registerStringProperty } from '@cozemble/model-string-core'
+import { registerJsonStringProperty } from '@cozemble/model-properties-core'
 
-registerStringProperty()
+registerJsonStringProperty()
 const systemConfig = systemConfigurationFns.empty()
 
 describe('model with one has one relationship', () => {

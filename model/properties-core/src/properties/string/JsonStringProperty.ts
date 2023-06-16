@@ -14,9 +14,11 @@ import {
   type PropertyId,
   propertyIdFns,
   type PropertyName,
+  propertyNameFns,
   type SystemConfiguration,
 } from '@cozemble/model-core'
-import { NewJsonPropertyModelEvent } from '../events'
+import { emptyProperty, NewJsonPropertyModelEvent } from '../events'
+import { type Option, options } from '@cozemble/lang-util'
 
 export const stringPropertyConfigurationSchema: JsonSchema = {
   $schema: 'http://json-schema.org/draft-07/schema#',
@@ -143,4 +145,40 @@ export const jsonStringPropertyDescriptor: JsonPropertyDescriptor<JsonStringProp
 export function registerJsonStringProperty() {
   propertyDescriptors.register(jsonStringPropertyDescriptor)
   propertyDescriptors.setDefault(jsonStringPropertyDescriptor)
+}
+
+export type JsonStringPropertyOption = Option<JsonStringProperty>
+
+export const jsonStringPropertyFns = {
+  newInstance: (nameAsStr: string, ...opts: JsonStringPropertyOption[]): JsonStringProperty => {
+    const name = propertyNameFns.newInstance(nameAsStr)
+    return options.apply({ ...emptyProperty(nameAsStr), name }, ...opts)
+  },
+}
+
+const required: JsonStringPropertyOption = (property) => {
+  return { ...property, required: true }
+}
+
+const unique: JsonStringPropertyOption = (property) => {
+  return { ...property, unique: true }
+}
+
+function pattern(pattern: string, patternExplanation?: string): JsonStringPropertyOption {
+  return (property) => {
+    return {
+      ...property,
+      configuration: {
+        ...property.configuration,
+        pattern,
+        patternExplanation,
+      },
+    }
+  }
+}
+
+export const jsonStringPropertyOptions = {
+  required,
+  unique,
+  pattern,
 }

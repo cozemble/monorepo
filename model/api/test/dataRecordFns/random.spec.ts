@@ -1,10 +1,10 @@
 import { describe, expect, test } from 'vitest'
 import { dataRecordFns, modelFns, modelOptions, propertyFns, nestedModelFns } from '../../src'
 import { propertyDescriptors } from '@cozemble/model-core'
-import { registerStringProperty } from '@cozemble/model-string-core'
 import { systemConfigurationFns } from '@cozemble/model-core'
+import { registerJsonStringProperty } from '@cozemble/model-properties-core'
 
-registerStringProperty()
+registerJsonStringProperty()
 const systemConfig = systemConfigurationFns.empty()
 
 describe('Given a model with two top level properties', () => {

@@ -8,7 +8,6 @@
     const dispatch = createEventDispatcher()
 
     async function addTable() {
-        console.log("adding table")
         addingTable = true
     }
 

@@ -1,42 +1,23 @@
 import type { PropertyType } from '@cozemble/model-core'
 import { isJsonProperty, JsonDataType, LeafModelSlot } from '@cozemble/model-core'
-import {
-  PropertyConfigurer as StringPropertyConfigurer,
-  PropertyEditor as StringPropertyEditor,
-  PropertyViewer as StringPropertyViewer,
-} from '@cozemble/model-string-ui'
-import {
-  PropertyConfigurer as DatePropertyConfigurer,
-  PropertyEditor as DatePropertyEditor,
-  PropertyViewer as DatePropertyViewer,
-  registerDateSystemConfiguration,
-} from '@cozemble/model-date-ui'
-import {
-  PropertyConfigurer as IntegerPropertyConfigurer,
-  PropertyEditor as IntegerPropertyEditor,
-  PropertyViewer as IntegerPropertyViewer,
-} from '@cozemble/model-integer-ui'
-import {
-  PropertyConfigurer as DecimalPropertyConfigurer,
-  PropertyEditor as DecimalPropertyEditor,
-  PropertyViewer as DecimalPropertyViewer,
-} from '@cozemble/model-decimal-ui'
-import { registerStringProperty, stringPropertyType } from '@cozemble/model-string-core'
-import { datePropertyType, registerDateProperty } from '@cozemble/model-date-core'
 import { attachmentPropertyType, registerAttachmentProperty } from '@cozemble/model-attachment-core'
 import {
   AttachmentPropertyConfigurer,
   AttachmentPropertyEditor,
   AttachmentPropertyViewer,
 } from '@cozemble/model-attachment-ui'
-import { integerPropertyType, registerIntegerProperty } from '@cozemble/model-integer-core'
-import { decimalPropertyType, registerDecimalProperty } from '@cozemble/model-decimal-core'
 import { currencyPropertyType, registerCurrencyProperty } from '@cozemble/model-currency-core'
 import {
   PropertyConfigurer as CurrencyPropertyConfigurer,
   PropertyEditor as CurrencyPropertyEditor,
   PropertyViewer as CurrencyPropertyViewer,
 } from '@cozemble/model-currency-ui'
+import { registerJsonProperties } from '@cozemble/model-properties-core'
+import {
+  registerJsonPropertyConfigurers,
+  registerJsonPropertyEditors,
+  registerJsonPropertyViewers,
+} from '@cozemble/model-properties-ui'
 
 export { propertyDescriptors } from '@cozemble/model-core'
 
@@ -54,7 +35,6 @@ export const propertyConfigurerRegistry = {
   forSlot: (slot: LeafModelSlot) => {
     for (const key of orderedLookupOptions(slot)) {
       const configurer = propertyConfigurerMap.get(key) ?? null
-      console.log({ key, configurer, slot, propertyConfigurerMap })
       if (configurer) {
         return configurer
       }
@@ -101,7 +81,6 @@ export const slotEditorRegistry = {
   forSlot: (slot: LeafModelSlot) => {
     for (const key of orderedLookupOptions(slot)) {
       const editor = slotEditorMap.get(key)
-      console.log({ key, editor })
       if (editor) {
         return editor
       }
@@ -124,43 +103,47 @@ export const slotEditorRegistry = {
 }
 
 export function registerAllProperties() {
-  registerStringProperty()
-  registerDateProperty()
-  registerIntegerProperty()
-  registerDecimalProperty()
+  registerJsonProperties()
+  // registerStringProperty()
+  // registerDateProperty()
+  // registerIntegerProperty()
+  // registerDecimalProperty()
   registerAttachmentProperty()
   registerCurrencyProperty()
 }
 
 export function registerAllPropertyConfigurers() {
-  propertyConfigurerRegistry.register(stringPropertyType, StringPropertyConfigurer)
-  propertyConfigurerRegistry.register(datePropertyType, DatePropertyConfigurer)
-  propertyConfigurerRegistry.register(integerPropertyType, IntegerPropertyConfigurer)
-  propertyConfigurerRegistry.register(decimalPropertyType, DecimalPropertyConfigurer)
+  registerJsonPropertyConfigurers(propertyConfigurerRegistry)
+  // propertyConfigurerRegistry.register(stringPropertyType, StringPropertyConfigurer)
+  // propertyConfigurerRegistry.register(datePropertyType, DatePropertyConfigurer)
+  // propertyConfigurerRegistry.register(integerPropertyType, IntegerPropertyConfigurer)
+  // propertyConfigurerRegistry.register(decimalPropertyType, DecimalPropertyConfigurer)
   propertyConfigurerRegistry.register(attachmentPropertyType, AttachmentPropertyConfigurer)
   propertyConfigurerRegistry.register(currencyPropertyType, CurrencyPropertyConfigurer)
 }
 
 export function registerAllSlotViewers() {
-  slotViewerRegistry.register(stringPropertyType, StringPropertyViewer)
-  slotViewerRegistry.register(datePropertyType, DatePropertyViewer)
-  slotViewerRegistry.register(integerPropertyType, IntegerPropertyViewer)
-  slotViewerRegistry.register(decimalPropertyType, DecimalPropertyViewer)
+  registerJsonPropertyViewers(slotViewerRegistry)
+  // slotViewerRegistry.register(stringPropertyType, StringPropertyViewer)
+  // slotViewerRegistry.register(datePropertyType, DatePropertyViewer)
+  // slotViewerRegistry.register(integerPropertyType, IntegerPropertyViewer)
+  // slotViewerRegistry.register(decimalPropertyType, DecimalPropertyViewer)
   slotViewerRegistry.register(attachmentPropertyType, AttachmentPropertyViewer)
   slotViewerRegistry.register(currencyPropertyType, CurrencyPropertyViewer)
 }
 
 export function registerAllSlotEditors() {
-  slotEditorRegistry.register(stringPropertyType, StringPropertyEditor)
-  slotEditorRegistry.register(datePropertyType, DatePropertyEditor)
-  slotEditorRegistry.register(integerPropertyType, IntegerPropertyEditor)
-  slotEditorRegistry.register(decimalPropertyType, DecimalPropertyEditor)
+  registerJsonPropertyEditors(slotEditorRegistry)
+  // slotEditorRegistry.register(stringPropertyType, StringPropertyEditor)
+  // slotEditorRegistry.register(datePropertyType, DatePropertyEditor)
+  // slotEditorRegistry.register(integerPropertyType, IntegerPropertyEditor)
+  // slotEditorRegistry.register(decimalPropertyType, DecimalPropertyEditor)
   slotEditorRegistry.register(attachmentPropertyType, AttachmentPropertyEditor)
   slotEditorRegistry.register(currencyPropertyType, CurrencyPropertyEditor)
 }
 
 export function registerAllSystemConfigurations() {
-  registerDateSystemConfiguration()
+  // registerDateSystemConfiguration()
 }
 
 export function registerEverything() {

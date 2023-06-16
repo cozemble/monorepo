@@ -5,4 +5,8 @@
     $: displayable = value ?? ''
 </script>
 
-{displayable}
+{#if value}
+    {value}
+{:else}
+    &nbsp;
+{/if}

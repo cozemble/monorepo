@@ -5,19 +5,19 @@ import { uuids } from '@cozemble/lang-util'
 import {
   DataRecord,
   Model,
+  modelIdFns,
   modelReferenceFns,
   referencedRecordsFns,
   systemConfigurationFns,
 } from '@cozemble/model-core'
 import { dataRecordFns, modelFns, modelOptions, propertyFns } from '@cozemble/model-api'
-import { registerStringProperty } from '@cozemble/model-string-core'
 import { testEnv } from '../helper'
-import { modelIdFns } from '@cozemble/model-core'
+import { registerJsonStringProperty } from '@cozemble/model-properties-core'
 
 const jwtSigningSecret = 'secret'
 const port = 3010
 
-registerStringProperty()
+registerJsonStringProperty()
 const systemConfig = systemConfigurationFns.empty()
 
 describe('Given a Customer with a Booking', () => {

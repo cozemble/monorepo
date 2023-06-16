@@ -4,10 +4,10 @@ import {
   storeModels,
   storeRecords,
 } from '../../src/routes/cypress/testModels'
-import { registerStringProperty } from '@cozemble/model-string-core'
 import { clickAddField, clickAddSubrecord, editCell } from './helpers'
 import { dataRecordFns } from '@cozemble/model-api'
 import { systemConfigurationFns } from '@cozemble/model-core'
+import { registerJsonStringProperty } from '@cozemble/model-properties-core'
 
 function enterAddressFirstThenCustomer() {
   editCell('0-0', 1)
@@ -21,7 +21,7 @@ function enterAddressFirstThenCustomer() {
 
 describe('with no existing records', () => {
   before(() => {
-    registerStringProperty()
+    registerJsonStringProperty()
     storeModels([addressModel, customerModel])
   })
   it('can click on a nested model slot element to begin editing', () => {
@@ -34,7 +34,7 @@ describe('with no existing records', () => {
 
 describe('with existing records', () => {
   before(() => {
-    registerStringProperty()
+    registerJsonStringProperty()
     storeModels([addressModel, customerModel])
     storeRecords([
       dataRecordFns.random(

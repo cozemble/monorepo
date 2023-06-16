@@ -13,11 +13,11 @@ import {
   singleCardinalityValuesForModelPathResponse,
   valuesForModelPath,
 } from '../../src/valuesForModelPath'
-import { registerStringProperty } from '@cozemble/model-string-core'
 import { dataRecordRecordPathAndValue } from '../../src/modelPathFns'
 import { systemConfigurationFns } from '@cozemble/model-core'
+import { registerJsonStringProperty } from '@cozemble/model-properties-core'
 
-registerStringProperty()
+registerJsonStringProperty()
 const systemConfig = systemConfigurationFns.empty()
 
 describe('given a path of invoice.single.anotherSingle.quantity', () => {

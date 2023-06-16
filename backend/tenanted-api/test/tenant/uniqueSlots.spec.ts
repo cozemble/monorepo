@@ -5,14 +5,17 @@ import { Model, systemConfigurationFns } from '@cozemble/model-core'
 import { uuids } from '@cozemble/lang-util'
 import { dataRecordFns, modelFns, modelOptions, propertyFns } from '@cozemble/model-api'
 import { savableRecords } from '@cozemble/backend-tenanted-api-types'
-import { registerStringProperty, stringPropertyOptions } from '@cozemble/model-string-core'
 import { withAdminPgClient } from '../../src/infra/postgresPool'
 import { testEnv } from '../helper'
+import {
+  jsonStringPropertyOptions,
+  registerJsonStringProperty,
+} from '@cozemble/model-properties-core'
 
 const jwtSigningSecret = 'secret'
 const port = 3011
 
-registerStringProperty()
+registerJsonStringProperty()
 const systemConfig = systemConfigurationFns.empty()
 
 describe('with a migrated database', () => {
@@ -30,8 +33,8 @@ describe('with a migrated database', () => {
       customerModel = modelFns.newInstance(
         'Customer',
         modelOptions.withProperties(
-          propertyFns.newInstance('Phone', stringPropertyOptions.unique),
-          propertyFns.newInstance('Email', stringPropertyOptions.unique),
+          propertyFns.newInstance('Phone', jsonStringPropertyOptions.unique),
+          propertyFns.newInstance('Email', jsonStringPropertyOptions.unique),
         ),
       )
       await putModels(port, tenantId, [customerModel], bearer)

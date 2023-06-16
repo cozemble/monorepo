@@ -1,34 +1,34 @@
-import { stringPropertyFns, stringPropertyOptions } from '@cozemble/model-string-core'
 import { modelFns, modelOptions } from './modelsFns'
 import { nestedModelFns } from './nestedModelFns'
 import { NestedModel } from '@cozemble/model-core'
+import { jsonStringPropertyFns, jsonStringPropertyOptions } from '@cozemble/model-properties-core'
 
 export const addressModel = modelFns.newInstance(
   'Address',
   modelOptions.withProperties(
-    stringPropertyFns.newInstance('Line 1', stringPropertyOptions.required),
-    stringPropertyFns.newInstance('Line 2'),
-    stringPropertyFns.newInstance('Post code', stringPropertyOptions.required),
+    jsonStringPropertyFns.newInstance('Line 1', jsonStringPropertyOptions.required),
+    jsonStringPropertyFns.newInstance('Line 2'),
+    jsonStringPropertyFns.newInstance('Post code', jsonStringPropertyOptions.required),
   ),
 )
 
 export const customerModel = modelFns.newInstance(
   'Customer',
   modelOptions.withProperties(
-    stringPropertyFns.newInstance('First name', stringPropertyOptions.required),
-    stringPropertyFns.newInstance('Last name'),
-    stringPropertyFns.newInstance(
+    jsonStringPropertyFns.newInstance('First name', jsonStringPropertyOptions.required),
+    jsonStringPropertyFns.newInstance('Last name'),
+    jsonStringPropertyFns.newInstance(
       'Phone',
-      stringPropertyOptions.unique,
-      stringPropertyOptions.validation(
+      jsonStringPropertyOptions.unique,
+      jsonStringPropertyOptions.pattern(
         '^[\\+]?[(]?[0-9]{3}[)]?[-\\s\\.]?[0-9]{3}[-\\s\\.]?[0-9]{4,6}$',
         'Must be a valid phone number',
       ),
     ),
-    stringPropertyFns.newInstance(
+    jsonStringPropertyFns.newInstance(
       'Email',
-      stringPropertyOptions.unique,
-      stringPropertyOptions.validation(
+      jsonStringPropertyOptions.unique,
+      jsonStringPropertyOptions.pattern(
         '^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$',
         'Must be a valid email address',
       ),
@@ -40,15 +40,15 @@ export const customerModel = modelFns.newInstance(
 export const lineItemModel = modelFns.newInstance(
   'Line Item',
   modelOptions.withProperties(
-    stringPropertyFns.newInstance('Quantity', stringPropertyOptions.required),
-    stringPropertyFns.newInstance('Name', stringPropertyOptions.required),
-    stringPropertyFns.newInstance('Price', stringPropertyOptions.required),
+    jsonStringPropertyFns.newInstance('Quantity', jsonStringPropertyOptions.required),
+    jsonStringPropertyFns.newInstance('Name', jsonStringPropertyOptions.required),
+    jsonStringPropertyFns.newInstance('Price', jsonStringPropertyOptions.required),
   ),
 )
 export const invoiceModel = modelFns.newInstance(
   'Invoice',
   modelOptions.withProperties(
-    stringPropertyFns.newInstance('Invoice ID', stringPropertyOptions.required),
+    jsonStringPropertyFns.newInstance('Invoice ID', jsonStringPropertyOptions.required),
   ),
   modelOptions.withNestedModels(
     nestedModelFns.newInstance('Customer', customerModel.id, 'one'),

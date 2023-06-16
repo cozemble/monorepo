@@ -6,19 +6,19 @@ import {
   modelOptions,
   nestedModelFns,
 } from '../../src'
-import {
-  registerStringProperty,
-  stringPropertyFns,
-  stringPropertyOptions,
-} from '@cozemble/model-string-core'
 import type { NestedModel } from '@cozemble/model-core'
 import { systemConfigurationFns } from '@cozemble/model-core'
+import { registerJsonStringProperty } from '@cozemble/model-properties-core'
+import { jsonStringPropertyFns, jsonStringPropertyOptions } from '@cozemble/model-properties-core'
 
-registerStringProperty()
+registerJsonStringProperty()
 const systemConfig = systemConfigurationFns.empty()
 
 describe('Given a model with a top level required string property', () => {
-  const requiredProperty = stringPropertyFns.newInstance('name', stringPropertyOptions.required)
+  const requiredProperty = jsonStringPropertyFns.newInstance(
+    'name',
+    jsonStringPropertyOptions.required,
+  )
   const model = modelFns.newInstance('Customer', modelOptions.withProperty(requiredProperty))
 
   test('validation fails if string is missing', () => {
@@ -44,7 +44,10 @@ describe('Given a model with a top level required string property', () => {
 })
 
 describe('Given a model with a required string property in a has-one relationship', () => {
-  const requiredPostcode = stringPropertyFns.newInstance('postcode', stringPropertyOptions.required)
+  const requiredPostcode = jsonStringPropertyFns.newInstance(
+    'postcode',
+    jsonStringPropertyOptions.required,
+  )
   const addressModel = modelFns.newInstance('Address', modelOptions.withProperty(requiredPostcode))
   const addressRelationship = nestedModelFns.newInstance(
     'address',
@@ -67,7 +70,10 @@ describe('Given a model with a required string property in a has-one relationshi
 })
 
 describe('Given a model with a required string property in a has-many relationship', () => {
-  const requiredPostcode = stringPropertyFns.newInstance('postcode', stringPropertyOptions.required)
+  const requiredPostcode = jsonStringPropertyFns.newInstance(
+    'postcode',
+    jsonStringPropertyOptions.required,
+  )
   const addressModel = modelFns.newInstance('Address', modelOptions.withProperty(requiredPostcode))
   const emptyAddress = dataRecordFns.newInstance(addressModel, 'test-user')
   const addressRelationship = nestedModelFns.newInstance(

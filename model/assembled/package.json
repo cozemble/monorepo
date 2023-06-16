@@ -27,6 +27,8 @@
     "@cozemble/model-currency-ui": "workspace:*",
     "@cozemble/model-currency-core": "workspace:*",
     "@cozemble/model-attachment-core": "workspace:*",
-    "@cozemble/model-attachment-ui": "workspace:*"
+    "@cozemble/model-attachment-ui": "workspace:*",
+    "@cozemble/model-properties-core": "workspace:*",
+    "@cozemble/model-properties-ui": "workspace:*"
   }
 }
