@@ -24,7 +24,7 @@ import {
   propertyDescriptors,
   SystemConfiguration,
 } from '@cozemble/model-core'
-import { clock, mandatory, options, strings } from '@cozemble/lang-util'
+import { clock, errors, mandatory, options, strings } from '@cozemble/lang-util'
 import { propertyFns } from './propertyFns'
 import { modelPathFns } from './modelPathFns'
 import {
@@ -81,6 +81,7 @@ function validateValues(
       property,
       value.value.value,
     )
+    console.log({ property, propertyDescriptor, propertyErrors, value })
     if (propertyErrors.length > 0) {
       errors.set(value.value.path, propertyErrors)
     }
@@ -176,21 +177,27 @@ export const modelFns = {
   },
   allPaths(models: Model[], model: Model): ModelPath<ModelPathElement>[] {
     const slotPaths = model.slots.map((p) => modelPathFns.newInstance(p))
-    const nestedModelPaths = model.nestedModels.flatMap((r) => {
+    const nestedModelPaths = model.nestedModels.flatMap((nestedModel) => {
       return modelFns
-        .allPaths(models, modelFns.findById(models, r.modelId))
-        .map((p) => modelPathFns.prefix(r, p))
+        .allPaths(models, modelFns.findById(models, nestedModel.modelId))
+        .map((path) => modelPathFns.prefix(nestedModel, path))
     })
     return [...slotPaths, ...nestedModelPaths]
   },
   elementByName(model: Model, name: string): ModelPathElement {
-    return mandatory(
-      model.slots.find((p) => p.name.value === name) ||
-        model.slots.find((p) => strings.camelize(p.name.value) === name) ||
-        model.nestedModels.find((r) => r.name.value === name) ||
-        model.nestedModels.find((r) => strings.camelize(r.name.value) === name),
-      `Model element not found, name = ${name}, model = ${model.name.value}`,
-    )
+    const matches = [
+      ...model.slots.filter((p) => p.name.value === name),
+      ...model.slots.filter((p) => strings.camelize(p.name.value) === name),
+      ...model.nestedModels.filter((r) => r.name.value === name),
+      ...model.nestedModels.filter((r) => strings.camelize(r.name.value) === name),
+    ]
+    if (matches.length > 1) {
+      throw new Error(`Multiple model elements found with name = ${name}`)
+    }
+    if (matches.length === 0) {
+      throw new Error(`No model elements found with name '${name}' in model ${model.name.value}`)
+    }
+    return matches[0]
   },
   maybeElementById(model: Model, id: string): ModelPathElement | null {
     return (
@@ -203,7 +210,7 @@ export const modelFns = {
     return mandatory(
       model.slots.find((p) => p.id.value === id) ||
         model.nestedModels.find((r) => r.id.value === id),
-      `Model element not found, id = ${name}, model = ${model.name.value}`,
+      `Model element not found, id = ${id}, model = ${model.name.value}`,
     )
   },
   elementsByName(models: Model[], model: Model, names: string[]): ModelPathElement[] {
@@ -233,11 +240,15 @@ export const modelFns = {
     const pathsToProperties: ModelPath<Property>[] = modelFns
       .allPaths(models, model)
       .filter((p) => modelPathFns.isPathToProperty(p)) as ModelPath<Property>[]
-    return pathsToProperties.reduce((errors, path) => {
-      const value = modelPathFns.getValues(systemConfiguration, models, path, record)
-      validateValues(systemConfiguration, path, value, errors)
-      return errors
-    }, new Map<DataRecordValuePath, string[]>())
+    try {
+      return pathsToProperties.reduce((errors, path) => {
+        const value = modelPathFns.getValues(systemConfiguration, models, path, record)
+        validateValues(systemConfiguration, path, value, errors)
+        return errors
+      }, new Map<DataRecordValuePath, string[]>())
+    } catch (e) {
+      throw errors.prependToMessage(e, `Error validating record: ${record.id.value}`)
+    }
   },
   properties(model: Model): Property[] {
     return model.slots.filter((p) => p._type === 'property') as Property[]

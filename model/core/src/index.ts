@@ -62,6 +62,7 @@ export {
   nestedModelIdFns,
   LeafModelSlotId,
   modelReferenceValuePlaceholder,
+  dottedNameFns,
 } from './core'
 
 export { propertyDescriptors } from './propertyDescriptor'
@@ -89,14 +90,7 @@ export {
   summaryViewFns,
 } from './views'
 
-export {
-  SlotSystemConfigurationDescriptor,
-  SystemConfiguration,
-  SlotConfiguration,
-  slotSystemConfigurationDescriptors,
-  slotConfigurationFns,
-  systemConfigurationFns,
-} from './systemConfiguration'
+export { SystemConfiguration, systemConfigurationFns } from './systemConfiguration'
 
 export {
   recordGraphEdgeFns,
@@ -113,3 +107,15 @@ export {
 export { Id, tinyValueFns, TinyValue, Name } from './TinyValue'
 
 export { modelIdFns } from './modelIdFns'
+
+export {
+  JsonDataType,
+  jsonDataTypes,
+  JsonProperty,
+  isJsonProperty,
+  JsonSchema,
+  isJsonPropertyDescriptor,
+  JsonPropertyDescriptor,
+  jsonSchemaFns,
+  jsonPropertyDescriptorFns,
+} from './JsonPropertyDescriptor'

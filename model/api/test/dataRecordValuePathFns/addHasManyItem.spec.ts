@@ -2,11 +2,11 @@ import { describe, expect, test } from 'vitest'
 import { dataRecordFns, dataRecordValuePathFns, modelFns, nestedModelFns } from '../../src'
 import { invoiceModel, invoiceModels, lineItemModel } from '../../src/invoiceModel'
 import type { DataRecord } from '@cozemble/model-core'
-import { registerStringProperty } from '@cozemble/model-string-core'
 import { NestedModel } from '@cozemble/model-core'
 import { systemConfigurationFns } from '@cozemble/model-core'
+import { registerJsonStringProperty } from '@cozemble/model-properties-core'
 
-registerStringProperty()
+registerJsonStringProperty()
 const systemConfig = systemConfigurationFns.empty()
 
 describe('Given the invoice model', () => {

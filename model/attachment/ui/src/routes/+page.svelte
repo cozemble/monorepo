@@ -1,15 +1,17 @@
 <script lang="ts">
     import {type AttachmentProperty, emptyProperty, registerAttachmentProperty} from "@cozemble/model-attachment-core";
     import {
-        type DataRecord, type Model, type
+        type Model, type
             ModelView, systemConfigurationFns
     } from "@cozemble/model-core";
     import {dataRecordFns, dataRecordValuePathFns, modelFns, modelOptions} from "@cozemble/model-api";
     import type {DataRecordEditorClient, UploadedAttachment} from "@cozemble/data-editor-sdk";
     import {dataRecordEditorHost, type DataRecordViewerClient, dataRecordViewerHost} from "@cozemble/data-editor-sdk";
-    import {AttachmentPropertyEditor, AttachmentPropertyViewer} from "../lib";
     import type {JustErrorMessage} from "@cozemble/lang-util";
-    import type {EventSourcedRecordGraph} from "@cozemble/model-event-sourced";
+    import {AttachmentPropertyEditor} from "$lib";
+    import AttachmentPropertyViewer from "$lib/AttachmentPropertyViewerWrapper.svelte";
+    import {propertyDescriptors} from "@cozemble/model-core";
+    import {dataRecordEditEvents} from "@cozemble/model-event-sourced";
 
     registerAttachmentProperty()
     const property: AttachmentProperty = emptyProperty("Pictures")
@@ -17,6 +19,8 @@
     const recordPath = dataRecordValuePathFns.newInstance(property)
     const model = modelFns.newInstance("Test model", modelOptions.withSlot(property))
     const record = dataRecordFns.random(systemConfiguration, [model], model)
+    const propertyDescriptor = propertyDescriptors.mandatory(property)
+
     let showEditor = false
 
     function onShowEditor() {
@@ -42,15 +46,15 @@
             throw new Error("Not implemented")
         },
 
-        getModels(): Model[] {
+        getModels() {
             throw new Error("Not implemented")
         },
 
-        getModelViews(): ModelView[] {
+        getModelViews() {
             throw new Error("Not implemented")
         },
 
-        saveModelView(): Promise<JustErrorMessage | null> {
+        saveModelView() {
             throw new Error("Not implemented")
         },
 
@@ -114,6 +118,23 @@
 
     dataRecordViewerHost.setClient(viewer)
 
+    $: value = propertyDescriptor.getValue(systemConfiguration, property, record) ?? null
+
+    function changeHandler(newValue: any | null, submitEvent: KeyboardEvent | null) {
+        if (newValue !== value) {
+            dataRecordEditorClient.dispatchEditEvent(
+                dataRecordEditEvents.valueChanged(
+                    record,
+                    recordPath,
+                    value,
+                    newValue,
+                    null,
+                ),
+            )
+        }
+    }
+
+
 </script>
 
 <div class="m-4">
@@ -125,7 +146,7 @@
                     <div>
                         {#if showEditor}
                             <div>
-                                <AttachmentPropertyEditor {record} {recordPath} {systemConfiguration}/>
+                                <AttachmentPropertyEditor {value} {changeHandler}/>
                             </div>
                         {:else}
                             <div class="w-full h-full">

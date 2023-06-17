@@ -16,11 +16,11 @@
         modelList.update(list => eventSourcedModelListFns.addModelEvent(list, event.detail))
     }
 
-    $: configurer = propertyConfigurerRegistry.get(property.propertyType)
+    $: configurer = propertyConfigurerRegistry.forSlot(property)
 
     function booleanChanged(event: Event, booleanName: 'required' | 'unique') {
         const target = event.target as HTMLInputElement
-        modelList.update(list => eventSourcedModelListFns.addModelEvent(list,             coreModelEvents.booleanPropertyChanged(
+        modelList.update(list => eventSourcedModelListFns.addModelEvent(list, coreModelEvents.booleanPropertyChanged(
             model.id,
             property.id,
             booleanName,

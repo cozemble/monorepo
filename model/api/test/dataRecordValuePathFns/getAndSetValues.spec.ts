@@ -6,11 +6,11 @@ import {
   lineItemModel,
 } from '../../src/invoiceModel'
 import { describe, expect, test } from 'vitest'
-import { registerStringProperty } from '@cozemble/model-string-core'
 import { allModelsWithReferences, modelsWithReferences } from '../../src/modelsWithReferences'
 import { modelReferenceValuePlaceholder, systemConfigurationFns } from '@cozemble/model-core'
+import { registerJsonStringProperty } from '@cozemble/model-properties-core'
 
-registerStringProperty()
+registerJsonStringProperty()
 const systemConfig = systemConfigurationFns.empty()
 
 describe('Given a model path to a has-many nested property', () => {

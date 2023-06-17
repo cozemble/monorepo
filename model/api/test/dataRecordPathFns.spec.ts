@@ -7,10 +7,10 @@ import {
   propertyFns,
   nestedModelFns,
 } from '../src'
-import { registerStringProperty } from '@cozemble/model-string-core'
 import { systemConfigurationFns } from '@cozemble/model-core'
+import { registerJsonStringProperty } from '@cozemble/model-properties-core'
 
-registerStringProperty()
+registerJsonStringProperty()
 const systemConfig = systemConfigurationFns.empty()
 
 describe('given a model with root property', () => {

@@ -1,12 +1,20 @@
 import { describe, expect, test } from 'vitest'
-import { dataRecordFns, modelFns, modelOptions } from '@cozemble/model-api'
+import {
+  dataRecordFns,
+  modelFns,
+  modelOptions,
+  propertyFns,
+  propertyOptions,
+} from '@cozemble/model-api'
 import {
   dataRecordIdFns,
   modelIdFns,
   ModelReference,
   modelReferenceFns,
   modelReferenceIdFns,
+  recordGraphEdgeFns,
   systemConfigurationFns,
+  tinyValueFns,
 } from '@cozemble/model-core'
 import {
   eventSourcedDataRecordFns,
@@ -17,9 +25,7 @@ import {
   timestampedRecordGraphEdgeFns,
 } from '../../src'
 import { mandatory, time } from '@cozemble/lang-util'
-import { recordGraphEdgeFns, tinyValueFns } from '@cozemble/model-core/dist/esm'
-import { propertyFns, propertyOptions } from '@cozemble/model-api/dist/esm'
-import { registerStringProperty } from '@cozemble/model-string-core/dist/esm'
+import { registerJsonStringProperty } from '@cozemble/model-properties-core'
 
 describe('given customer and bookings models with a customer has-many bookings and a booking has-one customer', () => {
   const modelReferenceId = modelReferenceIdFns.newInstance('fromBookingToCustomer')
@@ -499,7 +505,7 @@ describe('given customer and bookings models with a customer has-many bookings a
 })
 
 test('actual failure case from cypress test', () => {
-  registerStringProperty()
+  registerJsonStringProperty()
   let customerModel = modelFns.newInstance(
     'Customers',
     modelOptions.withProperties(

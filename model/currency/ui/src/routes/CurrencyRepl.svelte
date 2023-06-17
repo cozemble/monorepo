@@ -4,7 +4,7 @@
     import type {CurrencyProperty} from "@cozemble/model-currency-core";
     import CurrencyPropertyConfigurer from "$lib/CurrencyPropertyConfigurer.svelte";
     import CurrencyPropertyEditor from "$lib/CurrencyPropertyEditor.svelte";
-    import CurrencyPropertyViewer from "$lib/CurrencyPropertyViewer.svelte";
+    import CurrencyPropertyViewer from "$lib/CurrencyPropertyViewerWrapper.svelte";
 
     export let model: Model
     export let property: CurrencyProperty

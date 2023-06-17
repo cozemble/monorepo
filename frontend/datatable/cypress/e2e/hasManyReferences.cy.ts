@@ -4,23 +4,26 @@ import {
   storeModelViews,
   storeRecords,
 } from '../../src/routes/cypress/testModels'
-import { registerStringProperty } from '@cozemble/model-string-core'
 import {
   modelIdFns,
   modelReferenceFns,
   ModelView,
   modelViewFns,
-  summaryViewFns,
-} from '@cozemble/model-core'
-import { modelFns, modelOptions, propertyFns, propertyOptions } from '@cozemble/model-api'
-import { timestampedRecordGraphEdgeFns } from '@cozemble/model-event-sourced/dist/esm'
-import {
   recordGraphEdgeFns,
+  summaryViewFns,
   systemConfigurationFns,
   tinyValueFns,
-} from '@cozemble/model-core/dist/esm'
-import { dataRecordFns } from '@cozemble/model-api/dist/esm'
+} from '@cozemble/model-core'
+import {
+  dataRecordFns,
+  modelFns,
+  modelOptions,
+  propertyFns,
+  propertyOptions,
+} from '@cozemble/model-api'
+import { timestampedRecordGraphEdgeFns } from '@cozemble/model-event-sourced'
 import { cellSelector, editCell, expectText } from './helpers'
+import { registerJsonStringProperty } from '@cozemble/model-properties-core'
 
 function makeFixtureData() {
   let customerModel = modelFns.newInstance(
@@ -151,7 +154,7 @@ function makeFixtureData() {
 
 describe('with one customer having two invoices and another customer having one invoice', () => {
   beforeEach(() => {
-    registerStringProperty()
+    registerJsonStringProperty()
     const { models, modelViews, records, edges } = makeFixtureData()
     storeModels(models)
     storeRecords(records)

@@ -1,11 +1,11 @@
 import { options } from '@cozemble/lang-util'
 import type { Property, PropertyName, PropertyOption } from '@cozemble/model-core'
 import { propertyNameFns } from '@cozemble/model-core'
-import { stringPropertyFns } from '@cozemble/model-string-core'
+import { jsonStringPropertyFns } from '@cozemble/model-properties-core'
 
 export const propertyFns = {
   newInstance(name = 'Untitled Property', ...opts: PropertyOption[]): Property {
-    return options.apply(stringPropertyFns.newInstance(name), ...opts)
+    return options.apply(jsonStringPropertyFns.newInstance(name), ...opts)
   },
   rename(property: Property, newName: PropertyName | string): Property {
     return {

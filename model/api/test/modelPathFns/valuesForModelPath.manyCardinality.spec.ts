@@ -10,14 +10,14 @@ import {
 import { describe, expect, test } from 'vitest'
 import { type NestedModel, type Property, propertyDescriptors } from '@cozemble/model-core'
 import { dataRecordRecordPathAndValue } from '../../src/modelPathFns'
-import { registerStringProperty } from '@cozemble/model-string-core'
 import {
   manyCardinalityValuesForModelPathResponse,
   valuesForModelPath,
 } from '../../src/valuesForModelPath'
 import { systemConfigurationFns } from '@cozemble/model-core'
+import { registerJsonStringProperty } from '@cozemble/model-properties-core'
 
-registerStringProperty()
+registerJsonStringProperty()
 const systemConfig = systemConfigurationFns.empty()
 
 describe('given a path of invoice.single.lineItems.anotherSingle.quantity', () => {

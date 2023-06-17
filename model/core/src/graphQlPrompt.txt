@@ -1,0 +1,22 @@
+I am about to describe a domain model for my business.  I want to use GraphQL to expose this model to my clients.
+Generate a GraphQL schema for my domain.
+Create the type definition only.  Do not create any Query or Mutation declarations.
+Do not include timestamps that relate to the creation or modification any of the items.  These are not part of the domain.
+
+For fields that you think should be unique, add the @unique directive.
+For fields that you think should be dates, add the @date directive.
+For fields that you think should be images, add the @image directive.
+
+Return just the code, because I want to parse your response.  Do not add any comments or other text to your response.  You must return a valid GraphQL schema.
+I will say it again: return only code!!
+
+Here are my requirements for the GraphQL schema:
+
+I run a bicycle repair shop. People book repairs via my website so they can come to my shop at an agreed time, drop off their bike, and collect it at an agreed time on the same day. I call this service Bike Check. The booking part of my website works fine and I am happy with that.  What I need is a system to manage what goes on behind the website. I want to be able to:
+Enter customer data: first name, last name, email and mobile number. I want emails and mobile numbers to be unique.
+I want to be able to enter data for a Bike Check: customer, drop off date, make and model of bike, and general notes about the booking.
+I want to be able to upload pictures of the bike into the Bike Check record when the bike arrives.
+I want be to able to find customers using free text search
+I want to be able to find Bike Check records by date, and using free text search of all fields, but especially: make, model, customer name and notes.
+When adding a new Bike Check, if the customer is not already in the database, I want to be able to enter a new one
+

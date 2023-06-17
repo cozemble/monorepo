@@ -1,6 +1,6 @@
 <script lang="ts">
     import type {DataRecordId} from "@cozemble/model-core";
-    import type {DataRecord, ModelReference} from "@cozemble/model-core/dist/esm";
+    import type {DataRecord, ModelReference} from "@cozemble/model-core";
     import RenderModelReferenceView from "$lib/records/modelReferences/RenderModelReferenceView.svelte";
     import type {EditorParams} from "$lib/records/modelReferences/editorHelper";
     import SingleReferenceSelector from "$lib/records/modelReferences/SingleReferenceSelector.svelte";

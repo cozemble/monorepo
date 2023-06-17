@@ -40,16 +40,16 @@
     "typescript": "^5.0.2",
     "undici": "^5.21.0",
     "vite": "4.1.4",
-    "vitest": "^0.26.2"
+    "vitest": "^0.32.1"
   },
   "dependencies": {
     "@cozemble/backend-tenanted-api-types": "workspace:*",
-    "@cozemble/data-filters-core": "workspace:*",
     "@cozemble/lang-util": "workspace:*",
     "@cozemble/model-api": "workspace:*",
     "@cozemble/model-core": "workspace:*",
     "@cozemble/model-event-sourced": "workspace:*",
-    "@cozemble/model-string-core": "workspace:*",
+    "@cozemble/model-properties-core": "workspace:*",
+    "@cozemble/data-filters-core": "workspace:*",
     "@google-cloud/storage": "^6.9.4",
     "child-process-promise": "^2.2.1",
     "client-oauth2": "^4.3.3",

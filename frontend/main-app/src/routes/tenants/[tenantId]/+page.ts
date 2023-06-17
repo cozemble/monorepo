@@ -27,6 +27,7 @@ export const load: PageLoad = async ({ params, url }) => {
           tenantData.models.map((m: any) => eventSourcedModelFns.newInstance(m)),
         ),
       )
+      console.log('tenantData', tenantData)
       tenantEntities.set(tenantData.entities)
       tenantStore.set({ _type: 'tenant', id: params.tenantId, name: tenantData.name })
     } catch (e) {

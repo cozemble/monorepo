@@ -1,0 +1,23 @@
+In our extended version of JSON Schema, we have an additional keyword 'unique'.
+This keyword is used to ensure that the values of the specified field are unique among all objects in an array or all properties of an object.
+It's used in the same place where you'd use 'type', 'format', or similar keywords. For instance:
+
+{
+  'type': 'object',
+  'properties': {
+    'id': {
+      'type': 'string',
+      'unique': true
+    },
+    ...
+  }
+  ...
+}
+
+In addition, we do not use the "date-time" format.  Instead we use "date" and "time" formats.  This might mean you will have to use two properties to represent a date-time value.
+We do make use of all the other formats listed in the JSON Schema specification.
+Use the 'title' keyword to give a name to your schema.  We also support a keyword called 'pluralTitle' which represents the name of the schema in plural form.  It goes beside 'title' in the schema.
+Do not include "timestamp" properties associated with creation and modification of the object.  We will add those automatically.
+Do not explain the code at all because I want to parse the code and generate documentation from it.
+
+Given this, generate a schema for a Customer

@@ -18,8 +18,8 @@
     import RecordFilteringPanel from "../../lib/filtering/RecordFilteringPanel.svelte";
     import {tempRegisterDateFilters} from "../temp";
     import DevOptions from "../DevOptions.svelte";
-    import {timestampedRecordGraphEdgeFns} from "@cozemble/model-event-sourced/dist/esm";
-    import {recordGraphEdgeFns} from "@cozemble/model-core/dist/esm";
+    import {timestampedRecordGraphEdgeFns} from "@cozemble/model-event-sourced";
+    import {recordGraphEdgeFns} from "@cozemble/model-core";
 
     const modelViews = writable([] as ModelView[])
 

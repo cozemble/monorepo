@@ -22,7 +22,7 @@
   "dependencies": {
     "@cozemble/model-api": "workspace:*",
     "@cozemble/model-core": "workspace:*",
-    "@cozemble/model-string-core": "workspace:*",
+    "@cozemble/model-properties-core": "workspace:*",
     "graphql": "16.6.0",
     "lodash": "^4.17.21",
     "uppercamelcase": "^3.0.0"

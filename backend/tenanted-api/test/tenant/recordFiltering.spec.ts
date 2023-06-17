@@ -3,18 +3,18 @@ import { makeTenant, makeTenantMemberAccessToken, putModels, putRecords } from '
 import { uuids } from '@cozemble/lang-util'
 import { dataRecordFns, modelFns, modelOptions, propertyFns } from '@cozemble/model-api'
 import { Model, Property, systemConfigurationFns } from '@cozemble/model-core'
-import { registerStringProperty } from '@cozemble/model-string-core'
 import { appWithTestContainer } from '../../src/appWithTestContainer'
 import {
   filledFilterInstanceGroupFns,
   filterRequestPayloadFns,
 } from '@cozemble/backend-tenanted-api-types'
 import { testEnv } from '../helper'
+import { registerJsonStringProperty } from '@cozemble/model-properties-core'
 
 const jwtSigningSecret = 'secret'
 const port = 3003
 
-registerStringProperty()
+registerJsonStringProperty()
 const systemConfig = systemConfigurationFns.empty()
 
 describe('with customer records', () => {

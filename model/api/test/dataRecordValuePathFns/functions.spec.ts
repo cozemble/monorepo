@@ -7,7 +7,6 @@ import {
   nestedModelFns,
   propertyFns,
 } from '../../src'
-import { registerStringProperty } from '@cozemble/model-string-core'
 import {
   dottedPathFns,
   type NestedModel,
@@ -15,8 +14,9 @@ import {
   systemConfigurationFns,
 } from '@cozemble/model-core'
 import { addressModel, customerModel, invoiceModel, invoiceModels } from '../../src/invoiceModel'
+import { registerJsonStringProperty } from '@cozemble/model-properties-core'
 
-registerStringProperty()
+registerJsonStringProperty()
 const systemConfig = systemConfigurationFns.empty()
 
 describe('Given a model with a top level property', () => {
@@ -89,4 +89,17 @@ test('fromDottedPath two levels deep', () => {
   const address = modelFns.elementByName(customerModel, 'Address') as NestedModel
   const line1 = modelFns.elementByName(addressModel, 'Line 1') as Property
   expect(path).toEqual(dataRecordValuePathFns.newInstance(line1, customer, address))
+})
+
+test('elementByName errors is name is ambiguous', () => {
+  const model = modelFns.newInstance(
+    'Model',
+    modelOptions.withProperties(propertyFns.newInstance('Name'), propertyFns.newInstance('Name')),
+  )
+  try {
+    modelFns.elementByName(model, 'Name')
+    expect(true).toEqual(false)
+  } catch (e) {
+    expect(e.message).toMatch('Multiple model elements found with name')
+  }
 })

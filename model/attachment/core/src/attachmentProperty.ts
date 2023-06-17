@@ -15,6 +15,12 @@ export interface AttachmentProperty extends Property {
   accept?: string | null
 }
 
+export interface AttachmentPropertyConfiguration {
+  minAttachments?: number | null
+  maxAttachments?: number | null
+  accept?: string | null
+}
+
 export function emptyProperty(name: string): AttachmentProperty {
   const id = propertyIdFns.newInstance()
   return {

@@ -1,8 +1,8 @@
 import { expect, test } from 'vitest'
 import { dataRecordFns, testExports } from '@cozemble/model-api'
-import { registerStringProperty } from '@cozemble/model-string-core'
 import { modelToJson } from '../src/modelToJson'
 import { systemConfigurationFns } from '@cozemble/model-core'
+import { registerJsonStringProperty } from '@cozemble/model-properties-core'
 
 const invoiceModels = testExports.invoiceModels
 const invoiceModel = testExports.invoiceModel
@@ -10,7 +10,7 @@ const addressModel = testExports.addressModel
 const customerModel = testExports.customerModel
 const lineItemModel = testExports.lineItemModel
 
-registerStringProperty()
+registerJsonStringProperty()
 const systemConfig = systemConfigurationFns.empty()
 
 test('can to-json an invoice with a customer', () => {
