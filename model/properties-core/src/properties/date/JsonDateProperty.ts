@@ -51,6 +51,7 @@ export const jsonDatePropertyDescriptor = {
     const parsed = parse(value, defaultDateFormat, new Date())
     return formatDate(systemConfiguration, parsed)
   },
+  configurationSchema: null,
 }
 
 export function registerJsonDateProperty() {
