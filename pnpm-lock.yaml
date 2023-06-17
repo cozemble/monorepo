@@ -1,4 +1,4 @@
-lockfileVersion: '6.1'
+lockfileVersion: '6.0'
 
 settings:
   autoInstallPeers: true
@@ -34,7 +34,7 @@ importers:
         version: 2.9.0(prettier@2.8.2)(svelte@3.59.1)
       turbo:
         specifier: latest
-        version: 1.8.8
+        version: 1.9.3
 
   backend/gcp-infra:
     dependencies:
@@ -447,6 +447,91 @@ importers:
       wait-on:
         specifier: ^7.0.1
         version: 7.0.1
+
+  frontend/ai-playground:
+    dependencies:
+      '@codemirror/lang-javascript':
+        specifier: ^6.1.9
+        version: 6.1.9
+      '@cozemble/lang-util':
+        specifier: workspace:*
+        version: link:../../lang/util
+      '@cozemble/model-api':
+        specifier: workspace:*
+        version: link:../../model/api
+      '@cozemble/model-assembled':
+        specifier: workspace:*
+        version: link:../../model/assembled
+      '@cozemble/model-core':
+        specifier: workspace:*
+        version: link:../../model/core
+      '@cozemble/model-editor':
+        specifier: workspace:*
+        version: link:../../model/editor
+      '@cozemble/model-event-sourced':
+        specifier: workspace:*
+        version: link:../../model/event-sourced
+      '@cozemble/ui-filter-editor':
+        specifier: workspace:*
+        version: link:../../ui/filter-editor
+      '@tailwindcss/typography':
+        specifier: ^0.5.9
+        version: 0.5.9(tailwindcss@3.2.7)
+      ajv:
+        specifier: ^8.12.0
+        version: 8.12.0
+      axios:
+        specifier: ^1.2.3
+        version: 1.2.3
+      chatgpt:
+        specifier: ^5.2.5
+        version: 5.2.5
+      daisyui:
+        specifier: ^2.47.0
+        version: 2.47.0(autoprefixer@10.4.13)(postcss@8.4.23)
+      openai:
+        specifier: ^3.2.1
+        version: 3.2.1
+      svelte-codemirror-editor:
+        specifier: ^1.1.0
+        version: 1.1.0(codemirror@6.0.1)
+      theme-change:
+        specifier: ^2.5.0
+        version: 2.5.0
+    devDependencies:
+      '@originjs/vite-plugin-commonjs':
+        specifier: ^1.0.3
+        version: 1.0.3
+      '@sveltejs/adapter-auto':
+        specifier: ^1.0.0
+        version: 1.0.0(@sveltejs/kit@1.5.0)
+      '@sveltejs/kit':
+        specifier: ^1.0.0
+        version: 1.5.0(svelte@3.54.0)(vite@4.1.4)
+      autoprefixer:
+        specifier: ^10.4.13
+        version: 10.4.13(postcss@8.4.23)
+      postcss:
+        specifier: ^8.4.21
+        version: 8.4.23
+      svelte:
+        specifier: ^3.54.0
+        version: 3.54.0
+      svelte-check:
+        specifier: ^3.0.1
+        version: 3.0.1(postcss@8.4.23)(svelte@3.54.0)
+      tailwindcss:
+        specifier: ^3.2.4
+        version: 3.2.7(postcss@8.4.23)
+      tslib:
+        specifier: ^2.4.1
+        version: 2.4.1
+      typescript:
+        specifier: ^5.0.2
+        version: 5.1.3
+      vite:
+        specifier: 4.1.4
+        version: 4.1.4(@types/node@16.11.6)
 
   frontend/bff:
     dependencies:
@@ -3317,6 +3402,7 @@ packages:
 
   /@sinonjs/fake-timers@10.2.0:
     resolution: {integrity: sha512-OPwQlEdg40HAj5KNF8WW6q2KG4Z+cBCZb3m4ninfTZKaBmbIJodviQsDBoYMPHkOyJJMHnOJo5j2+LKDOhOACg==}
+    deprecated: Use version 10.1.0. Version 10.2.0 has potential breaking issues
     dependencies:
       '@sinonjs/commons': 3.0.0
     dev: true
@@ -3339,7 +3425,7 @@ packages:
     peerDependencies:
       '@sveltejs/kit': ^1.0.0
     dependencies:
-      '@sveltejs/kit': 1.5.0(svelte@3.54.0)(vite@4.3.0)
+      '@sveltejs/kit': 1.5.0(svelte@3.54.0)(vite@4.1.4)
       import-meta-resolve: 2.2.2
     dev: true
 
@@ -10468,65 +10554,65 @@ packages:
     dependencies:
       safe-buffer: 5.2.1
 
-  /turbo-darwin-64@1.8.8:
-    resolution: {integrity: sha512-18cSeIm7aeEvIxGyq7PVoFyEnPpWDM/0CpZvXKHpQ6qMTkfNt517qVqUTAwsIYqNS8xazcKAqkNbvU1V49n65Q==}
+  /turbo-darwin-64@1.9.3:
+    resolution: {integrity: sha512-0dFc2cWXl82kRE4Z+QqPHhbEFEpUZho1msHXHWbz5+PqLxn8FY0lEVOHkq5tgKNNEd5KnGyj33gC/bHhpZOk5g==}
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-darwin-arm64@1.8.8:
-    resolution: {integrity: sha512-ruGRI9nHxojIGLQv1TPgN7ud4HO4V8mFBwSgO6oDoZTNuk5ybWybItGR+yu6fni5vJoyMHXOYA2srnxvOc7hjQ==}
+  /turbo-darwin-arm64@1.9.3:
+    resolution: {integrity: sha512-1cYbjqLBA2zYE1nbf/qVnEkrHa4PkJJbLo7hnuMuGM0bPzh4+AnTNe98gELhqI1mkTWBu/XAEeF5u6dgz0jLNA==}
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-linux-64@1.8.8:
-    resolution: {integrity: sha512-N/GkHTHeIQogXB1/6ZWfxHx+ubYeb8Jlq3b/3jnU4zLucpZzTQ8XkXIAfJG/TL3Q7ON7xQ8yGOyGLhHL7MpFRg==}
+  /turbo-linux-64@1.9.3:
+    resolution: {integrity: sha512-UuBPFefawEwpuxh5pM9Jqq3q4C8M0vYxVYlB3qea/nHQ80pxYq7ZcaLGEpb10SGnr3oMUUs1zZvkXWDNKCJb8Q==}
     cpu: [x64]
     os: [linux]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-linux-arm64@1.8.8:
-    resolution: {integrity: sha512-hKqLbBHgUkYf2Ww8uBL9UYdBFQ5677a7QXdsFhONXoACbDUPvpK4BKlz3NN7G4NZ+g9dGju+OJJjQP0VXRHb5w==}
+  /turbo-linux-arm64@1.9.3:
+    resolution: {integrity: sha512-vUrNGa3hyDtRh9W0MkO+l1dzP8Co2gKnOVmlJQW0hdpOlWlIh22nHNGGlICg+xFa2f9j4PbQlWTsc22c019s8Q==}
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-windows-64@1.8.8:
-    resolution: {integrity: sha512-2ndjDJyzkNslXxLt+PQuU21AHJWc8f6MnLypXy3KsN4EyX/uKKGZS0QJWz27PeHg0JS75PVvhfFV+L9t9i+Yyg==}
+  /turbo-windows-64@1.9.3:
+    resolution: {integrity: sha512-0BZ7YaHs6r+K4ksqWus1GKK3W45DuDqlmfjm/yuUbTEVc8szmMCs12vugU2Zi5GdrdJSYfoKfEJ/PeegSLIQGQ==}
     cpu: [x64]
     os: [win32]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-windows-arm64@1.8.8:
-    resolution: {integrity: sha512-xCA3oxgmW9OMqpI34AAmKfOVsfDljhD5YBwgs0ZDsn5h3kCHhC4x9W5dDk1oyQ4F5EXSH3xVym5/xl1J6WRpUg==}
+  /turbo-windows-arm64@1.9.3:
+    resolution: {integrity: sha512-QJUYLSsxdXOsR1TquiOmLdAgtYcQ/RuSRpScGvnZb1hY0oLc7JWU0llkYB81wVtWs469y8H9O0cxbKwCZGR4RQ==}
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo@1.8.8:
-    resolution: {integrity: sha512-qYJ5NjoTX+591/x09KgsDOPVDUJfU9GoS+6jszQQlLp1AHrf1wRFA3Yps8U+/HTG03q0M4qouOfOLtRQP4QypA==}
+  /turbo@1.9.3:
+    resolution: {integrity: sha512-ID7mxmaLUPKG/hVkp+h0VuucB1U99RPCJD9cEuSEOdIPoSIuomcIClEJtKamUsdPLhLCud+BvapBNnhgh58Nzw==}
     hasBin: true
     requiresBuild: true
     optionalDependencies:
-      turbo-darwin-64: 1.8.8
-      turbo-darwin-arm64: 1.8.8
-      turbo-linux-64: 1.8.8
-      turbo-linux-arm64: 1.8.8
-      turbo-windows-64: 1.8.8
-      turbo-windows-arm64: 1.8.8
+      turbo-darwin-64: 1.9.3
+      turbo-darwin-arm64: 1.9.3
+      turbo-linux-64: 1.9.3
+      turbo-linux-arm64: 1.9.3
+      turbo-windows-64: 1.9.3
+      turbo-windows-arm64: 1.9.3
     dev: true
 
   /tweetnacl@0.14.5:

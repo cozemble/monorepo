@@ -1,0 +1,45 @@
+{
+  "name": "@cozemble/frontend-ai-playground",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch --threshold error",
+    "test": "svelte-check --tsconfig ./tsconfig.json --threshold error"
+  },
+  "devDependencies": {
+    "@originjs/vite-plugin-commonjs": "^1.0.3",
+    "@sveltejs/adapter-auto": "^1.0.0",
+    "@sveltejs/kit": "^1.0.0",
+    "autoprefixer": "^10.4.13",
+    "postcss": "^8.4.21",
+    "svelte": "^3.54.0",
+    "svelte-check": "^3.0.1",
+    "tailwindcss": "^3.2.4",
+    "tslib": "^2.4.1",
+    "typescript": "^5.0.2",
+    "vite": "4.1.4"
+  },
+  "type": "module",
+  "dependencies": {
+    "@codemirror/lang-javascript": "^6.1.9",
+    "@cozemble/lang-util": "workspace:*",
+    "@cozemble/model-api": "workspace:*",
+    "@cozemble/model-assembled": "workspace:*",
+    "@cozemble/model-core": "workspace:*",
+    "@cozemble/model-editor": "workspace:*",
+    "@cozemble/model-event-sourced": "workspace:*",
+    "@cozemble/ui-filter-editor": "workspace:*",
+    "@tailwindcss/typography": "^0.5.9",
+    "ajv": "^8.12.0",
+    "axios": "^1.2.3",
+    "chatgpt": "^5.2.5",
+    "daisyui": "^2.47.0",
+    "openai": "^3.2.1",
+    "svelte-codemirror-editor": "^1.1.0",
+    "theme-change": "^2.5.0"
+  }
+}
