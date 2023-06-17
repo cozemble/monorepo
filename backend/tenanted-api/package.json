@@ -44,12 +44,12 @@
   },
   "dependencies": {
     "@cozemble/backend-tenanted-api-types": "workspace:*",
+    "@cozemble/data-filters-core": "workspace:*",
     "@cozemble/lang-util": "workspace:*",
     "@cozemble/model-api": "workspace:*",
     "@cozemble/model-core": "workspace:*",
     "@cozemble/model-event-sourced": "workspace:*",
     "@cozemble/model-string-core": "workspace:*",
-    "@cozemble/data-filters-core": "workspace:*",
     "@google-cloud/storage": "^6.9.4",
     "child-process-promise": "^2.2.1",
     "client-oauth2": "^4.3.3",
@@ -60,6 +60,7 @@
     "knex": "^2.4.0",
     "multer": "1.4.5-lts.1",
     "multer-cloud-storage": "^3.0.0",
+    "openai": "^3.2.1",
     "pg": "^8.9.0",
     "sharp": "^0.32.0"
   }

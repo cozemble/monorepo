@@ -25,6 +25,7 @@
   },
   "type": "module",
   "dependencies": {
+    "@codemirror/lang-javascript": "^6.1.9",
     "@cozemble/backend-tenanted-api-types": "workspace:*",
     "@cozemble/data-editor-sdk": "workspace:*",
     "@cozemble/data-filters-config": "workspace:*",
@@ -42,9 +43,12 @@
     "@cozemble/model-to-json": "workspace:*",
     "@cozemble/ui-filter-editor": "workspace:*",
     "@tailwindcss/typography": "^0.5.9",
+    "ajv": "^8.12.0",
     "axios": "^1.2.3",
+    "chatgpt": "^5.2.5",
     "daisyui": "^2.47.0",
-    "theme-change": "^2.5.0",
-    "ajv": "^8.12.0"
+    "openai": "^3.2.1",
+    "svelte-codemirror-editor": "^1.1.0",
+    "theme-change": "^2.5.0"
   }
 }

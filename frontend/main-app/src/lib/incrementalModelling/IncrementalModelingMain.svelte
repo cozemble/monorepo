@@ -1,6 +1,7 @@
 <script lang="ts">
 
     import Cog6ToothIcon from "../icons/Cog6ToothIcon.svelte";
+    import GenerativeIcon from "../icons/GenerativeIcon.svelte";
     import SettingsPanel from "../settings/SettingsPanel.svelte";
     import DatabaseIcon from "../icons/DatabaseIcon.svelte";
     import UserInstructionNotices from "../notices/UserInstructionNotices.svelte";
@@ -8,6 +9,7 @@
     import {registerEverything} from "@cozemble/model-assembled";
     import {onDestroy, onMount} from "svelte";
     import IncrementalModelingData from "./IncrementalModelingData.svelte";
+    import GenerativeAIData from "../generative/GenerativeAiModeling.svelte";
     import {IncrementalModelingBackend} from "./IncrementalModelingBackend";
     import type {Backend as DataTableBackend} from "@cozemble/frontend-datatable";
     import {backendFns} from "@cozemble/frontend-datatable";
@@ -18,7 +20,7 @@
     import type {EventSourcedModelList} from "@cozemble/model-event-sourced";
 
     export let tenantId: string
-    let panelToShow: "data" | "settings" = "data"
+    let panelToShow: "data" | "generative" | "settings" = "data"
     let dataTableBackend: DataTableBackend = backendFns.setBackend(new IncrementalModelingBackend(backend, tenantId, () => $models))
     let viewAs: "developer" | "user" = "developer"
 
@@ -72,6 +74,8 @@
                     <div class="inner-panel-container">
                         {#if panelToShow === 'data'}
                             <IncrementalModelingData {dataTableBackend}/>
+                        {:else if panelToShow === 'generative'}
+                            <GenerativeAIData />
                         {:else if panelToShow === 'settings'}
                             <SettingsPanel {tenantId}/>
                         {/if}
@@ -86,14 +90,15 @@
         <ul class="menu p-4 w-80 bg-base-100 text-base-content">
             <h2 class="mb-2">Cozemble</h2>
             <li on:click={() => panelToShow = 'data'} class:active-nav-item={panelToShow === 'data'}>
-                <a>
-                    <DatabaseIcon/>
-                    Data</a></li>
+                <a><DatabaseIcon/>Data</a>
+            </li>
+            <li on:click={() => panelToShow = 'generative'} class:active-nav-item={panelToShow === 'generative'}>
+                <a><GenerativeIcon/>Generative AI</a>
+            </li>            
             <li on:click={() => panelToShow = 'settings'} class:active-nav-item={panelToShow === 'settings'}>
-                <a>
-                    <Cog6ToothIcon/>
-                    Settings</a></li>
-
+                <a><Cog6ToothIcon/>Settings</a>
+            </li>
+            
             <label class="label">View as:</label>
             <select class="select select-bordered" on:change={viewAsChanged}>
                 <option value="developer" selected={viewAs === 'developer'}>Developer</option>
