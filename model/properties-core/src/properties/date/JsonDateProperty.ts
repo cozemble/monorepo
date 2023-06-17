@@ -1,6 +1,11 @@
 import type { JsonSchema, SystemConfiguration } from '@cozemble/model-core'
-import { jsonPropertyDescriptorFns, propertyDescriptors } from '@cozemble/model-core'
-import { format } from 'date-fns'
+import {
+  DataRecord,
+  JsonProperty,
+  jsonPropertyDescriptorFns,
+  propertyDescriptors,
+} from '@cozemble/model-core'
+import { format, parse } from 'date-fns'
 import { makeDerivedStringProperty } from '../derived/makeDerivedProperty'
 
 const defaultDateFormat = 'yyyy-MM-dd'
@@ -12,7 +17,7 @@ const datePropertySystemConfigurationSchema: JsonSchema = {
   properties: {
     dateFormat: {
       type: 'string',
-      enum: ['YYYY-MM-DD', 'DD-MM-YYYY', 'YYYY/MM/DD', 'DD/MM/YYYY'],
+      default: defaultDateFormat,
     },
   },
 }
@@ -20,22 +25,33 @@ const datePropertySystemConfigurationSchema: JsonSchema = {
 const propertyType = 'json.date.property'
 
 function systemConfigurationDateFormat(systemConfiguration: SystemConfiguration): string {
-  return (
-    systemConfiguration.slotConfiguration[propertyType]?.configuration?.dateFormat ??
-    defaultDateFormat
-  )
+  return (systemConfiguration as any)[propertyType]?.dateFormat ?? defaultDateFormat
 }
 
 function formatDate(systemConfiguration: SystemConfiguration, date: Date): string {
   return format(date, systemConfigurationDateFormat(systemConfiguration))
 }
 
-export const jsonDatePropertyDescriptor = jsonPropertyDescriptorFns.withSystemConfigurationSchema(
-  makeDerivedStringProperty('Date', propertyType, {}, (systemConfiguration) =>
-    formatDate(systemConfiguration, new Date()),
+export const jsonDatePropertyDescriptor = {
+  ...jsonPropertyDescriptorFns.withSystemConfigurationSchema(
+    makeDerivedStringProperty('Date', propertyType, {}, (systemConfiguration) =>
+      formatDate(systemConfiguration, new Date()),
+    ),
+    datePropertySystemConfigurationSchema,
   ),
-  datePropertySystemConfigurationSchema,
-)
+  getValue: (
+    systemConfiguration: SystemConfiguration,
+    property: JsonProperty,
+    record: DataRecord,
+  ) => {
+    const value = record.values[property.id.value] ?? null
+    if (value === null) {
+      return null
+    }
+    const parsed = parse(value, defaultDateFormat, new Date())
+    return formatDate(systemConfiguration, parsed)
+  },
+}
 
 export function registerJsonDateProperty() {
   propertyDescriptors.register(jsonDatePropertyDescriptor)

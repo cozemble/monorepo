@@ -90,14 +90,7 @@ export {
   summaryViewFns,
 } from './views'
 
-export {
-  SlotSystemConfigurationDescriptor,
-  SystemConfiguration,
-  SlotConfiguration,
-  slotSystemConfigurationDescriptors,
-  slotConfigurationFns,
-  systemConfigurationFns,
-} from './systemConfiguration'
+export { SystemConfiguration, systemConfigurationFns } from './systemConfiguration'
 
 export {
   recordGraphEdgeFns,

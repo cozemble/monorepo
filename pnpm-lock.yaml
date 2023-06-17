@@ -748,6 +748,9 @@ importers:
       '@cozemble/backend-tenanted-api-types':
         specifier: workspace:*
         version: link:../../backend/tenanted-api-types
+      '@cozemble/data-editor':
+        specifier: workspace:*
+        version: link:../data-editor
       '@cozemble/data-editor-sdk':
         specifier: workspace:*
         version: link:../../data/editor-sdk

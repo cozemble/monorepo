@@ -41,6 +41,7 @@
     "@cozemble/model-event-sourced": "workspace:*",
     "@cozemble/model-to-json": "workspace:*",
     "@cozemble/ui-filter-editor": "workspace:*",
+    "@cozemble/data-editor": "workspace:*",
     "@tailwindcss/typography": "^0.5.9",
     "axios": "^1.2.3",
     "daisyui": "^2.47.0",

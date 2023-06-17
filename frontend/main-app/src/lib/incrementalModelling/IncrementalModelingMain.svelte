@@ -6,16 +6,16 @@
     import UserInstructionNotices from "../notices/UserInstructionNotices.svelte";
     import ToastNotices from "../notices/ToastNotices.svelte";
     import {registerEverything} from "@cozemble/model-assembled";
-    import {onDestroy, onMount} from "svelte";
+    import {afterUpdate, onDestroy, onMount} from "svelte";
     import IncrementalModelingData from "./IncrementalModelingData.svelte";
     import {IncrementalModelingBackend} from "./IncrementalModelingBackend";
     import type {Backend as DataTableBackend} from "@cozemble/frontend-datatable";
     import {backendFns} from "@cozemble/frontend-datatable";
     import {eventSourcedModels, models, permitModelling} from "./incrementalModelStore";
-    import type {EventSourcedModel} from "@cozemble/model-event-sourced";
+    import type {EventSourcedModel, EventSourcedModelList} from "@cozemble/model-event-sourced";
     import {toastNoticeStoreFns} from "../notices/toastNoticeStore";
     import {backend} from "../backend/backendStore";
-    import type {EventSourcedModelList} from "@cozemble/model-event-sourced";
+    import {systemConfiguration} from "$lib/models/tenantEntityStore";
 
     export let tenantId: string
     let panelToShow: "data" | "settings" = "data"
@@ -56,6 +56,8 @@
         const target = event.target as HTMLSelectElement
         permitModelling.update(p => target.value === 'developer')
     }
+
+    afterUpdate(() => console.log({systemConfiguration:$systemConfiguration}))
 </script>
 
 <div class="drawer drawer-mobile">
