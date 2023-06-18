@@ -1,14 +1,13 @@
 import { eventSourcedStore } from './EventSourcedStore'
-import { tablesActionReducer } from '../tables/actions'
 import { saveModels } from '../appBackend'
-import type { EventSourcedModel } from '@cozemble/model-event-sourced'
-import { eventSourcedModelListFns } from '@cozemble/model-event-sourced'
-import { derived } from 'svelte/store'
-import type { EventSourcedModelStore } from '../types'
 import type {
+  EventSourcedModel,
   EventSourcedModelList,
   EventSourcedModelListEvent,
 } from '@cozemble/model-event-sourced'
+import { eventSourcedModelListFns } from '@cozemble/model-event-sourced'
+import { derived } from 'svelte/store'
+import type { EventSourcedModelStore } from '../types'
 
 function reducer(
   list: EventSourcedModelList,

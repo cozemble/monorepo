@@ -428,6 +428,9 @@ importers:
       '@codemirror/lang-javascript':
         specifier: ^6.1.9
         version: 6.1.9
+      '@cozemble/frontend-datatable':
+        specifier: workspace:*
+        version: link:../datatable
       '@cozemble/lang-util':
         specifier: workspace:*
         version: link:../../lang/util
@@ -446,6 +449,9 @@ importers:
       '@cozemble/model-event-sourced':
         specifier: workspace:*
         version: link:../../model/event-sourced
+      '@cozemble/model-properties-core':
+        specifier: workspace:*
+        version: link:../../model/properties-core
       '@cozemble/ui-filter-editor':
         specifier: workspace:*
         version: link:../../ui/filter-editor
@@ -507,6 +513,9 @@ importers:
       vite:
         specifier: 4.1.4
         version: 4.1.4(@types/node@16.11.6)
+      vitest:
+        specifier: ^0.32.1
+        version: 0.32.1
 
   frontend/bff:
     dependencies:

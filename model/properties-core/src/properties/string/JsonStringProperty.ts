@@ -59,7 +59,7 @@ export type JsonStringProperty = JsonProperty<
   StringPropertyConfiguration
 >
 
-export const jsonStringPropertyType: PropertyType = {
+export const stringPropertyType: PropertyType = {
   _type: 'property.type',
   value: 'json.string.property',
 }
@@ -68,7 +68,7 @@ export const jsonStringPropertyDescriptor: JsonPropertyDescriptor<JsonStringProp
   _type: 'property.descriptor',
   isJsonPropertyDescriptor: true,
   configurationSchema: stringPropertyConfigurationSchema,
-  propertyType: jsonStringPropertyType,
+  propertyType: stringPropertyType,
   name: dottedNameFns.newInstance('String'),
   isRequireable: true,
   isUniqueable: true,
@@ -82,7 +82,7 @@ export const jsonStringPropertyDescriptor: JsonPropertyDescriptor<JsonStringProp
       _type: 'new.json.property.model.event',
       ...modelEventFns.coreParts(modelId),
       propertyName,
-      propertyType: jsonStringPropertyType,
+      propertyType: stringPropertyType,
       jsonType: jsonDataTypes.string,
       propertyId: propertyId ?? propertyIdFns.newInstance(),
     }
@@ -117,6 +117,7 @@ export const jsonStringPropertyDescriptor: JsonPropertyDescriptor<JsonStringProp
     if (property.configuration.pattern) {
       const regex = new RegExp(property.configuration.pattern)
       if (!regex.test(value ?? '')) {
+        console.log({ value, regex, pattern: property.configuration.pattern })
         return [property.configuration.patternExplanation ?? 'Invalid format']
       }
     }

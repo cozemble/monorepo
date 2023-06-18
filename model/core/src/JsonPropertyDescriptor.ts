@@ -51,7 +51,7 @@ export function isJsonProperty(obj: any): obj is JsonProperty {
   return obj && typeof obj === 'object' && 'jsonType' in obj && 'configuration' in obj
 }
 
-type JsonSchemaProperty = {
+export type JsonSchemaProperty = {
   type?: 'string' | 'number' | 'boolean' | 'object' | 'array' | 'null'
   title?: string
   description?: string
@@ -66,6 +66,7 @@ type JsonSchemaProperty = {
   anyOf?: JsonSchemaProperty[]
   allOf?: JsonSchemaProperty[]
   minimum?: number
+  pattern?: string
   [key: string]: any
 }
 

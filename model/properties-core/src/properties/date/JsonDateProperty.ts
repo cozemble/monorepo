@@ -57,3 +57,5 @@ export const jsonDatePropertyDescriptor = {
 export function registerJsonDateProperty() {
   propertyDescriptors.register(jsonDatePropertyDescriptor)
 }
+
+export const datePropertyType = jsonDatePropertyDescriptor.propertyType

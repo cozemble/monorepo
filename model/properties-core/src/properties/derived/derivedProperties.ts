@@ -44,6 +44,23 @@ const phoneNumberPropertyDescriptor = makeDerivedStringProperty(
   null,
 )
 
+const emailConfiguration: StringPropertyConfiguration = {
+  _type: 'string.property.configuration',
+  pattern: '^\\S+@\\S+\\.\\S+$',
+  patternExplanation: 'Must be a valid email address',
+  multipleLines: false,
+  prefix: '',
+  suffix: '',
+}
+
+const emailPropertyDescriptor = makeDerivedStringProperty(
+  'Email',
+  'json.email.property',
+  emailConfiguration,
+  ['jack@cozemble.com', 'jane@cozemble.com'],
+  null,
+)
+
 const integerConfiguration: NumberPropertyConfiguration = {
   _type: 'number.property.configuration',
   decimalPlaces: 0,
@@ -57,7 +74,31 @@ const integerPropertyDescriptor = makeDerivedNumberProperty(
   jsonSchemaFns.dropProperty(numberPropertyConfigurationSchema, 'decimalPlaces'),
 )
 
+const timeConfiguration: StringPropertyConfiguration = {
+  _type: 'string.property.configuration',
+  pattern: '^([01]?[0-9]|2[0-3]):[0-5][0-9]$',
+  patternExplanation: 'Must be a valid 24 hour time format (HH:MM)',
+  multipleLines: false,
+  prefix: '',
+  suffix: '',
+}
+
+const timePropertyDescriptor = makeDerivedStringProperty(
+  'Time',
+  'json.time.property',
+  timeConfiguration,
+  ['00:00', '01:30', '12:45', '14:00', '20:59', '23:59'],
+  null,
+)
+
 export function registerDerivedProperties() {
   propertyDescriptors.register(phoneNumberPropertyDescriptor)
   propertyDescriptors.register(integerPropertyDescriptor)
+  propertyDescriptors.register(emailPropertyDescriptor)
+  propertyDescriptors.register(timePropertyDescriptor)
 }
+
+export const phoneNumberPropertyType = phoneNumberPropertyDescriptor.propertyType
+export const emailPropertyType = emailPropertyDescriptor.propertyType
+export const integerPropertyType = integerPropertyDescriptor.propertyType
+export const timePropertyType = timePropertyDescriptor.propertyType
