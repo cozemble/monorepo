@@ -1,7 +1,8 @@
 import { expect, test } from 'vitest'
 import { JsonSchema, Property } from '@cozemble/model-core'
-import { helpers } from '../src/lib/generative/components/helpers'
-import { registerJsonProperties } from '@cozemble/model-properties-core/dist/esm'
+import { convertSchemaToModels } from '../src/lib/generative/components/helpers'
+import { registerJsonProperties } from '@cozemble/model-properties-core'
+import { mandatory } from '@cozemble/lang-util'
 
 const customerSchema: JsonSchema = {
   $schema: 'http://json-schema.org/draft-07/schema#',
@@ -54,7 +55,7 @@ const customerSchema: JsonSchema = {
 registerJsonProperties()
 
 test('can convert customer response', () => {
-  const { model, allModels } = helpers(customerSchema)
+  const { model, allModels } = convertSchemaToModels(customerSchema)
   expect(model.slots.map((slot) => slot.name.value)).toEqual([
     'Id',
     'First Name',
@@ -64,4 +65,15 @@ test('can convert customer response', () => {
   ])
   expect((model.slots[0] as Property).unique).toBe(true)
   expect((model.slots[4] as Property).propertyType.value).toBe('json.phoneNumber.property')
+  expect(allModels.length).toBe(2)
+  const addressModel = mandatory(
+    allModels.find((model) => model.name.value === 'Address'),
+    `Address model not found`,
+  )
+  expect(addressModel.slots.map((slot) => slot.name.value)).toEqual([
+    'Street',
+    'City',
+    'State',
+    'Zip Code',
+  ])
 })

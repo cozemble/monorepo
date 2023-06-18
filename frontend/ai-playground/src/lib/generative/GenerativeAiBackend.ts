@@ -33,10 +33,10 @@ It's used in the same place where you'd use 'type', 'format', or similar keyword
 In addition, we do not use the "date-time" format.  Instead we use "date" and "time" formats.  This might mean you will have to use two properties to represent a date-time value.
 We do make use of all the other formats listed in the JSON Schema specification.
 Use the 'title' keyword to give a name to your schema.  We also support a keyword called 'pluralTitle' which represents the name of the schema in plural form.  It goes beside 'title' in the schema.
-Do not include "timestamp" properties associated with creation and modification of the object.  We will add those automatically.
+Do not include any "timestamp" style properties associated with creation and modification of the object.  We will add those automatically.
 Do not explain the code at all because I want to parse the code and generate documentation from it.
 
-Given this, generate a schema for a ${value} object.`
+Given this, generate a schema for a ${value} object.  Include the 10 most common properties.`
 
   const response = await openai.createChatCompletion({
     model: 'gpt-3.5-turbo',

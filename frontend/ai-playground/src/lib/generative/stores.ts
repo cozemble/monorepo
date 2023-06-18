@@ -7,7 +7,7 @@ import { backendFns, makeInMemoryBackend } from '@cozemble/frontend-datatable'
 export const modelStore = eventSourcedModelStore([])
 export const modelViews = writable([] as ModelView[])
 export const systemConfiguration = writable(systemConfigurationFns.empty())
-export const permitModelling = writable(true)
+export const permitModelling = writable(false)
 export const showDevConsole = writable(false)
 export const navbarState = writable('')
 

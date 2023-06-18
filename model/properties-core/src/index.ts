@@ -13,4 +13,6 @@ export { numberPropertyType } from './properties/number/JsonNumberProperty'
 export {
   integerPropertyType,
   phoneNumberPropertyType,
+  emailPropertyType,
+  timePropertyType,
 } from './properties/derived/derivedProperties'

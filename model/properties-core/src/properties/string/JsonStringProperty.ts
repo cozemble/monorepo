@@ -117,6 +117,7 @@ export const jsonStringPropertyDescriptor: JsonPropertyDescriptor<JsonStringProp
     if (property.configuration.pattern) {
       const regex = new RegExp(property.configuration.pattern)
       if (!regex.test(value ?? '')) {
+        console.log({ value, regex, pattern: property.configuration.pattern })
         return [property.configuration.patternExplanation ?? 'Invalid format']
       }
     }
