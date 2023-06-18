@@ -12,7 +12,7 @@ import {
   propertyNameFns,
   type PropertyType,
 } from '@cozemble/model-core'
-import { jsonStringPropertyType } from './string/JsonStringProperty'
+import { stringPropertyType } from './string/JsonStringProperty'
 
 export interface NewJsonPropertyModelEvent extends ModelEvent {
   _type: 'new.json.property.model.event'
@@ -27,7 +27,7 @@ export function emptyProperty(name: string): JsonProperty {
   const id = propertyIdFns.newInstance()
   return {
     _type: 'property',
-    propertyType: jsonStringPropertyType,
+    propertyType: stringPropertyType,
     jsonType: jsonDataTypes.string,
     id,
     version: 1,
@@ -50,7 +50,6 @@ export const newJsonPropertyModelEventDescriptor: ModelEventDescriptor = {
       propertyType: event.propertyType,
       jsonType: event.jsonType,
     }
-    console.log({ newProperty, model, event })
     if (model.slots.some((p) => p.id.value === event.propertyId.value)) {
       newProperty = { ...newProperty, id: event.propertyId }
       return {

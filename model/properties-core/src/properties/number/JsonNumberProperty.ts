@@ -51,7 +51,7 @@ export type JsonNumberProperty = JsonProperty<
   NumberPropertyConfiguration
 >
 
-export const jsonNumberPropertyType: PropertyType = {
+export const numberPropertyType: PropertyType = {
   _type: 'property.type',
   value: 'json.number.property',
 }
@@ -60,7 +60,7 @@ export const jsonNumberPropertyDescriptor: JsonPropertyDescriptor<JsonNumberProp
   _type: 'property.descriptor',
   isJsonPropertyDescriptor: true,
   configurationSchema: numberPropertyConfigurationSchema,
-  propertyType: jsonNumberPropertyType,
+  propertyType: numberPropertyType,
   name: dottedNameFns.newInstance('Number'),
   isRequireable: true,
   isUniqueable: true,
@@ -74,7 +74,7 @@ export const jsonNumberPropertyDescriptor: JsonPropertyDescriptor<JsonNumberProp
       _type: 'new.json.property.model.event',
       ...modelEventFns.coreParts(modelId),
       propertyName,
-      propertyType: jsonNumberPropertyType,
+      propertyType: numberPropertyType,
       jsonType: jsonDataTypes.number,
       propertyId: propertyId ?? propertyIdFns.newInstance(),
       configuration: { ...emptyNumberPropertyConfiguration },

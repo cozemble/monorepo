@@ -61,3 +61,6 @@ export function registerDerivedProperties() {
   propertyDescriptors.register(phoneNumberPropertyDescriptor)
   propertyDescriptors.register(integerPropertyDescriptor)
 }
+
+export const phoneNumberPropertyType = phoneNumberPropertyDescriptor.propertyType
+export const integerPropertyType = integerPropertyDescriptor.propertyType
