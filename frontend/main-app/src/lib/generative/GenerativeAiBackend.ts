@@ -17,10 +17,9 @@ export async function promptManager(value: string): Promise<string | undefined> 
 
   const response = await openai.createChatCompletion({
     model: 'gpt-3.5-turbo',
-    // prompt: prompt,
     messages: [{ role: 'user', content: prompt }],
     temperature: 1,
-    max_tokens: 3000,
+    max_tokens: 3500,
     top_p: 1,
     // best_of: 1,
     frequency_penalty: 0,
