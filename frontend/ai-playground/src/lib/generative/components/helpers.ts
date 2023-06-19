@@ -21,8 +21,8 @@ import type { Option } from '@cozemble/lang-util'
 import { options, strings } from '@cozemble/lang-util'
 import { eventSourcedModelFns, eventSourcedModelListFns } from '@cozemble/model-event-sourced'
 import { modelStore, navbarState } from '$lib/generative/stores'
-import type { Cardinality, NestedModel } from '@cozemble/model-core/dist/esm'
-import { nestedModelFns } from '@cozemble/model-api/dist/esm'
+import type { Cardinality, NestedModel } from '@cozemble/model-core'
+import { nestedModelFns } from '@cozemble/model-api'
 
 const systemConfiguration = systemConfigurationFns.empty()
 

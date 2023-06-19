@@ -1,8 +1,8 @@
 import { Configuration, OpenAIApi } from 'openai'
 // import { ChatGPTAPI } from 'chatgpt'
 
-const ORGANIZATION_ID = 'org-HxwskUQppDZdQp0pwyHsbiVw'
-const API_KEY = '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'
+const ORGANIZATION_ID = 'org-'
+const API_KEY = 'sk-'
 
 const configuration = new Configuration({
   apiKey: API_KEY,
