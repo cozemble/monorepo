@@ -78,6 +78,33 @@ function addProperty(
 
 type ModelAndAllModels = { model: Model; allModels: Model[] }
 
+function handleInnerProperties(
+  propertyKey: string,
+  modelAndAll: ModelAndAllModels,
+  innerProperties: Record<string, JsonSchemaProperty>,
+  innerRequiredProperties: string[],
+  cardinality: Cardinality,
+): ModelAndAllModels {
+  const sentenceCase = strings.camelcaseToSentenceCase(propertyKey)
+  const innerModel = modelFns.newInstance(sentenceCase)
+  innerModel.parentModelId = modelAndAll.model.id
+  const innerModelAndAll = foldProperties(innerProperties, innerRequiredProperties, {
+    model: innerModel,
+    allModels: [innerModel],
+  })
+  const nestedModel: NestedModel = nestedModelFns.newInstance(
+    sentenceCase,
+    innerModel.id,
+    cardinality,
+  )
+  modelAndAll.model = {
+    ...modelAndAll.model,
+    nestedModels: [...modelAndAll.model.nestedModels, nestedModel],
+  }
+  modelAndAll.allModels = [...modelAndAll.allModels, ...innerModelAndAll.allModels]
+  return modelAndAll
+}
+
 function foldProperties(
   properties: Record<string, JsonSchemaProperty>,
   requiredProperties: string[],
@@ -86,26 +113,30 @@ function foldProperties(
   return Object.keys(properties).reduce((modelAndAll, propertyKey) => {
     const property = properties[propertyKey]
     if (property.type === 'object') {
-      const cardinality: Cardinality = 'one'
-      const sentenceCase = strings.camelcaseToSentenceCase(propertyKey)
-      const innerModel = modelFns.newInstance(sentenceCase)
-      innerModel.parentModelId = modelAndAll.model.id
-      const innerModelAndAll = foldProperties(property.properties ?? {}, property.required ?? [], {
-        model: innerModel,
-        allModels: [innerModel],
-      })
-      const nestedModel: NestedModel = nestedModelFns.newInstance(
-        sentenceCase,
-        innerModel.id,
-        cardinality,
+      return handleInnerProperties(
+        propertyKey,
+        modelAndAll,
+        property.properties ?? {},
+        property.required ?? [],
+        'one',
       )
-      modelAndAll.model = {
-        ...modelAndAll.model,
-        nestedModels: [...modelAndAll.model.nestedModels, nestedModel],
-      }
-      modelAndAll.allModels = [...modelAndAll.allModels, ...innerModelAndAll.allModels]
     } else if (property.type === 'array') {
-      console.log('TODO: handle array')
+      if (!property.items) {
+        throw new Error(`Array property ${propertyKey} does not have items defined`)
+      }
+      if (Array.isArray(property.items)) {
+        throw new Error(`Array property ${propertyKey} has multiple items defined`)
+      }
+      if (property.items.type !== 'object') {
+        throw new Error(`Array property ${propertyKey} has items that are not objects`)
+      }
+      return handleInnerProperties(
+        propertyKey,
+        modelAndAll,
+        property.items.properties ?? {},
+        property.items.required ?? [],
+        'many',
+      )
     } else {
       modelAndAll.model = addProperty(modelAndAll.model, requiredProperties, propertyKey, property)
       modelAndAll.allModels = modelAndAll.allModels.map((m) =>

@@ -52,7 +52,7 @@ export function isJsonProperty(obj: any): obj is JsonProperty {
 }
 
 export type JsonSchemaProperty = {
-  type?: 'string' | 'number' | 'boolean' | 'object' | 'array' | 'null'
+  type?: 'string' | 'number' | 'integer' | 'boolean' | 'object' | 'array' | 'null'
   title?: string
   description?: string
   enum?: Array<string | number | boolean | null>
