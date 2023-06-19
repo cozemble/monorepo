@@ -38,16 +38,21 @@ Do not explain the code at all because I want to parse the code and generate doc
 
 Given this, generate a schema for a ${value} object.  Include the 10 most common properties.`
 
-  const response = await openai.createChatCompletion({
-    model: 'gpt-3.5-turbo',
-    // prompt: prompt,
-    messages: [{ role: 'user', content: prompt }],
-    temperature: 1,
-    max_tokens: 3000,
-    top_p: 1,
-    // best_of: 1,
-    frequency_penalty: 0,
-  })
+  try {
+    const response = await openai.createChatCompletion({
+      model: 'gpt-3.5-turbo',
+      // prompt: prompt,
+      messages: [{ role: 'user', content: prompt }],
+      temperature: 1,
+      max_tokens: 3000,
+      top_p: 1,
+      // best_of: 1,
+      frequency_penalty: 0,
+    })
 
-  return response.data.choices[0].message?.content
+    return response.data.choices[0].message?.content
+  } catch (e: any) {
+    console.error(e)
+    throw new Error('Failed to call OpenAI : ' + e.message)
+  }
 }

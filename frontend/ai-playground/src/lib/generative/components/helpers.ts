@@ -21,8 +21,8 @@ import type { Option } from '@cozemble/lang-util'
 import { options, strings } from '@cozemble/lang-util'
 import { eventSourcedModelFns, eventSourcedModelListFns } from '@cozemble/model-event-sourced'
 import { modelStore, navbarState } from '$lib/generative/stores'
-import type { Cardinality, NestedModel } from '@cozemble/model-core/dist/esm'
-import { nestedModelFns } from '@cozemble/model-api/dist/esm'
+import type { Cardinality, NestedModel } from '@cozemble/model-core'
+import { nestedModelFns } from '@cozemble/model-api'
 
 const systemConfiguration = systemConfigurationFns.empty()
 
@@ -48,13 +48,18 @@ function getPropertyDescriptor(property: JsonSchemaProperty): PropertyDescriptor
   return null
 }
 
-function addProperty(model: Model, propertyKey: string, property: JsonSchemaProperty): Model {
+function addProperty(
+  model: Model,
+  requiredProperties: string[],
+  propertyKey: string,
+  property: JsonSchemaProperty,
+): Model {
   const propertyName = propertyNameFns.newInstance(strings.camelcaseToSentenceCase(propertyKey))
   const propOptions: Option[] = [propertyOptions.named(propertyName)]
   if (property.unique) {
     propOptions.push(propertyOptions.unique)
   }
-  if (property.required) {
+  if (requiredProperties.includes(propertyKey)) {
     propOptions.push(propertyOptions.required)
   }
   if (property.pattern) {
@@ -73,35 +78,67 @@ function addProperty(model: Model, propertyKey: string, property: JsonSchemaProp
 
 type ModelAndAllModels = { model: Model; allModels: Model[] }
 
+function handleInnerProperties(
+  propertyKey: string,
+  modelAndAll: ModelAndAllModels,
+  innerProperties: Record<string, JsonSchemaProperty>,
+  innerRequiredProperties: string[],
+  cardinality: Cardinality,
+): ModelAndAllModels {
+  const sentenceCase = strings.camelcaseToSentenceCase(propertyKey)
+  const innerModel = modelFns.newInstance(sentenceCase)
+  innerModel.parentModelId = modelAndAll.model.id
+  const innerModelAndAll = foldProperties(innerProperties, innerRequiredProperties, {
+    model: innerModel,
+    allModels: [innerModel],
+  })
+  const nestedModel: NestedModel = nestedModelFns.newInstance(
+    sentenceCase,
+    innerModel.id,
+    cardinality,
+  )
+  modelAndAll.model = {
+    ...modelAndAll.model,
+    nestedModels: [...modelAndAll.model.nestedModels, nestedModel],
+  }
+  modelAndAll.allModels = [...modelAndAll.allModels, ...innerModelAndAll.allModels]
+  return modelAndAll
+}
+
 function foldProperties(
   properties: Record<string, JsonSchemaProperty>,
+  requiredProperties: string[],
   modelAndAllModels: ModelAndAllModels,
 ): ModelAndAllModels {
   return Object.keys(properties).reduce((modelAndAll, propertyKey) => {
     const property = properties[propertyKey]
     if (property.type === 'object') {
-      const cardinality: Cardinality = 'one'
-      const sentenceCase = strings.camelcaseToSentenceCase(propertyKey)
-      const innerModel = modelFns.newInstance(sentenceCase)
-      innerModel.parentModelId = modelAndAll.model.id
-      const innerModelAndAll = foldProperties(property.properties ?? {}, {
-        model: innerModel,
-        allModels: [innerModel],
-      })
-      const nestedModel: NestedModel = nestedModelFns.newInstance(
-        sentenceCase,
-        innerModel.id,
-        cardinality,
+      return handleInnerProperties(
+        propertyKey,
+        modelAndAll,
+        property.properties ?? {},
+        property.required ?? [],
+        'one',
       )
-      modelAndAll.model = {
-        ...modelAndAll.model,
-        nestedModels: [...modelAndAll.model.nestedModels, nestedModel],
-      }
-      modelAndAll.allModels = [...modelAndAll.allModels, ...innerModelAndAll.allModels]
     } else if (property.type === 'array') {
-      console.log('TODO: handle array')
+      if (!property.items) {
+        throw new Error(`Array property ${propertyKey} does not have items defined`)
+      }
+      if (Array.isArray(property.items)) {
+        throw new Error(`Array property ${propertyKey} has multiple items defined`)
+      }
+      if (property.items.type !== 'object') {
+        throw new Error(`Array property ${propertyKey} has items that are not objects`)
+      }
+      return handleInnerProperties(
+        propertyKey,
+        modelAndAll,
+        property.items.properties ?? {},
+        property.items.required ?? [],
+        'many',
+      )
     } else {
-      modelAndAll.model = addProperty(modelAndAll.model, propertyKey, property)
+      modelAndAll.model = addProperty(modelAndAll.model, requiredProperties, propertyKey, property)
       modelAndAll.allModels = modelAndAll.allModels.map((m) =>
         m.id.value === modelAndAll.model.id.value ? modelAndAll.model : m,
       )
@@ -115,7 +152,7 @@ export function convertSchemaToModels(schema: JsonSchema): ModelAndAllModels {
   if (schema.pluralTitle) {
     model.pluralName = modelPluralNameFns.newInstance(schema.pluralTitle)
   }
-  return foldProperties(schema.properties, { model, allModels: [model] })
+  return foldProperties(schema.properties, schema.required ?? [], { model, allModels: [model] })
 }
 
 export function reconfigureApp(config: { model: Model; allModels: Model[] }) {

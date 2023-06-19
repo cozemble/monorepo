@@ -14,17 +14,21 @@
         } else {
             generating = true
             errorMessage = null
-            const result = await promptManager(value) ?? null
-            generating = false
-            if(!result) {
-                errorMessage = "Something went wrong, please try again"
-                return
+            try {
+                const result = await promptManager(value) ?? null
+                if (!result) {
+                    errorMessage = "Something went wrong, please try again"
+                    return
+                }
+                const schema = parsedSchema(result)
+                console.log({schema})
+                const converted = convertSchemaToModels(schema)
+                reconfigureApp(converted)
+            } catch (e: any) {
+                errorMessage = e.message
+            } finally {
+                generating = false
             }
-            const schema = parsedSchema(result)
-            console.log({schema})
-            const converted = convertSchemaToModels(schema)
-            reconfigureApp(converted)
-
         }
     }
 
@@ -38,7 +42,8 @@
 <div class="grid h-screen place-items-center">
     <div class="flex flex-col">
         <h1 class="text-center mb-8">I want a database that contains a list of ...</h1>
-        <input type="text" class="input input-bordered input-lg" placeholder="some thing..." bind:value on:keydown={inputKeyDown}/>
+        <input type="text" class="input input-bordered input-lg" placeholder="some thing..." bind:value
+               on:keydown={inputKeyDown}/>
         {#if errorMessage}
             <p class="text-center text-red-500 mt-4">{errorMessage}</p>
         {/if}
