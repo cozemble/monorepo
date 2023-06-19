@@ -2,10 +2,15 @@ import { Property } from './core'
 import { PropertyDescriptor } from './propertyDescriptor'
 import { TinyValue } from './TinyValue'
 
-export type JsonDataType = TinyValue<
-  'json.data.type',
-  'string' | 'integer' | 'number' | 'boolean' | 'object' | 'array' | 'null'
->
+export type JsonDataTypes =
+  | 'string'
+  | 'integer'
+  | 'number'
+  | 'boolean'
+  | 'object'
+  | 'array'
+  | 'null'
+export type JsonDataType = TinyValue<'json.data.type', JsonDataTypes>
 
 export const jsonDataTypes = {
   string: {
@@ -52,7 +57,7 @@ export function isJsonProperty(obj: any): obj is JsonProperty {
 }
 
 export type JsonSchemaProperty = {
-  type?: 'string' | 'number' | 'integer' | 'boolean' | 'object' | 'array' | 'null'
+  type?: JsonDataTypes
   title?: string
   description?: string
   enum?: Array<string | number | boolean | null>

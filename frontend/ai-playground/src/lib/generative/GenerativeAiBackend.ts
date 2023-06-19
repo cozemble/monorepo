@@ -1,5 +1,4 @@
 import { Configuration, OpenAIApi } from 'openai'
-// import { ChatGPTAPI } from 'chatgpt'
 
 const ORGANIZATION_ID = 'org-'
 const API_KEY = 'sk-'
@@ -12,8 +11,6 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration)
 
 export async function promptManager(value: string): Promise<string | undefined> {
-  // RE-WORK CHATGPT PROMPT
-  // const prompt = `Generate json schema \n Use json schema "ref" to express relationships: \n ${value} \n I need the only the code, I don't need any explanations`
   const prompt = `In our extended version of JSON Schema, we have an additional keyword 'unique'.
 This keyword is used to ensure that the values of the specified field are unique among all objects in an array or all properties of an object.
 It's used in the same place where you'd use 'type', 'format', or similar keywords. For instance:

@@ -1,4 +1,11 @@
-import type { JsonSchema, JsonSchemaProperty, Model, Property } from '@cozemble/model-core'
+import type {
+  Cardinality,
+  JsonSchema,
+  JsonSchemaProperty,
+  Model,
+  NestedModel,
+  Property,
+} from '@cozemble/model-core'
 import {
   modelEventDescriptors,
   modelPluralNameFns,
@@ -7,10 +14,11 @@ import {
   propertyNameFns,
   systemConfigurationFns,
 } from '@cozemble/model-core'
-import { modelFns, propertyOptions } from '@cozemble/model-api'
+import { modelFns, nestedModelFns, propertyOptions } from '@cozemble/model-api'
 import {
   datePropertyType,
   emailPropertyType,
+  integerPropertyType,
   jsonStringPropertyOptions,
   numberPropertyType,
   phoneNumberPropertyType,
@@ -21,8 +29,6 @@ import type { Option } from '@cozemble/lang-util'
 import { options, strings } from '@cozemble/lang-util'
 import { eventSourcedModelFns, eventSourcedModelListFns } from '@cozemble/model-event-sourced'
 import { modelStore, navbarState } from '$lib/generative/stores'
-import type { Cardinality, NestedModel } from '@cozemble/model-core'
-import { nestedModelFns } from '@cozemble/model-api'
 
 const systemConfiguration = systemConfigurationFns.empty()
 
@@ -41,6 +47,9 @@ function getPropertyDescriptor(property: JsonSchemaProperty): PropertyDescriptor
       return propertyDescriptors.mandatory(timePropertyType)
     }
     return propertyDescriptors.mandatory(stringPropertyType)
+  }
+  if (property.type === 'integer') {
+    return propertyDescriptors.mandatory(integerPropertyType)
   }
   if (property.type === 'number') {
     return propertyDescriptors.mandatory(numberPropertyType)
