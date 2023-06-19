@@ -48,13 +48,18 @@ function getPropertyDescriptor(property: JsonSchemaProperty): PropertyDescriptor
   return null
 }
 
-function addProperty(model: Model, propertyKey: string, property: JsonSchemaProperty): Model {
+function addProperty(
+  model: Model,
+  requiredProperties: string[],
+  propertyKey: string,
+  property: JsonSchemaProperty,
+): Model {
   const propertyName = propertyNameFns.newInstance(strings.camelcaseToSentenceCase(propertyKey))
   const propOptions: Option[] = [propertyOptions.named(propertyName)]
   if (property.unique) {
     propOptions.push(propertyOptions.unique)
   }
-  if (property.required) {
+  if (requiredProperties.includes(propertyKey)) {
     propOptions.push(propertyOptions.required)
   }
   if (property.pattern) {
@@ -75,6 +80,7 @@ type ModelAndAllModels = { model: Model; allModels: Model[] }
 
 function foldProperties(
   properties: Record<string, JsonSchemaProperty>,
+  requiredProperties: string[],
   modelAndAllModels: ModelAndAllModels,
 ): ModelAndAllModels {
   return Object.keys(properties).reduce((modelAndAll, propertyKey) => {
@@ -84,7 +90,7 @@ function foldProperties(
       const sentenceCase = strings.camelcaseToSentenceCase(propertyKey)
       const innerModel = modelFns.newInstance(sentenceCase)
       innerModel.parentModelId = modelAndAll.model.id
-      const innerModelAndAll = foldProperties(property.properties ?? {}, {
+      const innerModelAndAll = foldProperties(property.properties ?? {}, property.required ?? [], {
         model: innerModel,
         allModels: [innerModel],
       })
@@ -101,7 +107,7 @@ function foldProperties(
     } else if (property.type === 'array') {
       console.log('TODO: handle array')
     } else {
-      modelAndAll.model = addProperty(modelAndAll.model, propertyKey, property)
+      modelAndAll.model = addProperty(modelAndAll.model, requiredProperties, propertyKey, property)
       modelAndAll.allModels = modelAndAll.allModels.map((m) =>
         m.id.value === modelAndAll.model.id.value ? modelAndAll.model : m,
       )
@@ -115,7 +121,7 @@ export function convertSchemaToModels(schema: JsonSchema): ModelAndAllModels {
   if (schema.pluralTitle) {
     model.pluralName = modelPluralNameFns.newInstance(schema.pluralTitle)
   }
-  return foldProperties(schema.properties, { model, allModels: [model] })
+  return foldProperties(schema.properties, schema.required ?? [], { model, allModels: [model] })
 }
 
 export function reconfigureApp(config: { model: Model; allModels: Model[] }) {

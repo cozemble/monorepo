@@ -63,6 +63,7 @@ test('can convert customer response', () => {
     'Email',
     'Phone Number',
   ])
+  expect((model.slots[0] as Property).required).toBe(true)
   expect((model.slots[0] as Property).unique).toBe(true)
   expect((model.slots[4] as Property).propertyType.value).toBe('json.phoneNumber.property')
   expect(allModels.length).toBe(2)
@@ -76,4 +77,5 @@ test('can convert customer response', () => {
     'State',
     'Zip Code',
   ])
+  expect((addressModel.slots[0] as Property).required).toBe(true)
 })
