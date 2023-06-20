@@ -1,22 +1,24 @@
 <script lang="ts">
     import {registerEverything} from "@cozemble/model-assembled";
-    import {afterUpdate, onMount} from "svelte";
-    import {modelStore, showModels} from "$lib/generative/stores";
+    import {modelStore} from "$lib/generative/stores";
     import FirstPrompt from "$lib/generative/components/FirstPrompt.svelte";
-    import ManageModels from "$lib/generative/components/ManageModels.svelte";
+    import {goto} from "$app/navigation";
+    import {onMount} from "svelte";
+    import type {EventSourcedModel} from "@cozemble/model-event-sourced";
 
     onMount(() => {
         registerEverything()
     })
 
-    afterUpdate(() => {
-        console.log({modelStore: $modelStore})
-    })
+    function navigateToAmendments(models: EventSourcedModel[]) {
+        if (models.length > 0) {
+            goto("/amend")
+        }
+    }
+
+    $: navigateToAmendments($modelStore.models)
+
 </script>
 {#if $modelStore.models.length === 0}
     <FirstPrompt/>
-{:else}
-    {#if $showModels}
-        <ManageModels/>
-    {/if}
 {/if}
