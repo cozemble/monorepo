@@ -3,6 +3,7 @@ import type {
   JsonSchema,
   JsonSchemaProperty,
   Model,
+  ModelId,
   NestedModel,
   Property,
 } from '@cozemble/model-core'
@@ -26,7 +27,7 @@ import {
   timePropertyType,
 } from '@cozemble/model-properties-core'
 import type { Option } from '@cozemble/lang-util'
-import { options, strings } from '@cozemble/lang-util'
+import { mandatory, options, strings } from '@cozemble/lang-util'
 import { eventSourcedModelFns, eventSourcedModelListFns } from '@cozemble/model-event-sourced'
 import { modelStore, navbarState } from '$lib/generative/stores'
 
@@ -110,7 +111,12 @@ function handleInnerProperties(
     ...modelAndAll.model,
     nestedModels: [...modelAndAll.model.nestedModels, nestedModel],
   }
-  modelAndAll.allModels = [...modelAndAll.allModels, ...innerModelAndAll.allModels]
+  modelAndAll.allModels = [
+    ...modelAndAll.allModels.map((m) =>
+      m.id.value === modelAndAll.model.id.value ? modelAndAll.model : m,
+    ),
+    ...innerModelAndAll.allModels,
+  ]
   return modelAndAll
 }
 
@@ -156,15 +162,64 @@ function foldProperties(
   }, modelAndAllModels)
 }
 
-export function convertSchemaToModels(schema: JsonSchema): ModelAndAllModels {
+function reKeyModelIds(
+  modelIdMap: { [p: string]: ModelId },
+  modelAndAllModels: ModelAndAllModels,
+): ModelAndAllModels {
+  const reKeyed: { [p: string]: ModelId } = {}
+  let allModels = modelAndAllModels.allModels.map((m) => {
+    if (modelIdMap[m.name.value]) {
+      const newId = modelIdMap[m.name.value]
+      reKeyed[m.id.value] = newId
+      return { ...m, id: newId }
+    }
+    return m
+  })
+  // rekey the parentModelId
+  allModels = allModels.map((m) => {
+    if (m.parentModelId && reKeyed[m.parentModelId.value]) {
+      return { ...m, parentModelId: reKeyed[m.parentModelId.value] }
+    }
+    return m
+  })
+  // rekey nestedModels
+  allModels = allModels.map((m) => {
+    const nestedModels = m.nestedModels.map((nm) => {
+      if (reKeyed[nm.modelId.value]) {
+        return { ...nm, modelId: reKeyed[nm.modelId.value] }
+      }
+      return nm
+    })
+    return { ...m, nestedModels }
+  })
+
+  const model = mandatory(
+    allModels.find((m) => m.name.value === modelAndAllModels.model.name.value),
+    'model',
+  )
+  return { model, allModels }
+}
+
+export function convertSchemaToModels(
+  schema: JsonSchema,
+  modelIdMap: { [key: string]: ModelId } = {},
+): ModelAndAllModels {
   const model = modelFns.newInstance(schema.title ?? 'Untitled')
   if (schema.pluralTitle) {
     model.pluralName = modelPluralNameFns.newInstance(schema.pluralTitle)
   }
-  return foldProperties(schema.properties, schema.required ?? [], { model, allModels: [model] })
+  if ((schema as any).type === 'array') {
+    schema = (schema as any).items
+  }
+  // return foldProperties(schema.properties, schema.required ?? [], { model, allModels: [model] })
+  return reKeyModelIds(
+    modelIdMap,
+    foldProperties(schema.properties, schema.required ?? [], { model, allModels: [model] }),
+  )
 }
 
 export function reconfigureApp(config: { model: Model; allModels: Model[] }) {
+  console.warn(new Error('reconfigureApp'))
   const eventSourcedModels = config.allModels.map((m) => eventSourcedModelFns.newInstance(m))
   modelStore.update(() => eventSourcedModelListFns.newInstance(eventSourcedModels))
   navbarState.set(config.model.id.value)

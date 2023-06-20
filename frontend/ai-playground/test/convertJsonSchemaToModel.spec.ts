@@ -1,10 +1,16 @@
 import { expect, test } from 'vitest'
-import { Property } from '@cozemble/model-core'
+import { modelIdFns, Property } from '@cozemble/model-core'
 import { convertSchemaToModels } from '../src/lib/generative/components/helpers'
 import { registerJsonProperties } from '@cozemble/model-properties-core'
 import { mandatory } from '@cozemble/lang-util'
 import { modelFns } from '@cozemble/model-api'
-import { actualInvoiceSchema1, customerSchema, invoiceSchema } from './sampleSchemas'
+import {
+  actualInvoiceSchema1,
+  amendedCustomerSchema,
+  customerAsArray,
+  customerSchema,
+  invoiceSchema,
+} from './sampleSchemas'
 
 registerJsonProperties()
 
@@ -35,6 +41,19 @@ test('can convert customer response', () => {
     'Zip Code',
   ])
   expect((addressModel.slots[0] as Property).required).toBe(true)
+  expect(allModels.includes(model)).toBe(true)
+})
+
+test('can control the model ids when converting a schema', () => {
+  const { model, allModels } = convertSchemaToModels(customerSchema, {
+    Customer: modelIdFns.newInstance('customer-model'),
+    Address: modelIdFns.newInstance('address-model'),
+  })
+  const [customerModel, addressModel] = allModels
+  expect(customerModel.id.value).toBe('customer-model')
+  expect(addressModel.id.value).toBe('address-model')
+  expect(customerModel.nestedModels[0].modelId.value).toBe('address-model')
+  expect(allModels.includes(model)).toBe(true)
 })
 
 test('can handle arrays', () => {
@@ -57,6 +76,7 @@ test('can handle arrays', () => {
     'Price',
   ])
   expect((itemsModel.slots[0] as Property).required).toBe(true)
+  expect(allModels.includes(model)).toBe(true)
 })
 
 test("can handle schema with 'actual' schema", () => {
@@ -64,4 +84,20 @@ test("can handle schema with 'actual' schema", () => {
   expect(allModels).toHaveLength(2)
   const [_, lineItemModel] = allModels
   expect(lineItemModel.slots.map((slot) => slot.name.value)).toEqual(['Item', 'Quantity', 'Price'])
+})
+
+test("if the root model is an array, use the first item's schema", () => {
+  const { model, allModels } = convertSchemaToModels(customerAsArray as any)
+  expect(model.slots.map((slot) => slot.name.value)).toEqual([
+    'Id',
+    'First Name',
+    'Last Name',
+    'Email',
+    'Phone',
+  ])
+})
+
+test('an amended customer whose address did not get added as a nested model', () => {
+  const { model, allModels } = convertSchemaToModels(amendedCustomerSchema)
+  expect(model.nestedModels).toHaveLength(1)
 })

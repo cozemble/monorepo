@@ -12,7 +12,7 @@
 </script>
 
 <div class="m-5">
-    <AmendmentPrompts />
+    <AmendmentPrompts/>
 </div>
 
 <div class="m-5">

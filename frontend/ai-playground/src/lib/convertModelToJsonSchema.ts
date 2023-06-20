@@ -2,6 +2,7 @@ import type {
   JsonSchema,
   JsonSchemaProperty,
   Model,
+  ModelId,
   ModelSlot,
   NestedModel,
   Property,
