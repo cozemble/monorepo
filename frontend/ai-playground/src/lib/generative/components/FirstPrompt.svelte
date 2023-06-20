@@ -3,9 +3,6 @@
     import {promptManager} from "$lib/generative/GenerativeAiBackend";
     import {parsedSchema} from "$lib/generative/parsedSchema";
     import {convertSchemaToModels, reconfigureApp} from "$lib/generative/components/helpers";
-    import {onMount} from "svelte";
-    import {registerJsonProperties} from "@cozemble/model-properties-core/dist/esm";
-    import type {JsonSchema} from "@cozemble/model-core";
 
     let value = ""
     let errorMessage: string | null = null
@@ -19,12 +16,12 @@
             errorMessage = null
             try {
                 const result = await promptManager(value) ?? null
+                console.log({result})
                 if (!result) {
                     errorMessage = "Something went wrong, please try again"
                     return
                 }
                 const schema = parsedSchema(result)
-                console.log({schema})
                 const converted = convertSchemaToModels(schema)
                 reconfigureApp(converted)
             } catch (e: any) {
@@ -41,57 +38,6 @@
         }
     }
 
-    onMount(() => {
-        registerJsonProperties()
-        const schema:JsonSchema = {
-            $schema: 'http://json-schema.org/draft-07/schema#',
-            $id: 'test-customer-schema',
-            title: 'Customer',
-            pluralTitle: 'Customers',
-            type: 'object',
-            properties: {
-                id: {
-                    type: 'string',
-                    unique: true,
-                },
-                firstName: {
-                    type: 'string',
-                },
-                lastName: {
-                    type: 'string',
-                },
-                email: {
-                    type: 'string',
-                    format: 'email',
-                },
-                phoneNumber: {
-                    type: 'string',
-                    format: 'phone',
-                },
-                address: {
-                    type: 'object',
-                    properties: {
-                        street: {
-                            type: 'string',
-                        },
-                        city: {
-                            type: 'string',
-                        },
-                        state: {
-                            type: 'string',
-                        },
-                        zipCode: {
-                            type: 'string',
-                        },
-                    },
-                    required: ['street', 'city', 'state', 'zipCode'],
-                },
-            },
-            required: ['id', 'firstName', 'lastName', 'email', 'phoneNumber'],
-        }
-        const converted = convertSchemaToModels(schema)
-        reconfigureApp(converted)
-    })
 </script>
 
 <div class="grid h-screen place-items-center">
