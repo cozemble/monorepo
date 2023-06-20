@@ -30,6 +30,7 @@ import type { Option } from '@cozemble/lang-util'
 import { mandatory, options, strings } from '@cozemble/lang-util'
 import { eventSourcedModelFns, eventSourcedModelListFns } from '@cozemble/model-event-sourced'
 import { modelStore, navbarState } from '$lib/generative/stores'
+import type { EventSourcedModel } from '@cozemble/model-event-sourced/dist/esm'
 
 const systemConfiguration = systemConfigurationFns.empty()
 
@@ -219,8 +220,17 @@ export function convertSchemaToModels(
 }
 
 export function reconfigureApp(config: { model: Model; allModels: Model[] }) {
-  console.warn(new Error('reconfigureApp'))
   const eventSourcedModels = config.allModels.map((m) => eventSourcedModelFns.newInstance(m))
-  modelStore.update(() => eventSourcedModelListFns.newInstance(eventSourcedModels))
+  modelStore.update((modelList) => {
+    console.log({ modelList, eventSourcedModels })
+    return eventSourcedModelListFns.newInstance(eventSourcedModels)
+  })
   navbarState.set(config.model.id.value)
+}
+
+export function existingModelIdMap(models: EventSourcedModel[]): { [key: string]: ModelId } {
+  return models.reduce((acc, model) => {
+    acc[model.model.name.value] = model.model.id
+    return acc
+  }, {} as { [key: string]: ModelId })
 }

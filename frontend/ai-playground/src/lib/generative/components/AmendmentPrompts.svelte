@@ -1,9 +1,8 @@
 <script lang="ts">
-    import {modelStore, navbarState, showModels} from "$lib/generative/stores";
+    import {modelStore, navbarState} from "$lib/generative/stores";
     import {amendmentPrompt} from "$lib/generative/GenerativeAiBackend";
     import {convertModelToJsonSchema} from "$lib/convertModelToJsonSchema";
-    import {convertSchemaToModels, reconfigureApp} from "$lib/generative/components/helpers";
-    import {tick} from "svelte";
+    import {convertSchemaToModels, existingModelIdMap, reconfigureApp} from "$lib/generative/components/helpers";
 
     $: currentModel = $modelStore.models.find(m => m.model.id.value === $navbarState)
 
@@ -14,24 +13,18 @@
             try {
                 const allModels = $modelStore.models.map(m => m.model)
                 const amended = await amendmentPrompt(convertModelToJsonSchema(currentModel.model, allModels), prompt)
-                console.log({amended})
                 if (amended) {
                     const parsed = JSON.parse(amended)
-                    console.log({parsed})
-                    const converted = convertSchemaToModels(parsed)
-                    console.log({converted})
-                    $showModels = false
-                    await tick()
-                    setTimeout(() => {
-                        reconfigureApp(converted)
-                        $showModels = true
-                    }, 5)
+                    const converted = convertSchemaToModels(parsed, existingModelIdMap($modelStore.models))
+                    reconfigureApp(converted)
+                    prompt = ""
                 }
             } catch (e: any) {
                 console.error(e)
             }
         }
     }
+
 </script>
 {#if currentModel}
     <div class="flex flex-col">
