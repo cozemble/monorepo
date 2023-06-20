@@ -10,5 +10,6 @@ export const systemConfiguration = writable(systemConfigurationFns.empty())
 export const permitModelling = writable(true)
 export const showDevConsole = writable(false)
 export const navbarState = writable('')
+export const showModels = writable(true)
 
 backendFns.setBackend(makeInMemoryBackend())

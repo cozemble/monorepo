@@ -119,4 +119,5 @@ export {
   jsonSchemaFns,
   jsonPropertyDescriptorFns,
   JsonSchemaProperty,
+  JsonDataTypes,
 } from './JsonPropertyDescriptor'
