@@ -1,6 +1,5 @@
 <script lang="ts">
     import {modelStore, navbarState} from "$lib/generative/stores";
-    import {amendmentPrompt} from "$lib/generative/GenerativeAiBackend";
     import {convertModelToJsonSchema} from "$lib/convertModelToJsonSchema";
     import {convertSchemaToModels, existingModelIdMap, reconfigureApp} from "$lib/generative/components/helpers";
 
@@ -14,7 +13,22 @@
             try {
                 generating = true
                 const allModels = $modelStore.models.map(m => m.model)
-                const amended = await amendmentPrompt(convertModelToJsonSchema(currentModel.model, allModels), prompt)
+                const existingSchema = convertModelToJsonSchema(currentModel.model, allModels)
+                const payload = {existingSchema, promptText: prompt}
+                const fetched = await fetch("/amend", {
+                    method: "POST",
+                    body: JSON.stringify(payload),
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    }
+
+                })
+                if (!fetched.ok) {
+                    throw new Error("Something went wrong, please try again")
+                }
+                const fetchedResponse = await fetched.json()
+                const amended = fetchedResponse.result
                 if (amended) {
                     const parsed = JSON.parse(amended)
                     const converted = convertSchemaToModels(parsed, existingModelIdMap($modelStore.models))

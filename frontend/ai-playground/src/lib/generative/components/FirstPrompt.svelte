@@ -1,6 +1,5 @@
 <script lang="ts">
 
-    import {promptManager} from "$lib/generative/GenerativeAiBackend";
     import {parsedSchema} from "$lib/generative/parsedSchema";
     import {convertSchemaToModels, reconfigureApp} from "$lib/generative/components/helpers";
 
@@ -15,7 +14,20 @@
             generating = true
             errorMessage = null
             try {
-                const result = await promptManager(value) ?? null
+                const fetched = await fetch("/",{
+                    method: "POST",
+                    body: JSON.stringify({databaseType: value}),
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    }
+
+                })
+                if(!fetched.ok){
+                    throw new Error("Something went wrong, please try again")
+                }
+                const fetchedResponse = await fetched.json()
+                const result = fetchedResponse.result
                 console.log({result})
                 if (!result) {
                     errorMessage = "Something went wrong, please try again"
@@ -38,13 +50,17 @@
         }
     }
 
+    function init(element: HTMLInputElement) {
+        element.focus()
+    }
+
 </script>
 
 <div class="grid h-screen place-items-center">
     <div class="flex flex-col">
         <h1 class="text-center mb-8">I want a database that contains a list of ...</h1>
         <input type="text" class="input input-bordered input-lg" placeholder="some thing..." bind:value
-               on:keydown={inputKeyDown}/>
+               on:keydown={inputKeyDown} use:init/>
         {#if errorMessage}
             <p class="text-center text-red-500 mt-4">{errorMessage}</p>
         {/if}

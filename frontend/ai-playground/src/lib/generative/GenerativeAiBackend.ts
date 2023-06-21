@@ -1,18 +1,27 @@
 import { Configuration, OpenAIApi } from 'openai'
 import type { JsonSchema } from '@cozemble/model-core'
+import { mandatory } from '@cozemble/lang-util'
 
-const ORGANIZATION_ID = 'org-'
-const API_KEY = 'sk-'
+export function mandatoryOpenAiCreds(): OpenAiCreds {
+  return {
+    apiKey: mandatory(process.env.OPENAI_API_KEY, `No OPENAI_API_KEY provided`),
+    organization: mandatory(process.env.OPENAI_ORGANIZATION, `No OPENAI_ORGANIZATION provided`),
+  }
+}
 
-const configuration = new Configuration({
-  apiKey: API_KEY,
-  organization: ORGANIZATION_ID,
-})
+export type OpenAiCreds = {
+  organization: string
+  apiKey: string
+}
 
-const openai = new OpenAIApi(configuration)
+export class OpenAi {
+  constructor(
+    private creds: OpenAiCreds,
+    private readonly openai = new OpenAIApi(new Configuration(creds)),
+  ) {}
 
-export async function promptManager(value: string): Promise<string | undefined> {
-  const prompt = `In our extended version of JSON Schema, we have an additional keyword 'unique'.
+  async firstPrompt(databaseType: string): Promise<string | undefined> {
+    const prompt = `In our extended version of JSON Schema, we have an additional keyword 'unique'.
 This keyword is used to ensure that the values of the specified field are unique among all objects in an array or all properties of an object.
 It's used in the same place where you'd use 'type', 'format', or similar keywords. For instance:
 
@@ -34,32 +43,32 @@ Use the 'title' keyword to give a name to your schema.  We also support a keywor
 Do not include any "timestamp" style properties associated with creation and modification of the object.  We will add those automatically.
 Do not explain the code at all because I want to parse the code and generate documentation from it.
 
-Given this, generate a schema for a ${value} object.  Include the 10 most common properties.`
+Given this, generate a schema for a ${databaseType} object.  Include the 10 most common properties.`
 
-  try {
-    const response = await openai.createChatCompletion({
-      model: 'gpt-3.5-turbo',
-      // prompt: prompt,
-      messages: [{ role: 'user', content: prompt }],
-      temperature: 1,
-      max_tokens: 3000,
-      top_p: 1,
-      // best_of: 1,
-      frequency_penalty: 0,
-    })
+    try {
+      const response = await this.openai.createChatCompletion({
+        model: 'gpt-3.5-turbo',
+        // prompt: prompt,
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 1,
+        max_tokens: 3000,
+        top_p: 1,
+        // best_of: 1,
+        frequency_penalty: 0,
+      })
 
-    return response.data.choices[0].message?.content
-  } catch (e: any) {
-    console.error(e)
-    throw new Error('Failed to call OpenAI : ' + e.message)
+      return response.data.choices[0].message?.content
+    } catch (e: any) {
+      console.error(e)
+      throw new Error('Failed to call OpenAI : ' + e.message)
+    }
   }
-}
 
-export async function amendmentPrompt(
-  existingSchema: JsonSchema,
-  promptText: string,
-): Promise<string | undefined> {
-  const prompt = `In our extended version of JSON Schema, we have an additional keyword 'unique'.
+  async amendmentPrompt(
+    existingSchema: JsonSchema,
+    promptText: string,
+  ): Promise<string | undefined> {
+    const prompt = `In our extended version of JSON Schema, we have an additional keyword 'unique'.
 This keyword is used to ensure that the values of the specified field are unique among all objects in an array or all properties of an object.
 It's used in the same place where you'd use 'type', 'format', or similar keywords. For instance:
 
@@ -88,21 +97,19 @@ ${JSON.stringify(existingSchema, null, 2)}
 Please make this amendment to it: ${promptText}.
 Do not explain the code at all because I want to parse the code and generate documentation from it.`
 
-  try {
-    const response = await openai.createChatCompletion({
-      model: 'gpt-3.5-turbo',
-      // prompt: prompt,
-      messages: [{ role: 'user', content: prompt }],
-      temperature: 1,
-      max_tokens: 3000,
-      top_p: 1,
-      // best_of: 1,
-      frequency_penalty: 0,
-    })
-    console.log({ response })
-    return response.data.choices[0].message?.content
-  } catch (e: any) {
-    console.error(e)
-    throw new Error('Failed to call OpenAI : ' + e.message)
+    try {
+      const response = await this.openai.createChatCompletion({
+        model: 'gpt-3.5-turbo',
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 1,
+        max_tokens: 3000,
+        top_p: 1,
+        frequency_penalty: 0,
+      })
+      return response.data.choices[0].message?.content
+    } catch (e: any) {
+      console.error(e)
+      throw new Error('Failed to call OpenAI : ' + e.message)
+    }
   }
 }
