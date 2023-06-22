@@ -12,6 +12,7 @@
 
     function navigateToAmendments(models: EventSourcedModel[]) {
         if (models.length > 0) {
+            console.log({models})
             goto("/amend")
         }
     }

@@ -1,6 +1,4 @@
 <script lang="ts">
-    import {promptManager} from "./GenerativeAiBackend"
-
     import ChatGPTInput from "./components/ChatGPTInput.svelte";
     import ChatGPTResult from "./components/ChatGPTResult.svelte";
     import TableDataset from "./components/TableDataset.svelte";
@@ -11,7 +9,7 @@
 
     let result = ''
     const handlePrompt = async (e: CustomEvent) => {
-        result = (await promptManager(e.detail)) ?? ''
+        // result = (await firstPrompt(e.detail)) ?? ''
     }
 </script>
 
