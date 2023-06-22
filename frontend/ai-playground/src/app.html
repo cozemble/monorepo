@@ -1,13 +1,37 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
-		<meta name="viewport" content="width=device-width" />
-		<link href="https://cdn.jsdelivr.net/npm/daisyui@3.1.1/dist/full.css" rel="stylesheet" type="text/css" />
-		<script src="https://cdn.tailwindcss.com"></script>		%sveltekit.head%
-	</head>
-	<body data-sveltekit-preload-data="hover">
-		<div style="display: contents">%sveltekit.body%</div>
-	</body>
+<head>
+    <meta charset="utf-8"/>
+    <link rel="icon" href="%sveltekit.assets%/favicon.png"/>
+    <meta name="viewport" content="width=device-width"/>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.1.1/dist/full.css" rel="stylesheet" type="text/css"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content {
+            flex: 1 0 auto;
+        }
+
+        .footer {
+            flex-shrink: 0;
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+        }
+
+    </style>
+    %sveltekit.head%
+</head>
+<body data-sveltekit-preload-data="hover" class="h-screen">
+<div style="display: contents">%sveltekit.body%</div>
+</body>
 </html>

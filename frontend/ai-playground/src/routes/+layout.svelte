@@ -2,6 +2,6 @@
     import '../lib/styles/global.css'
 </script>
 
-<main>
+<main class="h-full">
     <slot/>
 </main>
