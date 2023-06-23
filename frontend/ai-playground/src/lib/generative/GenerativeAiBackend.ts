@@ -16,8 +16,8 @@ export type OpenAiCreds = {
   apiKey: string
 }
 
-export type PromptEventListener = (event: PromptEvent) => void
-export const nullPromptEventListener: PromptEventListener = () => {}
+export type PromptEventListener = (event: PromptEvent) => Promise<void>
+export const nullPromptEventListener: PromptEventListener = async () => {}
 
 export class OpenAi {
   constructor(
@@ -102,15 +102,17 @@ Do not explain the code at all because I want to parse the code and generate doc
       })
       const content = response.data.choices[0].message?.content
       if (content) {
-        this.promptEventListener(successfulFirstPromptEvent(userPrompt, content, startTimestamp))
+        await this.promptEventListener(
+          successfulFirstPromptEvent(userPrompt, content, startTimestamp),
+        )
       } else {
-        this.promptEventListener(
+        await this.promptEventListener(
           failedFirstPromptEvent(userPrompt, 'Get undefined back from Open AI', startTimestamp),
         )
       }
       return content
     } catch (e: any) {
-      this.promptEventListener(failedFirstPromptEvent(userPrompt, e.message, startTimestamp))
+      await this.promptEventListener(failedFirstPromptEvent(userPrompt, e.message, startTimestamp))
       console.error(e)
       throw new Error('Failed to call OpenAI : ' + e.message)
     }
