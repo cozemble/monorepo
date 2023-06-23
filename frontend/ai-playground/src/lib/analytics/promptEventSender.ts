@@ -7,17 +7,23 @@ const uri =
 
 export function promptEventSender(promptEvent: PromptEvent): void {
   console.info('Sending prompt event to backend')
-  const sessionId = get(generationSessionId)
-  console.log({ sessionId, promptEvent })
-  fetch(uri, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ sessionId, promptEvent }),
-  })
-    .then((response) => {
-      console.log('prompt event sent', { status: response.status })
+  try {
+    const sessionId = get(generationSessionId)
+    console.log({ sessionId, promptEvent })
+    fetch(uri, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ sessionId, promptEvent }),
     })
-    .catch((e) => console.error(e))
+      .then((response) => {
+        console.log('prompt event sent', { status: response.status })
+      })
+      .catch((e) => console.error(e))
+  } catch (e) {
+    console.error('Failed to send prompt event', e)
+  } finally {
+    console.info('Finished sending prompt event to backend')
+  }
 }
