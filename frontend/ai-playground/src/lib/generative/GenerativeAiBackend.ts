@@ -2,7 +2,12 @@ import { Configuration, OpenAIApi } from 'openai'
 import type { JsonSchema } from '@cozemble/model-core'
 import { mandatory } from '@cozemble/lang-util'
 import type { PromptEvent } from '$lib/analytics/types'
-import { failedFirstPromptEvent, successfulFirstPromptEvent } from '$lib/analytics/types'
+import {
+  failedAmendmentPromptEvent,
+  failedFirstPromptEvent,
+  successfulAmendmentPromptEvent,
+  successfulFirstPromptEvent,
+} from '$lib/analytics/types'
 
 export function mandatoryOpenAiCreds(): OpenAiCreds {
   return {
@@ -50,7 +55,7 @@ Do not include any "timestamp" style properties associated with creation and mod
 Do not explain the code at all because I want to parse the code and generate documentation from it.
 
 Given this, generate a schema for a ${databaseType} object.  Include the 10 most common properties.`
-    return await this._sendPrompt(databaseType, prompt)
+    return await this._sendPrompt('first', databaseType, prompt)
   }
 
   async amendmentPrompt(
@@ -85,11 +90,15 @@ ${JSON.stringify(existingSchema, null, 2)}
 
 Please make this amendment to it: ${promptText}.
 Do not explain the code at all because I want to parse the code and generate documentation from it.`
-    return await this._sendPrompt(promptText, prompt)
+    return await this._sendPrompt('amendment', promptText, prompt)
   }
 
-  private async _sendPrompt(userPrompt: string, prompt: string) {
+  private async _sendPrompt(promptType: 'first' | 'amendment', userPrompt: string, prompt: string) {
     const startTimestamp = new Date().getTime()
+    const successfulEventConstructor =
+      promptType === 'first' ? successfulFirstPromptEvent : successfulAmendmentPromptEvent
+    const unsuccessfulEventConstructor =
+      promptType === 'first' ? failedFirstPromptEvent : failedAmendmentPromptEvent
 
     try {
       const response = await this.openai.createChatCompletion({
@@ -103,16 +112,22 @@ Do not explain the code at all because I want to parse the code and generate doc
       const content = response.data.choices[0].message?.content
       if (content) {
         await this.promptEventListener(
-          successfulFirstPromptEvent(userPrompt, content, startTimestamp),
+          successfulEventConstructor(userPrompt, content, startTimestamp),
         )
       } else {
         await this.promptEventListener(
-          failedFirstPromptEvent(userPrompt, 'Get undefined back from Open AI', startTimestamp),
+          unsuccessfulEventConstructor(
+            userPrompt,
+            'Get undefined back from Open AI',
+            startTimestamp,
+          ),
         )
       }
       return content
     } catch (e: any) {
-      await this.promptEventListener(failedFirstPromptEvent(userPrompt, e.message, startTimestamp))
+      await this.promptEventListener(
+        unsuccessfulEventConstructor(userPrompt, e.message, startTimestamp),
+      )
       console.error(e)
       throw new Error('Failed to call OpenAI : ' + e.message)
     }
