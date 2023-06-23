@@ -6,6 +6,7 @@ const uri =
   'https://backend-tenanted-api-qwquwvrytq-nw.a.run.app/dev/api/v1/ai-playground/prompt-event'
 
 export function promptEventSender(promptEvent: PromptEvent): void {
+  console.info('Sending prompt event to backend')
   const sessionId = get(generationSessionId)
   console.log({ sessionId, promptEvent })
   fetch(uri, {
