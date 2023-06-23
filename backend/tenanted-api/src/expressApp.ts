@@ -2,6 +2,7 @@ import express, { Express, Router } from 'express'
 import cors from 'cors'
 import tenants from './tenants/tenants'
 import auth from './auth/auth'
+import prompts from './analytics/prompts/prompts'
 import { logRequest } from './infra/logRequest'
 import { makeStorageRoute } from './storage/storage'
 import { StorageProvider } from './storage/StorageProvider'
@@ -40,6 +41,7 @@ export function expressApp(): Express {
   })
 
   const routes: Router = Router()
+  routes.use('/ai-playground', prompts)
   routes.use('/tenant', tenants)
   routes.use('/auth', auth)
   routes.use('/storage', makeStorageRoute(makeStorageProvider()))

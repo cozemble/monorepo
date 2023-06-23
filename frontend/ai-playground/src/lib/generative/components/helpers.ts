@@ -221,8 +221,7 @@ export function convertSchemaToModels(
 
 export function reconfigureApp(config: { model: Model; allModels: Model[] }) {
   const eventSourcedModels = config.allModels.map((m) => eventSourcedModelFns.newInstance(m))
-  modelStore.update((modelList) => {
-    console.log({ modelList, eventSourcedModels })
+  modelStore.update(() => {
     return eventSourcedModelListFns.newInstance(eventSourcedModels)
   })
   navbarState.set(config.model.id.value)

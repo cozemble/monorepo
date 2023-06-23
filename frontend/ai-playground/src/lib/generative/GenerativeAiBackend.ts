@@ -1,6 +1,13 @@
 import { Configuration, OpenAIApi } from 'openai'
 import type { JsonSchema } from '@cozemble/model-core'
 import { mandatory } from '@cozemble/lang-util'
+import type { PromptEvent } from '$lib/analytics/types'
+import {
+  failedAmendmentPromptEvent,
+  failedFirstPromptEvent,
+  successfulAmendmentPromptEvent,
+  successfulFirstPromptEvent,
+} from '$lib/analytics/types'
 
 export function mandatoryOpenAiCreds(): OpenAiCreds {
   return {
@@ -14,9 +21,13 @@ export type OpenAiCreds = {
   apiKey: string
 }
 
+export type PromptEventListener = (event: PromptEvent) => Promise<void>
+export const nullPromptEventListener: PromptEventListener = async () => {}
+
 export class OpenAi {
   constructor(
     private creds: OpenAiCreds,
+    private promptEventListener: PromptEventListener = nullPromptEventListener,
     private readonly openai = new OpenAIApi(new Configuration(creds)),
   ) {}
 
@@ -44,24 +55,7 @@ Do not include any "timestamp" style properties associated with creation and mod
 Do not explain the code at all because I want to parse the code and generate documentation from it.
 
 Given this, generate a schema for a ${databaseType} object.  Include the 10 most common properties.`
-
-    try {
-      const response = await this.openai.createChatCompletion({
-        model: 'gpt-3.5-turbo',
-        // prompt: prompt,
-        messages: [{ role: 'user', content: prompt }],
-        temperature: 1,
-        max_tokens: 3000,
-        top_p: 1,
-        // best_of: 1,
-        frequency_penalty: 0,
-      })
-
-      return response.data.choices[0].message?.content
-    } catch (e: any) {
-      console.error(e)
-      throw new Error('Failed to call OpenAI : ' + e.message)
-    }
+    return await this._sendPrompt('first', databaseType, prompt)
   }
 
   async amendmentPrompt(
@@ -96,6 +90,15 @@ ${JSON.stringify(existingSchema, null, 2)}
 
 Please make this amendment to it: ${promptText}.
 Do not explain the code at all because I want to parse the code and generate documentation from it.`
+    return await this._sendPrompt('amendment', promptText, prompt)
+  }
+
+  private async _sendPrompt(promptType: 'first' | 'amendment', userPrompt: string, prompt: string) {
+    const startTimestamp = new Date().getTime()
+    const successfulEventConstructor =
+      promptType === 'first' ? successfulFirstPromptEvent : successfulAmendmentPromptEvent
+    const unsuccessfulEventConstructor =
+      promptType === 'first' ? failedFirstPromptEvent : failedAmendmentPromptEvent
 
     try {
       const response = await this.openai.createChatCompletion({
@@ -106,8 +109,25 @@ Do not explain the code at all because I want to parse the code and generate doc
         top_p: 1,
         frequency_penalty: 0,
       })
-      return response.data.choices[0].message?.content
+      const content = response.data.choices[0].message?.content
+      if (content) {
+        await this.promptEventListener(
+          successfulEventConstructor(userPrompt, content, startTimestamp),
+        )
+      } else {
+        await this.promptEventListener(
+          unsuccessfulEventConstructor(
+            userPrompt,
+            'Get undefined back from Open AI',
+            startTimestamp,
+          ),
+        )
+      }
+      return content
     } catch (e: any) {
+      await this.promptEventListener(
+        unsuccessfulEventConstructor(userPrompt, e.message, startTimestamp),
+      )
       console.error(e)
       throw new Error('Failed to call OpenAI : ' + e.message)
     }
