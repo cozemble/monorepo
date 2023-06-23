@@ -7,8 +7,10 @@
     import type {EventSourcedModel} from "@cozemble/model-event-sourced";
     import {eventSourcedModelListFns} from "@cozemble/model-event-sourced";
     import {browser} from '$app/environment';
+    import {newGenerationSessionId} from "$lib/generative/stores";
 
     onMount(() => {
+        newGenerationSessionId()
         registerEverything()
     })
 

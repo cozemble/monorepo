@@ -28,7 +28,6 @@
                 }
                 const fetchedResponse = await fetched.json()
                 const result = fetchedResponse.result
-                console.log({result})
                 if (!result) {
                     errorMessage = "Something went wrong, please try again"
                     return
