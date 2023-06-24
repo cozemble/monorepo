@@ -50,7 +50,7 @@
         </td>
     </tr>
 {/if}
-<DataEntryRow {parentPath} {options} {record} {rowIndex} oneOnly={true} {expandedRecordIds}/>
+<DataEntryRow {parentPath} {options} {record} {rowIndex} oneOnly={true} {expandedRecordIds} extraClasses="record-addition-row"/>
 {#if recordHasEvents(rowIndex, $eventSourcedRecords)}
     <tr>
         <td {colspan}>

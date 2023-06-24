@@ -14,9 +14,10 @@ export const modelStore = eventSourcedModelStore([])
 export const modelViews = writable([] as ModelView[])
 export const systemConfiguration = writable(systemConfigurationFns.empty())
 export const permitModelling = writable(false)
-export const showDevConsole = writable(false)
+export const showDevConsole = writable(true)
 export const navbarState: Writable<string | null> = writable(null)
 export const generationSessionId = writable(uuids.v4())
+export const promptIndex = writable(0)
 
 export const promptEvents: Writable<PromptEvent[]> = writable([])
 

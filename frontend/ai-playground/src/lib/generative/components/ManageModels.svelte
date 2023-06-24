@@ -4,6 +4,7 @@
         modelViews,
         navbarState,
         permitModelling,
+        promptIndex,
         showDevConsole,
         systemConfiguration
     } from "$lib/generative/stores";
@@ -16,12 +17,14 @@
 </div>
 
 <div class="m-5">
-    <DataTable models={modelStore}
-               {modelViews}
-               systemConfiguration={$systemConfiguration}
-               {permitModelling}
-               {showDevConsole}
-               {navbarState}
-               userId="test"
-               recordFilteringComponent={RecordFilteringPanel}/>
+    {#key $promptIndex}
+        <DataTable models={modelStore}
+                   {modelViews}
+                   systemConfiguration={$systemConfiguration}
+                   {permitModelling}
+                   {showDevConsole}
+                   {navbarState}
+                   userId="test"
+                   recordFilteringComponent={RecordFilteringPanel}/>
+    {/key}
 </div>

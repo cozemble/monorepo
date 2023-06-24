@@ -28,9 +28,11 @@ import {
 } from '@cozemble/model-properties-core'
 import type { Option } from '@cozemble/lang-util'
 import { mandatory, options, strings } from '@cozemble/lang-util'
+import type { EventSourcedModel } from '@cozemble/model-event-sourced'
 import { eventSourcedModelFns, eventSourcedModelListFns } from '@cozemble/model-event-sourced'
-import { modelStore, navbarState } from '$lib/generative/stores'
-import type { EventSourcedModel } from '@cozemble/model-event-sourced/dist/esm'
+import { modelStore, navbarState, promptIndex } from '$lib/generative/stores'
+import { get } from 'svelte/store'
+import { useSameSlotIds } from '$lib/generative/useSameSlotIds'
 
 const systemConfiguration = systemConfigurationFns.empty()
 
@@ -270,11 +272,16 @@ export function convertSchemaToModels(
 }
 
 export function reconfigureApp(config: { model: Model; allModels: Model[] }) {
+  const existingModels = get(modelStore).models.map((m) => m.model)
+  const withConsistentIds = useSameSlotIds(existingModels, config.allModels)
+  const model = modelFns.findById(withConsistentIds, config.model.id)
+  config = { model, allModels: withConsistentIds }
   const eventSourcedModels = config.allModels.map((m) => eventSourcedModelFns.newInstance(m))
   modelStore.update(() => {
     return eventSourcedModelListFns.newInstance(eventSourcedModels)
   })
   navbarState.set(config.model.id.value)
+  promptIndex.update((i) => i + 1)
 }
 
 export function existingModelIdMap(models: EventSourcedModel[]): { [key: string]: ModelId } {
