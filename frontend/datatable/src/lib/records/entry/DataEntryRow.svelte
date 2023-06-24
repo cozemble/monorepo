@@ -33,6 +33,7 @@
   export let rowIndex: number
   export let expandedRecordIds: Writable<DataRecordId[]>
   export let oneOnly: boolean
+  export let extraClasses = ""
 
   // context
   const permitModelling = contextHelper.getPermitModelling()
@@ -78,7 +79,7 @@
 </script>
 
 <WithSingleRecordContext recordId={record.id} {rowIndex} let:rootRecordIndex>
-  <tr data-row-index={rowIndex}>
+  <tr data-row-index={rowIndex} class={extraClasses}>
     {#each $model.slots as slot, colIndex}
       {#if slot._type === 'property' || slot._type === 'model.reference'}
         <DataTd

@@ -10,6 +10,7 @@ import {
   customerAsArray,
   customerSchema,
   invoiceSchema,
+  schemaWithStringArray,
 } from './sampleSchemas'
 
 registerJsonProperties()
@@ -100,4 +101,8 @@ test("if the root model is an array, use the first item's schema", () => {
 test('an amended customer whose address did not get added as a nested model', () => {
   const { model, allModels } = convertSchemaToModels(amendedCustomerSchema)
   expect(model.nestedModels).toHaveLength(1)
+})
+
+test('can handle a schema containing an array of strings', () => {
+  const { allModels } = convertSchemaToModels(schemaWithStringArray)
 })

@@ -28,9 +28,11 @@ import {
 } from '@cozemble/model-properties-core'
 import type { Option } from '@cozemble/lang-util'
 import { mandatory, options, strings } from '@cozemble/lang-util'
+import type { EventSourcedModel } from '@cozemble/model-event-sourced'
 import { eventSourcedModelFns, eventSourcedModelListFns } from '@cozemble/model-event-sourced'
-import { modelStore, navbarState } from '$lib/generative/stores'
-import type { EventSourcedModel } from '@cozemble/model-event-sourced/dist/esm'
+import { modelStore, navbarState, promptIndex } from '$lib/generative/stores'
+import { get } from 'svelte/store'
+import { useSameSlotIds } from '$lib/generative/useSameSlotIds'
 
 const systemConfiguration = systemConfigurationFns.empty()
 
@@ -201,10 +203,60 @@ function reKeyModelIds(
   return { model, allModels }
 }
 
+function convertPrimitiveArrayToObjectArray(
+  key: string,
+  items: JsonSchemaProperty,
+): JsonSchemaProperty {
+  if (items.type === 'string') {
+    return {
+      type: 'object',
+      properties: {
+        name: {
+          type: 'string',
+        },
+      },
+    }
+  }
+  return {
+    type: 'object',
+    properties: {
+      value: {
+        type: items.type,
+      },
+    },
+  }
+}
+
+function ensureNoPrimitiveArrays(
+  properties: Record<string, JsonSchemaProperty>,
+): Record<string, JsonSchemaProperty> {
+  return Object.keys(properties).reduce((acc, key) => {
+    const property = properties[key]
+    if (property.type === 'array' && property.items) {
+      if (Array.isArray(property.items)) {
+        throw new Error(`Array property ${key} has multiple items defined`)
+      }
+      if (property.items.type === 'object') {
+        return acc
+      }
+      return {
+        ...acc,
+        [key]: { ...property, items: convertPrimitiveArrayToObjectArray(key, property.items) },
+      }
+    }
+    return { ...acc, [key]: property }
+  }, {} as Record<string, JsonSchemaProperty>)
+}
+
+function convertPrimitiveArraysToObjectArrays(schema: JsonSchema): JsonSchema {
+  return { ...schema, properties: ensureNoPrimitiveArrays(schema.properties) }
+}
+
 export function convertSchemaToModels(
   schema: JsonSchema,
   modelIdMap: { [key: string]: ModelId } = {},
 ): ModelAndAllModels {
+  schema = convertPrimitiveArraysToObjectArrays(schema)
   const model = modelFns.newInstance(schema.title ?? 'Untitled')
   if (schema.pluralTitle) {
     model.pluralName = modelPluralNameFns.newInstance(schema.pluralTitle)
@@ -220,11 +272,16 @@ export function convertSchemaToModels(
 }
 
 export function reconfigureApp(config: { model: Model; allModels: Model[] }) {
+  const existingModels = get(modelStore).models.map((m) => m.model)
+  const withConsistentIds = useSameSlotIds(existingModels, config.allModels)
+  const model = modelFns.findById(withConsistentIds, config.model.id)
+  config = { model, allModels: withConsistentIds }
   const eventSourcedModels = config.allModels.map((m) => eventSourcedModelFns.newInstance(m))
   modelStore.update(() => {
     return eventSourcedModelListFns.newInstance(eventSourcedModels)
   })
   navbarState.set(config.model.id.value)
+  promptIndex.update((i) => i + 1)
 }
 
 export function existingModelIdMap(models: EventSourcedModel[]): { [key: string]: ModelId } {
