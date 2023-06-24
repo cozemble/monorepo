@@ -1,15 +1,17 @@
 <script>
   import ManageModels from "$lib/generative/components/ManageModels.svelte";
   import {goto} from "$app/navigation";
+  import {onMount, tick} from "svelte";
+  import {autoExpand} from "$lib/generative/autoExpander";
 
   function startOver() {
-    // console.log("Starting over")
-    // modelStore.update(() => {
-    //   return eventSourcedModelListFns.newInstance([])
-    // })
-    // navbarState.set(null)
     goto("/?startOver=true")
   }
+
+  onMount(async () => {
+    await tick()
+    setTimeout(autoExpand, 5)
+  })
 </script>
 
 <div class="content">

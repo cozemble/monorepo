@@ -2,6 +2,8 @@
     import {modelStore, navbarState} from "$lib/generative/stores";
     import {convertModelToJsonSchema} from "$lib/convertModelToJsonSchema";
     import {convertSchemaToModels, existingModelIdMap, reconfigureApp} from "$lib/generative/components/helpers";
+    import {autoExpand} from "$lib/generative/autoExpander";
+    import {tick} from "svelte";
 
     $: currentModel = $modelStore.models.find(m => m.model.id.value === $navbarState)
 
@@ -34,6 +36,9 @@
                     const converted = convertSchemaToModels(parsed, existingModelIdMap($modelStore.models))
                     reconfigureApp(converted)
                     prompt = ""
+                    await tick()
+                    setTimeout(autoExpand, 5)
+
                 }
             } catch (e: any) {
                 console.error(e)
