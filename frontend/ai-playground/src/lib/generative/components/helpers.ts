@@ -201,10 +201,60 @@ function reKeyModelIds(
   return { model, allModels }
 }
 
+function convertPrimitiveArrayToObjectArray(
+  key: string,
+  items: JsonSchemaProperty,
+): JsonSchemaProperty {
+  if (items.type === 'string') {
+    return {
+      type: 'object',
+      properties: {
+        name: {
+          type: 'string',
+        },
+      },
+    }
+  }
+  return {
+    type: 'object',
+    properties: {
+      value: {
+        type: items.type,
+      },
+    },
+  }
+}
+
+function ensureNoPrimitiveArrays(
+  properties: Record<string, JsonSchemaProperty>,
+): Record<string, JsonSchemaProperty> {
+  return Object.keys(properties).reduce((acc, key) => {
+    const property = properties[key]
+    if (property.type === 'array' && property.items) {
+      if (Array.isArray(property.items)) {
+        throw new Error(`Array property ${key} has multiple items defined`)
+      }
+      if (property.items.type === 'object') {
+        return acc
+      }
+      return {
+        ...acc,
+        [key]: { ...property, items: convertPrimitiveArrayToObjectArray(key, property.items) },
+      }
+    }
+    return { ...acc, [key]: property }
+  }, {} as Record<string, JsonSchemaProperty>)
+}
+
+function convertPrimitiveArraysToObjectArrays(schema: JsonSchema): JsonSchema {
+  return { ...schema, properties: ensureNoPrimitiveArrays(schema.properties) }
+}
+
 export function convertSchemaToModels(
   schema: JsonSchema,
   modelIdMap: { [key: string]: ModelId } = {},
 ): ModelAndAllModels {
+  schema = convertPrimitiveArraysToObjectArrays(schema)
   const model = modelFns.newInstance(schema.title ?? 'Untitled')
   if (schema.pluralTitle) {
     model.pluralName = modelPluralNameFns.newInstance(schema.pluralTitle)

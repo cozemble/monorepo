@@ -340,3 +340,101 @@ export const amendedCustomerSchema: JsonSchema = {
   },
   required: ['id', 'firstName', 'lastName', 'email'],
 }
+
+export const schemaWithStringArray: JsonSchema = {
+  $schema: 'http://json-schema.org/draft-07/schema#',
+  $id: 'generated-schema1687171796354',
+  title: 'Sports',
+  pluralTitle: 'Sports',
+  type: 'object',
+  properties: {
+    sportName: {
+      type: 'string',
+      description: 'The name of the sport.',
+    },
+    rulesUrl: {
+      type: 'string',
+      format: 'uri',
+      description: 'A URL to the rules of the sport.',
+    },
+    equipment: {
+      type: 'array',
+      items: {
+        type: 'string',
+        description: 'The equipment required to play the sport.',
+      },
+      unique: true,
+      description: 'The equipment required to play the sport.',
+    },
+    venue: {
+      type: 'string',
+      description: 'The location where the sport is played.',
+    },
+    season: {
+      type: 'string',
+      description: 'The season in which the sport is typically played.',
+    },
+    numberOfPlayers: {
+      type: 'integer',
+      description: 'The number of players required to play the sport.',
+    },
+    duration: {
+      type: 'object',
+      properties: {
+        hours: {
+          type: 'integer',
+          minimum: 0,
+          maximum: 24,
+          description: 'The number of hours in the duration of the sport.',
+        },
+        minutes: {
+          type: 'integer',
+          minimum: 0,
+          maximum: 59,
+          description: 'The number of minutes in the duration of the sport.',
+        },
+      },
+      description: 'The duration of the sport.',
+    },
+    scoring: {
+      type: 'object',
+      properties: {
+        type: {
+          type: 'string',
+          description: 'The type of scoring used in the sport (e.g. goals, points).',
+        },
+        maximumScore: {
+          type: 'integer',
+          minimum: 1,
+          description: 'The maximum score possible in the sport.',
+        },
+      },
+      description: 'The scoring system used in the sport.',
+    },
+    worldChampions: {
+      type: 'array',
+      items: {
+        type: 'string',
+        description: 'The past world champions of the sport.',
+      },
+      unique: true,
+      description: 'The past world champions of the sport.',
+    },
+    olympicSport: {
+      type: 'boolean',
+      description: 'Whether or not the sport is an Olympic sport.',
+    },
+  },
+  required: [
+    'sportName',
+    'rulesUrl',
+    'equipment',
+    'venue',
+    'season',
+    'numberOfPlayers',
+    'duration',
+    'scoring',
+    'worldChampions',
+    'olympicSport',
+  ],
+}
