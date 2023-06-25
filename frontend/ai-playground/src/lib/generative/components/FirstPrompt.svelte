@@ -82,7 +82,7 @@
 
 </script>
 
-<div class="grid h-screen place-items-center w-5/6 mx-auto">
+<div class="grid h-screen place-items-center w-5/6 mx-auto mb-8">
     <div class="flex flex-col">
         <h1 class="text-center mb-8">I want a database that contains a list of ...</h1>
         <input type="text" class="input input-bordered input-lg" placeholder="some thing..." bind:value
