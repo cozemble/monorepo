@@ -7,7 +7,7 @@
     let errorMessage: string | null = null
     let generating = false
 
-    async function generate() {
+    async function  generate() {
         if (value.length < 3) {
             errorMessage = "Please enter a value that is at least 3 characters long"
         } else {
@@ -63,7 +63,7 @@
         {#if errorMessage}
             <p class="text-center text-red-500 mt-4">{errorMessage}</p>
         {/if}
-        <button class="btn btn-primary mt-4 btn-lg" disabled={value.length < 3} on:click={generate}>
+        <button class="btn btn-primary mt-4 btn-lg" on:click={generate}>
             {#if generating}
                 <span class="loading loading-spinner"></span>
             {/if}
