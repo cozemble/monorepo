@@ -102,7 +102,7 @@ Do not explain the code at all because I want to parse the code and generate doc
 
     try {
       const response = await this.openai.createChatCompletion({
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-3.5-turbo-16k-0613',
         messages: [{ role: 'user', content: prompt }],
         temperature: 1,
         max_tokens: 3000,
