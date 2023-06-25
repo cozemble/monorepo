@@ -12,7 +12,7 @@
     import AmendmentPrompts from "$lib/generative/components/AmendmentPrompts.svelte";
 </script>
 
-<div class="m-5">
+<div class="m-5  mx-auto">
     <AmendmentPrompts/>
 </div>
 

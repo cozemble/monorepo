@@ -15,7 +15,7 @@
   })
 </script>
 
-<div class="content">
+<div class="content w-100">
     <ManageModels/>
 </div>
 
