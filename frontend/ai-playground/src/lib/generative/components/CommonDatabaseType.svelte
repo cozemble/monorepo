@@ -13,9 +13,4 @@
     }
 
 </script>
-
-{#if index > 0}
-    <a href="!#" class="link link-primary ml-16 mt-4" on:click={useDatabaseType}>{commonDatabaseType}</a>
-{:else}
-    <a href="!#" class="link link-primary mt-4" on:click={useDatabaseType}>{commonDatabaseType}</a>
-{/if}
+<a href="!#" class="link link-primary mt-4 whitespace-nowrap" on:click={useDatabaseType}>{commonDatabaseType}</a>

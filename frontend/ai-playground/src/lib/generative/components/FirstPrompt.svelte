@@ -82,7 +82,7 @@
 
 </script>
 
-<div class="grid h-screen place-items-center w-1/2 mx-auto">
+<div class="grid h-screen place-items-center w-5/6 mx-auto">
     <div class="flex flex-col">
         <h1 class="text-center mb-8">I want a database that contains a list of ...</h1>
         <input type="text" class="input input-bordered input-lg" placeholder="some thing..." bind:value
@@ -100,7 +100,7 @@
             <p class="text-center mt-4">It can take up to 20 seconds for the AI to respond...</p>
         {/if}
         <p class="text-center mt-8"><em>Or start with a common database type</em></p>
-        <div class="flex mt-4 flex-wrap justify-center mx-auto">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 justify-items-center mx-auto">
             {#each commonDatabaseTypes as commonDatabaseType, index}
                 <CommonDatabaseType {commonDatabaseType} {index} on:choice={onChoice}/>
             {/each}
