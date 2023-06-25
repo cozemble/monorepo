@@ -2,7 +2,7 @@
   import ManageModels from "$lib/generative/components/ManageModels.svelte";
   import {goto} from "$app/navigation";
   import {onMount, tick} from "svelte";
-  import {autoExpand} from "$lib/generative/autoExpander";
+  import {expandRecordAdditionRow} from "$lib/generative/autoExpander";
   import SocialButtons from "$lib/social/SocialButtons.svelte";
 
   function startOver() {
@@ -11,7 +11,7 @@
 
   onMount(async () => {
     await tick()
-    setTimeout(autoExpand, 5)
+    setTimeout(expandRecordAdditionRow, 5)
   })
 </script>
 
