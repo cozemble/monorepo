@@ -455,6 +455,9 @@ importers:
       '@cozemble/model-properties-core':
         specifier: workspace:*
         version: link:../../model/properties-core
+      '@cozemble/model-to-json':
+        specifier: workspace:*
+        version: link:../../model/to-json
       '@cozemble/ui-filter-editor':
         specifier: workspace:*
         version: link:../../ui/filter-editor
@@ -3239,7 +3242,7 @@ packages:
     peerDependencies:
       '@sveltejs/kit': ^1.0.0
     dependencies:
-      '@sveltejs/kit': 1.5.0(svelte@3.54.0)(vite@4.3.0)
+      '@sveltejs/kit': 1.5.0(svelte@3.54.0)(vite@4.1.4)
       import-meta-resolve: 2.2.2
     dev: true
 

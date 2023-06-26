@@ -9,6 +9,8 @@ import type { Writable } from 'svelte/store'
 import { writable } from 'svelte/store'
 import { uuids } from '@cozemble/lang-util'
 import type { PromptEvent } from '$lib/analytics/types'
+import type { GeneratedDataBatch } from '$lib/generative/generateData'
+import type { DataRecord } from '@cozemble/model-core'
 
 export const modelStore = eventSourcedModelStore([])
 export const modelViews = writable([] as ModelView[])
@@ -18,6 +20,9 @@ export const showDevConsole = writable(false)
 export const navbarState: Writable<string | null> = writable(null)
 export const generationSessionId = writable(uuids.v4())
 export const promptIndex = writable(0)
+export const generatedDataBatches = writable([] as GeneratedDataBatch[])
+export const appliedDataBatchIds = writable([] as string[])
+export const replicatedRecords = writable([] as DataRecord[])
 
 export const promptEvents: Writable<PromptEvent[]> = writable([])
 
@@ -26,8 +31,5 @@ export function newGenerationSessionId() {
   promptEvents.set([])
 }
 
-export function addPromptEvent(event: PromptEvent) {
-  promptEvents.update((events) => [...events, event])
-}
-
-backendFns.setBackend(makeInMemoryBackend())
+export const inMemoryBackend = makeInMemoryBackend()
+backendFns.setBackend(inMemoryBackend)

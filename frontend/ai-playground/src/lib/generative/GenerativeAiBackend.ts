@@ -93,7 +93,27 @@ Do not explain the code at all because I want to parse the code and generate doc
     return await this._sendPrompt('amendment', promptText, prompt)
   }
 
-  private async _sendPrompt(promptType: 'first' | 'amendment', userPrompt: string, prompt: string) {
+  async generateData(
+    existingSchema: JsonSchema,
+    pluralTitle: string,
+    existingRecordsSummary: any[],
+  ): Promise<string | undefined> {
+    const prompt = `I have this json schema with represents ${pluralTitle}.  Generate 3 examples of ${pluralTitle} that would be valid according to this schema.\n  
+    Return the results as a json array ready for me to parse. Do not explain the code.  I want code only.  If you explain the code, I will not be able to parse it.\n 
+    To help you avoid duplicates, here are some existing records: ${JSON.stringify(
+      existingRecordsSummary,
+      null,
+      2,
+    )}\n
+    Here is the schema:\n ${JSON.stringify(existingSchema, null, 2)}`
+    return await this._sendPrompt('generate-data', 'generate data', prompt)
+  }
+
+  private async _sendPrompt(
+    promptType: 'first' | 'amendment' | 'generate-data',
+    userPrompt: string,
+    prompt: string,
+  ) {
     const startTimestamp = new Date().getTime()
     const successfulEventConstructor =
       promptType === 'first' ? successfulFirstPromptEvent : successfulAmendmentPromptEvent

@@ -8,8 +8,9 @@
         showDevConsole,
         systemConfiguration
     } from "$lib/generative/stores";
-    import {DataTable, RecordFilteringPanel} from "@cozemble/frontend-datatable";
+    import {DataTable} from "@cozemble/frontend-datatable";
     import AmendmentPrompts from "$lib/generative/components/AmendmentPrompts.svelte";
+    import DataLoadingInsert from "$lib/generative/components/DataLoadingInsert.svelte";
 </script>
 
 <div class="m-5  mx-auto">
@@ -25,6 +26,6 @@
                    {showDevConsole}
                    {navbarState}
                    userId="test"
-                   recordFilteringComponent={RecordFilteringPanel}/>
+                   recordFilteringComponent={DataLoadingInsert}/>
     {/key}
 </div>
