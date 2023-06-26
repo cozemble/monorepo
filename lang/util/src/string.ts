@@ -308,3 +308,36 @@ export function mask(header: string | undefined) {
 export function stripHtml(html: string): string {
   return html.replace(/<\/?[^>]+(>|$)/g, '')
 }
+
+export function toJsonCase(sentence: string): string {
+  // Split the sentence into words
+  const words = sentence.split(' ')
+
+  // Convert each word
+  for (let i = 0; i < words.length; i++) {
+    // If the word is the first one, convert it to lowercase
+    if (i === 0) {
+      words[i] = words[i].charAt(0).toLowerCase() + words[i].slice(1)
+    }
+    // If the word is an abbreviation, convert it to the format you want
+    else if (isAbbreviation(words[i])) {
+      words[i] = words[i].charAt(0).toUpperCase() + words[i].slice(1).toLowerCase()
+    }
+    // If the word is not the first one and it is not an abbreviation, convert its first character to uppercase
+    else {
+      words[i] = words[i].charAt(0).toUpperCase() + words[i].slice(1)
+    }
+
+    // Remove any non-alphanumeric characters
+    words[i] = words[i].replace(/[^a-zA-Z0-9]/g, '')
+  }
+
+  // Join the words back together
+  return words.join('')
+}
+
+// This function checks if a word is an abbreviation
+// Modify it based on your needs
+function isAbbreviation(word: string): boolean {
+  return word.toUpperCase() === word && word.length > 1
+}
