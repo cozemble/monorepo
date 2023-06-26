@@ -40,6 +40,7 @@ import {
   snakeCase,
   splitAtFirst,
   stripHtml,
+  toJsonCase,
 } from './string'
 import { getQueryParams } from './urls'
 import { ErrorWithContext, mergeContext, mergeErrorContext, prependToMessage } from './errors'
@@ -124,6 +125,7 @@ const strings = {
   camelcaseToSentenceCase,
   mask,
   stripHtml,
+  toJsonCase,
 }
 
 export const objects = {

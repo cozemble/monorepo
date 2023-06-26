@@ -46,7 +46,7 @@
 {/if}
 
 <footer class="footer p-10 bg-primary-content flex-col flex">
-    <div class="bg-base-300 flex w-full round h-20 rounded-2xl items-center justify-center">
+    <div class="flex w-full round h-12 rounded-2xl items-center justify-center">
         <SocialButtons />
     </div>
 </footer>
