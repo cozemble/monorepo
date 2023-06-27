@@ -20,9 +20,6 @@
 </div>
 
 <footer class="footer p-10 bg-primary-content flex-col flex">
-<!--    <div class="flex w-full">-->
-<!--        <button class="btn btn-primary mx-auto btn-wide btn-lg" on:click={startOver}>Start over</button>-->
-<!--    </div>-->
     <div class="flex w-full round h-12 rounded-2xl items-center justify-center">
         <SocialButtons />
     </div>

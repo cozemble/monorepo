@@ -1,4 +1,4 @@
-import type { Model } from '@cozemble/model-core'
+import type { DataRecord, Model } from '@cozemble/model-core'
 import { reconfigureApp } from '$lib/generative/components/helpers'
 import { collapseAllRows, expandRecordAdditionRow } from '$lib/generative/autoExpander'
 import { tick } from 'svelte'

@@ -57,12 +57,21 @@ export function makeInMemoryBackend(
     attachments,
   }
 
+  function clearState() {
+    state.models = []
+    state.records = []
+    state.edges = []
+    state.modelViews = []
+    state.attachments = []
+  }
+
   function _models(): Model[] {
     return Array.from(state.models.values()).map((m) => m.model)
   }
 
   const backend = {
     state,
+    clearState,
     async saveNewGraph(graph: EventSourcedRecordGraph): Promise<Outcome<EventSourcedRecordGraph>> {
       graph.records.forEach((record) => backend.saveNewRecord(record, [], []))
       // graph.edges.forEach((edge) => state.edges.push(edge))
