@@ -93,7 +93,6 @@ export const jsonNumberPropertyDescriptor: JsonPropertyDescriptor<JsonNumberProp
     property: JsonNumberProperty,
     value: number | null,
   ): string[] => {
-    console.log({ value, property })
     if (property.required) {
       if (value === null || value === undefined) {
         return ['Required']

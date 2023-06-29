@@ -24,15 +24,11 @@
         const urlParams = new URLSearchParams(window.location.search);
         const startOver = urlParams.get('startOver') === "true";
         if (startOver) {
-            modelStore.update(() => {
-                return eventSourcedModelListFns.newInstance([])
-            })
+            modelStore.update(() => eventSourcedModelListFns.newInstance([]))
             navbarState.set(null)
             goto("/")
         } else {
-            console.log({models})
             if (models.length > 0) {
-                console.log({models})
                 goto("/amend")
             }
         }

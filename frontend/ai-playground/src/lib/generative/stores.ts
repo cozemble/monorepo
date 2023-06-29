@@ -3,14 +3,13 @@ import {
   eventSourcedModelStore,
   makeInMemoryBackend,
 } from '@cozemble/frontend-datatable'
-import type { ModelView } from '@cozemble/model-core'
+import type { DataRecord, ModelView } from '@cozemble/model-core'
 import { systemConfigurationFns } from '@cozemble/model-core'
 import type { Writable } from 'svelte/store'
 import { writable } from 'svelte/store'
 import { uuids } from '@cozemble/lang-util'
 import type { PromptEvent } from '$lib/analytics/types'
 import type { GeneratedDataBatch } from '$lib/generative/generateData'
-import type { DataRecord } from '@cozemble/model-core'
 
 export const modelStore = eventSourcedModelStore([])
 export const modelViews = writable([] as ModelView[])
@@ -29,6 +28,10 @@ export const promptEvents: Writable<PromptEvent[]> = writable([])
 export function newGenerationSessionId() {
   generationSessionId.set(uuids.v4())
   promptEvents.set([])
+  generatedDataBatches.set([])
+  appliedDataBatchIds.set([])
+  replicatedRecords.set([])
+  ;(inMemoryBackend as any).clearState()
 }
 
 export const inMemoryBackend = makeInMemoryBackend()
