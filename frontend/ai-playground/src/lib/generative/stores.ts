@@ -8,8 +8,8 @@ import { systemConfigurationFns } from '@cozemble/model-core'
 import type { Writable } from 'svelte/store'
 import { writable } from 'svelte/store'
 import { uuids } from '@cozemble/lang-util'
-import type { PromptEvent } from '$lib/analytics/types'
 import type { GeneratedDataBatch } from '$lib/generative/generateData'
+import type { ChatRequest } from '$lib/chat/ChatTypes'
 
 export const modelStore = eventSourcedModelStore([])
 export const modelViews = writable([] as ModelView[])
@@ -23,11 +23,8 @@ export const generatedDataBatches = writable([] as GeneratedDataBatch[])
 export const appliedDataBatchIds = writable([] as string[])
 export const replicatedRecords = writable([] as DataRecord[])
 
-export const promptEvents: Writable<PromptEvent[]> = writable([])
-
 export function newGenerationSessionId() {
   generationSessionId.set(uuids.v4())
-  promptEvents.set([])
   generatedDataBatches.set([])
   appliedDataBatchIds.set([])
   replicatedRecords.set([])

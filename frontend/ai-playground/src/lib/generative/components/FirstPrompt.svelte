@@ -1,12 +1,13 @@
 <script lang="ts">
 
-    import {parsedSchema} from "$lib/generative/parsedSchema";
     import {convertSchemaToModels, reconfigureApp} from "$lib/generative/components/helpers";
     import CommonDatabaseType from "$lib/generative/components/CommonDatabaseType.svelte";
+    import type {JustErrorMessage, Value} from "@cozemble/lang-util";
+    import {justErrorMessage} from "@cozemble/lang-util";
+    import {setCurrentAiChatRequest} from "$lib/chat/ChatTypes";
 
     let value = ""
     let errorMessage: string | null = null
-    let generating = false
 
     const commonDatabaseTypes = [
         "Customers",
@@ -29,39 +30,25 @@
         "Services",
     ]
 
+    function onChatResponse(response: JustErrorMessage | Value) {
+        if(response._type === 'value') {
+            const converted = convertSchemaToModels(response.value)
+            reconfigureApp(converted)
+        }
+    }
+
+    function looksLikeJsonSchema(json: any) {
+        const looksOk = json && json.title && json.type && json.properties
+        return looksOk ? null : justErrorMessage("Not a valid JSON Schema")
+    }
+
+
     async function generate() {
         if (value.length < 3) {
             errorMessage = "Please enter a value that is at least 3 characters long"
         } else {
-            generating = true
             errorMessage = null
-            try {
-                const fetched = await fetch("/", {
-                    method: "POST",
-                    body: JSON.stringify({databaseType: value}),
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Accept": "application/json"
-                    }
-
-                })
-                if (!fetched.ok) {
-                    throw new Error("Something went wrong, please try again")
-                }
-                const fetchedResponse = await fetched.json()
-                const result = fetchedResponse.result
-                if (!result) {
-                    errorMessage = "Something went wrong, please try again"
-                    return
-                }
-                const schema = parsedSchema(result)
-                const converted = convertSchemaToModels(schema)
-                reconfigureApp(converted)
-            } catch (e: any) {
-                errorMessage = e.message
-            } finally {
-                generating = false
-            }
+            setCurrentAiChatRequest("/", {databaseType: value}, onChatResponse, looksLikeJsonSchema)
         }
     }
 
@@ -91,14 +78,8 @@
             <p class="text-center text-red-500 mt-4">{errorMessage}</p>
         {/if}
         <button class="btn btn-primary mt-4 btn-lg" on:click={generate}>
-            {#if generating}
-                <span class="loading loading-spinner"></span>
-            {/if}
             Generate
         </button>
-        {#if generating}
-            <p class="text-center mt-4">It can take up to 20 seconds for the AI to respond...</p>
-        {/if}
         <p class="text-center mt-8"><em>Or start with a common database type</em></p>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 justify-items-center mx-auto">
             {#each commonDatabaseTypes as commonDatabaseType, index}
