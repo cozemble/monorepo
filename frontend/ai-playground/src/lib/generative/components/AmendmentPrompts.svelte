@@ -1,48 +1,39 @@
 <script lang="ts">
     import {modelStore, navbarState, replicatedRecords} from "$lib/generative/stores";
     import {convertModelToJsonSchema} from "$lib/convertModelToJsonSchema";
-    import {convertSchemaToModels, existingModelIdMap} from "$lib/generative/components/helpers";
+    import {
+        convertSchemaToModels,
+        existingModelIdMap,
+        looksLikeJsonSchema,
+        reconfigureApp
+    } from "$lib/generative/components/helpers";
     import {applyAmendment} from "$lib/generative/components/applyAmendment";
     import {goto} from "$app/navigation";
     import {generateData} from "$lib/generative/generateData";
-
+    import {setCurrentAiChatRequest} from "$lib/chat/ChatTypes";
+    import type {JustErrorMessage, Value} from "@cozemble/lang-util";
 
     $: currentModel = $modelStore.models.find(m => m.model.id.value === $navbarState)
 
     let prompt = ""
-    let generating = false
+
+    async function onChatResponse(response: JustErrorMessage | Value) {
+        if(response._type === 'value') {
+            const converted = convertSchemaToModels(response.value, existingModelIdMap($modelStore.models))
+            prompt = ""
+            await applyAmendment(converted)
+        }
+    }
 
     async function applyChange() {
         if (prompt.length > 3 && currentModel) {
             try {
-                generating = true
                 const allModels = $modelStore.models.map(m => m.model)
                 const existingSchema = convertModelToJsonSchema(currentModel.model, allModels)
                 const payload = {existingSchema, promptText: prompt}
-                const fetched = await fetch("/amend", {
-                    method: "POST",
-                    body: JSON.stringify(payload),
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Accept": "application/json"
-                    }
-
-                })
-                if (!fetched.ok) {
-                    throw new Error("Something went wrong, please try again")
-                }
-                const fetchedResponse = await fetched.json()
-                const amended = fetchedResponse.result
-                if (amended) {
-                    const parsed = JSON.parse(amended)
-                    const converted = convertSchemaToModels(parsed, existingModelIdMap($modelStore.models))
-                    prompt = ""
-                    await applyAmendment(converted)
-                }
+                setCurrentAiChatRequest("/amend", payload, onChatResponse, looksLikeJsonSchema)
             } catch (e: any) {
                 console.error(e)
-            } finally {
-                generating = false
             }
         }
     }
@@ -62,14 +53,8 @@
             return
         }
         hideDropdown()
-        generating = true
-        try {
-            const allModels = $modelStore.models.map(m => m.model)
-            await generateData(allModels, currentModel.model, $replicatedRecords)
-
-        } finally {
-            generating = false
-        }
+        const allModels = $modelStore.models.map(m => m.model)
+        await generateData(allModels, currentModel.model, $replicatedRecords)
 
     }
 
@@ -88,10 +73,7 @@
                    on:keydown={keyDownOnInput}/>
         </div>
         <div class="mx-auto mt-2">
-            <button class="btn btn-primary" on:click={applyChange} disabled={generating}>
-                {#if generating}
-                    <span class="loading loading-spinner"></span>
-                {/if}
+            <button class="btn btn-primary" on:click={applyChange}>
                 Apply change
             </button>
             <div class="dropdown">
@@ -101,11 +83,6 @@
                     <li on:click={startOver}><a>Start over</a></li>
                 </ul>
             </div>
-        </div>
-        <div class="mx-auto">
-            {#if generating}
-                <p class="text-center mt-4">It can take up to 20 seconds for the AI to respond...</p>
-            {/if}
         </div>
     </div>
 {/if}

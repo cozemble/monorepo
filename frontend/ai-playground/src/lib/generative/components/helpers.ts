@@ -33,6 +33,7 @@ import { eventSourcedModelFns, eventSourcedModelListFns } from '@cozemble/model-
 import { modelStore, navbarState, promptIndex } from '$lib/generative/stores'
 import { get } from 'svelte/store'
 import { useSameSlotIds } from '$lib/generative/useSameSlotIds'
+import { justErrorMessage } from '@cozemble/lang-util'
 
 const systemConfiguration = systemConfigurationFns.empty()
 
@@ -289,4 +290,9 @@ export function existingModelIdMap(models: EventSourcedModel[]): { [key: string]
     acc[model.model.name.value] = model.model.id
     return acc
   }, {} as { [key: string]: ModelId })
+}
+
+export function looksLikeJsonSchema(json: any) {
+  const looksOk = json && json.title && json.type && json.properties
+  return looksOk ? null : justErrorMessage('Not a valid JSON Schema')
 }

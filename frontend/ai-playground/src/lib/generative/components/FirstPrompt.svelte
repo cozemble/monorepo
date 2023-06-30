@@ -1,9 +1,8 @@
 <script lang="ts">
 
-    import {convertSchemaToModels, reconfigureApp} from "$lib/generative/components/helpers";
+    import {convertSchemaToModels, looksLikeJsonSchema, reconfigureApp} from "$lib/generative/components/helpers";
     import CommonDatabaseType from "$lib/generative/components/CommonDatabaseType.svelte";
     import type {JustErrorMessage, Value} from "@cozemble/lang-util";
-    import {justErrorMessage} from "@cozemble/lang-util";
     import {setCurrentAiChatRequest} from "$lib/chat/ChatTypes";
 
     let value = ""
@@ -31,15 +30,10 @@
     ]
 
     function onChatResponse(response: JustErrorMessage | Value) {
-        if(response._type === 'value') {
+        if (response._type === 'value') {
             const converted = convertSchemaToModels(response.value)
             reconfigureApp(converted)
         }
-    }
-
-    function looksLikeJsonSchema(json: any) {
-        const looksOk = json && json.title && json.type && json.properties
-        return looksOk ? null : justErrorMessage("Not a valid JSON Schema")
     }
 
 
