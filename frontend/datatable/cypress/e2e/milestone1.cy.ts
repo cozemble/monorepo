@@ -53,7 +53,8 @@ describe('data table', () => {
 
     clickAddField()
     cy.get('input.property-name').type('{selectall}Notes')
-    cy.get('input.multipleLines').type('true')
+    cy.get('.more-options').click()
+    cy.get('input.multipleLines').click()
     cy.get('button.save-property').click()
 
     clickAddSubrecord()

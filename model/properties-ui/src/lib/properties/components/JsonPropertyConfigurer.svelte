@@ -17,7 +17,7 @@
     {#key property.propertyType.value}
         <div class="mt-2">
             <div class="collapse">
-                <input type="checkbox" />
+                <input type="checkbox" class="more-options"/>
                 <div class="collapse-title flex px-0">
                     <strong>More Options</strong> <div class="mt-1 ml-1"><DownCaret /></div>
                 </div>

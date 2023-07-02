@@ -21,13 +21,13 @@
     <div class="form-group mb-3">
         {#if property.type === "string"}
             <Label {property} {propertyKey}/>
-            <input type="text" class="form-control input input-bordered  w-full" bind:value={$value[propertyKey]}/>
+            <input type="text" class="form-control input input-bordered  w-full {propertyKey}" bind:value={$value[propertyKey]}/>
         {:else if property.type === "number"}
             <Label {property} {propertyKey}/>
-            <input type="number" class="form-control input input-bordered  w-full" bind:value={$value[propertyKey]}/>
+            <input type="number" class="form-control input input-bordered  w-full {propertyKey}" bind:value={$value[propertyKey]}/>
         {:else if property.type === "boolean"}
             <div class="flex">
-                <input type="checkbox" class="checkbox" checked={$value[propertyKey] === true}
+                <input type="checkbox" class="checkbox {propertyKey}" checked={$value[propertyKey] === true}
                        on:change={handleCheckboxChange(propertyKey)}/>
                 <Label {property} {propertyKey} clazz="ml-3"/>
             </div>
