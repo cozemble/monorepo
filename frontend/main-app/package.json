@@ -42,7 +42,7 @@
     "@cozemble/model-event-sourced": "workspace:*",
     "@cozemble/model-to-json": "workspace:*",
     "@cozemble/ui-filter-editor": "workspace:*",
-    "@cozemble/data-editor": "workspace:*",
+    "@cozemble/frontend-json-schema-form": "workspace:*",
     "@tailwindcss/typography": "^0.5.9",
     "ajv": "^8.12.0",
     "axios": "^1.2.3",

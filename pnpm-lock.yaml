@@ -919,9 +919,6 @@ importers:
       '@cozemble/backend-tenanted-api-types':
         specifier: workspace:*
         version: link:../../backend/tenanted-api-types
-      '@cozemble/data-editor':
-        specifier: workspace:*
-        version: link:../data-editor
       '@cozemble/data-editor-sdk':
         specifier: workspace:*
         version: link:../../data/editor-sdk
@@ -940,6 +937,9 @@ importers:
       '@cozemble/frontend-datatable':
         specifier: workspace:*
         version: link:../datatable
+      '@cozemble/frontend-json-schema-form':
+        specifier: workspace:*
+        version: link:../json-schema-form
       '@cozemble/frontend-ui-blocks':
         specifier: workspace:*
         version: link:../ui-blocks
