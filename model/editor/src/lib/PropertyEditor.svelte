@@ -5,6 +5,7 @@
     import type {EventSourcedModelList} from "@cozemble/model-event-sourced";
     import {coreModelEvents, eventSourcedModelListFns} from '@cozemble/model-event-sourced'
     import type {Writable} from "svelte/store";
+    import {afterUpdate} from "svelte";
 
     export let modelList: Writable<EventSourcedModelList>
     export let model: Model
@@ -28,6 +29,7 @@
         )))
     }
 
+    afterUpdate(() => console.log({property, propertyDescriptor, configurer}))
 </script>
 
 {#if propertyDescriptor?.isRequireable}

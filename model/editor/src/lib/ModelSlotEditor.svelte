@@ -65,6 +65,7 @@
         const errors = validateSlot(modelSlot)
         $formSectionErrorState.showErrors = errors.size > 0
         if (errors.size === 0) {
+            console.log({slot: modelSlot})
             dispatch('save', {slot: modelSlot})
         }
     }
@@ -103,11 +104,11 @@
     <label class="label">{slotNoun} Name</label>
     <input
             value={modelSlot.name.value}
-            class="property-name input input-bordered first"
+            class="property-name input input-bordered first w-full"
             on:change={slotNameChanged}/>
 
     <label class="label">{slotNoun} Type</label>
-    <select on:change={slotTypeChanged} class="property-type input input-bordered">
+    <select on:change={slotTypeChanged} class="property-type input input-bordered  w-full">
         <option value="">----</option>
         {#each propertyDescriptors.list() as propertyDescriptor}
             <option

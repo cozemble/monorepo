@@ -861,6 +861,9 @@ importers:
       '@cozemble/model-core':
         specifier: workspace:*
         version: link:../../model/core
+      '@cozemble/ui-atoms':
+        specifier: workspace:*
+        version: link:../../ui/atoms
       daisyui:
         specifier: ^2.47.0
         version: 2.47.0(autoprefixer@10.4.13)(postcss@8.4.23)
@@ -1555,15 +1558,18 @@ importers:
 
   model/properties-ui:
     dependencies:
-      '@cozemble/data-editor':
+      '@cozemble/frontend-json-schema-form':
         specifier: workspace:*
-        version: link:../../frontend/data-editor
+        version: link:../../frontend/json-schema-form
       '@cozemble/model-core':
         specifier: workspace:*
         version: link:../core
       '@cozemble/model-properties-core':
         specifier: workspace:*
         version: link:../properties-core
+      '@cozemble/ui-atoms':
+        specifier: workspace:*
+        version: link:../../ui/atoms
     devDependencies:
       '@originjs/vite-plugin-commonjs':
         specifier: ^1.0.3

@@ -27,9 +27,11 @@ export const stringPropertyConfigurationSchema: JsonSchema = {
   properties: {
     pattern: {
       type: 'string',
+      description: 'A regular expression that the text must match',
     },
     patternExplanation: {
       type: 'string',
+      description: 'Text to display to the user if the text does not match the pattern',
     },
     multipleLines: {
       type: 'boolean',
@@ -37,9 +39,11 @@ export const stringPropertyConfigurationSchema: JsonSchema = {
     },
     prefix: {
       type: 'string',
+      description: 'A prefix to be displayed before the text',
     },
     suffix: {
       type: 'string',
+      description: 'A suffix to be displayed after the text',
     },
   },
 }

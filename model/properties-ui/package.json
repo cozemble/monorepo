@@ -28,6 +28,7 @@
   "dependencies": {
     "@cozemble/model-core": "workspace:*",
     "@cozemble/model-properties-core": "workspace:*",
-    "@cozemble/data-editor": "workspace:*"
+    "@cozemble/frontend-json-schema-form": "workspace:*",
+    "@cozemble/ui-atoms": "workspace:*"
   }
 }

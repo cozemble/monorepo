@@ -23,6 +23,7 @@
     function saveSlot() {
         const modelList = get(slotBeingEdited.modelList)
         const model = eventSourcedModelListFns.modelWithId(modelList, slotBeingEdited.model.model.id)
+        console.log({model})
         dispatch('edited', {model})
     }
 
@@ -47,3 +48,9 @@
                          slotNoun="Field" on:save={saveSlot} on:close={close}/>
     </div>
 </div>
+
+<style>
+    .coz-modal {
+        width: calc(1ch * 40); /* adjust 10 to the number of characters you want */
+    }
+</style>
