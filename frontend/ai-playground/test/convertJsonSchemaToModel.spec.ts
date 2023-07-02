@@ -11,6 +11,7 @@ import {
   customerSchema,
   invoiceSchema,
   schemaWithStringArray,
+  staffMemberWithHistorySchema,
 } from './sampleSchemas'
 
 registerJsonProperties()
@@ -105,4 +106,11 @@ test('an amended customer whose address did not get added as a nested model', ()
 
 test('can handle a schema containing an array of strings', () => {
   const { allModels } = convertSchemaToModels(schemaWithStringArray)
+})
+
+test('can handle staff member with array of salary history, which failed in the field', () => {
+  const { model } = convertSchemaToModels(staffMemberWithHistorySchema)
+  expect(model.nestedModels).toHaveLength(2)
+  expect(model.nestedModels[1].cardinality).toBe('many')
+  expect(model.nestedModels[1].name.value).toBe('Salary History')
 })

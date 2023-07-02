@@ -32,9 +32,11 @@ export class OpenAi {
   ) {}
 
   async firstPrompt(databaseType: string): Promise<string | undefined> {
-    const prompt = `In our extended version of JSON Schema, we have an additional keyword 'unique'.
-This keyword is used to ensure that the values of the specified field are unique among all objects in an array or all properties of an object.
-It's used in the same place where you'd use 'type', 'format', or similar keywords. For instance:
+    const prompt = `Generate a JSON schema for a "${databaseType}" object in our extended version of JSON Schema. This object should include the 10 most common properties for a "${databaseType}".
+
+Here are some guidelines for the schema:
+
+1. We use an additional keyword 'unique' to ensure that the values of the specified field are unique among all objects in an array or all properties of an object. For example:
 
 {
   'type': 'object',
@@ -42,19 +44,20 @@ It's used in the same place where you'd use 'type', 'format', or similar keyword
     'id': {
       'type': 'string',
       'unique': true
-    },
-    ...
+    }
   }
-  ...
 }
 
-In addition, we do not use the "date-time" format.  Instead we use "date" and "time" formats.  This might mean you will have to use two properties to represent a date-time value.
-We do make use of all the other formats listed in the JSON Schema specification.
-Use the 'title' keyword to give a name to your schema.  We also support a keyword called 'pluralTitle' which represents the name of the schema in plural form.  It goes beside 'title' in the schema.
-Do not include any "timestamp" style properties associated with creation and modification of the object.  We will add those automatically.
-Do not explain the code at all because I want to parse the code and generate documentation from it.
+2. We do not use the "date-time" format. Instead, we use "date" and "time" formats. This might mean using two properties to represent a date-time value.
 
-Given this, generate a schema for a ${databaseType} object.  Include the 10 most common properties.`
+3. We make use of all other formats listed in the JSON Schema specification.
+
+4. Use the 'title' keyword to give a name to your schema. We also support a keyword called 'pluralTitle' which represents the name of the schema in plural form.
+
+5. Do not include any "timestamp" style properties associated with creation and modification of the object, as we will add those automatically.
+
+6. Do not explain the code at all, as I want to parse the code and generate documentation from it.
+`
     return await this._sendPrompt('first', databaseType, prompt)
   }
 
@@ -124,7 +127,7 @@ Do not explain the code at all because I want to parse the code and generate doc
       const response = await this.openai.createChatCompletion({
         model: 'gpt-3.5-turbo-16k-0613',
         messages: [{ role: 'user', content: prompt }],
-        temperature: 1,
+        temperature: 0.3,
         max_tokens: 3000,
         top_p: 1,
         frequency_penalty: 0,

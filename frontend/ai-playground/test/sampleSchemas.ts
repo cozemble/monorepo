@@ -438,3 +438,97 @@ export const schemaWithStringArray: JsonSchema = {
     'olympicSport',
   ],
 }
+
+export const staffMemberWithHistorySchema: JsonSchema = {
+  $schema: 'http://json-schema.org/draft-07/schema#',
+  title: 'Staff Member',
+  pluralTitle: 'Staff Members',
+  $id: '42f2e099-f797-4a12-bfa6-69add6854bdf',
+  type: 'object',
+  properties: {
+    id: {
+      type: 'string',
+      unique: true,
+    },
+    firstName: {
+      type: 'string',
+    },
+    lastName: {
+      type: 'string',
+    },
+    email: {
+      type: 'string',
+      format: 'email',
+    },
+    phone: {
+      type: 'string',
+      format: 'phone',
+    },
+    dateOfBirth: {
+      type: 'string',
+      format: 'date',
+    },
+    gender: {
+      type: 'string',
+    },
+    position: {
+      type: 'string',
+    },
+    department: {
+      type: 'string',
+    },
+    address: {
+      type: 'object',
+      properties: {
+        line1: {
+          type: 'string',
+        },
+        line2: {
+          type: 'string',
+        },
+        city: {
+          type: 'string',
+        },
+        county: {
+          type: 'string',
+        },
+        postcode: {
+          type: 'string',
+        },
+      },
+      required: ['line1', 'city', 'county', 'postcode'],
+    },
+    salaryHistory: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          startDate: {
+            type: 'string',
+            format: 'date',
+          },
+          endDate: {
+            type: 'string',
+            format: 'date',
+          },
+          salary: {
+            type: 'number',
+          },
+        },
+        required: ['startDate', 'endDate', 'salary'],
+      },
+    },
+  },
+  required: [
+    'id',
+    'firstName',
+    'lastName',
+    'email',
+    'phone',
+    'dateOfBirth',
+    'gender',
+    'position',
+    'department',
+    'salaryHistory',
+  ],
+}

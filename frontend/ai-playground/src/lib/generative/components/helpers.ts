@@ -27,13 +27,12 @@ import {
   timePropertyType,
 } from '@cozemble/model-properties-core'
 import type { Option } from '@cozemble/lang-util'
-import { mandatory, options, strings } from '@cozemble/lang-util'
+import { justErrorMessage, mandatory, options, strings } from '@cozemble/lang-util'
 import type { EventSourcedModel } from '@cozemble/model-event-sourced'
 import { eventSourcedModelFns, eventSourcedModelListFns } from '@cozemble/model-event-sourced'
 import { modelStore, navbarState, promptIndex } from '$lib/generative/stores'
 import { get } from 'svelte/store'
 import { useSameSlotIds } from '$lib/generative/useSameSlotIds'
-import { justErrorMessage } from '@cozemble/lang-util'
 
 const systemConfiguration = systemConfigurationFns.empty()
 
@@ -238,7 +237,7 @@ function ensureNoPrimitiveArrays(
         throw new Error(`Array property ${key} has multiple items defined`)
       }
       if (property.items.type === 'object') {
-        return acc
+        return { ...acc, [key]: property }
       }
       return {
         ...acc,
