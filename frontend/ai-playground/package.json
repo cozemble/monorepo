@@ -38,6 +38,7 @@
     "@cozemble/model-properties-core": "workspace:*",
     "@cozemble/ui-filter-editor": "workspace:*",
     "@cozemble/model-to-json": "workspace:*",
+    "@cozemble/model-attachment-core": "workspace:*",
     "@tailwindcss/typography": "^0.5.9",
     "ajv": "^8.12.0",
     "axios": "^1.2.3",

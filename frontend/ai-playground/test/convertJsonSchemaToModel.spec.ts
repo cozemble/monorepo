@@ -10,11 +10,16 @@ import {
   customerAsArray,
   customerSchema,
   invoiceSchema,
+  schemaWithImage,
+  schemaWithListOfImages,
   schemaWithStringArray,
   staffMemberWithHistorySchema,
 } from './sampleSchemas'
+import { registerAttachmentProperty } from '@cozemble/model-attachment-core'
+import { AttachmentProperty } from '@cozemble/model-attachment-core/dist/esm'
 
 registerJsonProperties()
+registerAttachmentProperty()
 
 test('can convert customer response', () => {
   const { model, allModels } = convertSchemaToModels(customerSchema)
@@ -113,4 +118,26 @@ test('can handle staff member with array of salary history, which failed in the 
   expect(model.nestedModels).toHaveLength(2)
   expect(model.nestedModels[1].cardinality).toBe('many')
   expect(model.nestedModels[1].name.value).toBe('Salary History')
+})
+
+test('can handle a schema with an image', () => {
+  const { model } = convertSchemaToModels(schemaWithImage)
+  expect(model.slots).toHaveLength(1)
+  expect(model.slots[0].name.value).toBe('Logo')
+  expect(model.slots[0]._type).toBe('property')
+  const property = model.slots[0] as AttachmentProperty
+  expect(property.propertyType.value).toBe('attachment.property')
+  expect(property.accept).toBe('image/*')
+})
+
+test('can handle a schema with an array of images', () => {
+  const { model, allModels } = convertSchemaToModels(schemaWithListOfImages)
+  expect(model.nestedModels).toHaveLength(1)
+  expect(model.nestedModels[0].cardinality).toBe('many')
+  expect(model.nestedModels[0].name.value).toBe('Photo')
+  const nestedModel = modelFns.findById(allModels, model.nestedModels[0].modelId)
+  expect(nestedModel.slots).toHaveLength(1)
+  const property = nestedModel.slots[0] as AttachmentProperty
+  expect(property.propertyType.value).toBe('attachment.property')
+  expect(property.accept).toBe('image/*')
 })

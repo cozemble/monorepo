@@ -33,32 +33,66 @@ import { eventSourcedModelFns, eventSourcedModelListFns } from '@cozemble/model-
 import { modelStore, navbarState, promptIndex } from '$lib/generative/stores'
 import { get } from 'svelte/store'
 import { useSameSlotIds } from '$lib/generative/useSameSlotIds'
+import type { AttachmentPropertyConfiguration } from '@cozemble/model-attachment-core'
+import { attachmentPropertyType } from '@cozemble/model-attachment-core'
 
 const systemConfiguration = systemConfigurationFns.empty()
 
-function getPropertyDescriptor(property: JsonSchemaProperty): PropertyDescriptor | null {
+function getAttachmentConfig(property: JsonSchemaProperty): AttachmentPropertyConfiguration {
+  const config: AttachmentPropertyConfiguration = {}
+  if (property.minItems) {
+    config.minAttachments = property.minItems
+  }
+  if (property.maxItems) {
+    config.maxAttachments = property.maxItems
+  }
+  if (property.contentMediaType) {
+    if (
+      property.contentMediaType.startsWith('image/') ||
+      property.contentMediaType.startsWith('audio/') ||
+      property.contentMediaType.startsWith('video/')
+    ) {
+      // change the media type to accept wildcard
+      config.accept = property.contentMediaType.replace(/\/.+$/, '/*')
+    } else {
+      config.accept = property.contentMediaType
+    }
+  }
+  return config
+}
+
+function getPropertyDescriptor(property: JsonSchemaProperty): {
+  pd: PropertyDescriptor | null
+  config?: any
+} {
   if (property.type === 'string') {
+    if (property.contentMediaType) {
+      return {
+        pd: propertyDescriptors.mandatory(attachmentPropertyType),
+        config: getAttachmentConfig(property),
+      }
+    }
     if (property.format === 'phone') {
-      return propertyDescriptors.mandatory(phoneNumberPropertyType)
+      return { pd: propertyDescriptors.mandatory(phoneNumberPropertyType) }
     }
     if (property.format === 'email') {
-      return propertyDescriptors.mandatory(emailPropertyType)
+      return { pd: propertyDescriptors.mandatory(emailPropertyType) }
     }
     if (property.format === 'date') {
-      return propertyDescriptors.mandatory(datePropertyType)
+      return { pd: propertyDescriptors.mandatory(datePropertyType) }
     }
     if (property.format === 'time') {
-      return propertyDescriptors.mandatory(timePropertyType)
+      return { pd: propertyDescriptors.mandatory(timePropertyType) }
     }
-    return propertyDescriptors.mandatory(stringPropertyType)
+    return { pd: propertyDescriptors.mandatory(stringPropertyType) }
   }
   if (property.type === 'integer') {
-    return propertyDescriptors.mandatory(integerPropertyType)
+    return { pd: propertyDescriptors.mandatory(integerPropertyType) }
   }
   if (property.type === 'number') {
-    return propertyDescriptors.mandatory(numberPropertyType)
+    return { pd: propertyDescriptors.mandatory(numberPropertyType) }
   }
-  return null
+  return { pd: null }
 }
 
 function addProperty(
@@ -78,15 +112,18 @@ function addProperty(
   if (property.pattern) {
     propOptions.push(jsonStringPropertyOptions.pattern(property.pattern, 'Invalid format'))
   }
-  const pd = getPropertyDescriptor(property)
+  const { pd, config } = getPropertyDescriptor(property)
   if (!pd) {
     return model
   }
   const event = pd.newProperty(systemConfiguration, model.id, propertyName)
   model = modelEventDescriptors.applyEvent(model, event)
-  let phoneNumberProperty = model.slots.at(-1)
-  phoneNumberProperty = options.apply(phoneNumberProperty, ...propOptions) as Property
-  return { ...model, slots: [...model.slots.slice(0, -1), phoneNumberProperty] }
+  let slot = mandatory(model.slots.at(-1), `Model ${model.id.value} has no slots`)
+  slot = options.apply(slot, ...propOptions) as Property
+  if (config) {
+    slot = { ...slot, ...config }
+  }
+  return { ...model, slots: [...model.slots.slice(0, -1), slot] }
 }
 
 type ModelAndAllModels = { model: Model; allModels: Model[] }
@@ -208,6 +245,18 @@ function convertPrimitiveArrayToObjectArray(
   items: JsonSchemaProperty,
 ): JsonSchemaProperty {
   if (items.type === 'string') {
+    if (items.contentMediaType) {
+      return {
+        type: 'object',
+        properties: {
+          files: {
+            type: 'string',
+            contentEncoding: items.contentEncoding,
+            contentMediaType: items.contentMediaType,
+          },
+        },
+      }
+    }
     return {
       type: 'object',
       properties: {

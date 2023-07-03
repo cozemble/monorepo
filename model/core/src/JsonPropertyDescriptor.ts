@@ -72,6 +72,9 @@ export type JsonSchemaProperty = {
   allOf?: JsonSchemaProperty[]
   minimum?: number
   pattern?: string
+  contentEncoding?: string
+  contentMediaType?: string
+
   [key: string]: any
 }
 

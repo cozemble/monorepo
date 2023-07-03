@@ -450,33 +450,6 @@ export const staffMemberWithHistorySchema: JsonSchema = {
       type: 'string',
       unique: true,
     },
-    firstName: {
-      type: 'string',
-    },
-    lastName: {
-      type: 'string',
-    },
-    email: {
-      type: 'string',
-      format: 'email',
-    },
-    phone: {
-      type: 'string',
-      format: 'phone',
-    },
-    dateOfBirth: {
-      type: 'string',
-      format: 'date',
-    },
-    gender: {
-      type: 'string',
-    },
-    position: {
-      type: 'string',
-    },
-    department: {
-      type: 'string',
-    },
     address: {
       type: 'object',
       properties: {
@@ -519,16 +492,38 @@ export const staffMemberWithHistorySchema: JsonSchema = {
       },
     },
   },
-  required: [
-    'id',
-    'firstName',
-    'lastName',
-    'email',
-    'phone',
-    'dateOfBirth',
-    'gender',
-    'position',
-    'department',
-    'salaryHistory',
-  ],
+  required: ['id', 'salaryHistory'],
+}
+
+export const schemaWithImage: JsonSchema = {
+  $schema: 'http://json-schema.org/draft-07/schema#',
+  $id: 'generated-schema1687171796354',
+  title: 'Suppliers',
+  pluralTitle: 'Suppliers',
+  type: 'object',
+  properties: {
+    logo: {
+      type: 'string',
+      contentEncoding: 'base64',
+      contentMediaType: 'image/png',
+    },
+  },
+}
+
+export const schemaWithListOfImages: JsonSchema = {
+  $schema: 'http://json-schema.org/draft-07/schema#',
+  title: 'Customers',
+  pluralTitle: 'Customers',
+  $id: 'fec19a10-3949-4f82-aa35-5f4031c5c0e2',
+  type: 'object',
+  properties: {
+    photo: {
+      type: 'array',
+      items: {
+        type: 'string',
+        contentEncoding: 'base64',
+        contentMediaType: 'image/*',
+      },
+    },
+  },
 }

@@ -8,17 +8,14 @@ import {
 
 export const attachmentPropertyType = propertyTypeFns.newInstance('attachment.property')
 
-export interface AttachmentProperty extends Property {
-  propertyType: { _type: 'property.type'; value: 'attachment.property' }
+export interface AttachmentPropertyConfiguration {
   minAttachments?: number | null
   maxAttachments?: number | null
   accept?: string | null
 }
 
-export interface AttachmentPropertyConfiguration {
-  minAttachments?: number | null
-  maxAttachments?: number | null
-  accept?: string | null
+export interface AttachmentProperty extends Property, AttachmentPropertyConfiguration {
+  propertyType: { _type: 'property.type'; value: 'attachment.property' }
 }
 
 export function emptyProperty(name: string): AttachmentProperty {

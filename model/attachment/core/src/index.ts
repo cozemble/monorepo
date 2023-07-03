@@ -9,6 +9,7 @@ export {
   AttachmentPropertyOption,
   attachmentPropertyOptions,
   emptyProperty,
+  AttachmentPropertyConfiguration,
 } from './attachmentProperty'
 
 export {

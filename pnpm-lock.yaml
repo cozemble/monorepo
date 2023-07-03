@@ -443,6 +443,9 @@ importers:
       '@cozemble/model-assembled':
         specifier: workspace:*
         version: link:../../model/assembled
+      '@cozemble/model-attachment-core':
+        specifier: workspace:*
+        version: link:../../model/attachment/core
       '@cozemble/model-core':
         specifier: workspace:*
         version: link:../../model/core
