@@ -11,3 +11,8 @@
 {#if $currentAiChatRequest}
     <ChatRequestModal/>
 {/if}
+
+<!-- hidden content to force tailwind styles to be compiled in.  Yes, crazy -->
+<div class="form-group mb-3 invisible">
+    <input type="text" class="form-control input input-bordered border border-primary border-4"/>
+</div>
