@@ -8,6 +8,7 @@ import {
   successfulAmendmentPromptEvent,
   successfulFirstPromptEvent,
 } from '$lib/analytics/types'
+import { extractJSON } from '$lib/generative/extractJson'
 
 export function mandatoryOpenAiCreds(): OpenAiCreds {
   return {
@@ -23,6 +24,8 @@ export type OpenAiCreds = {
 
 export type PromptEventListener = (event: PromptEvent) => Promise<void>
 export const nullPromptEventListener: PromptEventListener = async () => {}
+
+export type OpenAiMessage = { role: 'user' | 'assistant'; content: string }
 
 export class OpenAi {
   constructor(
@@ -120,28 +123,27 @@ Remember, there's no need to explain the code, as it will be parsed to generate 
     promptType: 'first' | 'amendment' | 'generate-data',
     userPrompt: string,
     prompt: string,
-  ) {
+    previousChat: OpenAiMessage[] = [],
+  ): Promise<string | undefined> {
     const startTimestamp = new Date().getTime()
     const successfulEventConstructor =
       promptType === 'first' ? successfulFirstPromptEvent : successfulAmendmentPromptEvent
     const unsuccessfulEventConstructor =
       promptType === 'first' ? failedFirstPromptEvent : failedAmendmentPromptEvent
 
+    const message: OpenAiMessage = { role: 'user', content: prompt }
+    const messages: OpenAiMessage[] = [...previousChat, message]
     try {
       const response = await this.openai.createChatCompletion({
         model: 'gpt-3.5-turbo-16k-0613',
-        messages: [{ role: 'user', content: prompt }],
+        messages,
         temperature: 0.3,
         max_tokens: 3000,
         top_p: 1,
         frequency_penalty: 0,
       })
       const content = response.data.choices[0].message?.content
-      if (content) {
-        await this.promptEventListener(
-          successfulEventConstructor(userPrompt, content, startTimestamp),
-        )
-      } else {
+      if (!content) {
         await this.promptEventListener(
           unsuccessfulEventConstructor(
             userPrompt,
@@ -149,8 +151,16 @@ Remember, there's no need to explain the code, as it will be parsed to generate 
             startTimestamp,
           ),
         )
+        return undefined
       }
-      return content
+      const json = extractJSON(content)
+      if (!json) {
+        throw new Error('No JSON found')
+      }
+      await this.promptEventListener(
+        successfulEventConstructor(userPrompt, JSON.stringify(json, null, 2), startTimestamp),
+      )
+      return JSON.stringify(json, null, 2)
     } catch (e: any) {
       await this.promptEventListener(
         unsuccessfulEventConstructor(userPrompt, e.message, startTimestamp),

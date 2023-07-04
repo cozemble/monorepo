@@ -527,3 +527,29 @@ export const schemaWithListOfImages: JsonSchema = {
     },
   },
 }
+
+export const schemaWithImageArrayInBookingsArray: JsonSchema = {
+  $schema: 'http://json-schema.org/draft-07/schema#',
+  title: 'Customers',
+  pluralTitle: 'Customers',
+  $id: 'bf169a12-2a4d-48db-8082-01a873fc410e',
+  type: 'object',
+  properties: {
+    bookings: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          photos: {
+            type: 'array',
+            items: {
+              type: 'string',
+              contentEncoding: 'base64',
+              contentMediaType: 'image/jpeg',
+            },
+          },
+        },
+      },
+    },
+  },
+}

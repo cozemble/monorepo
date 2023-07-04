@@ -11,6 +11,7 @@ import {
   customerSchema,
   invoiceSchema,
   schemaWithImage,
+  schemaWithImageArrayInBookingsArray,
   schemaWithListOfImages,
   schemaWithStringArray,
   staffMemberWithHistorySchema,
@@ -140,4 +141,9 @@ test('can handle a schema with an array of images', () => {
   const property = nestedModel.slots[0] as AttachmentProperty
   expect(property.propertyType.value).toBe('attachment.property')
   expect(property.accept).toBe('image/*')
+})
+
+test('can handle a schema with images in an array of bookings', () => {
+  const { model, allModels } = convertSchemaToModels(schemaWithImageArrayInBookingsArray)
+  expect(allModels).toHaveLength(3)
 })
