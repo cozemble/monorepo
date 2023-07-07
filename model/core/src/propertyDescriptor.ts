@@ -104,7 +104,7 @@ export const propertyDescriptors = {
       }, available types are ${registeredProperties.map((rp) => rp.propertyType.value).join(', ')}`,
     )
   },
-  list: () => {
+  list: (): PropertyDescriptor[] => {
     return registeredProperties
   },
   getDefault(): PropertyDescriptor {

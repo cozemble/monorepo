@@ -144,6 +144,10 @@ export const jsonStringPropertyDescriptor: JsonPropertyDescriptor<JsonStringProp
   ): string | null => {
     return record.values[property.id.value] ?? null
   },
+
+  augmentConfigurationSchema: (schema: JsonSchema): JsonSchema => {
+    return schema
+  },
 }
 
 export function registerJsonStringProperty() {

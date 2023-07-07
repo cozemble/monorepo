@@ -10,6 +10,7 @@ export type JsonDataTypes =
   | 'object'
   | 'array'
   | 'null'
+
 export type JsonDataType = TinyValue<'json.data.type', JsonDataTypes>
 
 export const jsonDataTypes = {
@@ -95,6 +96,26 @@ export const jsonSchemaFns = {
     delete newSchema.properties[propertyName]
     return newSchema
   },
+  requiredPropertiesOnly(schema: JsonSchema): JsonSchema {
+    return (schema.required ?? []).reduce(
+      (acc, propertyName) => {
+        return {
+          ...acc,
+          properties: { ...acc.properties, [propertyName]: schema.properties[propertyName] },
+        }
+      },
+      { ...schema, properties: {} },
+    )
+  },
+  optionalPropertiesOnly(schema: JsonSchema): JsonSchema {
+    return (schema.required ?? []).reduce(
+      (acc, propertyName) => {
+        delete acc.properties[propertyName]
+        return acc
+      },
+      { ...schema },
+    )
+  },
 }
 
 export interface JsonPropertyDescriptor<T extends JsonProperty, V, C = any>
@@ -103,6 +124,8 @@ export interface JsonPropertyDescriptor<T extends JsonProperty, V, C = any>
   configurationSchema?: JsonSchema | null
   systemConfigurationSchema?: JsonSchema | null
   fixedConfiguration?: C
+
+  augmentConfigurationSchema(schema: JsonSchema): JsonSchema
 }
 
 export function isJsonPropertyDescriptor(obj: any): obj is JsonPropertyDescriptor<any, any> {

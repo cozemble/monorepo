@@ -133,6 +133,10 @@ export const jsonNumberPropertyDescriptor: JsonPropertyDescriptor<JsonNumberProp
   ): number | null => {
     return record.values[property.id.value] ?? null
   },
+
+  augmentConfigurationSchema: (schema: JsonSchema): JsonSchema => {
+    return schema
+  },
 }
 
 export function registerJsonNumberProperty() {

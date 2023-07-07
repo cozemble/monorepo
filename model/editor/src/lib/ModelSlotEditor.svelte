@@ -138,7 +138,6 @@
     <button
             type="submit"
             on:click|preventDefault={saveClicked}
-            disabled={errors.size > 0}
             class="btn save-property btn-primary">Save {slotNoun}
     </button>
     <button class="btn btn-secondary ml-2" on:click={closeClicked}>Cancel</button>
