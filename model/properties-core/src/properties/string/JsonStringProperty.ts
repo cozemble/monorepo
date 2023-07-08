@@ -71,6 +71,7 @@ export const stringPropertyType: PropertyType = {
 export const jsonStringPropertyDescriptor: JsonPropertyDescriptor<JsonStringProperty, string> = {
   _type: 'property.descriptor',
   isJsonPropertyDescriptor: true,
+  jsonType: jsonDataTypes.string,
   configurationSchema: stringPropertyConfigurationSchema,
   propertyType: stringPropertyType,
   name: dottedNameFns.newInstance('String'),

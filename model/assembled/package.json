@@ -21,6 +21,7 @@
     "@cozemble/model-attachment-core": "workspace:*",
     "@cozemble/model-attachment-ui": "workspace:*",
     "@cozemble/model-properties-core": "workspace:*",
-    "@cozemble/model-properties-ui": "workspace:*"
+    "@cozemble/model-properties-ui": "workspace:*",
+    "@cozemble/model-registries": "workspace:*"
   }
 }

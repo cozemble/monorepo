@@ -59,6 +59,7 @@ export const numberPropertyType: PropertyType = {
 export const jsonNumberPropertyDescriptor: JsonPropertyDescriptor<JsonNumberProperty, number> = {
   _type: 'property.descriptor',
   isJsonPropertyDescriptor: true,
+  jsonType: jsonDataTypes.number,
   configurationSchema: numberPropertyConfigurationSchema,
   propertyType: numberPropertyType,
   name: dottedNameFns.newInstance('Number'),

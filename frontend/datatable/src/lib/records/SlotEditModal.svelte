@@ -23,7 +23,6 @@
     function saveSlot() {
         const modelList = get(slotBeingEdited.modelList)
         const model = eventSourcedModelListFns.modelWithId(modelList, slotBeingEdited.model.model.id)
-        console.log({model})
         dispatch('edited', {model})
     }
 

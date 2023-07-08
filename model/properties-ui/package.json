@@ -29,6 +29,7 @@
     "@cozemble/model-core": "workspace:*",
     "@cozemble/model-properties-core": "workspace:*",
     "@cozemble/frontend-json-schema-form": "workspace:*",
-    "@cozemble/ui-atoms": "workspace:*"
+    "@cozemble/ui-atoms": "workspace:*",
+    "@cozemble/model-registries": "workspace:*"
   }
 }

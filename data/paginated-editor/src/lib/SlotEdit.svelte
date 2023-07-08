@@ -1,6 +1,6 @@
 <script lang="ts">
     import type {DataRecord, DataRecordPathParentElement, LeafModelSlot} from '@cozemble/model-core'
-    import {slotEditorRegistry} from '@cozemble/model-assembled'
+    import {slotEditorRegistry} from '@cozemble/model-registries'
     import {dataRecordValuePathFns} from '@cozemble/model-api'
     import type {SystemConfiguration} from "@cozemble/model-core";
 

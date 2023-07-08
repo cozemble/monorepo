@@ -7,7 +7,7 @@
         SystemConfiguration
     } from '@cozemble/model-core'
     import {propertyDescriptors} from "@cozemble/model-core";
-    import {slotEditorRegistry} from '@cozemble/model-assembled'
+    import {slotEditorRegistry} from '@cozemble/model-registries'
     import {dataRecordEditor} from "@cozemble/data-editor-sdk";
     import {dataRecordControlEvents, dataRecordEditEvents} from "@cozemble/model-event-sourced";
 

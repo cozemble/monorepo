@@ -2,7 +2,6 @@
 
     export let value: any | null
 
-    $: displayable = value ?? ''
 </script>
 
 {#if value}

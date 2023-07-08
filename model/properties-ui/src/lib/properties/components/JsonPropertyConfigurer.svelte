@@ -4,8 +4,6 @@
     import JsonPropertyConfigurerInner from "$lib/properties/components/JsonPropertyConfigurerInner.svelte";
     import {DownCaret} from "@cozemble/ui-atoms";
 
-    import {afterUpdate} from "svelte";
-
     export let property: JsonProperty
     export let showErrors = false
     $: propertyDescriptor = propertyDescriptors.get(property.propertyType) as JsonPropertyDescriptor<JsonProperty, any>
@@ -14,7 +12,6 @@
     $: optionalSchema = configSchema ? propertyDescriptor.augmentConfigurationSchema(jsonSchemaFns.optionalPropertiesOnly(configSchema)) : null
     $: errors = propertyDescriptor.validateProperty(property)
 
-    afterUpdate(() => console.log({configSchema,mandatorySchema, optionalSchema, errors, property, propertyDescriptor, showErrors}))
 </script>
 
 {#if configSchema}

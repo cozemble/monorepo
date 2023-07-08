@@ -7,16 +7,15 @@
         SystemConfiguration
     } from '@cozemble/model-core'
     import {propertyDescriptors} from "@cozemble/model-core";
-    import {slotViewerRegistry} from '@cozemble/model-assembled'
+    import {slotViewerRegistry} from '@cozemble/model-registries'
 
     export let modelSlot: LeafModelSlot
     export let record: DataRecord
     export let systemConfiguration: SystemConfiguration
     export let parentPath: DataRecordPathParentElement[]
-    const property = modelSlot as Property
 
-    const propertyDescriptor = propertyDescriptors.mandatory(property)
-
+    $: property = modelSlot as Property
+    $: propertyDescriptor = propertyDescriptors.mandatory(property)
     $: value = propertyDescriptor.getValue(systemConfiguration, property, record) ?? null
     $: viewer = slotViewerRegistry.forSlot(modelSlot)
 

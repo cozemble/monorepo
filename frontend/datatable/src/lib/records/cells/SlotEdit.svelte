@@ -5,7 +5,7 @@
         LeafModelSlot,
         SystemConfiguration
     } from '@cozemble/model-core'
-    import {slotEditorRegistry} from '@cozemble/model-assembled'
+    import {slotEditorRegistry} from '@cozemble/model-registries'
     import {dataRecordValuePathFns} from '@cozemble/model-api'
     import SimplerSlotEdit from "$lib/records/cells/SimplerSlotEdit.svelte";
     import ClassicSlotEdit from "$lib/records/cells/ClassicSlotEdit.svelte";

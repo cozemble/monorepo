@@ -121,6 +121,7 @@ export const jsonSchemaFns = {
 export interface JsonPropertyDescriptor<T extends JsonProperty, V, C = any>
   extends PropertyDescriptor<T, V> {
   isJsonPropertyDescriptor: true
+  jsonType: JsonDataType
   configurationSchema?: JsonSchema | null
   systemConfigurationSchema?: JsonSchema | null
   fixedConfiguration?: C

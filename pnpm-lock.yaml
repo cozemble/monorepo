@@ -373,6 +373,9 @@ importers:
       '@cozemble/model-event-sourced':
         specifier: workspace:*
         version: link:../../model/event-sourced
+      '@cozemble/model-registries':
+        specifier: workspace:*
+        version: link:../../model/registries
       '@cozemble/model-to-json':
         specifier: workspace:*
         version: link:../../model/to-json
@@ -785,6 +788,9 @@ importers:
       '@cozemble/model-event-sourced':
         specifier: workspace:*
         version: link:../../model/event-sourced
+      '@cozemble/model-registries':
+        specifier: workspace:*
+        version: link:../../model/registries
       '@cozemble/model-to-json':
         specifier: workspace:*
         version: link:../../model/to-json
@@ -1126,6 +1132,9 @@ importers:
       '@cozemble/model-assembled':
         specifier: workspace:*
         version: link:../../model/assembled
+      '@cozemble/model-registries':
+        specifier: workspace:*
+        version: link:../../model/registries
       '@originjs/vite-plugin-commonjs':
         specifier: ^1.0.3
         version: 1.0.3
@@ -1269,6 +1278,9 @@ importers:
       '@cozemble/model-properties-ui':
         specifier: workspace:*
         version: link:../properties-ui
+      '@cozemble/model-registries':
+        specifier: workspace:*
+        version: link:../registries
     devDependencies:
       typescript:
         specifier: ^5.0.2
@@ -1455,6 +1467,9 @@ importers:
       '@cozemble/model-event-sourced':
         specifier: workspace:*
         version: link:../event-sourced
+      '@cozemble/model-registries':
+        specifier: workspace:*
+        version: link:../registries
       '@cozemble/ui-atoms':
         specifier: workspace:*
         version: link:../../ui/atoms
@@ -1570,6 +1585,9 @@ importers:
       '@cozemble/model-properties-core':
         specifier: workspace:*
         version: link:../properties-core
+      '@cozemble/model-registries':
+        specifier: workspace:*
+        version: link:../registries
       '@cozemble/ui-atoms':
         specifier: workspace:*
         version: link:../../ui/atoms
@@ -1601,6 +1619,16 @@ importers:
       vite:
         specifier: 4.1.4
         version: 4.1.4(@types/node@16.11.6)
+
+  model/registries:
+    dependencies:
+      '@cozemble/model-core':
+        specifier: workspace:*
+        version: link:../core
+    devDependencies:
+      typescript:
+        specifier: ^5.0.2
+        version: 5.1.3
 
   model/to-json:
     dependencies:

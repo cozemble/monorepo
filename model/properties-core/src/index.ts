@@ -16,3 +16,5 @@ export {
   emailPropertyType,
   timePropertyType,
 } from './properties/derived/derivedProperties'
+
+export { JsonArrayProperty, ArrayPropertyConfiguration } from './properties/array/JsonArrayProperty'

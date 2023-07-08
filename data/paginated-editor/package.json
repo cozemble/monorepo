@@ -36,6 +36,7 @@
     "@cozemble/frontend-sdk-components": "workspace:*",
     "@cozemble/lang-util": "workspace:*",
     "@cozemble/model-api": "workspace:*",
+    "@cozemble/model-registries": "workspace:*",
     "@cozemble/model-assembled": "workspace:*",
     "@cozemble/model-core": "workspace:*",
     "@cozemble/model-event-sourced": "workspace:*",

@@ -1,7 +1,7 @@
 <script lang="ts">
     import type {Model, Property} from '@cozemble/model-core'
     import {propertyDescriptors,} from '@cozemble/model-core'
-    import {propertyConfigurerRegistry} from '@cozemble/model-assembled'
+    import {propertyConfigurerRegistry} from '@cozemble/model-registries'
     import type {EventSourcedModelList} from "@cozemble/model-event-sourced";
     import {coreModelEvents, eventSourcedModelListFns} from '@cozemble/model-event-sourced'
     import type {Writable} from "svelte/store";

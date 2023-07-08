@@ -33,6 +33,7 @@
     "@cozemble/lang-util": "workspace:*",
     "@cozemble/model-api": "workspace:*",
     "@cozemble/model-assembled": "workspace:*",
+    "@cozemble/model-registries": "workspace:*",
     "@cozemble/model-core": "workspace:*",
     "@cozemble/model-editor-sdk": "workspace:*",
     "@cozemble/model-event-sourced": "workspace:*",

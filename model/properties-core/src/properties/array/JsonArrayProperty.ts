@@ -37,7 +37,7 @@ export const arrayPropertyConfigurationSchema: JsonSchema = {
 
 export interface ArrayPropertyConfiguration {
   _type: 'array.property.configuration'
-  itemType: PropertyType | ModelId
+  itemType: string
   minItems?: number
   maxItems?: number
 }
@@ -56,6 +56,7 @@ export const arrayPropertyType: PropertyType = {
 export const jsonArrayPropertyDescriptor: JsonPropertyDescriptor<JsonArrayProperty, any[]> = {
   _type: 'property.descriptor',
   isJsonPropertyDescriptor: true,
+  jsonType: jsonDataTypes.array,
   configurationSchema: arrayPropertyConfigurationSchema,
   propertyType: arrayPropertyType,
   name: dottedNameFns.newInstance('List of...'),
@@ -78,12 +79,10 @@ export const jsonArrayPropertyDescriptor: JsonPropertyDescriptor<JsonArrayProper
   },
 
   validateProperty: (property: JsonArrayProperty): Map<string, string> => {
-    console.log({ property })
     const result = new Map<string, string>()
     if (!property.configuration.itemType) {
       result.set('itemType', 'Must specify an item type')
     }
-    console.log({ result })
     return result
   },
 
