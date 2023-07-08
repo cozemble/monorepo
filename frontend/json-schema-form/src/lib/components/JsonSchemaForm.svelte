@@ -3,6 +3,7 @@
     import type {Writable} from "svelte/store";
     import Label from "$lib/components/Label.svelte";
     import MaybeErrorMessage from "$lib/components/MaybeErrorMessage.svelte";
+    import EnumSelector from "$lib/components/EnumSelector.svelte";
 
     export let schema: JsonSchema
     export let value: Writable<any>
@@ -24,7 +25,11 @@
     <div class="form-group mb-3">
         {#if property.type === "string"}
             <Label {property} {propertyKey}/>
-            <input type="text" class="form-control input input-bordered w-full {propertyKey}" bind:value={$value[propertyKey]}/>
+            {#if property.enum}
+                <EnumSelector {property} {propertyKey} {value}/>
+            {:else}
+                <input type="text" class="form-control input input-bordered w-full {propertyKey}" bind:value={$value[propertyKey]}/>
+            {/if}
             <MaybeErrorMessage key={propertyKey} {errors} {showErrors}/>
         {:else if property.type === "number"}
             <Label {property} {propertyKey}/>

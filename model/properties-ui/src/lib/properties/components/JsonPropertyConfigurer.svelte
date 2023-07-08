@@ -14,7 +14,7 @@
     $: optionalSchema = configSchema ? propertyDescriptor.augmentConfigurationSchema(jsonSchemaFns.optionalPropertiesOnly(configSchema)) : null
     $: errors = propertyDescriptor.validateProperty(property)
 
-    afterUpdate(() => console.log({mandatorySchema, optionalSchema, errors, property, propertyDescriptor, showErrors}))
+    afterUpdate(() => console.log({configSchema,mandatorySchema, optionalSchema, errors, property, propertyDescriptor, showErrors}))
 </script>
 
 {#if configSchema}

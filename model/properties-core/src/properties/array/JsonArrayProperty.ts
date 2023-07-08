@@ -18,7 +18,7 @@ import { NewJsonPropertyModelEvent } from '../events'
 
 export const arrayPropertyConfigurationSchema: JsonSchema = {
   $schema: 'http://json-schema.org/draft-07/schema#',
-  $id: 'https://cozemble.com/schemas/property/json/string',
+  $id: 'https://cozemble.com/schemas/property/json/array',
   type: 'object',
   properties: {
     itemType: {
@@ -72,7 +72,7 @@ export const jsonArrayPropertyDescriptor: JsonPropertyDescriptor<JsonArrayProper
       ...modelEventFns.coreParts(modelId),
       propertyName,
       propertyType: arrayPropertyType,
-      jsonType: jsonDataTypes.string,
+      jsonType: jsonDataTypes.array,
       propertyId: propertyId ?? propertyIdFns.newInstance(),
     }
   },

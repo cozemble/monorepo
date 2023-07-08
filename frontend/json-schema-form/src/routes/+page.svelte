@@ -28,6 +28,20 @@
                 type: 'string',
                 description: 'A suffix to be displayed after the text',
             },
+            colour: {
+                type: 'string',
+                description: 'The colour of the text',
+                enum: [
+                    'black',
+                    'blue',
+                    'green',
+                    'orange',
+                    'purple',
+                    'red',
+                    'white',
+                    'yellow',
+                ],
+            },
         },
     }
 
