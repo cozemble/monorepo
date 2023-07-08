@@ -23,4 +23,5 @@ export function registerJsonPropertyEditors(slotEditorRegistry: Registry) {
 export function registerJsonPropertyConfigurers(propertyConfigurerRegistry: Registry) {
   propertyConfigurerRegistry.register(jsonDataTypes.string, JsonPropertyConfigurer)
   propertyConfigurerRegistry.register(jsonDataTypes.number, JsonPropertyConfigurer)
+  propertyConfigurerRegistry.register(jsonDataTypes.array, JsonPropertyConfigurer)
 }

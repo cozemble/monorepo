@@ -61,7 +61,7 @@ export type JsonSchemaProperty = {
   type?: JsonDataTypes
   title?: string
   description?: string
-  enum?: Array<string | number | boolean | null>
+  enum?: Array<string | number | boolean | null | any>
   properties?: Record<string, JsonSchemaProperty>
   items?: JsonSchemaProperty | JsonSchemaProperty[]
   required?: string[]

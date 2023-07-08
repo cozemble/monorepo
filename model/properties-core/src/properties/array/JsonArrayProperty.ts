@@ -135,7 +135,7 @@ export const jsonArrayPropertyDescriptor: JsonPropertyDescriptor<JsonArrayProper
       const options = propertyDescriptors
         .list()
         .filter((pd) => pd !== jsonArrayPropertyDescriptor)
-        .map((descriptor) => descriptor.name.value)
+        .map((descriptor) => ({ id: descriptor.propertyType.value, name: descriptor.name.value }))
       return {
         ...schema,
         properties: {

@@ -29,12 +29,15 @@
   const systemConfiguration = systemConfigurationFns.empty()
 
   // models
+  // let customerModel = modelFns.newInstance(
+  //   'Customer',
+  //   modelOptions.withProperties(
+  //     propertyFns.newInstance('First name', propertyOptions.required),
+  //     propertyFns.newInstance('Last name'),
+  //   ),
+  // )
   let customerModel = modelFns.newInstance(
     'Customer',
-    modelOptions.withProperties(
-      propertyFns.newInstance('First name', propertyOptions.required),
-      propertyFns.newInstance('Last name'),
-    ),
   )
 
   // const invoiceModelId = modelIdFns.newInstance('invoices')
@@ -63,8 +66,10 @@
       'Last name': 'Hogan',
     })
 
+      const records = [customerRecord1, customerRecord2]
+      // const records = []
     backendFns.setBackend(
-      makeInMemoryBackend(eventSourcedModels, [customerRecord1, customerRecord2]),
+      makeInMemoryBackend(eventSourcedModels, records),
     )
   })
 </script>

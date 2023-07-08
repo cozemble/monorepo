@@ -91,9 +91,10 @@ export const propertyDescriptors = {
     }
   },
   get: (propertyType: PropertyType): PropertyDescriptor | null => {
-    return (
+    const result =
       registeredProperties.find((p) => propertyTypeFns.equals(p.propertyType, propertyType)) ?? null
-    )
+    console.log({ propertyType, result })
+    return result
   },
   mandatory: (p: Property | PropertyType): PropertyDescriptor => {
     const propertyType = p._type === 'property' ? p.propertyType : p

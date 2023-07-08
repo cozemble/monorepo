@@ -17,7 +17,7 @@ import {
   staffMemberWithHistorySchema,
 } from './sampleSchemas'
 import { registerAttachmentProperty } from '@cozemble/model-attachment-core'
-import { AttachmentProperty } from '@cozemble/model-attachment-core/dist/esm'
+import { AttachmentProperty } from '@cozemble/model-attachment-core'
 
 registerJsonProperties()
 registerAttachmentProperty()
