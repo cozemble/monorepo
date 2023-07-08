@@ -20,6 +20,7 @@
     import ModelReferenceEditor from "./ModelReferenceEditor.svelte";
     import {mandatory} from "@cozemble/lang-util";
     import {modelFns} from "@cozemble/model-api";
+    import {objects} from "@cozemble/lang-util";
 
     export let modelList: Writable<EventSourcedModelList>
     export let modelId: ModelId
@@ -66,6 +67,7 @@
         $formSectionErrorState.showErrors = errors.size > 0
         if (errors.size === 0) {
             console.log({slot: modelSlot})
+            modelList.update(list => ({...list}))
             dispatch('save', {slot: modelSlot})
         }
     }

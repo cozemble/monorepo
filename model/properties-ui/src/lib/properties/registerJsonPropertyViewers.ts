@@ -5,6 +5,7 @@ import { type JsonDataType, jsonDataTypes, type PropertyType } from '@cozemble/m
 import JsonDateEditor from '$lib/properties/date/JsonDateEditor.svelte'
 import { jsonDatePropertyDescriptor } from '@cozemble/model-properties-core'
 import JsonArrayPropertyViewer from './array/JsonArrayPropertyViewer.svelte'
+import JsonArrayPropertyEditor from '$lib/properties/array/JsonArrayPropertyEditor.svelte'
 
 export interface Registry {
   register(type: PropertyType | JsonDataType, component: any): void
@@ -20,6 +21,7 @@ export function registerJsonPropertyEditors(slotEditorRegistry: Registry) {
   slotEditorRegistry.register(jsonDataTypes.string, JsonPropertyEditor)
   slotEditorRegistry.register(jsonDatePropertyDescriptor.propertyType, JsonDateEditor)
   slotEditorRegistry.register(jsonDataTypes.number, JsonPropertyEditor)
+  slotEditorRegistry.register(jsonDataTypes.array, JsonArrayPropertyEditor)
 }
 
 export function registerJsonPropertyConfigurers(propertyConfigurerRegistry: Registry) {
