@@ -1,5 +1,5 @@
 export function extractJSON(content: string): any | null {
-  const jsonPattern = /{[\s\S]*}(?![\s\S]*})/
+  const jsonPattern = /{[\s\S]*}(?![\s\S]*})|\[[\s\S]*\](?![\s\S]*\])/
   const match = content.match(jsonPattern)
   if (!match) {
     return null

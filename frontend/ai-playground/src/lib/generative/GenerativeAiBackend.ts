@@ -143,6 +143,7 @@ Remember, there's no need to explain the code, as it will be parsed to generate 
         frequency_penalty: 0,
       })
       const content = response.data.choices[0].message?.content
+      console.log({ content })
       if (!content) {
         await this.promptEventListener(
           unsuccessfulEventConstructor(
