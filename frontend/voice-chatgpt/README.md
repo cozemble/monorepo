@@ -56,3 +56,9 @@ To publish your library to [npm](https://www.npmjs.com):
 ```bash
 npm publish
 ```
+## Resources
+https://platform.openai.com/docs/api-reference/audio/create?lang=node
+
+https://stackoverflow.com/questions/60431835/how-to-convert-a-blob-url-to-a-audio-file-and-save-it-to-the-server
+
+https://github.com/sveltejs/kit/issues/5710
