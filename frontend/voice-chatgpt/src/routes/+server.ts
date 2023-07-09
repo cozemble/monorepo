@@ -8,8 +8,8 @@ type OpenAiCreds = {
 
 const getOpenApiCred = (): OpenAiCreds => {
   return {
-    apiKey: `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`,
-    organization: `org-Z4EADkf0zxpz4sJAyjlCb7W7`,
+    apiKey: mandatory(process.env.OPENAI_API_KEY, `No OPENAI_API_KEY provided`),
+    organization: mandatory(process.env.OPENAI_ORGANIZATION, `No OPENAI_ORGANIZATION provided`),
   }
 }
 
