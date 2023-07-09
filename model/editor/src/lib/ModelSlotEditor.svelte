@@ -49,7 +49,7 @@
         if (propertyDescriptor) {
             const propertyName = propertyNameFns.newInstance(modelSlot.name.value)
             const propertyId = propertyIdFns.newInstance(modelSlot.id.value)
-            return modelList.update(list => eventSourcedModelListFns.addModelEvent(list, propertyDescriptor.newProperty(systemConfiguration, modelId, propertyName, propertyId)))
+            return modelList.update(list => eventSourcedModelListFns.addModelEvent(list, propertyDescriptor.newProperty(modelId, propertyName, propertyId)))
         } else {
             alert('Dont know how to handle model slot type ' + target.value)
         }

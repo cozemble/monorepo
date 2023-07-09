@@ -16,7 +16,7 @@ import {
   propertyTypeFns,
   SystemConfiguration,
 } from '@cozemble/model-core'
-import { currencyModelChangedModelEventDescriptor } from './events';
+import { currencyModelChangedModelEventDescriptor } from './events'
 
 export const currencyPropertyType = propertyTypeFns.newInstance('currency.property')
 
@@ -119,12 +119,8 @@ export const currencyPropertyDescriptor: CurrencyPropertyDescriptor = {
 
     return formatCurrency(maybeValue, property.currency, property.locale)
   },
-  newProperty: (
-    _systemConfiguration: SystemConfiguration,
-    modelId: ModelId,
-    propertyName: PropertyName,
-    propertyId?: PropertyId,
-  ) => newCurrencyPropertyModelEvent(modelId, propertyName, propertyId),
+  newProperty: (modelId: ModelId, propertyName: PropertyName, propertyId?: PropertyId) =>
+    newCurrencyPropertyModelEvent(modelId, propertyName, propertyId),
 }
 
 export interface NewCurrencyPropertyModelEvent extends ModelEvent {

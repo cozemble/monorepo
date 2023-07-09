@@ -16,6 +16,7 @@
     export let systemConfiguration: SystemConfiguration
 
     $: contract = slotEditorRegistry.contractForSlot(modelSlot)
+
 </script>
 
 {#if contract === 'simple'}

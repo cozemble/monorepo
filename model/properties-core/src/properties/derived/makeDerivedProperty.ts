@@ -89,7 +89,6 @@ function makeDerivedProperty<T extends JsonProperty, V, C>(
       return random.elementOfArray(exampleProvider)
     },
     newProperty: (
-      systemConfiguration: SystemConfiguration,
       modelId: ModelId,
       propertyName: PropertyName,
       propertyId?: PropertyId,

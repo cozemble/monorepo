@@ -65,6 +65,7 @@
     "@cozemble/model-editor": "workspace:*",
     "@cozemble/model-editor-sdk": "workspace:*",
     "@cozemble/model-event-sourced": "workspace:*",
+    "@cozemble/model-properties-ui": "workspace:*",
     "@cozemble/ui-atoms": "workspace:*",
     "@cozemble/frontend-sdk-components": "workspace:*",
     "@cozemble/model-to-json": "workspace:*",

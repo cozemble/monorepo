@@ -15,6 +15,7 @@ import {
   SystemConfiguration,
 } from '@cozemble/model-core'
 import { NewJsonPropertyModelEvent } from '../events'
+import { JsonDataType } from '@cozemble/model-core/dist/esm'
 
 export const arrayPropertyConfigurationSchema: JsonSchema = {
   $schema: 'http://json-schema.org/draft-07/schema#',
@@ -53,7 +54,12 @@ export const arrayPropertyType: PropertyType = {
   value: 'json.array.property',
 }
 
-export const jsonArrayPropertyDescriptor: JsonPropertyDescriptor<JsonArrayProperty, any[]> = {
+export interface JsonArrayPropertyDescriptorExtensions {
+  emptyArrayItem(type: JsonDataType): any
+}
+
+export const jsonArrayPropertyDescriptor: JsonPropertyDescriptor<JsonArrayProperty, any[]> &
+  JsonArrayPropertyDescriptorExtensions = {
   _type: 'property.descriptor',
   isJsonPropertyDescriptor: true,
   jsonType: jsonDataTypes.array,
@@ -63,7 +69,6 @@ export const jsonArrayPropertyDescriptor: JsonPropertyDescriptor<JsonArrayProper
   isRequireable: false,
   isUniqueable: false,
   newProperty: (
-    systemConfiguration: SystemConfiguration,
     modelId: ModelId,
     propertyName: PropertyName,
     propertyId?: PropertyId,
@@ -144,6 +149,22 @@ export const jsonArrayPropertyDescriptor: JsonPropertyDescriptor<JsonArrayProper
       }
     }
     return schema
+  },
+
+  emptyArrayItem: (type: JsonDataType): any => {
+    if (type === jsonDataTypes.string) {
+      return ''
+    }
+    if (type === jsonDataTypes.number) {
+      return 0
+    }
+    if (type === jsonDataTypes.boolean) {
+      return false
+    }
+    if (type === jsonDataTypes.array) {
+      return []
+    }
+    throw new Error(`Don't know how to create an empty item of type ${type}`)
   },
 }
 

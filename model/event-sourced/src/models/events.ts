@@ -20,7 +20,7 @@ import {
   PropertyName,
 } from '@cozemble/model-core'
 import { nestedModelFns } from '@cozemble/model-api'
-import { ModelSlot } from '@cozemble/model-core/dist/esm'
+import { ModelSlot } from '@cozemble/model-core'
 
 export interface ModelRenamed extends ModelEvent {
   _type: 'model.renamed.event'

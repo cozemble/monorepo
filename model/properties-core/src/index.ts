@@ -5,10 +5,14 @@ export {
   jsonStringPropertyFns,
   registerJsonStringProperty,
   stringPropertyType,
+  StringPropertyConfiguration,
 } from './properties/string/JsonStringProperty'
 
 export { datePropertyType } from './properties/date/JsonDateProperty'
-export { numberPropertyType } from './properties/number/JsonNumberProperty'
+export {
+  numberPropertyType,
+  NumberPropertyConfiguration,
+} from './properties/number/JsonNumberProperty'
 
 export {
   integerPropertyType,
@@ -17,4 +21,9 @@ export {
   timePropertyType,
 } from './properties/derived/derivedProperties'
 
-export { JsonArrayProperty, ArrayPropertyConfiguration } from './properties/array/JsonArrayProperty'
+export {
+  JsonArrayProperty,
+  ArrayPropertyConfiguration,
+  jsonArrayPropertyDescriptor,
+  arrayPropertyType,
+} from './properties/array/JsonArrayProperty'

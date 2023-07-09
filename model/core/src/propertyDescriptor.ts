@@ -51,12 +51,7 @@ export interface PropertyDescriptor<P = any, V = any> {
   name: DottedName
   isRequireable: boolean
   isUniqueable: boolean
-  newProperty: (
-    systemConfiguration: SystemConfiguration,
-    modelId: ModelId,
-    propertyName: PropertyName,
-    propertyId?: PropertyId,
-  ) => ModelEvent
+  newProperty: (modelId: ModelId, propertyName: PropertyName, propertyId?: PropertyId) => ModelEvent
 
   validateProperty(property: P): Map<string, string>
 

@@ -71,10 +71,6 @@ export const attachmentPropertyDescriptor: PropertyDescriptor<AttachmentProperty
     getValue: (systemConfiguration: SystemConfiguration, property, record) => {
       return record.values[property.id.value] ?? null
     },
-    newProperty: (
-      systemConfiguration: SystemConfiguration,
-      modelId: ModelId,
-      propertyName: PropertyName,
-      propertyId?: PropertyId,
-    ) => newAttachmentPropertyModelEvent(modelId, propertyName, propertyId),
+    newProperty: (modelId: ModelId, propertyName: PropertyName, propertyId?: PropertyId) =>
+      newAttachmentPropertyModelEvent(modelId, propertyName, propertyId),
   }

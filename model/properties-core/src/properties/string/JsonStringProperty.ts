@@ -78,7 +78,6 @@ export const jsonStringPropertyDescriptor: JsonPropertyDescriptor<JsonStringProp
   isRequireable: true,
   isUniqueable: true,
   newProperty: (
-    systemConfiguration: SystemConfiguration,
     modelId: ModelId,
     propertyName: PropertyName,
     propertyId?: PropertyId,

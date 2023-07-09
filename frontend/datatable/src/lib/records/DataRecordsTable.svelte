@@ -52,7 +52,7 @@
             $model.model.id,
             propertyDescriptors
                 .getDefault()
-                .newProperty($systemConfiguration, $model.model.id, propertyNameFns.newInstance(fieldName)),
+                .newProperty($model.model.id, propertyNameFns.newInstance(fieldName)),
         )
         await tick()
         const element = document.querySelector(`th#field-${$model.model.slots.length}`) as HTMLElement
@@ -149,7 +149,7 @@
                     {/if}
                 {/each}
                 {#if options.permitModelEditing}
-                    <td class="border  border-base-300"></td>
+                    <td class="border border-base-300"></td>
                 {/if}
                 {#if options.showActions}
                     <td class="border  border-base-300">

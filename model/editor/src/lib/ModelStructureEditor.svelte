@@ -26,7 +26,7 @@
         modelList.update(list => eventSourcedModelListFns.addModelEvent(list,
             propertyDescriptors
                 .getDefault()
-                .newProperty(systemConfiguration, model.id, propertyNameFns.newInstance(propertyName))))
+                .newProperty(model.id, propertyNameFns.newInstance(propertyName))))
     }
 
     function editSlot(slot: ModelSlot) {

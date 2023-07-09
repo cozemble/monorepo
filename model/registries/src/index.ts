@@ -1,5 +1,5 @@
 import { isJsonProperty, JsonDataType, LeafModelSlot, PropertyType } from '@cozemble/model-core'
-import { isJsonPropertyDescriptor, propertyDescriptors } from '@cozemble/model-core/dist/esm'
+import { isJsonPropertyDescriptor, propertyDescriptors } from '@cozemble/model-core'
 
 const propertyConfigurerMap = new Map<string, any>()
 const slotViewerMap = new Map<string, any>()
@@ -76,10 +76,25 @@ export const slotEditorRegistry = {
     for (const key of orderedLookupOptions(slot)) {
       const editor = slotEditorMap.get(key)
       if (editor) {
+        console.log({ slot, editor })
         return editor
       }
     }
     return null
+  },
+  forPropertyType(propertyType: PropertyType | string) {
+    const pd = propertyDescriptors.get(propertyType)
+    if (isJsonPropertyDescriptor(pd)) {
+      const lookupOrder = [pd.propertyType.value, pd.jsonType.value]
+      for (const key of lookupOrder) {
+        const editor = slotEditorMap.get(key)
+        if (editor) {
+          return editor
+        }
+      }
+    }
+    const key = typeof propertyType === 'string' ? propertyType : propertyType.value
+    return slotEditorMap.get(key) ?? null
   },
   contractForSlot(slot: LeafModelSlot): 'simple' | 'classic' {
     if (

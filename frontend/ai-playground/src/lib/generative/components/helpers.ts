@@ -116,7 +116,7 @@ function addProperty(
   if (!pd) {
     return model
   }
-  const event = pd.newProperty(systemConfiguration, model.id, propertyName)
+  const event = pd.newProperty(model.id, propertyName)
   model = modelEventDescriptors.applyEvent(model, event)
   let slot = mandatory(model.slots.at(-1), `Model ${model.id.value} has no slots`)
   slot = options.apply(slot, ...propOptions) as Property

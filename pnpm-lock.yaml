@@ -788,6 +788,9 @@ importers:
       '@cozemble/model-event-sourced':
         specifier: workspace:*
         version: link:../../model/event-sourced
+      '@cozemble/model-properties-ui':
+        specifier: workspace:*
+        version: link:../../model/properties-ui
       '@cozemble/model-registries':
         specifier: workspace:*
         version: link:../../model/registries
@@ -1579,6 +1582,12 @@ importers:
       '@cozemble/frontend-json-schema-form':
         specifier: workspace:*
         version: link:../../frontend/json-schema-form
+      '@cozemble/lang-util':
+        specifier: workspace:*
+        version: link:../../lang/util
+      '@cozemble/model-api':
+        specifier: workspace:*
+        version: link:../api
       '@cozemble/model-core':
         specifier: workspace:*
         version: link:../core
