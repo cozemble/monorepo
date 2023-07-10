@@ -1,4 +1,4 @@
-import { editCell } from './helpers'
+import { cellSelector, editCell } from './helpers'
 
 describe('data table', () => {
   it('supports array property types', () => {
@@ -12,5 +12,17 @@ describe('data table', () => {
     cy.get(`[data-cell-index="0-0"]`).invoke('text').should('have.length', 1)
 
     editCell('0-0')
+    cy.get('button.add-item').click()
+
+    cy.get(cellSelector('0-0')).should('contain', 'Must be a valid email address')
+    cy.focused().type('mike@email.com').realPress('Tab')
+    cy.get(cellSelector('0-0')).should('not.contain', 'Must be a valid email address')
+    cy.get('button.save-item').click()
+    cy.get('button.save-root-record').click()
+    editCell('0-0')
+    cy.get('button.delete-item').click()
+    cy.get('button.save-item').click()
+    cy.get('button.save-root-record').click()
+    cy.get(`[data-cell-index="0-0"]`).invoke('text').should('have.length', 1)
   })
 })

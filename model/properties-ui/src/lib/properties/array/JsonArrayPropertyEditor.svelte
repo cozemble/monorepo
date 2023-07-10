@@ -57,33 +57,52 @@
     function cancel() {
         closeHandler()
     }
+
+    function deleteItem(index: number) {
+        value = (value ?? []).filter((v, i) => i !== index)
+        valueChanged = true
+    }
 </script>
 
-{#if value}
-    {#if editor}
-        {#each value as v, index}
-            <div class="edit-container border border-base-300 mb-2">
-                <svelte:component this={editor} property={arrayItemProperty} value={v}
-                                  changeHandler={makeChangeHandler(index)}
-                                  closeHandler={makeCloseHandler(index)}/>
-                <MaybeError errors={errors[index]}/>
-            </div>
-        {/each}
 
-        <button class="btn btn-primary btn-xs" on:click={addItem}>Add item</button>
-        {#if valueChanged}
-            <button class="btn btn-secondary btn-xs" on:click={save}>Save</button>
-            <button class="btn btn-secondary btn-xs" on:click={cancel}>Cancel</button>
+{#if editor}
+    <div class="editor-outer p-4 bg-base-100 rounded border border-base-300">
+        {#if value}
+            {#each value as v, index}
+                <div class="edit-container index-{index} border border-base-300 mb-2">
+                    <div class="flex">
+                        <svelte:component this={editor} property={arrayItemProperty} value={v}
+                                          changeHandler={makeChangeHandler(index)}
+                                          closeHandler={makeCloseHandler(index)}/>
+                        <button class="btn btn-secondary btn-xs delete-item ml-2" on:click={() => deleteItem(index)}>
+                            Delete
+                        </button>
+                    </div>
+                    <MaybeError errors={errors[index]}/>
+                </div>
+            {/each}
         {/if}
-    {:else}
-        No editor for {property.configuration.itemType}
-    {/if}
+
+        <button class="btn btn-primary btn-xs add-item" on:click={addItem}>Add item</button>
+        {#if valueChanged}
+            <button class="btn btn-secondary btn-xs save-item" on:click={save}>Save changes</button>
+            <button class="btn btn-secondary btn-xs cancel" on:click={cancel}>Cancel</button>
+        {/if}
+    </div>
+{:else}
+    No editor for {property.configuration.itemType}
 {/if}
+
 
 <style>
     .edit-container {
         border-top: 0;
         border-left: 0;
         border-right: 0;
+    }
+
+    .editor-outer {
+        position: absolute;
+        z-index: 1000;
     }
 </style>
