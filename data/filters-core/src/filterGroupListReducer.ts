@@ -9,7 +9,13 @@ import {
   selectableRhsOptionWithSelection,
   userSuppliedRhsOptionWithValue,
 } from './types'
+
+// @ts-ignore
 import { mandatory, uuids } from '@cozemble/lang-util'
+
+type Option = {
+  id: string
+}
 
 function applyActionToFilter(
   action: FilterAction,
@@ -18,7 +24,7 @@ function applyActionToFilter(
 ): FilterInstance {
   if (action._type === 'lhs.changed.action' && action.filterInstanceId === filter.id) {
     const selectedLhsOption = mandatory(
-      lhsOptions.find((o) => o.id === action.lhsOptionId),
+      lhsOptions.find((o: Option ) => o.id === action.lhsOptionId),
       `No lhs option with id ${action.lhsOptionId}`,
     )
     return { ...filter, selectedLhsOption, selectedOperatorOption: null, rhsValue: null }
@@ -29,7 +35,7 @@ function applyActionToFilter(
       'Got a change operator event without a selected LHS',
     )
     const selectedOperatorOption = mandatory(
-      selectedLhsOption.operators.find((o) => o.id === action.operatorOptionId),
+      selectedLhsOption.operators.find((o: Option) => o.id === action.operatorOptionId),
       `No operator with id ${action.operatorOptionId}`,
     )
     return { ...filter, selectedOperatorOption, rhsValue: null }

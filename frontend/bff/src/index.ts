@@ -4,7 +4,7 @@ export {
   FetchTenantResponse,
   TenantEntity,
   RecordSaveFailure,
-} from './Backend'
-export { LocalStorageBackend } from './LocalStorageBackend'
-export { RestBackend, BackendUrlProvider, AccessTokenProvider } from './RestBackend'
-export { ErrorListener, ErrorListenerBackend } from './ErrorListenerBackend'
+} from './Backend.js'
+export { LocalStorageBackend } from './LocalStorageBackend.js'
+export { RestBackend, BackendUrlProvider, AccessTokenProvider } from './RestBackend.js'
+export { ErrorListener, ErrorListenerBackend } from './ErrorListenerBackend.js'

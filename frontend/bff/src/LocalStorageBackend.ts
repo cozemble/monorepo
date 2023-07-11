@@ -1,4 +1,4 @@
-import type { Backend, FetchTenantResponse, TenantEntity } from './Backend'
+import type { Backend, FetchTenantResponse, TenantEntity } from './Backend.js'
 import type { DataRecord, DataRecordId, Model, ModelId } from '@cozemble/model-core'
 import {
   Id,

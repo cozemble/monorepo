@@ -42,7 +42,5 @@
     "publint": "^0.1.9",
     "@sveltejs/package": "^2.0.0"
   },
-  "svelte": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "type": "module"
 }

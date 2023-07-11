@@ -1,4 +1,4 @@
-import { Backend, FetchTenantResponse, TenantEntity } from './Backend'
+import { Backend, FetchTenantResponse, TenantEntity } from './Backend.js'
 import {
   DataRecord,
   DataRecordId,

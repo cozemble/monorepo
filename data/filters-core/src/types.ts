@@ -1,3 +1,4 @@
+// @ts-ignore
 import { objects, StringKeyedObject, uuids } from '@cozemble/lang-util'
 
 export interface FilterDataType {

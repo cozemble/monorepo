@@ -1,5 +1,5 @@
 import { test, expect } from 'vitest'
-import { TextBlockParser } from '../src/TextBlockParser'
+import { TextBlockParser } from '../src/TextBlockParser.js'
 
 const beginWhereClause = (line: string) => line.indexOf('where:') > -1
 const endBlock = (line: string) => line.trim() === '}'

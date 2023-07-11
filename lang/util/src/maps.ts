@@ -1,4 +1,4 @@
-import { StringKeyedObject } from './index'
+import { StringKeyedObject } from './index.js'
 
 export function mapOf(...pairs: any[]): Map<any, any> {
   const map = new Map()

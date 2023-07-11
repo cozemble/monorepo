@@ -28,7 +28,6 @@
   },
   "devDependencies": {
     "@cozemble/model-properties-core": "workspace:*",
-    "@originjs/vite-plugin-commonjs": "^1.0.3",
     "@sveltejs/adapter-auto": "^2.0.0",
     "@sveltejs/kit": "^1.5.0",
     "@sveltejs/package": "^2.0.0",
@@ -47,8 +46,6 @@
     "vite": "4.4.3",
     "wait-on": "^7.0.1"
   },
-  "svelte": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "type": "module",
   "dependencies": {
     "@cozemble/data-editor-sdk": "workspace:*",

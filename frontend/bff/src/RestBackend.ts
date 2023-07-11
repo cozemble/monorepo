@@ -1,5 +1,5 @@
-import type { Backend, FetchTenantResponse, TenantEntity } from './Backend'
-import { recordDataErrorFns, RecordSaveFailure } from './Backend'
+import type { Backend, FetchTenantResponse, TenantEntity } from './Backend.js'
+import { recordDataErrorFns, RecordSaveFailure } from './Backend.js'
 import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import axios from 'axios'
 import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
