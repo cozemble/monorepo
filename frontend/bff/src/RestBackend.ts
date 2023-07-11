@@ -7,6 +7,7 @@ import {
   type ConflictErrorType,
   filterRequestPayloadFns,
   savableRecords,
+  SuccessfulSaveResponse,
 } from '@cozemble/backend-tenanted-api-types'
 import type {
   DataRecord,
@@ -16,6 +17,7 @@ import type {
   ModelId,
 } from '@cozemble/model-core'
 import {
+  dataRecordIdFns,
   Id,
   modelIdFns,
   RecordAndEdges,
@@ -27,7 +29,6 @@ import { recordSaveFailed, recordSaveSucceeded } from '@cozemble/data-paginated-
 import { justErrorMessage, mandatory, Outcome, outcomeFns } from '@cozemble/lang-util'
 import { dataRecordValuePathFns, modelFns } from '@cozemble/model-api'
 import { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
-import { dataRecordIdFns } from '@cozemble/model-core'
 
 const axiosInstance = axios.create({
   validateStatus: function () {
@@ -235,7 +236,18 @@ export class RestBackend implements Backend {
       },
     )
     if (saveResponse.ok) {
-      return recordSaveSucceeded(record.record)
+      const response: SuccessfulSaveResponse = await saveResponse.json()
+      const recordsReturned = [
+        ...response.recordResult.updatedRecords,
+        ...response.recordResult.insertedRecords,
+      ]
+      if (recordsReturned.length !== 1) {
+        return recordSaveFailed(
+          [`Expected exactly 1 record back, got ${recordsReturned.length}`],
+          new Map(),
+        )
+      }
+      return recordSaveSucceeded(recordsReturned[0])
     } else {
       const response = await saveResponse.json()
       if (response._type === 'error.conflict') {
@@ -276,7 +288,12 @@ export class RestBackend implements Backend {
     })
 
     if (saveResponse.ok) {
-      return outcomeFns.successful(records.map((esr) => esr.record))
+      const response: SuccessfulSaveResponse = await saveResponse.json()
+      const recordsReturned = [
+        ...response.recordResult.updatedRecords,
+        ...response.recordResult.insertedRecords,
+      ]
+      return outcomeFns.successful(recordsReturned)
     } else {
       const response = await saveResponse.json()
       if (response._type === 'error.conflict') {

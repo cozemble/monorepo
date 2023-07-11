@@ -45,6 +45,7 @@ export {
   savableRecords,
   fetchedRecords,
   FetchedRecords,
+  SuccessfulSaveResponse,
 } from './records'
 
 export { ErrorType, ConflictErrorType } from './errorsTypes'
