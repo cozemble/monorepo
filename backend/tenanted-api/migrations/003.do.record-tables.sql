@@ -40,10 +40,11 @@ DECLARE
     unique_value_exists   BOOLEAN;
     current_path_value    JSONB;
     conflicting_record_id TEXT;
-    inserted_count        INTEGER := 0;
-    updated_count         INTEGER := 0;
     seq_name              text;
     seq_id                bigint;
+    inserted_records      JSONB[] := '{}'; -- Array to store inserted records
+    updated_records       JSONB[] := '{}'; -- Array to store updated records
+    tmp_record            JSONB; -- Temporary variable to store a single inserted or updated record
 BEGIN
     -- Loop through the p_definition array and insert or update each record
     FOR record_obj IN SELECT jsonb_array_elements(p_definition)
@@ -96,12 +97,20 @@ BEGIN
 
             IF NOT unique_value_exists THEN
                 -- Update the record if it already exists
-                UPDATE record
-                SET definition = record_obj,
-                    updated_at = NOW()
-                WHERE id = p_id
-                  AND model_id = p_model_id
-                  AND tenant = p_tenant;
+                WITH updated AS (
+                    UPDATE record
+                        SET definition = record_obj,
+                            updated_at = NOW()
+                        WHERE id = p_id
+                            AND model_id = p_model_id
+                            AND tenant = p_tenant
+                        RETURNING definition)
+                SELECT definition
+                FROM updated
+                INTO tmp_record;
+                IF tmp_record IS NOT NULL THEN
+                    updated_records := array_append(updated_records, tmp_record);
+                END IF;
 
                 -- If the record does not exist, insert a new one
                 IF NOT FOUND THEN
@@ -119,11 +128,16 @@ BEGIN
                     -- Update the definition with the sequential ID
                     record_obj = jsonb_set(record_obj, '{seqId}', to_jsonb(seq_id));
 
-                    INSERT INTO record (env, id, seq_id, tenant, model_id, definition)
-                    VALUES (given_env, p_id, seq_id, p_tenant, p_model_id, record_obj);
-                    inserted_count := inserted_count + 1;
-                ELSE
-                    updated_count := updated_count + 1;
+                    WITH inserted AS (
+                        INSERT INTO record (env, id, seq_id, tenant, model_id, definition)
+                            VALUES (given_env, p_id, seq_id, p_tenant, p_model_id, record_obj)
+                            RETURNING definition)
+                    SELECT definition
+                    FROM inserted
+                    INTO tmp_record;
+                    IF tmp_record IS NOT NULL THEN
+                        inserted_records := array_append(inserted_records, tmp_record);
+                    END IF;
                 END IF;
             ELSE
                 RETURN jsonb_build_object(
@@ -134,7 +148,8 @@ BEGIN
             END IF;
         END LOOP;
 
-    RETURN jsonb_build_object('_type', 'success', 'insertedCount', inserted_count, 'updatedCount', updated_count);
+    RETURN jsonb_build_object('_type', 'success', 'insertedRecords', inserted_records, 'updatedRecords',
+                              updated_records);
 END;
 $$ LANGUAGE plpgsql;
 

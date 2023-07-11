@@ -116,7 +116,7 @@ function putRecords(req: Request, res: Response) {
     if (result.rows[0].records._type === 'error.conflict') {
       return res.status(409).json(result.rows[0].records)
     }
-    return res.status(200).json([])
+    return res.status(200).json(result.rows[0].records)
   })
 }
 
