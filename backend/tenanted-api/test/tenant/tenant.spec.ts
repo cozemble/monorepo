@@ -293,7 +293,7 @@ describe('with a migrated database', () => {
     expect(getResponse.status).toBe(200)
     const records = await getResponse.json()
     expect(records).toEqual({
-      records: [record],
+      records: [{ ...record, seqId: 1 }],
       totalCount: 1,
       totalPages: 1,
       queryCount: 1,
@@ -335,7 +335,7 @@ describe('with a migrated database', () => {
     )
     expect(getResponse.status).toBe(200)
     const fetched = await getResponse.json()
-    expect(fetched).toEqual(recordAndEdges(record, []))
+    expect(fetched).toEqual(recordAndEdges({ ...record, seqId: 1 }, []))
   })
 
   test('can put a record with values that are string arrays', async () => {
@@ -458,7 +458,7 @@ describe('with a migrated database', () => {
     await expect(putResponse.status).toBe(200)
     const customerRecords = await getRecordsForModel(port, tenantId, customerModel.id, bearer)
     const productRecords = await getRecordsForModel(port, tenantId, productModel.id, bearer)
-    expect(customerRecords.records).toEqual([customerRecord])
-    expect(productRecords.records).toEqual([productRecord])
+    expect(customerRecords.records).toEqual([{ ...customerRecord, seqId: 1 }])
+    expect(productRecords.records).toEqual([{ ...productRecord, seqId: 1 }])
   })
 })

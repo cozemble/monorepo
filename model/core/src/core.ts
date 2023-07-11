@@ -417,6 +417,7 @@ export interface UserId extends TinyValue {
 export interface DataRecord {
   _type: 'data.record'
   id: DataRecordId
+  seqId?: number
   modelId: ModelId
   createdMillis: TimestampEpochMillis
   updatedMillis: TimestampEpochMillis

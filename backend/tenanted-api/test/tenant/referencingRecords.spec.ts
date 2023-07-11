@@ -103,7 +103,6 @@ describe('Given a Customer with a Booking', () => {
 
   test('returns the booking records for customer with booking', async () => {
     const customerWithBooking = customerRecords[0]
-    console.log({ customerWithBooking })
     const response = await fetch(
       `http://localhost:${port}/${testEnv}/api/v1/tenant/${tenantId}/model/${bookingModel.id.value}/referencing/${customerWithBooking.id.value}`,
       {
@@ -114,6 +113,6 @@ describe('Given a Customer with a Booking', () => {
     )
     expect(response.status).toBe(200)
     const records = await response.json()
-    expect(records.records).toEqual([bookingRecords[0]])
+    expect(records.records).toEqual([{ ...bookingRecords[0], seqId: 1 }])
   })
 })
