@@ -8,7 +8,11 @@
 		"forceConsistentCasingInFileNames": true,
 		"outDir": "./package",
 		"declaration": true,
-		"moduleResolution": "NodeNext"
+		"noImplicitAny": false,
+		"isolatedModules": false,
+		"importsNotUsedAsValues": "preserve",
+		"allowSyntheticDefaultImports": true
+
   }
   // Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias
   //

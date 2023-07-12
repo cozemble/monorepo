@@ -91,6 +91,7 @@ export function orderKeys(unordered: any): any {
 export function keysAndValues(obj: any): { key: string; value: any }[] {
   const result = []
   for (const [key, value] of Object.entries(obj)) {
+    // @ts-ignore
     result.push({ key, value })
   }
   return result
