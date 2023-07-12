@@ -321,6 +321,7 @@ export function convertSchemaToModels(
 }
 
 export function reconfigureApp(config: { model: Model; allModels: Model[] }) {
+  // @ts-ignore
   const existingModels = get(modelStore).models.map((m) => m.model)
   const withConsistentIds = useSameSlotIds(existingModels, config.allModels)
   const model = modelFns.findById(withConsistentIds, config.model.id)
