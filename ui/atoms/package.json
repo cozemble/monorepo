@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "svelte": "./package/index.js",
   "module": "./package/index.js",
-  "main": "./package/index.js",
   "types": "./package/index.d.ts",
   "scripts": {
     "dev": "vite dev",

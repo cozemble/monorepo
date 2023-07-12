@@ -1,5 +1,9 @@
 import { DataRecord, Id, RecordGraphEdge } from '@cozemble/model-core'
 
+type RecordGraphEdge = typeof RecordGraphEdge
+type Id = typeof Id
+type DataRecord = typeof DataRecord
+
 export type JsonPath = string[]
 
 export interface SavableRecord {

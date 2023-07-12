@@ -1,13 +1,13 @@
 {
   "name": "@cozemble/model-properties-core",
   "version": "1.0.0",
-  "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
+  "type": "module",
   "files": [
     "dist/"
   ],
   "scripts": {
-    "build": "npx tsc -p tsconfig.json && npx tsc -p tsconfig-cjs.json",
+    "build": "npx tsc -p tsconfig.json",
     "test": "echo NA"
   },
   "devDependencies": {

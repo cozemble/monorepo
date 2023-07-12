@@ -8,9 +8,9 @@ import {
   PropertyName,
   PropertyType,
   propertyTypeFns,
-} from './core'
-import { ModelEvent } from './events'
-import { SystemConfiguration } from './systemConfiguration'
+} from './core.js'
+import { ModelEvent } from './events.js'
+import { SystemConfiguration } from './systemConfiguration.js'
 
 /**
  * This is the interface that all property descriptors must implement, and is the means of adding properties

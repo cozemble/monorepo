@@ -16,7 +16,17 @@ import {
   propertyTypeFns,
   SystemConfiguration,
 } from '@cozemble/model-core'
-import { currencyModelChangedModelEventDescriptor } from './events'
+import { currencyModelChangedModelEventDescriptor } from './events.js'
+
+type Property = typeof Property
+type SystemConfiguration = typeof SystemConfiguration
+type DataRecord = typeof DataRecord
+type PropertyName = typeof PropertyName
+type PropertyId = typeof PropertyId
+type Model = typeof Model
+type ModelEventDescriptor = typeof ModelEventDescriptor
+type ModelId = typeof ModelId
+type ModelEvent = typeof ModelEvent
 
 export const currencyPropertyType = propertyTypeFns.newInstance('currency.property')
 
@@ -58,6 +68,7 @@ interface CurrencyPropertyDescriptor<V = any> extends PropertyDescriptor {
 }
 
 export const currencyPropertyDescriptor: CurrencyPropertyDescriptor = {
+  //@ts-ignore
   _type: 'property.descriptor',
   propertyType: currencyPropertyType,
   name: { _type: 'dotted.name', value: 'Currency' },
@@ -151,11 +162,11 @@ export const newCurrencyPropertyModelEventDescriptor: ModelEventDescriptor = {
       id: event.propertyId,
       name: event.propertyName,
     }
-    if (model.slots.some((p) => p.id.value === event.propertyId.value)) {
+    if (model.slots.some((p: any) => p.id.value === event.propertyId.value)) {
       newProperty = { ...newProperty, id: event.propertyId }
       return {
         ...model,
-        slots: model.slots.map((p) => (p.id.value === event.propertyId.value ? newProperty : p)),
+        slots: model.slots.map((p: any) => (p.id.value === event.propertyId.value ? newProperty : p)),
       }
     }
     return { ...model, slots: [...model.slots, newProperty] }
@@ -172,4 +183,4 @@ export function registerCurrencyProperty() {
   registerModelEvents()
 }
 
-export { currencyModelChangedModelEvent } from './events'
+export { currencyModelChangedModelEvent } from './events.js'

@@ -1,7 +1,7 @@
 import { clock, type Option, uuids } from '@cozemble/lang-util'
-import { propertyDescriptors } from './propertyDescriptor'
-import { SystemConfiguration } from './systemConfiguration'
-import { TinyValue } from './TinyValue'
+import { propertyDescriptors } from './propertyDescriptor.js'
+import { SystemConfiguration } from './systemConfiguration.js'
+import { TinyValue } from './TinyValue.js'
 
 type Option = typeof Option
 

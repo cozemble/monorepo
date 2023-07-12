@@ -1,6 +1,6 @@
-import { Property } from './core'
-import { PropertyDescriptor } from './propertyDescriptor'
-import { TinyValue } from './TinyValue'
+import { Property } from './core.js'
+import { PropertyDescriptor } from './propertyDescriptor.js'
+import { TinyValue } from './TinyValue.js'
 
 export type JsonDataTypes =
   | 'string'

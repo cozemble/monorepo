@@ -1,5 +1,8 @@
 import { Model, ModelEvent } from '@cozemble/model-core'
 
+type Model = typeof Model
+type ModelEvent = typeof ModelEvent
+
 export interface CreateTenant {
   _type: 'create.tenant'
   id: string
