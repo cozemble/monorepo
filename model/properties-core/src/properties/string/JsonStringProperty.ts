@@ -20,6 +20,8 @@ import {
 import { emptyProperty, NewJsonPropertyModelEvent } from '../events'
 import { type Option, options } from '@cozemble/lang-util'
 
+type Option = typeof Option
+
 export const stringPropertyConfigurationSchema: JsonSchema = {
   $schema: 'http://json-schema.org/draft-07/schema#',
   $id: 'https://cozemble.com/schemas/property/json/string',
@@ -155,6 +157,7 @@ export function registerJsonStringProperty() {
   propertyDescriptors.setDefault(jsonStringPropertyDescriptor)
 }
 
+// @ts-ignore
 export type JsonStringPropertyOption = Option<JsonStringProperty>
 
 export const jsonStringPropertyFns = {
@@ -164,16 +167,16 @@ export const jsonStringPropertyFns = {
   },
 }
 
-const required: JsonStringPropertyOption = (property) => {
+const required: JsonStringPropertyOption = (property: any) => {
   return { ...property, required: true }
 }
 
-const unique: JsonStringPropertyOption = (property) => {
+const unique: JsonStringPropertyOption = (property: any) => {
   return { ...property, unique: true }
 }
 
 function pattern(pattern: string, patternExplanation?: string): JsonStringPropertyOption {
-  return (property) => {
+  return (property: any) => {
     return {
       ...property,
       configuration: {

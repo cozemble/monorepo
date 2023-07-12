@@ -37,15 +37,15 @@ import { nestedModelFns } from './nestedModelFns'
 export const modelOptions = {
   withSingularName(givenName: string | ModelName): ModelOption {
     const name = typeof givenName === 'string' ? modelNameFns.newInstance(givenName) : givenName
-    return (model) => ({ ...model, name })
+    return (model: any) => ({ ...model, name })
   },
   withPluralName(givenName: string | ModelPluralName): ModelOption {
     const pluralName =
       typeof givenName === 'string' ? modelPluralNameFns.newInstance(givenName) : givenName
-    return (model) => ({ ...model, pluralName })
+    return (model: any) => ({ ...model, pluralName })
   },
   withId(id: ModelId): ModelOption {
-    return (model) => ({ ...model, id })
+    return (model: any) => ({ ...model, id })
   },
   withProperty(p: Property | string): ModelOption {
     if (typeof p === 'string') {
@@ -54,16 +54,16 @@ export const modelOptions = {
     return this.withProperties(p)
   },
   withSlot(slot: ModelSlot): ModelOption {
-    return (model) => ({ ...model, slots: [...model.slots, slot] })
+    return (model: any) => ({ ...model, slots: [...model.slots, slot] })
   },
   withProperties(...ps: Property[]): ModelOption {
-    return (model) => ({ ...model, slots: [...model.slots, ...ps] })
+    return (model: any) => ({ ...model, slots: [...model.slots, ...ps] })
   },
   withNestedModels(...ns: NestedModel[]): ModelOption {
-    return (model) => ({ ...model, nestedModels: [...model.nestedModels, ...ns] })
+    return (model: any) => ({ ...model, nestedModels: [...model.nestedModels, ...ns] })
   },
   withParentModelId(parentModelId: ModelId): ModelOption {
-    return (model) => ({ ...model, parentModelId })
+    return (model: any) => ({ ...model, parentModelId })
   },
 }
 

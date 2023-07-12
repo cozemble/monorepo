@@ -3,6 +3,8 @@ import { propertyDescriptors } from './propertyDescriptor'
 import { SystemConfiguration } from './systemConfiguration'
 import { TinyValue } from './TinyValue'
 
+type Option = typeof Option
+
 export type PropertyType = TinyValue<'property.type'>
 
 export const propertyTypeFns = {
@@ -479,7 +481,9 @@ export const dottedNameFns = {
   },
 }
 
+// @ts-ignore
 export type ModelOption = Option<Model>
+// @ts-ignore
 export type PropertyOption = Option<Property>
 
 export function emptyModel(name: string | ModelName): Model {

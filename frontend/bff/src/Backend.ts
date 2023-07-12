@@ -10,8 +10,11 @@ import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data
 import type { RecordDeleteOutcome, RecordSaveOutcome } from '@cozemble/data-paginated-editor'
 import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
 import { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
-import { Outcome } from '@cozemble/lang-util'
-import { JustErrorMessage } from '@cozemble/lang-util'
+
+import { Outcome, JustErrorMessage } from '@cozemble/lang-util'
+
+type JustErrorMessage = typeof JustErrorMessage
+type Outcome = typeof Outcome
 
 export interface TenantEntity {
   _type: string
@@ -88,6 +91,7 @@ export interface Backend {
     records: EventSourcedDataRecord[],
     edges: RecordGraphEdge[],
     deletedEdges: Id[],
+    // @ts-ignore
   ): Promise<Outcome<DataRecord[], RecordSaveFailure>>
 
   referencingRecords(

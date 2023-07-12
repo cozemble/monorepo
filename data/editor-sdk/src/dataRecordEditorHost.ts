@@ -19,6 +19,8 @@ import { RecordsAndEdges } from '@cozemble/model-core'
 
 const dataRecordEditorClientContext = 'com.cozemble.data.record.editor.client.context'
 
+type Option = typeof Option
+
 export interface Size {
   width: number
   height: number
@@ -61,6 +63,7 @@ export const userInstructionFns = {
   },
 }
 
+// @ts-ignore
 export type RecordGraphModifier = Option<EventSourcedRecordGraph>
 
 export interface DataRecordEditorClient extends ModelViewManager {

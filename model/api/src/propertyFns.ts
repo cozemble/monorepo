@@ -39,17 +39,17 @@ export const propertyFns = {
   },
 }
 
-const required: PropertyOption = (property) => {
+const required: PropertyOption = (property: any) => {
   return { ...property, required: true }
 }
 
-const unique: PropertyOption = (property) => {
+const unique: PropertyOption = (property: any) => {
   return { ...property, unique: true }
 }
 
 export const propertyOptions = {
   named(name: string | PropertyName): PropertyOption {
-    return (property) => ({
+    return (property: any) => ({
       ...property,
       name: typeof name === 'string' ? propertyNameFns.newInstance(name) : name,
     })

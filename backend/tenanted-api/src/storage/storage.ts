@@ -3,11 +3,10 @@ import multer from 'multer'
 import { authenticatedDatabaseRequest } from '../infra/authenticatedDatabaseRequest'
 import pg from 'pg'
 import { canAccessTenant } from '../infra/middleware'
-import { uuids } from '@cozemble/lang-util'
+import { uuids, mandatory } from '@cozemble/lang-util'
 import { getFileObject } from './getFileObject'
 import { StorageProvider } from './StorageProvider'
 import sharp from 'sharp'
-import { mandatory } from '@cozemble/lang-util'
 
 const thumbnailWidth = 100
 

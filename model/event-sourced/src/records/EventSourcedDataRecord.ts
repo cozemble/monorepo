@@ -4,6 +4,8 @@ import { DataRecordEditEvent, dataRecordEditEvents } from './dataRecordEditEvent
 import { dataRecordFns, dataRecordValuePathFns, modelFns } from '@cozemble/model-api'
 import { Option } from '@cozemble/lang-util'
 
+type Option = typeof Option
+
 export interface EventSourcedDataRecord {
   _type: 'event.sourced.data.record'
   models: Model[]
@@ -38,6 +40,7 @@ function applyEvent(
   return record
 }
 
+// @ts-ignore
 export type EventSourcedDataRecordOption = Option<EventSourcedDataRecord>
 
 export const eventSourcedDataRecordFns = {

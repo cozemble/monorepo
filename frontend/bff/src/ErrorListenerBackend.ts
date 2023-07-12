@@ -15,6 +15,8 @@ import { BackendModel } from '@cozemble/backend-tenanted-api-types'
 import { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
 import { Outcome } from '@cozemble/lang-util'
 
+type Outcome = typeof Outcome
+
 export type ErrorListener = (e: any) => void
 
 export class ErrorListenerBackend implements Backend {
@@ -152,6 +154,7 @@ export class ErrorListenerBackend implements Backend {
     records: EventSourcedDataRecord[],
     edges: RecordGraphEdge[],
     deletedEdges: Id[],
+    // @ts-ignore
   ): Promise<Outcome<DataRecord[]>> {
     try {
       return await this.backend.saveRecords(tenantId, models, records, edges, deletedEdges)

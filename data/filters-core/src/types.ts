@@ -1,5 +1,5 @@
-// @ts-ignore
-import { objects, StringKeyedObject, uuids } from '@cozemble/lang-util'
+import { objects, uuids } from '@cozemble/lang-util'
+import type { StringKeyedObject } from '@cozemble/lang-util'
 
 export interface FilterDataType {
   value: string
@@ -194,6 +194,7 @@ export const filterInstanceFns = {
   newInstance: function (lhsOptions: LhsOption[]): FilterInstance {
     return filterInstance(lhsOptions)
   },
+  // @ts-ignore
   getRhsValue: function (instance: FilterInstance, context: StringKeyedObject): any | null {
     if (instance.rhsValue === null) {
       return null

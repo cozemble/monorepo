@@ -30,6 +30,8 @@ import { justErrorMessage, mandatory, Outcome, outcomeFns } from '@cozemble/lang
 import { dataRecordValuePathFns, modelFns } from '@cozemble/model-api'
 import { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
 
+type Outcome = typeof Outcome
+
 const axiosInstance = axios.create({
   validateStatus: function () {
     return true
@@ -271,6 +273,7 @@ export class RestBackend implements Backend {
     records: EventSourcedDataRecord[],
     edges: RecordGraphEdge[],
     deletedEdges: Id[],
+    // @ts-ignore
   ): Promise<Outcome<DataRecord[], RecordSaveFailure>> {
     const saveResponse = await fetch(`${this.backendUrl()}/api/v1/tenant/${tenantId}/record`, {
       method: 'PUT',

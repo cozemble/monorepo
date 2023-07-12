@@ -10,7 +10,6 @@ import {
   userSuppliedRhsOptionWithValue,
 } from './types'
 
-// @ts-ignore
 import { mandatory, uuids } from '@cozemble/lang-util'
 
 type Option = {
