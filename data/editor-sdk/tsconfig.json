@@ -8,8 +8,6 @@
     "outDir": "./package",
     "declaration": true,
     "moduleResolution": "NodeNext",
-    "allowImportingTsExtensions": true,
-		"noEmit": true
   },
   "include": ["./src"]
 }
