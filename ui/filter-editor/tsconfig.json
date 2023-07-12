@@ -9,7 +9,8 @@
 		"outDir": "./package",
 		"declaration": true,
 		"moduleResolution": "NodeNext",
-    "isolatedModules": false
+    "isolatedModules": false,
+    "importsNotUsedAsValues": "preserve"
   }
   // Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias
   //
