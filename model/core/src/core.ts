@@ -3,8 +3,6 @@ import { propertyDescriptors } from './propertyDescriptor.js'
 import { SystemConfiguration } from './systemConfiguration.js'
 import { TinyValue } from './TinyValue.js'
 
-type Option = typeof Option
-
 export type PropertyType = TinyValue<'property.type'>
 
 export const propertyTypeFns = {

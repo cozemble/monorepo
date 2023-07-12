@@ -9,7 +9,7 @@ import {
   RecordAndEdges,
 } from '@cozemble/model-core'
 import { getContext, setContext } from 'svelte'
-import { ModelViewManager } from './ModelViewManager'
+import { ModelViewManager } from './ModelViewManager.js'
 import {
   DataRecordControlEvent,
   DataRecordEditEvent,
@@ -18,8 +18,6 @@ import {
 import { RecordsAndEdges } from '@cozemble/model-core'
 
 const dataRecordEditorClientContext = 'com.cozemble.data.record.editor.client.context'
-
-type Option = typeof Option
 
 export interface Size {
   width: number

@@ -1,8 +1,5 @@
 import { Model, ModelEvent } from '@cozemble/model-core'
 
-type Model = typeof Model
-type ModelEvent = typeof ModelEvent
-
 export interface CreateTenant {
   _type: 'create.tenant'
   id: string
@@ -49,9 +46,9 @@ export {
   fetchedRecords,
   FetchedRecords,
   SuccessfulSaveResponse,
-} from './records'
+} from './records.js'
 
-export { ErrorType, ConflictErrorType } from './errorsTypes'
+export { ErrorType, ConflictErrorType } from './errorsTypes.js'
 
 export {
   FilledFilterInstanceGroup,
@@ -61,4 +58,4 @@ export {
   FilterRequestPayload,
   filterRequestPayloadFns,
   filledFilterInstanceGroupFns,
-} from './filters'
+} from './filters.js'

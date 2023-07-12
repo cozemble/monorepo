@@ -1,4 +1,4 @@
-import { modelFns, modelOptions } from './modelsFns'
+import { modelFns, modelOptions } from './modelsFns.js'
 import { modelIdFns, modelReferenceFns } from '@cozemble/model-core'
 import { jsonStringPropertyFns, jsonStringPropertyOptions } from '@cozemble/model-properties-core'
 

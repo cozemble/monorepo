@@ -17,10 +17,8 @@ import {
   propertyNameFns,
   type SystemConfiguration,
 } from '@cozemble/model-core'
-import { emptyProperty, NewJsonPropertyModelEvent } from '../events'
+import { emptyProperty, NewJsonPropertyModelEvent } from '../events.js'
 import { type Option, options } from '@cozemble/lang-util'
-
-type Option = typeof Option
 
 export const stringPropertyConfigurationSchema: JsonSchema = {
   $schema: 'http://json-schema.org/draft-07/schema#',
@@ -59,6 +57,7 @@ export interface StringPropertyConfiguration {
   suffix?: string
 }
 
+// @ts-ignore
 export type JsonStringProperty = JsonProperty<
   typeof jsonDataTypes.string,
   string,
@@ -70,6 +69,7 @@ export const stringPropertyType: PropertyType = {
   value: 'json.string.property',
 }
 
+// @ts-ignore
 export const jsonStringPropertyDescriptor: JsonPropertyDescriptor<JsonStringProperty, string> = {
   _type: 'property.descriptor',
   isJsonPropertyDescriptor: true,

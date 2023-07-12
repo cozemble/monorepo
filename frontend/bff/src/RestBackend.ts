@@ -30,8 +30,6 @@ import { justErrorMessage, mandatory, Outcome, outcomeFns } from '@cozemble/lang
 import { dataRecordValuePathFns, modelFns } from '@cozemble/model-api'
 import { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
 
-type Outcome = typeof Outcome
-
 const axiosInstance = axios.create({
   validateStatus: function () {
     return true

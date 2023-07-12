@@ -1,10 +1,8 @@
 import type { DataRecord, Model, ModelId } from '@cozemble/model-core'
 import { SystemConfiguration } from '@cozemble/model-core'
-import { DataRecordEditEvent, dataRecordEditEvents } from './dataRecordEditEvents'
+import { DataRecordEditEvent, dataRecordEditEvents } from './dataRecordEditEvents.js'
 import { dataRecordFns, dataRecordValuePathFns, modelFns } from '@cozemble/model-api'
 import { Option } from '@cozemble/lang-util'
-
-type Option = typeof Option
 
 export interface EventSourcedDataRecord {
   _type: 'event.sourced.data.record'

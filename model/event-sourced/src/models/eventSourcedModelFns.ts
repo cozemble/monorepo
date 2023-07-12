@@ -8,8 +8,8 @@ import {
   type ModelId,
   type ModelName,
 } from '@cozemble/model-core'
-import { coreModelEvents, ModelCreated } from './events'
-import { EventSourcedModel } from './EventSourcedModel'
+import { coreModelEvents, ModelCreated } from './events.js'
+import { EventSourcedModel } from './EventSourcedModel.js'
 
 export const eventSourcedModelFns = {
   newInstance: (modelOrName: Model | ModelName): EventSourcedModel => {

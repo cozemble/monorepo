@@ -2,8 +2,6 @@ import { Model } from '@cozemble/model-core'
 import { getContext, setContext } from 'svelte'
 import { Readable, Writable } from 'svelte/store'
 
-type Model = typeof Model
-
 const formErrorStateContext = 'com.cozemble.model.editor.property.edit.form.error.state.context'
 const modelsStateContext = 'com.cozemble.model.editor.property.edit.models.context'
 

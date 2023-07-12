@@ -2,8 +2,6 @@ import { DataRecord, DataRecordId, ModelId, ModelReference, ModelReferenceId } f
 import { Id, tinyValueFns } from './TinyValue.js'
 import { Option } from '@cozemble/lang-util'
 
-type Option = typeof Option
-
 export interface RecordGraphEdge {
   _type: 'record.graph.edge'
   id: Id

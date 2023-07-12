@@ -25,14 +25,14 @@ import {
   SystemConfiguration,
 } from '@cozemble/model-core'
 import { clock, errors, mandatory, options, strings } from '@cozemble/lang-util'
-import { propertyFns } from './propertyFns'
-import { modelPathFns } from './modelPathFns'
+import { propertyFns } from './propertyFns.js'
+import { modelPathFns } from './modelPathFns.js'
 import {
   ManyCardinalityValuesForModelPath,
   SingleCardinalityValuesForModelPath,
   singleCardinalityValuesForModelPathResponse,
-} from './valuesForModelPath'
-import { nestedModelFns } from './nestedModelFns'
+} from './valuesForModelPath.js'
+import { nestedModelFns } from './nestedModelFns.js'
 
 export const modelOptions = {
   withSingularName(givenName: string | ModelName): ModelOption {

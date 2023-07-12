@@ -1,5 +1,5 @@
 import pg from 'pg'
-import { mandatoryEnv } from './loadEnv'
+import { mandatoryEnv } from './loadEnv.ts'
 
 let pool: pg.Pool | null = null
 

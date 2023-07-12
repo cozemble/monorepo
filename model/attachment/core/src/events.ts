@@ -15,13 +15,6 @@ import {
   emptyProperty,
 } from './attachmentProperty.js'
 
-type ModelEvent = typeof ModelEvent
-type Model = typeof Model
-type ModelId = typeof ModelId
-type PropertyId = typeof PropertyId
-type PropertyName = typeof PropertyName
-type ModelEventDescriptor = typeof ModelEventDescriptor
-
 export interface NewAttachmentPropertyModelEvent extends ModelEvent {
   _type: 'new.attachment.property.model.event'
   propertyName: PropertyName
@@ -57,6 +50,7 @@ export const newAttachmentPropertyModelEventDescriptor: ModelEventDescriptor = {
         slots: model.slots.map((p: any) => (p.id.value === event.propertyId.value ? newProperty : p)),
       }
     }
+    // @ts-ignore
     return { ...model, slots: [...model.slots, newProperty] }
   },
 }

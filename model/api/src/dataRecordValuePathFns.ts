@@ -18,9 +18,9 @@ import {
   propertyDescriptors,
   SystemConfiguration,
 } from '@cozemble/model-core'
-import { dataRecordFns } from './dataRecordFns'
-import { modelFns } from './modelsFns'
-import { nestedModelFns } from './nestedModelFns'
+import { dataRecordFns } from './dataRecordFns.js'
+import { modelFns } from './modelsFns.js'
+import { nestedModelFns } from './nestedModelFns.js'
 
 function modelElementsToDataRecordPath(
   lastElement: LeafModelSlot,

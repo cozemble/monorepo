@@ -1,5 +1,5 @@
 import { accessTokenKey, refreshTokenKey } from '@cozemble/backend-tenanted-api-types'
-import { tradeRefreshTokenForAccessToken } from './tradeRefreshTokenForAccessToken'
+import { tradeRefreshTokenForAccessToken } from './tradeRefreshTokenForAccessToken.ts'
 
 export interface Session {
   _type: 'cozauth.session'

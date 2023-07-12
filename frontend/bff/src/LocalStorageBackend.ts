@@ -18,8 +18,6 @@ import { outcomeFns } from '@cozemble/lang-util'
 
 const storageKey = 'cozemble.localstorage.backend'
 
-type Outcome = typeof Outcome
-
 interface LocalStorageBackendState {
   models: BackendModel[]
   records: DataRecord[]

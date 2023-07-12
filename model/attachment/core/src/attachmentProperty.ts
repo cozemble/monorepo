@@ -6,7 +6,6 @@ import {
   propertyTypeFns,
 } from '@cozemble/model-core'
 
-type Option = typeof Option
 
 export const attachmentPropertyType = propertyTypeFns.newInstance('attachment.property')
 

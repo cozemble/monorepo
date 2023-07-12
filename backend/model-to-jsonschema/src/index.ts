@@ -1,1 +1,1 @@
-export { modelToJsonSchema } from './modelToJsonSchema'
+export { modelToJsonSchema } from './modelToJsonSchema.js'

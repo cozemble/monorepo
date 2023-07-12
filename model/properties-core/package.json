@@ -1,8 +1,9 @@
 {
   "name": "@cozemble/model-properties-core",
   "version": "1.0.0",
-  "module": "dist/esm/index.js",
+  "module": "package/index.js",
   "type": "module",
+  "types": "./src/index.d.ts",
   "files": [
     "dist/"
   ],

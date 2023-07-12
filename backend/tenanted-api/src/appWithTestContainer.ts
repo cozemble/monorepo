@@ -1,8 +1,8 @@
 import { exec } from 'child-process-promise'
 import { PostgreSqlContainer, StartedPostgreSqlContainer } from 'testcontainers'
-import { expressApp } from './expressApp'
+import { expressApp } from './expressApp.ts'
 import * as http from 'http'
-import { closePgPool, withAdminPgClient } from './infra/postgresPool'
+import { closePgPool, withAdminPgClient } from './infra/postgresPool.ts'
 
 const testEnv = 'test'
 

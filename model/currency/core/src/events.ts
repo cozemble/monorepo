@@ -7,12 +7,6 @@ import {
   modelEventFns,
 } from '@cozemble/model-core'
 
-type PropertyId = typeof PropertyId
-type ModelId = typeof ModelId
-type ModelEvent = typeof ModelEvent
-type ModelEventDescriptor = typeof ModelEventDescriptor
-type Model = typeof Model
-
 export interface CurrencyModelChangedModelEvent extends ModelEvent {
   _type: 'currency.model.changed.model.event'
   propertyId: PropertyId

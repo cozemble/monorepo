@@ -1,11 +1,11 @@
 import express, { Router } from 'express'
 import multer from 'multer'
-import { authenticatedDatabaseRequest } from '../infra/authenticatedDatabaseRequest'
+import { authenticatedDatabaseRequest } from '../infra/authenticatedDatabaseRequest.ts'
 import pg from 'pg'
-import { canAccessTenant } from '../infra/middleware'
+import { canAccessTenant } from '../infra/middleware.ts'
 import { uuids, mandatory } from '@cozemble/lang-util'
-import { getFileObject } from './getFileObject'
-import { StorageProvider } from './StorageProvider'
+import { getFileObject } from './getFileObject.ts'
+import { StorageProvider } from './StorageProvider.ts'
 import sharp from 'sharp'
 
 const thumbnailWidth = 100

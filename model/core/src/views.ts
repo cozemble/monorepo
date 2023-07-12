@@ -1,8 +1,6 @@
 import { ModelId } from './core.js'
 import { JustErrorMessage, uuids } from '@cozemble/lang-util'
 
-type JustErrorMessage = typeof JustErrorMessage
-
 export interface ModelViewId {
   _type: 'model.view.id'
   value: string

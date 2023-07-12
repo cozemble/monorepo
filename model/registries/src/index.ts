@@ -1,10 +1,6 @@
 import { isJsonProperty, JsonDataType, LeafModelSlot, PropertyType } from '@cozemble/model-core'
 import { isJsonPropertyDescriptor, propertyDescriptors } from '@cozemble/model-core'
 
-type LeafModelSlot = typeof LeafModelSlot
-type JsonDataType = typeof JsonDataType
-type PropertyType = typeof PropertyType
-
 const propertyConfigurerMap = new Map<string, any>()
 const slotViewerMap = new Map<string, any>()
 const slotEditorMap = new Map<string, any>()

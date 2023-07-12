@@ -1,6 +1,6 @@
 import ClientOAuth2 from 'client-oauth2'
 import { mandatory } from '@cozemble/lang-util'
-import { loadEnv } from '../infra/loadEnv'
+import { loadEnv } from '../infra/loadEnv.ts'
 
 loadEnv()
 

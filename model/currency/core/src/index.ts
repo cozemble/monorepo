@@ -18,16 +18,6 @@ import {
 } from '@cozemble/model-core'
 import { currencyModelChangedModelEventDescriptor } from './events.js'
 
-type Property = typeof Property
-type SystemConfiguration = typeof SystemConfiguration
-type DataRecord = typeof DataRecord
-type PropertyName = typeof PropertyName
-type PropertyId = typeof PropertyId
-type Model = typeof Model
-type ModelEventDescriptor = typeof ModelEventDescriptor
-type ModelId = typeof ModelId
-type ModelEvent = typeof ModelEvent
-
 export const currencyPropertyType = propertyTypeFns.newInstance('currency.property')
 
 export interface CurrencyProperty extends Property {

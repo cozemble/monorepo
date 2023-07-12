@@ -1,6 +1,6 @@
-import { JwtClaim } from './jwt'
+import { JwtClaim } from './jwt.ts'
 import pg from 'pg'
-import { inTxn } from './postgresPool'
+import { inTxn } from './postgresPool.ts'
 
 export async function withClaimInPgSession<T>(
   client: pg.PoolClient,

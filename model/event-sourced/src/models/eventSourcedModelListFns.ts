@@ -1,4 +1,4 @@
-import { EventSourcedModel, EventSourcedModelList } from './EventSourcedModel'
+import { EventSourcedModel, EventSourcedModelList } from './EventSourcedModel.js'
 import {
   Cardinality,
   Model,
@@ -10,8 +10,8 @@ import {
   ModelReferenceName,
   TimestampEpochMillis,
 } from '@cozemble/model-core'
-import { eventSourcedModelFns } from './eventSourcedModelFns'
-import { modelSlotEvents } from './modelSlotEvents'
+import { eventSourcedModelFns } from './eventSourcedModelFns.js'
+import { modelSlotEvents } from './modelSlotEvents.js'
 import { timestampEpochMillis } from '@cozemble/model-core'
 
 interface AddModelEvent {
@@ -101,7 +101,7 @@ function addModelReferenceSlot(list: EventSourcedModelList, event: AddModelRefer
   )
   return {
     ...list,
-    models: list.models.map((m) => {
+    models: list.models.map((m: any) => {
       if (m.model.id.value === mutated.model.id.value) {
         return mutated
       }
@@ -115,7 +115,7 @@ function removeModelReferenceSlotFromModel(m: EventSourcedModel, id: ModelRefere
     ...m,
     model: {
       ...m.model,
-      slots: m.model.slots.filter((s) => s.id.value !== id.value),
+      slots: m.model.slots.filter((s: any) => s.id.value !== id.value),
     },
   }
 }

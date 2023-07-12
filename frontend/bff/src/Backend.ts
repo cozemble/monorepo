@@ -13,9 +13,6 @@ import { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
 
 import { Outcome, JustErrorMessage } from '@cozemble/lang-util'
 
-type JustErrorMessage = typeof JustErrorMessage
-type Outcome = typeof Outcome
-
 export interface TenantEntity {
   _type: string
   id: { value: string }

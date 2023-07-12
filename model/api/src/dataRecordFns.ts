@@ -10,8 +10,8 @@ import {
   propertyDescriptors,
   SystemConfiguration,
 } from '@cozemble/model-core'
-import { modelFns } from './modelsFns'
-import { dataRecordPathElementFns } from './dataRecordPathElementFns'
+import { modelFns } from './modelsFns.js'
+import { dataRecordPathElementFns } from './dataRecordPathElementFns.js'
 
 function getChildRecord(
   models: Model[],

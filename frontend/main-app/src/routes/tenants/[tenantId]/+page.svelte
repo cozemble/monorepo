@@ -1,18 +1,16 @@
 <script lang="ts">
-    import {cozauth} from "../../../lib/auth/cozauth";
+    import {cozauth} from "../../../lib/auth/cozauth.js";
     import {onMount} from "svelte";
-    import {registerEverything,} from "@cozemble/model-assembled";
     import {page} from '$app/stores';
-    import {tenantStore} from "../../../lib/tenant/tenantStore";
-    import {tempRegisterDateFilters} from "./temp";
+    import {tenantStore} from "../../../lib/tenant/tenantStore.js";
+    import {tempRegisterDateFilters} from "./temp.js";
     import {browser} from '$app/environment';
     import IncrementalModelingMain from "../../../lib/incrementalModelling/IncrementalModelingMain.svelte";
-    import {showDevConsole} from "../../../lib/config";
+    import {showDevConsole} from "../../../lib/config.js";
     import ShowDataModellingExplainer from "../../../lib/incrementalModelling/ShowDataModellingExplainer.svelte";
 
     let ui = 'milestone1'
     onMount(() => {
-        registerEverything()
         tempRegisterDateFilters()
         if (browser) {
             ui = localStorage.getItem('cozemble.config.ui') || 'incremental-modeling'

@@ -1,4 +1,4 @@
-import { GithubUser } from './githubAuth'
+import { GithubUser } from './githubAuth.ts'
 
 async function fetchGithubUserEmail(accessToken: string, profile: any): Promise<GithubUser> {
   const response = await fetch('https://api.github.com/user/emails', {

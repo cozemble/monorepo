@@ -15,8 +15,6 @@ import { BackendModel } from '@cozemble/backend-tenanted-api-types'
 import { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
 import { Outcome } from '@cozemble/lang-util'
 
-type Outcome = typeof Outcome
-
 export type ErrorListener = (e: any) => void
 
 export class ErrorListenerBackend implements Backend {

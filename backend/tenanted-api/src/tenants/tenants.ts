@@ -1,6 +1,6 @@
 import { Request, Response, Router } from 'express'
-import { withAdminPgClient } from '../infra/postgresPool'
-import { authenticatedDatabaseRequest } from '../infra/authenticatedDatabaseRequest'
+import { withAdminPgClient } from '../infra/postgresPool.ts'
+import { authenticatedDatabaseRequest } from '../infra/authenticatedDatabaseRequest.ts'
 import {
   BackendModel,
   CreateTenant,
@@ -9,7 +9,7 @@ import {
 } from '@cozemble/backend-tenanted-api-types'
 import { Model } from '@cozemble/model-core'
 import { modelFns, modelPathFns } from '@cozemble/model-api'
-import { formattedFilters } from './formattedFilters'
+import { formattedFilters } from './formattedFilters.ts'
 import { mandatory } from '@cozemble/lang-util'
 
 const router: Router = Router()

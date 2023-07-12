@@ -1,4 +1,4 @@
-import type { FilterAction } from './actions'
+import type { FilterAction } from './actions.js'
 import {
   FilterGroup,
   FilterGroupList,
@@ -8,7 +8,7 @@ import {
   LhsOption,
   selectableRhsOptionWithSelection,
   userSuppliedRhsOptionWithValue,
-} from './types'
+} from './types.js'
 
 import { mandatory, uuids } from '@cozemble/lang-util'
 
