@@ -1,6 +1,7 @@
 {
   "name": "@cozemble/frontend-json-schema-form",
   "version": "0.0.1",
+  "main": "./dist/index.js",
   "scripts": {
     "dev": "vite dev",
     "build": "vite build && npm run package",
@@ -41,6 +42,7 @@
     "vite": "4.4.3"
   },
   "type": "module",
+  "types": "./dist/index.d.ts",
   "dependencies": {
     "@cozemble/lang-util": "workspace:*",
     "@cozemble/model-core": "workspace:*",
