@@ -16,6 +16,11 @@ const config: UserConfig = {
       '@cozemble/model-registries',
       '@cozemble/data-editor-sdk',
       '@cozemble/model-to-json',
+      '@cozemble/model-attachment-core',
+      '@cozemble/model-assembled',
+      'svelte-jsoneditor',
+      'svelte-awesome',
+      'svelte-select'
     ],
   },
 }
