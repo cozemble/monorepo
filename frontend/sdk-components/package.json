@@ -1,6 +1,9 @@
 {
   "name": "@cozemble/frontend-sdk-components",
   "version": "0.0.1",
+  "main": "dist/index.js",
+  "type": "module",
+  "types": "dist/index.d.ts",
   "scripts": {
     "dev": "vite dev",
     "build": "vite build && npm run package",
@@ -41,7 +44,6 @@
     "@cozemble/model-api": "workspace:*",
     "@cozemble/model-assembled": "workspace:*"
   },
-  "type": "module",
   "dependencies": {
     "@cozemble/model-core": "workspace:*",
     "@cozemble/model-to-json": "workspace:*",
