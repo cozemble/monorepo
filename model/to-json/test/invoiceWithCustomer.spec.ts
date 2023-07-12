@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest'
 import { dataRecordFns, testExports } from '@cozemble/model-api'
-import { modelToJson } from '../src'
+import { modelToJson } from '../src/index.js'
 import { systemConfigurationFns } from '@cozemble/model-core'
 import { registerJsonStringProperty } from '@cozemble/model-properties-core'
 

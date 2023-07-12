@@ -1,3 +1,3 @@
 declare module '@cozemble/data-filters-core'
 
-export * from './index'
+export * from './index.js'

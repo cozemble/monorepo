@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
-import { dataRecordFns, dataRecordValuePathFns, modelFns, nestedModelFns } from '../../src'
-import { invoiceModel, invoiceModels, lineItemModel } from '../../src/invoiceModel'
+import { dataRecordFns, dataRecordValuePathFns, modelFns, nestedModelFns } from '../../src/index.js'
+import { invoiceModel, invoiceModels, lineItemModel } from '../../src/invoiceModel.js'
 import type { DataRecord } from '@cozemble/model-core'
 import { NestedModel } from '@cozemble/model-core'
 import { systemConfigurationFns } from '@cozemble/model-core'

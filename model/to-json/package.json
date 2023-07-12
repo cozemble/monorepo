@@ -1,7 +1,7 @@
 {
   "name": "@cozemble/model-to-json",
   "version": "1.0.0",
-  "module": "package/index.js",
+  "main": "package/index.js",
   "type": "module",
   "files": [
     "dist/"

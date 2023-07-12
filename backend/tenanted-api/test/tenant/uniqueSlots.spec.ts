@@ -1,11 +1,11 @@
 import { beforeAll, describe, expect, onTestFailed, test } from 'vitest'
-import { appWithTestContainer } from '../../src/appWithTestContainer'
-import { makeTenant, makeTenantMemberAccessToken, putModels, putRecord } from './testHelpers'
+import { appWithTestContainer } from '../../src/appWithTestContainer.ts'
+import { makeTenant, makeTenantMemberAccessToken, putModels, putRecord } from './testHelpers.ts'
 import { Model, systemConfigurationFns } from '@cozemble/model-core'
 import { uuids } from '@cozemble/lang-util'
 import { dataRecordFns, modelFns, modelOptions, propertyFns } from '@cozemble/model-api'
 import { savableRecords } from '@cozemble/backend-tenanted-api-types'
-import { withAdminPgClient } from '../../src/infra/postgresPool'
+import { withAdminPgClient } from '../../src/infra/postgresPool.ts'
 import { testEnv } from '../helper'
 import {
   jsonStringPropertyOptions,

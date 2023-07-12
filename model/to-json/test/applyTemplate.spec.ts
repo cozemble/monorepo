@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { applyTemplate } from '../src'
+import { applyTemplate } from '../src/index.ts'
 
 const data = {
   'Invoice ID': 'invoice#33',

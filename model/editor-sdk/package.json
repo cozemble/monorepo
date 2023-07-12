@@ -1,7 +1,7 @@
 {
   "name": "@cozemble/model-editor-sdk",
   "version": "1.0.0",
-  "module": "dist/esm/index.js",
+  "main": "dist/esm/index.js",
   "type": "module",
   "files": [
     "dist/"

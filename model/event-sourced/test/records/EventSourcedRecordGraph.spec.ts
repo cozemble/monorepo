@@ -23,7 +23,7 @@ import {
   eventSourcedRecordGraphFns,
   recordGraphEvents,
   timestampedRecordGraphEdgeFns,
-} from '../../src'
+} from '../../src/index.js'
 import { mandatory, time } from '@cozemble/lang-util'
 import { registerJsonStringProperty } from '@cozemble/model-properties-core'
 

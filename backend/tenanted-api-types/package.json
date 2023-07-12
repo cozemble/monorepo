@@ -1,7 +1,7 @@
 {
   "name": "@cozemble/backend-tenanted-api-types",
   "version": "1.0.0",
-  "module": "dist/esm/index.js",
+  "main": "dist/esm/index.js",
   "type": "module",
   "types": "./src/index.d.ts",
   "files": [
@@ -9,8 +9,7 @@
   ],
   "scripts": {
     "build": "npx tsc -p tsconfig.json",
-    "test": "vitest run --passWithNoTests",
-    "test:watch": "vitest watch"
+    "test": "echo NA"
   },
   "devDependencies": {
     "typescript": "^5.0.2",

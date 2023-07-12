@@ -1,7 +1,7 @@
 {
   "name": "@cozemble/model-currency-core",
   "version": "1.0.0",
-  "module": "dist/esm/index.js",
+  "main": "dist/esm/index.js",
   "type": "module",
   "types": "./src/index.d.ts",
   "files": [

@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest'
-import { dataRecordFns, dataRecordPathElementFns } from '../../src'
-import { addressModel, customerModel, invoiceModel, invoiceModels } from '../../src/invoiceModel'
+import { dataRecordFns, dataRecordPathElementFns } from '../../src/index.js'
+import { addressModel, customerModel, invoiceModel, invoiceModels } from '../../src/invoiceModel.js'
 import { registerJsonStringProperty } from '@cozemble/model-properties-core'
 import { systemConfigurationFns } from '@cozemble/model-core'
 

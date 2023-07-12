@@ -5,7 +5,7 @@
 		"strict": true,
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
-		"outDir": "./dist/esm",
+		"outDir": "./package",
 		"declaration": true,
 		"moduleResolution": "NodeNext"
 	},

@@ -6,7 +6,7 @@ import {
   modelOptions,
   propertyFns,
   nestedModelFns,
-} from '../src'
+} from '../src/index.js'
 import { systemConfigurationFns } from '@cozemble/model-core'
 import { registerJsonStringProperty } from '@cozemble/model-properties-core'
 

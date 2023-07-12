@@ -6,7 +6,7 @@
     import FilterRhsConfigurer from "./FilterRhsConfigurer.svelte";
     import UserSelectedRhsValue from "./UserSelectedRhsValue.svelte";
     import {filterInstanceFns} from "@cozemble/data-filters-core";
-    import {onlyUserSelectedRhsValues} from "./onlyUserSelectedRhsValues";
+    import {onlyUserSelectedRhsValues} from "./onlyUserSelectedRhsValues.js";
     import LhsSelector from "./LhsSelector.svelte";
     import OperatorSelector from "./OperatorSelector.svelte";
 
