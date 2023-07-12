@@ -1,7 +1,7 @@
 {
   "name": "@cozemble/model-event-sourced",
   "version": "1.0.0",
-  "module": "dist/esm/index.js",
+  "module": "package/index.js",
   "type": "module",
   "types": "./src/index.d.ts",
   "files": [
