@@ -1,5 +1,5 @@
 import { test, expect } from 'vitest'
-import { compare, startsWith } from '../src/arrays'
+import { compare, startsWith } from '../src/arrays.js'
 
 test('array startsWith', () => {
   expect(startsWith([], [])).toBe(true)

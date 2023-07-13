@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { dataRecordFns, modelFns, modelOptions, propertyFns, nestedModelFns } from '../../src'
+import { dataRecordFns, modelFns, modelOptions, propertyFns, nestedModelFns } from '../../src/index.js'
 import { propertyDescriptors } from '@cozemble/model-core'
 import { systemConfigurationFns } from '@cozemble/model-core'
 import { registerJsonStringProperty } from '@cozemble/model-properties-core'

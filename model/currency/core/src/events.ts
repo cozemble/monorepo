@@ -33,6 +33,7 @@ export function currencyModelChangedModelEvent(
   }
 }
 
+// @ts-ignore
 export const currencyModelChangedModelEventDescriptor: ModelEventDescriptor<CurrencyModelChangedModelEvent> =
   {
     _type: 'model.event.descriptor',
@@ -40,7 +41,7 @@ export const currencyModelChangedModelEventDescriptor: ModelEventDescriptor<Curr
     applyEvent: function (model: Model, event: CurrencyModelChangedModelEvent): Model {
       return {
         ...model,
-        slots: model.slots.map((property) => {
+        slots: model.slots.map((property: any) => {
           if (property.id.value === event.propertyId.value && property._type === 'property') {
             return {
               ...property,

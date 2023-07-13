@@ -1,12 +1,12 @@
 import { uuids } from '@cozemble/lang-util'
 import { beforeAll, describe, expect, test } from 'vitest'
 
-import { appWithTestContainer } from '../../src/appWithTestContainer'
-import { makeTenant, makeTenantMemberAccessToken } from '../tenant/testHelpers'
+import { appWithTestContainer } from '../../src/appWithTestContainer.ts'
+import { makeTenant, makeTenantMemberAccessToken } from '../tenant/testHelpers.ts'
 import axios from 'axios'
 import FormData from 'form-data'
 import fs from 'fs'
-import { testEnv } from '../helper'
+import { testEnv } from '../helper.ts'
 
 const jwtSigningSecret = 'secret'
 const port = 3009

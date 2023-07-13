@@ -18,9 +18,9 @@ import {
   propertyDescriptors,
   SystemConfiguration,
 } from '@cozemble/model-core'
-import { dataRecordFns } from './dataRecordFns'
-import { modelFns } from './modelsFns'
-import { nestedModelFns } from './nestedModelFns'
+import { dataRecordFns } from './dataRecordFns.js'
+import { modelFns } from './modelsFns.js'
+import { nestedModelFns } from './nestedModelFns.js'
 
 function modelElementsToDataRecordPath(
   lastElement: LeafModelSlot,
@@ -235,7 +235,7 @@ export const dataRecordValuePathFns = {
   },
   fromNames(models: Model[], model: Model, ...names: string[]) {
     const [parentNames, leafSlotName] = arrays.splitLast(names)
-    const elements: DataRecordPathParentElement[] = parentNames.map((name) => {
+    const elements: DataRecordPathParentElement[] = parentNames.map((name: any) => {
       if (name.indexOf('.') !== -1) {
         const parts = name.split('.')
         if (parts.length !== 2) {
@@ -273,7 +273,7 @@ export const dataRecordValuePathFns = {
   },
   fromIds(models: Model[], model: Model, ...ids: string[]) {
     const [parentIds, leafSlotId] = arrays.splitLast(ids)
-    const elements: DataRecordPathParentElement[] = parentIds.map((id) => {
+    const elements: DataRecordPathParentElement[] = parentIds.map((id: string) => {
       const element = modelFns.elementById(model, id)
       if (element._type === 'property' || element._type === 'model.reference') {
         throw new Error(`Invalid path: found a ${element._type} in the parent path`)

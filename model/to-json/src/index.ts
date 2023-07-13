@@ -1,3 +1,3 @@
-export { modelToJson } from './modelToJson'
-export { applyTemplate } from './applyTemplate'
-export { jsonToRecord } from './jsonToRecord'
+export { modelToJson } from './modelToJson.js'
+export { applyTemplate } from './applyTemplate.js'
+export { jsonToRecord } from './jsonToRecord.js'

@@ -1,6 +1,6 @@
 <script lang="ts">
     import {createEventDispatcher} from 'svelte'
-    import type {SelectChangeEvent} from "./types";
+    import type {SelectChangeEvent} from "./types.js";
 
     export let conjunction: string
     export let classes = ""

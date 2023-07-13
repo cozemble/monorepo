@@ -2,7 +2,7 @@ import {
   filterOperatorFns,
   literalPostgresComparator,
   postgresComparatorTemplateFns,
-} from './types'
+} from './types.js'
 
 export const equalsFilterOperator = filterOperatorFns.newInstance(
   'equals',

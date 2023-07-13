@@ -2,7 +2,7 @@ import uppercamelcase from 'uppercamelcase'
 import * as path from 'path'
 
 import { ModelName, PropertyType, NestedModelName } from '@cozemble/model-core'
-import { IProperty, TypeDefinition, scalarTypes } from './types/schema'
+import { IProperty, TypeDefinition, scalarTypes } from './types/schema.js'
 
 function buildModelTypes({ propertyType, validations }: IProperty): TypeDefinition {
   const resp = { type: getPropertyType(propertyType) as string }

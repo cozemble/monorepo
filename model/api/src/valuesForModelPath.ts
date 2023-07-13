@@ -6,10 +6,10 @@ import type {
   ModelPathElement,
 } from '@cozemble/model-core'
 import { LeafModelSlot, modelSlotFns, SystemConfiguration } from '@cozemble/model-core'
-import { dataRecordValuePathFns } from './dataRecordValuePathFns'
-import { DataRecordPathAndValue, dataRecordRecordPathAndValue, modelPathFns } from './modelPathFns'
-import { modelFns } from './modelsFns'
-import { nestedModelFns } from './nestedModelFns'
+import { dataRecordValuePathFns } from './dataRecordValuePathFns.js'
+import { DataRecordPathAndValue, dataRecordRecordPathAndValue, modelPathFns } from './modelPathFns.js'
+import { modelFns } from './modelsFns.js'
+import { nestedModelFns } from './nestedModelFns.js'
 
 type PathRecordLeafSlot = {
   parentElements: DataRecordPathParentElement[]

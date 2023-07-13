@@ -6,14 +6,14 @@ import {
   modelPathFns,
   propertyFns,
   nestedModelFns,
-} from '../../src'
+} from '../../src/index.js'
 import { describe, expect, test } from 'vitest'
 import { type NestedModel, type Property, propertyDescriptors } from '@cozemble/model-core'
 import {
   singleCardinalityValuesForModelPathResponse,
   valuesForModelPath,
-} from '../../src/valuesForModelPath'
-import { dataRecordRecordPathAndValue } from '../../src/modelPathFns'
+} from '../../src/valuesForModelPath.js'
+import { dataRecordRecordPathAndValue } from '../../src/modelPathFns.js'
 import { systemConfigurationFns } from '@cozemble/model-core'
 import { registerJsonStringProperty } from '@cozemble/model-properties-core'
 

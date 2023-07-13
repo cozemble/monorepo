@@ -1,6 +1,6 @@
 <script lang="ts">
     import type {JsonProperty, JsonPropertyDescriptor} from "@cozemble/model-core";
-    import {jsonSchemaFns, propertyDescriptors} from "@cozemble/model-core";
+    import { jsonSchemaFns, propertyDescriptors } from "@cozemble/model-core";
     import JsonPropertyConfigurerInner from "$lib/properties/components/JsonPropertyConfigurerInner.svelte";
     import {DownCaret} from "@cozemble/ui-atoms";
 

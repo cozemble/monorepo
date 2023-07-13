@@ -1,6 +1,6 @@
 import { Storage } from '@google-cloud/storage'
 import path from 'path'
-import { StorageProvider } from './StorageProvider'
+import { StorageProvider } from './StorageProvider.js'
 
 function makeFilePath(
   env: string,

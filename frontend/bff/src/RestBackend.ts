@@ -1,5 +1,5 @@
-import type { Backend, FetchTenantResponse, TenantEntity } from './Backend'
-import { recordDataErrorFns, RecordSaveFailure } from './Backend'
+import type { Backend, FetchTenantResponse, TenantEntity } from './Backend.js'
+import { recordDataErrorFns, RecordSaveFailure } from './Backend.js'
 import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import axios from 'axios'
 import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
@@ -271,6 +271,7 @@ export class RestBackend implements Backend {
     records: EventSourcedDataRecord[],
     edges: RecordGraphEdge[],
     deletedEdges: Id[],
+    // @ts-ignore
   ): Promise<Outcome<DataRecord[], RecordSaveFailure>> {
     const saveResponse = await fetch(`${this.backendUrl()}/api/v1/tenant/${tenantId}/record`, {
       method: 'PUT',

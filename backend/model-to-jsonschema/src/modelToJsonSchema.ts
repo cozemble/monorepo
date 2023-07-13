@@ -1,8 +1,8 @@
 import _ from 'lodash'
 
 import { Model } from '@cozemble/model-core'
-import { buildModelTypes, getModelName, getRelationName } from './lib'
-import { IProperty, Schema } from './types/schema'
+import { buildModelTypes, getModelName, getRelationName } from './lib.js'
+import { IProperty, Schema } from './types/schema.js'
 import { modelFns } from '@cozemble/model-api'
 
 export function modelToJsonSchema(rootModel: Model, models: Model[]): Schema {

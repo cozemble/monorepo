@@ -2,7 +2,7 @@
     import type {JsonArrayProperty} from "@cozemble/model-properties-core";
     import {jsonArrayPropertyDescriptor} from "@cozemble/model-properties-core";
     import {slotEditorRegistry} from "@cozemble/model-registries";
-    import {makeArrayItemProperty} from "./makeArrayItemProperty";
+    import {makeArrayItemProperty} from "./makeArrayItemProperty.js";
     import {mandatory} from "@cozemble/lang-util";
     import {propertyDescriptors, systemConfigurationFns} from "@cozemble/model-core";
     import MaybeError from "$lib/properties/array/MaybeError.svelte";

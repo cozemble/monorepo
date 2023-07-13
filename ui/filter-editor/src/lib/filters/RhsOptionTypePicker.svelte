@@ -1,7 +1,7 @@
 <script lang="ts">
     import type {FilterInstance} from "@cozemble/data-filters-core";
     import type {FilterActionHandler} from "@cozemble/data-filters-core";
-    import {isSelectedRhsOption, rhsOptionsAsSelectOptions} from "./rhsOptionsAsSelectOptions";
+    import {isSelectedRhsOption, rhsOptionsAsSelectOptions} from "./rhsOptionsAsSelectOptions.js";
     import {filterActions} from "@cozemble/data-filters-core";
     import {mandatory} from "@cozemble/lang-util";
 
@@ -12,6 +12,7 @@
 
     function rhsOptionTypeChanged(event: Event) {
         const target = event.target as HTMLSelectElement
+        // @ts-ignore
         const selectedOption = mandatory(options.find(o => o.id === target.value), "No option found")
         filterActionHandler(filterActions.rhsOptionTypeChanged(filter.id, selectedOption))
     }

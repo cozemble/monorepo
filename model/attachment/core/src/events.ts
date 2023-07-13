@@ -1,6 +1,5 @@
 import {
-  type Model,
-  type ModelEvent,
+  type Model, ModelEvent,
   type ModelEventDescriptor,
   modelEventDescriptors,
   modelEventFns,
@@ -14,7 +13,7 @@ import {
   attachmentPropertyFns,
   attachmentPropertyOptions,
   emptyProperty,
-} from './attachmentProperty'
+} from './attachmentProperty.js'
 
 export interface NewAttachmentPropertyModelEvent extends ModelEvent {
   _type: 'new.attachment.property.model.event'
@@ -44,13 +43,14 @@ export const newAttachmentPropertyModelEventDescriptor: ModelEventDescriptor = {
       id: event.propertyId,
       name: event.propertyName,
     }
-    if (model.slots.some((p) => p.id.value === event.propertyId.value && p._type === 'property')) {
+    if (model.slots.some((p: any) => p.id.value === event.propertyId.value && p._type === 'property')) {
       newProperty = { ...newProperty, id: event.propertyId }
       return {
         ...model,
-        slots: model.slots.map((p) => (p.id.value === event.propertyId.value ? newProperty : p)),
+        slots: model.slots.map((p: any) => (p.id.value === event.propertyId.value ? newProperty : p)),
       }
     }
+    // @ts-ignore
     return { ...model, slots: [...model.slots, newProperty] }
   },
 }
@@ -87,7 +87,7 @@ export const attachmentModelChangedModelEventDescriptor: ModelEventDescriptor = 
   applyEvent: (model: Model, event: AttachmentModelChangedModelEvent): Model => {
     return {
       ...model,
-      slots: model.slots.map((p) => {
+      slots: model.slots.map((p: any) => {
         if (p.id.value === event.propertyId.value && p._type === 'property') {
           if (p.propertyType.value !== 'attachment.property') {
             throw new Error(`Property ${p.id.value} is not a attachment property`)

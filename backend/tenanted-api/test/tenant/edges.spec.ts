@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, test } from 'vitest'
-import { appWithTestContainer } from '../../src/appWithTestContainer'
+import { appWithTestContainer } from '../../src/appWithTestContainer.ts'
 import { dataRecordFns, modelFns } from '@cozemble/model-api'
 import {
   DataRecordId,

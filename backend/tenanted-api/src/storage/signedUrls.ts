@@ -1,7 +1,7 @@
 import { Router } from 'express'
-import { canAccessTenant } from '../infra/middleware'
-import { StorageProvider } from './StorageProvider'
-import { withAccessToken } from '../infra/jwt'
+import { canAccessTenant } from '../infra/middleware.js'
+import { StorageProvider } from './StorageProvider.js'
+import { withAccessToken } from '../infra/jwt.js'
 import { mandatory } from '@cozemble/lang-util'
 
 export function makeSignedUrlsRoute(storageProvider: StorageProvider) {

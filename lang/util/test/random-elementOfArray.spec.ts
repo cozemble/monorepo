@@ -1,5 +1,5 @@
 import { test, expect } from 'vitest'
-import { random } from '../src'
+import { random } from '../src/random.js'
 
 test('can get random element of single element array', () => {
   for (let i = 0; i < 20; i++) {

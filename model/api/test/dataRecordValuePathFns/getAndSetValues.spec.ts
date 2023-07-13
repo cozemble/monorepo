@@ -6,7 +6,7 @@ import {
   lineItemModel,
 } from '../../src/invoiceModel'
 import { describe, expect, test } from 'vitest'
-import { allModelsWithReferences, modelsWithReferences } from '../../src/modelsWithReferences'
+import { allModelsWithReferences, modelsWithReferences } from '../../src/modelsWithReferences.js'
 import { modelReferenceValuePlaceholder, systemConfigurationFns } from '@cozemble/model-core'
 import { registerJsonStringProperty } from '@cozemble/model-properties-core'
 

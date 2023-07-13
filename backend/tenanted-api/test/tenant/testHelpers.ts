@@ -16,7 +16,7 @@ import {
   savableRecords,
 } from '@cozemble/backend-tenanted-api-types'
 import jwt from 'jsonwebtoken'
-import { testEnv } from '../helper'
+import { testEnv } from '../helper.ts'
 
 async function postTenant(port: number, id: string, name = 'Test Tenant', ownerId = uuids.v4()) {
   return await fetch(`http://localhost:${port}/${testEnv}/api/v1/tenant`, {

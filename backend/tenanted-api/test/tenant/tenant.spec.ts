@@ -1,6 +1,6 @@
 import { uuids } from '@cozemble/lang-util'
 import { beforeAll, describe, expect, test } from 'vitest'
-import { appWithTestContainer } from '../../src/appWithTestContainer'
+import { appWithTestContainer } from '../../src/appWithTestContainer.ts'
 import {
   BackendModel,
   filterRequestPayloadFns,
@@ -21,8 +21,8 @@ import {
   putModels,
   putRecord,
   simulateNewUser,
-} from './testHelpers'
-import { testEnv } from '../helper'
+} from './testHelpers.ts'
+import { testEnv } from '../helper.ts'
 
 const jwtSigningSecret = 'secret'
 const port = 3002

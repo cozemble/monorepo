@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest'
-import { modelFns, modelOptions, propertyFns, nestedModelFns } from '../../src'
-import { modelPathFns } from '../../src/modelPathFns'
+import { modelFns, modelOptions, propertyFns, nestedModelFns } from '../../src/index.js'
+import { modelPathFns } from '../../src/modelPathFns.js'
 
 test('an empty model has no paths', () => {
   const model = modelFns.newInstance('Empty')

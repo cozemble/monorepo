@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { toJsonCase } from '../src/string'
+import { toJsonCase } from '../src/string.js'
 
 test("converts words ending in 'ID' to 'Id'", () => {
   expect(toJsonCase('invoiceId')).toBe('invoiceId')
