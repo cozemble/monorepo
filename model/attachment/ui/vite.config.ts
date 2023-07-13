@@ -2,6 +2,9 @@ import { sveltekit } from '@sveltejs/kit/vite'
 
 const config = {
   plugins: [sveltekit()],
+  resolve: {
+    preserveSymlinks: true,
+  },
   ssr: {
     noExternal: [
       '@cozemble/backend-tenanted-api-types', 

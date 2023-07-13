@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "type": "module",
   "scripts": {
     "dev": "vite dev",
     "build": "vite build && npm run package",
@@ -49,7 +50,6 @@
     "vite": "4.4.3",
     "wait-on": "^7.0.1"
   },
-  "type": "module",
   "dependencies": {
     "@cozemble/data-editor-sdk": "workspace:*",
     "@cozemble/data-filters-config": "workspace:*",
