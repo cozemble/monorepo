@@ -1,6 +1,6 @@
-import { withAccessToken } from './jwt.ts'
-import { withAdminPgClient } from './postgresPool.ts'
-import { withClaimInPgSession } from './withClaimInPgSession.ts'
+import { withAccessToken } from './jwt.js'
+import { withAdminPgClient } from './postgresPool.js'
+import { withClaimInPgSession } from './withClaimInPgSession.js'
 import express from 'express'
 import pg from 'pg'
 

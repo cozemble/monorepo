@@ -1,5 +1,5 @@
-import { loadEnv } from './infra/loadEnv.ts'
-import { expressApp } from './expressApp.ts'
+import { loadEnv } from './infra/loadEnv.js'
+import { expressApp } from './expressApp.js'
 
 loadEnv()
 

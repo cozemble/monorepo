@@ -1,9 +1,9 @@
 import { Request, Response, Router } from 'express'
-import { fromUrlFriendly, githubAuth, SignInState, signInState, toUrlFriendly } from './githubAuth.ts'
-import { fetchGithubUserDetails } from './githubUserDetails.ts'
-import { withAdminPgClient } from '../infra/postgresPool.ts'
-import { newSessionTokens } from './establishSession.ts'
-import { db } from './db.ts'
+import { fromUrlFriendly, githubAuth, SignInState, signInState, toUrlFriendly } from './githubAuth.js'
+import { fetchGithubUserDetails } from './githubUserDetails.js'
+import { withAdminPgClient } from '../infra/postgresPool.js'
+import { newSessionTokens } from './establishSession.js'
+import { db } from './db.js'
 import { mandatory } from '@cozemble/lang-util'
 
 const router: Router = Router()

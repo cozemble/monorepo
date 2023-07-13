@@ -10,7 +10,7 @@
     "build": "npx tsc -p tsconfig.json",
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest watch",
-    "start": "nodemon dist/cjs/index.js",
+    "start": "nodemon dist/esm/index.js",
     "db:migrate": "dotenv -- bash -c 'npx postgrator --username $PG_ADMIN_USER --password $PG_ADMIN_PASSWORD'",
     "db:migrate-local": "npx postgrator --host 127.0.0.1 --database postgres --username user --password password",
     "dev": "nodemon -x \"npm run buildrun\"",

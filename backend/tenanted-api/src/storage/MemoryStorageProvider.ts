@@ -1,4 +1,4 @@
-import { StorageProvider } from './StorageProvider.ts'
+import { StorageProvider } from './StorageProvider.js'
 
 export class MemoryStorageProvider implements StorageProvider {
   async storeFile(
