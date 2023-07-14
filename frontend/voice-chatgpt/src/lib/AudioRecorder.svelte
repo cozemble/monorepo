@@ -7,11 +7,11 @@ let cozembleGPT: CozembleVoiceGPT;
 
 voiceStore.subscribe((value) => {
   // console.log(value) // <- subscribe to expected value
-  const audioInput = document.querySelector('audio');
+  // const audioInput = document.querySelector('audio');
 
-  if(audioInput){
-      audioInput.src = URL.createObjectURL(value as Blob)
-  }
+  // if(audioInput){
+  //     audioInput.src = URL.createObjectURL(value as Blob)
+  // }
 })
 
 onMount(async () => {

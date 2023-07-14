@@ -1,5 +1,7 @@
 import { error, type RequestEvent, type RequestHandler } from '@sveltejs/kit'
 import { Configuration, OpenAIApi } from 'openai'
+import { mandatory } from '@cozemble/lang-util'
+import * as ffmpeg from 'fluent-ffmpeg'
 
 type OpenAiCreds = {
   organization: string
@@ -21,6 +23,9 @@ export const POST: RequestHandler = async (event: RequestEvent) => {
   }
 
   const fileBuffer = Buffer.from(data, 'base64')
+
+  // Use ffmpeg to convert base64decode to mpga/m4a/wav/webm
+  
 
   try {
     const openai = new OpenAIApi(new Configuration(getOpenApiCred()))

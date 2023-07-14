@@ -3,7 +3,7 @@ import { voiceStore } from '$lib/store/store'
 export class CozembleVoiceGPT {
   private mediaRecorder: MediaRecorder
   private mediaChunks: BlobPart[] = []
-  private constraints: { audio: true }
+  private options: { type: 'audio/webm;codecs=opus' }
 
   constructor(private stream: MediaStream) { }
 
@@ -12,7 +12,7 @@ export class CozembleVoiceGPT {
 
     this.mediaRecorder.onstop = async () => {
       // supported type mp3, mp4, mpeg, mpga, m4a, wav, and webm
-      const audioBlob = new Blob(this.mediaChunks, { type: 'audio/webm; codecs=opus' })
+      const audioBlob = new Blob(this.mediaChunks, this.options)
 
       this.mediaChunks = []
 
@@ -28,6 +28,7 @@ export class CozembleVoiceGPT {
   blobToBase64(blob) {
     const reader = new FileReader()
     reader.readAsDataURL(blob)
+
     return new Promise((resolve) => {
       reader.onloadend = () => {
         resolve(reader.result)
