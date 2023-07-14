@@ -2,12 +2,17 @@
     import {allEventSourcedModels, allModels} from "../stores/allModels";
     import {derived, writable} from "svelte/store";
     import type {Model, ModelId, NestedModelId} from "@cozemble/model-core";
-    import {eventSourcedModelFns, eventSourcedRecordGraphFns} from "@cozemble/model-event-sourced";
+    import type {EventSourcedDataRecord} from "@cozemble/model-event-sourced";
+    import {
+        eventSourcedDataRecordFns,
+        eventSourcedModelFns,
+        eventSourcedRecordGraphFns
+    } from "@cozemble/model-event-sourced";
     import {modelRecordsContextFns} from "./modelRecordsContextFns";
     import {emptyDataTableFocus} from "../focus/DataTableFocus";
     import {gettableWritable} from "../editors/GettableWritable";
     import {makeFocusControls} from "./makeFocusControls";
-    import {onDestroy} from "svelte";
+    import {afterUpdate, onDestroy} from "svelte";
     import type {LoadingState} from "./RecordsContext";
     import {backend, getRecordsForModel} from "../appBackend";
     import {systemConfiguration} from "../stores/systemConfiguration";
@@ -19,8 +24,6 @@
     import {emptyFilterParams, type FilterParams, type RecordSaver} from "../backend/Backend";
     import {dataRecordFns} from "@cozemble/model-api";
     import type {RecordGraphLoader} from "$lib/records/RecordGraphLoader";
-    import type {EventSourcedDataRecord} from "@cozemble/model-event-sourced";
-    import {eventSourcedDataRecordFns} from "@cozemble/model-event-sourced";
     import type {SubGraphCollectorsByRecordId} from "$lib/records/RecordControls";
 
     const systemConfigurationProvider = () => $systemConfiguration
@@ -106,5 +109,7 @@
         unsubFilterParams()
         unsubAllEventSourcedModels()
     })
+
+    afterUpdate(() => console.log({eventSourcedModel:$eventSourcedModel}))
 </script>
 <slot {focusControls}></slot>

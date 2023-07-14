@@ -16,7 +16,7 @@ import {
   propertyTypeFns,
   SystemConfiguration,
 } from '@cozemble/model-core'
-import { currencyModelChangedModelEventDescriptor } from './events';
+import { currencyModelChangedModelEventDescriptor } from './events.js'
 
 export const currencyPropertyType = propertyTypeFns.newInstance('currency.property')
 
@@ -58,6 +58,7 @@ interface CurrencyPropertyDescriptor<V = any> extends PropertyDescriptor {
 }
 
 export const currencyPropertyDescriptor: CurrencyPropertyDescriptor = {
+  //@ts-ignore
   _type: 'property.descriptor',
   propertyType: currencyPropertyType,
   name: { _type: 'dotted.name', value: 'Currency' },
@@ -119,12 +120,8 @@ export const currencyPropertyDescriptor: CurrencyPropertyDescriptor = {
 
     return formatCurrency(maybeValue, property.currency, property.locale)
   },
-  newProperty: (
-    _systemConfiguration: SystemConfiguration,
-    modelId: ModelId,
-    propertyName: PropertyName,
-    propertyId?: PropertyId,
-  ) => newCurrencyPropertyModelEvent(modelId, propertyName, propertyId),
+  newProperty: (modelId: ModelId, propertyName: PropertyName, propertyId?: PropertyId) =>
+    newCurrencyPropertyModelEvent(modelId, propertyName, propertyId),
 }
 
 export interface NewCurrencyPropertyModelEvent extends ModelEvent {
@@ -155,11 +152,11 @@ export const newCurrencyPropertyModelEventDescriptor: ModelEventDescriptor = {
       id: event.propertyId,
       name: event.propertyName,
     }
-    if (model.slots.some((p) => p.id.value === event.propertyId.value)) {
+    if (model.slots.some((p: any) => p.id.value === event.propertyId.value)) {
       newProperty = { ...newProperty, id: event.propertyId }
       return {
         ...model,
-        slots: model.slots.map((p) => (p.id.value === event.propertyId.value ? newProperty : p)),
+        slots: model.slots.map((p: any) => (p.id.value === event.propertyId.value ? newProperty : p)),
       }
     }
     return { ...model, slots: [...model.slots, newProperty] }
@@ -176,4 +173,4 @@ export function registerCurrencyProperty() {
   registerModelEvents()
 }
 
-export { currencyModelChangedModelEvent } from './events'
+export { currencyModelChangedModelEvent } from './events.js'

@@ -6,14 +6,14 @@ import {
   modelOptions,
   nestedModelFns,
   propertyFns,
-} from '../../src'
+} from '../../src/index.js'
 import {
   dottedPathFns,
   type NestedModel,
   type Property,
   systemConfigurationFns,
 } from '@cozemble/model-core'
-import { addressModel, customerModel, invoiceModel, invoiceModels } from '../../src/invoiceModel'
+import { addressModel, customerModel, invoiceModel, invoiceModels } from '../../src/invoiceModel.js'
 import { registerJsonStringProperty } from '@cozemble/model-properties-core'
 
 registerJsonStringProperty()

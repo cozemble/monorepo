@@ -57,7 +57,7 @@
       $model.id,
       propertyDescriptors
         .getDefault()
-        .newProperty($systemConfiguration, $model.id, propertyNameFns.newInstance(fieldName)),
+        .newProperty($model.id, propertyNameFns.newInstance(fieldName)),
     )
     await tick()
     const element = document.querySelector(`th#field-${$model.slots.length}`) as HTMLElement

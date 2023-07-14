@@ -16,14 +16,14 @@ import {
   jsonStringPropertyDescriptor,
   StringPropertyConfiguration,
   stringPropertyConfigurationSchema,
-} from '../string/JsonStringProperty'
+} from '../string/JsonStringProperty.js'
 import {
   JsonNumberProperty,
   jsonNumberPropertyDescriptor,
   NumberPropertyConfiguration,
   numberPropertyConfigurationSchema,
-} from '../number/JsonNumberProperty'
-import { NewJsonPropertyModelEvent } from '../events'
+} from '../number/JsonNumberProperty.js'
+import { NewJsonPropertyModelEvent } from '../events.js'
 
 export function makeDerivedStringProperty(
   name: string,
@@ -31,6 +31,7 @@ export function makeDerivedStringProperty(
   configuration: any,
   exampleProvider: string[] | ((systemConfiguration: SystemConfiguration) => string),
   configurationSchema: JsonSchema | null = stringPropertyConfigurationSchema,
+  // @ts-ignore
 ): JsonPropertyDescriptor<JsonStringProperty, string, StringPropertyConfiguration> {
   return {
     ...makeDerivedProperty(
@@ -51,6 +52,7 @@ export function makeDerivedNumberProperty(
   configuration: any,
   exampleProvider: number[] | ((systemConfiguration: SystemConfiguration) => number),
   configurationSchema: JsonSchema | null = numberPropertyConfigurationSchema,
+  // @ts-ignore
 ): JsonPropertyDescriptor<JsonNumberProperty, number, NumberPropertyConfiguration> {
   return {
     ...makeDerivedProperty<JsonNumberProperty, number, NumberPropertyConfiguration>(
@@ -70,8 +72,10 @@ function makeDerivedProperty<T extends JsonProperty, V, C>(
   type: string,
   configuration: any,
   exampleProvider: V[] | ((systemConfiguration: SystemConfiguration) => V),
+  // @ts-ignore
   baseType: JsonPropertyDescriptor<T, V>,
   jsonType: JsonDataType,
+    // @ts-ignore
 ): JsonPropertyDescriptor<T, V, C> {
   const thisPropertyType: PropertyType = {
     _type: 'property.type',
@@ -89,7 +93,6 @@ function makeDerivedProperty<T extends JsonProperty, V, C>(
       return random.elementOfArray(exampleProvider)
     },
     newProperty: (
-      systemConfiguration: SystemConfiguration,
       modelId: ModelId,
       propertyName: PropertyName,
       propertyId?: PropertyId,

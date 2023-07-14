@@ -100,7 +100,6 @@ export class IncrementalModelingBackend implements DataTableBackend {
     edges: RecordGraphEdge[],
     deletedEdges: Id[],
   ): Promise<RecordSaveOutcome> {
-    console.log('saveExistingRecord', { record, edges, deletedEdges })
     return this.backend.saveRecord(
       this.tenantId,
       this.modelsProvider(),

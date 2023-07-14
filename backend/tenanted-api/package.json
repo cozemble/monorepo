@@ -1,24 +1,24 @@
 {
   "name": "@cozemble/backend-tenanted-api",
   "version": "1.0.0",
-  "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
+  "type": "module",
   "files": [
     "dist/"
   ],
   "scripts": {
-    "build": "npx tsc -p tsconfig.json && npx tsc -p tsconfig-cjs.json",
+    "build": "npx tsc -p tsconfig.json",
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest watch",
-    "start": "nodemon dist/cjs/index.js",
+    "start": "nodemon dist/esm/index.js",
     "db:migrate": "dotenv -- bash -c 'npx postgrator --username $PG_ADMIN_USER --password $PG_ADMIN_PASSWORD'",
     "db:migrate-local": "npx postgrator --host 127.0.0.1 --database postgres --username user --password password",
     "dev": "nodemon -x \"npm run buildrun\"",
     "buildrun": "npm run compile && npm run server",
     "build-run-db": "npm run compile && npm run bounce:db",
     "bounce:db": "node dist/cjs/devDb.js",
-    "compile": "npx tsc -p tsconfig-cjs.json",
-    "server": "NODE_ENV=development node dist/cjs/index.js",
+    "compile": "npx tsc -p tsconfig.json",
+    "server": "NODE_ENV=development node dist/esm/index.js",
     "clean:postgres": "./scripts/run-clean-postgres.sh && npm run db:migrate-local"
   },
   "devDependencies": {
@@ -40,8 +40,8 @@
     "ts-node": "^10.9.1",
     "typescript": "^5.0.2",
     "undici": "^5.21.0",
-    "vite": "4.1.4",
-    "vitest": "^0.32.1"
+    "vite": "4.4.3",
+    "vitest": "0.33.0"
   },
   "dependencies": {
     "@cozemble/backend-tenanted-api-types": "workspace:*",

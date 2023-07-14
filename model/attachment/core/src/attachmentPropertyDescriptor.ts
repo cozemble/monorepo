@@ -1,7 +1,7 @@
-import type { ModelId, PropertyDescriptor, PropertyId, PropertyName } from '@cozemble/model-core'
+import type { ModelId, PropertyId, PropertyName } from '@cozemble/model-core'
 import { SystemConfiguration } from '@cozemble/model-core'
-import { AttachmentProperty, attachmentPropertyType } from './attachmentProperty'
-import { newAttachmentPropertyModelEvent } from './events'
+import { AttachmentProperty, attachmentPropertyType } from './attachmentProperty.js'
+import { newAttachmentPropertyModelEvent } from './events.js'
 
 function validateProperty(property: AttachmentProperty): Map<string, string> {
   const errors = new Map<string, string>()
@@ -36,6 +36,7 @@ export interface AttachmentList {
   attachmentReferences: AttachmentReference[]
 }
 
+// @ts-ignore
 export const attachmentPropertyDescriptor: PropertyDescriptor<AttachmentProperty, AttachmentList> =
   {
     _type: 'property.descriptor',
@@ -59,7 +60,7 @@ export const attachmentPropertyDescriptor: PropertyDescriptor<AttachmentProperty
       }
       return []
     },
-    setValue: (systemConfiguration: SystemConfiguration, property, record, value) => {
+    setValue: (systemConfiguration: SystemConfiguration, property: any, record: any, value: any) => {
       return {
         ...record,
         values: {
@@ -68,13 +69,9 @@ export const attachmentPropertyDescriptor: PropertyDescriptor<AttachmentProperty
         },
       }
     },
-    getValue: (systemConfiguration: SystemConfiguration, property, record) => {
+    getValue: (systemConfiguration: SystemConfiguration, property: any, record: any) => {
       return record.values[property.id.value] ?? null
     },
-    newProperty: (
-      systemConfiguration: SystemConfiguration,
-      modelId: ModelId,
-      propertyName: PropertyName,
-      propertyId?: PropertyId,
-    ) => newAttachmentPropertyModelEvent(modelId, propertyName, propertyId),
+    newProperty: (modelId: ModelId, propertyName: PropertyName, propertyId?: PropertyId) =>
+      newAttachmentPropertyModelEvent(modelId, propertyName, propertyId),
   }

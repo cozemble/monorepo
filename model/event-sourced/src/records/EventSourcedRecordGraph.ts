@@ -12,9 +12,9 @@ import {
   TimestampEpochMillis,
   timestampEpochMillis,
 } from '@cozemble/model-core'
-import { DataRecordEditEvent } from './dataRecordEditEvents'
-import { EventSourcedDataRecord, eventSourcedDataRecordFns } from './EventSourcedDataRecord'
-import { RecordGraphEvent, RecordReferencesChangedEvent } from './recordGraphEvents'
+import { DataRecordEditEvent } from './dataRecordEditEvents.js'
+import { EventSourcedDataRecord, eventSourcedDataRecordFns } from './EventSourcedDataRecord.js'
+import { RecordGraphEvent, RecordReferencesChangedEvent } from './recordGraphEvents.js'
 import { mandatory } from '@cozemble/lang-util'
 
 export interface TimestampedRecordGraphEdge {

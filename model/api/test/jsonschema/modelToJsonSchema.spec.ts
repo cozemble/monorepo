@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { modelFns, modelOptions, nestedModelFns, propertyFns } from '../../src'
+import { modelFns, modelOptions, nestedModelFns, propertyFns } from '../../src/index.js'
 import { Model, Property } from '@cozemble/model-core'
 
 export type JsonType = 'string' | 'integer' | 'number' | 'boolean' | 'object'

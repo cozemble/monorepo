@@ -25,7 +25,7 @@ import type {
 import { lhsOption, userSuppliedRhsOption } from '@cozemble/data-filters-core'
 import { mandatory } from '@cozemble/lang-util'
 import { eventSourcedModelFns } from '@cozemble/model-event-sourced'
-import { slotEditorRegistry } from '@cozemble/model-assembled'
+import { slotEditorRegistry } from '@cozemble/model-registries'
 import type { DataRecordEditorClient } from '@cozemble/data-editor-sdk'
 import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import type { FilledFilterInstanceGroup, RhsValue } from '@cozemble/backend-tenanted-api-types'

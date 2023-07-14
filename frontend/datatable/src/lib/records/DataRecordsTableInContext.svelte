@@ -50,6 +50,11 @@
 <table class="table table-compact">
     <thead>
     <tr>
+        {#if parentPath.length === 0}
+            <th class="bg-base-300" id="seqId">
+                <div class="flex items-center"><span class="mr-1">Id</span></div>
+            </th>
+        {/if}
         {#each $model.slots as slot, index}
             <SlotTh {slot} {index} {editSlot} permitModelEditing={options.permitModelEditing}/>
         {/each}

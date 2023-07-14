@@ -20,6 +20,7 @@
     import ModelReferenceEditor from "./ModelReferenceEditor.svelte";
     import {mandatory} from "@cozemble/lang-util";
     import {modelFns} from "@cozemble/model-api";
+    import {objects} from "@cozemble/lang-util";
 
     export let modelList: Writable<EventSourcedModelList>
     export let modelId: ModelId
@@ -48,7 +49,7 @@
         if (propertyDescriptor) {
             const propertyName = propertyNameFns.newInstance(modelSlot.name.value)
             const propertyId = propertyIdFns.newInstance(modelSlot.id.value)
-            return modelList.update(list => eventSourcedModelListFns.addModelEvent(list, propertyDescriptor.newProperty(systemConfiguration, modelId, propertyName, propertyId)))
+            return modelList.update(list => eventSourcedModelListFns.addModelEvent(list, propertyDescriptor.newProperty(modelId, propertyName, propertyId)))
         } else {
             alert('Dont know how to handle model slot type ' + target.value)
         }
@@ -65,6 +66,8 @@
         const errors = validateSlot(modelSlot)
         $formSectionErrorState.showErrors = errors.size > 0
         if (errors.size === 0) {
+            console.log({slot: modelSlot})
+            modelList.update(list => ({...list}))
             dispatch('save', {slot: modelSlot})
         }
     }
@@ -103,11 +106,11 @@
     <label class="label">{slotNoun} Name</label>
     <input
             value={modelSlot.name.value}
-            class="property-name input input-bordered first"
+            class="property-name input input-bordered first w-full"
             on:change={slotNameChanged}/>
 
     <label class="label">{slotNoun} Type</label>
-    <select on:change={slotTypeChanged} class="property-type input input-bordered">
+    <select on:change={slotTypeChanged} class="property-type input input-bordered  w-full">
         <option value="">----</option>
         {#each propertyDescriptors.list() as propertyDescriptor}
             <option
@@ -137,7 +140,6 @@
     <button
             type="submit"
             on:click|preventDefault={saveClicked}
-            disabled={errors.size > 0}
             class="btn save-property btn-primary">Save {slotNoun}
     </button>
     <button class="btn btn-secondary ml-2" on:click={closeClicked}>Cancel</button>

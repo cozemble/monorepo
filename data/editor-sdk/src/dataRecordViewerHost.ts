@@ -1,8 +1,8 @@
 import { mandatory } from '@cozemble/lang-util'
 import { DataRecordId, Model, ModelId, RecordAndEdges, RecordsAndEdges } from '@cozemble/model-core'
 import { getContext, setContext } from 'svelte'
-import { AttachmentIdAndFileName, UserInstruction } from './dataRecordEditorHost'
-import { ModelViewManager } from './ModelViewManager'
+import { AttachmentIdAndFileName, UserInstruction } from './dataRecordEditorHost.js'
+import { ModelViewManager } from './ModelViewManager.js'
 import { DataRecordEditEvent } from '@cozemble/model-event-sourced'
 
 const dataRecordViewerClientContext = 'com.cozemble.data.record.viewer.client.context'

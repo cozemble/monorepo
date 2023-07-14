@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { dataRecordFns, modelFns, modelOptions, propertyFns, nestedModelFns } from '../src'
+import { dataRecordFns, modelFns, modelOptions, propertyFns, nestedModelFns } from '../src/index.js'
 import type { DataRecord } from '@cozemble/model-core'
 
 test('one level deep has-one relationship', () => {

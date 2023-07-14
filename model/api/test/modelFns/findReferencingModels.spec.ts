@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
-import { modelFns } from '../../src'
-import { allModelsWithReferences, modelsWithReferences } from '../../src/modelsWithReferences'
+import { modelFns } from '../../src/index.js'
+import { allModelsWithReferences, modelsWithReferences } from '../../src/modelsWithReferences.js'
 
 describe('findInboundReferences', () => {
   test('returns empty array if there are no inbound references', () => {

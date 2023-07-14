@@ -1,5 +1,5 @@
 import type { Model, ModelEvent } from '@cozemble/model-core'
-import { EventSourcedModelListEvent } from './eventSourcedModelListFns'
+import { EventSourcedModelListEvent } from './eventSourcedModelListFns.js'
 
 export interface EventSourcedModel {
   _type: 'event.sourced.model'

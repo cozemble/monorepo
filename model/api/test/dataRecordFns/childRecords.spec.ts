@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { dataRecordFns } from '../../src'
+import { dataRecordFns } from '../../src/index.js'
 import {
   addressModel,
   customerModel,
@@ -7,7 +7,7 @@ import {
   invoiceModel,
   invoiceModels,
   lineItemModel,
-} from '../../src/invoiceModel'
+} from '../../src/invoiceModel.js'
 import {
   dataRecordAndPathFns,
   nestedRecordArrayPathElement,

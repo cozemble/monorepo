@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
 import { modelFns, modelOptions, propertyFns, nestedModelFns } from '@cozemble/model-api'
-import { modelToJsonSchema } from '../src/modelToJsonSchema'
+import { modelToJsonSchema } from '../src/modelToJsonSchema.ts'
 import { jsonStringPropertyOptions } from '@cozemble/model-properties-core'
 
 describe('given a customer with a has-one address', () => {

@@ -9,7 +9,7 @@ import {
   RecordAndEdges,
 } from '@cozemble/model-core'
 import { getContext, setContext } from 'svelte'
-import { ModelViewManager } from './ModelViewManager'
+import { ModelViewManager } from './ModelViewManager.js'
 import {
   DataRecordControlEvent,
   DataRecordEditEvent,
@@ -61,6 +61,7 @@ export const userInstructionFns = {
   },
 }
 
+// @ts-ignore
 export type RecordGraphModifier = Option<EventSourcedRecordGraph>
 
 export interface DataRecordEditorClient extends ModelViewManager {

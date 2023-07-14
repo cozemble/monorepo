@@ -2,7 +2,7 @@
     import type {FilterAction} from "@cozemble/data-filters-core";
     import {partiallyAppliedFilterGroupListReducer} from "@cozemble/data-filters-core";
     import FilterManagement from "../../lib/filters/FilterManagement.svelte";
-    import {rootGroupList, sampleLhsOptions} from "../instances/+server";
+    import {rootGroupList, sampleLhsOptions} from "../instances/+server.js";
 
     let groupList = rootGroupList
 

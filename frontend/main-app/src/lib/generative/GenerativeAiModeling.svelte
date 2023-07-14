@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { promptManager } from "./GenerativeAiBackend"
+    import { promptManager } from "./GenerativeAiBackend.js"
 
     import ChatGPTInput from "./components/ChatGPTInput.svelte";
     import ChatGPTResult from "./components/ChatGPTResult.svelte";

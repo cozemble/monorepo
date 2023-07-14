@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, test } from 'vitest'
-import { appWithTestContainer } from '../../src/appWithTestContainer'
+import { appWithTestContainer } from '../../src/appWithTestContainer.ts'
 import { dataRecordFns, modelFns } from '@cozemble/model-api'
 import {
   DataRecordId,
@@ -8,6 +8,8 @@ import {
   recordAndEdges,
   RecordAndEdges,
   recordGraphEdgeFns,
+  RecordsAndEdges,
+  recordsAndEdges,
   systemConfigurationFns,
   tinyValueFns,
 } from '@cozemble/model-core'
@@ -18,7 +20,6 @@ import {
   putRecord,
   simulateNewUser,
 } from './testHelpers'
-import { RecordsAndEdges, recordsAndEdges } from '@cozemble/model-core'
 
 const jwtSigningSecret = 'secret'
 const port = 3012
@@ -32,6 +33,9 @@ const models = [customerModel, bookingModel]
 const customerRecord1 = dataRecordFns.random(systemConfig, models, customerModel)
 const bookingRecord1 = dataRecordFns.random(systemConfig, models, bookingModel)
 const bookingRecord2 = dataRecordFns.random(systemConfig, models, bookingModel)
+const storedBookingRecord1 = { ...bookingRecord1, seqId: 1 }
+const storedBookingRecord2 = { ...bookingRecord2, seqId: 2 }
+const storedCustomerRecord1 = { ...customerRecord1, seqId: 1 }
 
 const booking1ToCustomer1 = recordGraphEdgeFns.newInstance(
   modelReferenceIdFns.newInstance(),
@@ -70,14 +74,14 @@ describe('with a migrated database', () => {
       customerModel.id,
       customerRecord1.id,
       bearer,
-      recordAndEdges(customerRecord1, []),
+      recordAndEdges(storedCustomerRecord1, []),
     )
 
     await expectRecordsByModelIdToMatch(
       tenantId,
       customerModel.id,
       bearer,
-      recordsAndEdges([customerRecord1], []),
+      recordsAndEdges([storedCustomerRecord1], []),
     )
   })
 
@@ -92,7 +96,7 @@ describe('with a migrated database', () => {
       bookingModel.id,
       bookingRecord1.id,
       bearer,
-      recordAndEdges(bookingRecord1, [booking1ToCustomer1]),
+      recordAndEdges(storedBookingRecord1, [booking1ToCustomer1]),
     )
 
     await expectRecordByIdToMatch(
@@ -100,21 +104,21 @@ describe('with a migrated database', () => {
       customerModel.id,
       customerRecord1.id,
       bearer,
-      recordAndEdges(customerRecord1, [booking1ToCustomer1]),
+      recordAndEdges(storedCustomerRecord1, [booking1ToCustomer1]),
     )
 
     await expectRecordsByModelIdToMatch(
       tenantId,
       customerModel.id,
       bearer,
-      recordsAndEdges([customerRecord1], [booking1ToCustomer1]),
+      recordsAndEdges([storedCustomerRecord1], [booking1ToCustomer1]),
     )
 
     await expectRecordsByModelIdToMatch(
       tenantId,
       bookingModel.id,
       bearer,
-      recordsAndEdges([bookingRecord1], [booking1ToCustomer1]),
+      recordsAndEdges([storedBookingRecord1], [booking1ToCustomer1]),
     )
   })
 
@@ -130,7 +134,7 @@ describe('with a migrated database', () => {
       bookingModel.id,
       bookingRecord1.id,
       bearer,
-      recordAndEdges(bookingRecord1, [booking1ToCustomer1]),
+      recordAndEdges(storedBookingRecord1, [booking1ToCustomer1]),
     )
 
     await expectRecordByIdToMatch(
@@ -138,7 +142,7 @@ describe('with a migrated database', () => {
       bookingModel.id,
       bookingRecord2.id,
       bearer,
-      recordAndEdges(bookingRecord2, [booking2ToCustomer1]),
+      recordAndEdges(storedBookingRecord2, [booking2ToCustomer1]),
     )
 
     await expectRecordByIdToMatch(
@@ -146,21 +150,24 @@ describe('with a migrated database', () => {
       customerModel.id,
       customerRecord1.id,
       bearer,
-      recordAndEdges(customerRecord1, [booking1ToCustomer1, booking2ToCustomer1]),
+      recordAndEdges(storedCustomerRecord1, [booking1ToCustomer1, booking2ToCustomer1]),
     )
 
     await expectRecordsByModelIdToMatch(
       tenantId,
       customerModel.id,
       bearer,
-      recordsAndEdges([customerRecord1], [booking1ToCustomer1, booking2ToCustomer1]),
+      recordsAndEdges([storedCustomerRecord1], [booking1ToCustomer1, booking2ToCustomer1]),
     )
 
     await expectRecordsByModelIdToMatch(
       tenantId,
       bookingModel.id,
       bearer,
-      recordsAndEdges([bookingRecord1, bookingRecord2], [booking1ToCustomer1, booking2ToCustomer1]),
+      recordsAndEdges(
+        [storedBookingRecord1, storedBookingRecord2],
+        [booking1ToCustomer1, booking2ToCustomer1],
+      ),
     )
   })
 
@@ -192,14 +199,14 @@ describe('with a migrated database', () => {
       customerModel.id,
       customerRecord1.id,
       bearer,
-      recordAndEdges(customerRecord1, []),
+      recordAndEdges(storedCustomerRecord1, []),
     )
 
     await expectRecordsByModelIdToMatch(
       tenantId,
       customerModel.id,
       bearer,
-      recordsAndEdges([customerRecord1], []),
+      recordsAndEdges([storedCustomerRecord1], []),
     )
 
     await expectRecordsByModelIdToMatch(

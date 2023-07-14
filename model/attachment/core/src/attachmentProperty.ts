@@ -6,19 +6,17 @@ import {
   propertyTypeFns,
 } from '@cozemble/model-core'
 
-export const attachmentPropertyType = propertyTypeFns.newInstance('attachment.property')
 
-export interface AttachmentProperty extends Property {
-  propertyType: { _type: 'property.type'; value: 'attachment.property' }
-  minAttachments?: number | null
-  maxAttachments?: number | null
-  accept?: string | null
-}
+export const attachmentPropertyType = propertyTypeFns.newInstance('attachment.property')
 
 export interface AttachmentPropertyConfiguration {
   minAttachments?: number | null
   maxAttachments?: number | null
   accept?: string | null
+}
+
+export interface AttachmentProperty extends Property, AttachmentPropertyConfiguration {
+  propertyType: { _type: 'property.type'; value: 'attachment.property' }
 }
 
 export function emptyProperty(name: string): AttachmentProperty {
@@ -34,10 +32,11 @@ export function emptyProperty(name: string): AttachmentProperty {
   }
 }
 
+// @ts-ignore
 export type AttachmentPropertyOption = Option<AttachmentProperty>
 
 function minAttachments(min: number | null): AttachmentPropertyOption {
-  return (property) => {
+  return (property: any) => {
     return {
       ...property,
       minAttachments: min,
@@ -46,7 +45,7 @@ function minAttachments(min: number | null): AttachmentPropertyOption {
 }
 
 function maxAttachments(max: number | null): AttachmentPropertyOption {
-  return (property) => {
+  return (property: any) => {
     return {
       ...property,
       maxAttachments: max,
@@ -55,7 +54,7 @@ function maxAttachments(max: number | null): AttachmentPropertyOption {
 }
 
 function accept(accept: string | null): AttachmentPropertyOption {
-  return (property) => {
+  return (property: any) => {
     return {
       ...property,
       accept,

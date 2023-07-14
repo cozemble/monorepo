@@ -2,7 +2,7 @@
 
     import type {FilterInstance} from "@cozemble/data-filters-core";
     import type {FilterActionHandler} from "@cozemble/data-filters-core";
-    import {onlyUserSelectedRhsValues} from "./onlyUserSelectedRhsValues";
+    import {onlyUserSelectedRhsValues} from "./onlyUserSelectedRhsValues.js";
     import RhsOptionTypePicker from "./RhsOptionTypePicker.svelte";
     import UserSelectedRhsValue from "./UserSelectedRhsValue.svelte";
 

@@ -1,5 +1,5 @@
 import { test, expect } from 'vitest'
-import { dates } from '../src'
+import { dates } from '../src/dates.js'
 
 test('can format a date as ISO 8601 string', () => {
   expect(dates.toIso8601DateOnlyString(new Date(2021, 0, 11))).toBe('2021-01-11')

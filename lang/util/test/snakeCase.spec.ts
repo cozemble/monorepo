@@ -1,5 +1,5 @@
 import { test, expect } from 'vitest'
-import { snakeCase } from '../src/string'
+import { snakeCase } from '../src/string.js'
 
 test('snake case is correct', () => {
   expect(snakeCase('')).toEqual('')

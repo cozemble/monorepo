@@ -21,9 +21,7 @@ export const addSlotToModel = async (modelStore: Readable<Model>) => {
   await methods.updateModel(
     allEventSourcedModels,
     model.id,
-    propertyDescriptors
-      .getDefault()
-      .newProperty(get(systemConfiguration), model.id, propertyNameFns.newInstance(fieldName)),
+    propertyDescriptors.getDefault().newProperty(model.id, propertyNameFns.newInstance(fieldName)),
   )
 }
 

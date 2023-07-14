@@ -3,14 +3,15 @@ import type { RecordControls, SubGraphCollectorsByRecordId } from './RecordContr
 import { subGraphCollectorFns } from './RecordControls'
 import type { Writable } from 'svelte/store'
 import type {
+  DataRecord,
   DataRecordId,
   Id,
   Model,
   RecordGraphEdge,
   SystemConfiguration,
 } from '@cozemble/model-core'
-import type { JustErrorMessage } from '@cozemble/lang-util'
-import { justErrorMessage } from '@cozemble/lang-util'
+import type { JustErrorMessage, SuccessfulOutcome } from '@cozemble/lang-util'
+import { justErrorMessage, objects } from '@cozemble/lang-util'
 import { modelFns } from '@cozemble/model-api'
 import type { ErrorVisibilityByRecordId } from './helpers'
 import type { RecordSaver } from '../backend/Backend'
@@ -54,6 +55,24 @@ export function makeRecordControls(
     return null
   }
 
+  function applyServerSideChanges(saveOutcome: SuccessfulOutcome<DataRecord[]>) {
+    recordGraph.update((graph) => {
+      return {
+        ...graph,
+        records: [
+          ...graph.records.map((esr) => {
+            const record =
+              saveOutcome.value.find((r) => r.id.value === esr.record.id.value) ?? esr.record
+            if (!objects.sameJson(esr.record, record)) {
+              return { ...esr, record }
+            }
+            return esr
+          }),
+        ],
+      }
+    })
+  }
+
   async function performRecordSave(
     saveFunction: (
       newRecord: EventSourcedDataRecord,
@@ -83,7 +102,7 @@ export function makeRecordControls(
       flattenedGraph.edges.map((e) => e.edge),
       flattenedGraph.deletedEdges.map((e) => e.edge.id),
     )
-
+    console.log({ saveOutcome })
     if (saveOutcome._type === 'unsuccessful.outcome') {
       if (saveOutcome.error._type === 'record.data.error') {
         return justErrorMessage(`Error saving record ${saveOutcome.error.recordId.value}`)
@@ -92,6 +111,7 @@ export function makeRecordControls(
       }
     }
     recordSaveTimestamp(lastSavedByRecordId, record)
+    applyServerSideChanges(saveOutcome)
     subGraphCollectorsByRecordId[recordId.value] = subGraphCollectorFns.empty()
     return null
   }

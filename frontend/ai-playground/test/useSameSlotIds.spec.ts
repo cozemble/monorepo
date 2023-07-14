@@ -1,7 +1,6 @@
 import { expect, test } from 'vitest'
 import { modelFns, modelOptions } from '@cozemble/model-api'
 import { useSameSlotIds } from '../src/lib/generative/useSameSlotIds'
-import { nestedModelFns } from '@cozemble/model-api/dist/esm'
 
 test('nothing to do if model lists are empty', () => {
   const converted = useSameSlotIds([], [])

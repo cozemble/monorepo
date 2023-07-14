@@ -1,6 +1,6 @@
 import { propertyDescriptors } from '@cozemble/model-core'
-import { attachmentPropertyDescriptor } from './attachmentPropertyDescriptor'
-import { registerModelEvents } from './events'
+import { attachmentPropertyDescriptor } from './attachmentPropertyDescriptor.js'
+import { registerModelEvents } from './events.js'
 
 export {
   AttachmentProperty,
@@ -9,20 +9,21 @@ export {
   AttachmentPropertyOption,
   attachmentPropertyOptions,
   emptyProperty,
-} from './attachmentProperty'
+  AttachmentPropertyConfiguration,
+} from './attachmentProperty.js'
 
 export {
   attachmentPropertyDescriptor,
   AttachmentReference,
   AttachmentList,
   Size,
-} from './attachmentPropertyDescriptor'
+} from './attachmentPropertyDescriptor.js'
 
 export {
   registerModelEvents,
   newAttachmentPropertyModelEvent,
   attachmentModelChangedModelEvent,
-} from './events'
+} from './events.js'
 
 export function registerAttachmentProperty() {
   propertyDescriptors.register(attachmentPropertyDescriptor)

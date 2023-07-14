@@ -1,8 +1,8 @@
 <script lang="ts">
     import {type AttachmentProperty, emptyProperty, registerAttachmentProperty} from "@cozemble/model-attachment-core";
     import {
-        type Model, type
-            ModelView, systemConfigurationFns
+        type DataRecord, type Model, type
+            ModelView, type PropertyDescriptor, systemConfigurationFns
     } from "@cozemble/model-core";
     import {dataRecordFns, dataRecordValuePathFns, modelFns, modelOptions} from "@cozemble/model-api";
     import type {DataRecordEditorClient, UploadedAttachment} from "@cozemble/data-editor-sdk";
@@ -10,16 +10,18 @@
     import type {JustErrorMessage} from "@cozemble/lang-util";
     import {AttachmentPropertyEditor} from "$lib";
     import AttachmentPropertyViewer from "$lib/AttachmentPropertyViewerWrapper.svelte";
-    import {propertyDescriptors} from "@cozemble/model-core";
     import {dataRecordEditEvents} from "@cozemble/model-event-sourced";
+    import {onMount} from "svelte";
 
     registerAttachmentProperty()
     const property: AttachmentProperty = emptyProperty("Pictures")
     const systemConfiguration = systemConfigurationFns.empty()
     const recordPath = dataRecordValuePathFns.newInstance(property)
     const model = modelFns.newInstance("Test model", modelOptions.withSlot(property))
-    const record = dataRecordFns.random(systemConfiguration, [model], model)
-    const propertyDescriptor = propertyDescriptors.mandatory(property)
+    // const record = dataRecordFns.random(systemConfiguration, [model], model)
+    let record: DataRecord | null = null
+    let propertyDescriptor: PropertyDescriptor | null = null
+    // const propertyDescriptor = propertyDescriptors.mandatory(property)
 
     let showEditor = false
 
@@ -118,10 +120,10 @@
 
     dataRecordViewerHost.setClient(viewer)
 
-    $: value = propertyDescriptor.getValue(systemConfiguration, property, record) ?? null
+    $: value = (record && propertyDescriptor) ? (propertyDescriptor.getValue(systemConfiguration, property, record) ?? null) : null
 
     function changeHandler(newValue: any | null, submitEvent: KeyboardEvent | null) {
-        if (newValue !== value) {
+        if (newValue !== value && record) {
             dataRecordEditorClient.dispatchEditEvent(
                 dataRecordEditEvents.valueChanged(
                     record,
@@ -134,29 +136,33 @@
         }
     }
 
+    onMount(() => record = dataRecordFns.random(systemConfiguration, [model], model))
+
 
 </script>
 
-<div class="m-4">
-    <table class="table">
-        <tr>
-            <td class="border">Left</td>
-            <td class="border">
-                <div class="m-4 flex" on:click={onShowEditor}>
-                    <div>
-                        {#if showEditor}
-                            <div>
-                                <AttachmentPropertyEditor {value} {changeHandler}/>
-                            </div>
-                        {:else}
-                            <div class="w-full h-full">
-                                <AttachmentPropertyViewer {record} {recordPath} {systemConfiguration}/>
-                            </div>
-                        {/if}
+{#if record}
+    <div class="m-4">
+        <table class="table">
+            <tr>
+                <td class="border">Left</td>
+                <td class="border">
+                    <div class="m-4 flex" on:click={onShowEditor}>
+                        <div>
+                            {#if showEditor}
+                                <div>
+                                    <AttachmentPropertyEditor {value} {changeHandler}/>
+                                </div>
+                            {:else}
+                                <div class="w-full h-full">
+                                    <AttachmentPropertyViewer {record} {recordPath} {systemConfiguration}/>
+                                </div>
+                            {/if}
+                        </div>
                     </div>
-                </div>
-            </td>
-            <td class="border">Right</td>
-        </tr>
-    </table>
-</div>
+                </td>
+                <td class="border">Right</td>
+            </tr>
+        </table>
+    </div>
+{/if}

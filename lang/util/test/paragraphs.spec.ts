@@ -1,5 +1,5 @@
 import { test, expect } from 'vitest'
-import { strings } from '../src'
+import { strings } from '../src/index.js'
 
 test('can deal with empty content', () => {
   const paras = strings.paragraphs(

@@ -1,5 +1,5 @@
 import { Request, Response, Router } from 'express'
-import { withAdminPgClient } from '../../infra/postgresPool'
+import { withAdminPgClient } from '../../infra/postgresPool.js'
 
 const router: Router = Router()
 

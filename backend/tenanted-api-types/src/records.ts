@@ -1,5 +1,4 @@
-import { Id, RecordGraphEdge } from '@cozemble/model-core'
-import { DataRecord } from '@cozemble/model-core'
+import { DataRecord, Id, RecordGraphEdge } from '@cozemble/model-core'
 
 export type JsonPath = string[]
 
@@ -55,5 +54,22 @@ export function fetchedRecords(
     queryPages,
     totalCount,
     totalPages,
+  }
+}
+
+export interface SuccessfulSaveResponse {
+  _type: 'success'
+  edgesResult: {
+    _type: 'success'
+    updatedCount: number
+    insertedCount: number
+  }
+  recordResult: {
+    _type: 'success'
+    updatedRecords: DataRecord[]
+    insertedRecords: DataRecord[]
+  }
+  deletedEdgesResult: {
+    edge_ids: string[]
   }
 }

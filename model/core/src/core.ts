@@ -1,7 +1,7 @@
 import { clock, type Option, uuids } from '@cozemble/lang-util'
-import { propertyDescriptors } from './propertyDescriptor'
-import { SystemConfiguration } from './systemConfiguration'
-import { TinyValue } from './TinyValue'
+import { propertyDescriptors } from './propertyDescriptor.js'
+import { SystemConfiguration } from './systemConfiguration.js'
+import { TinyValue } from './TinyValue.js'
 
 export type PropertyType = TinyValue<'property.type'>
 
@@ -417,6 +417,7 @@ export interface UserId extends TinyValue {
 export interface DataRecord {
   _type: 'data.record'
   id: DataRecordId
+  seqId?: number
   modelId: ModelId
   createdMillis: TimestampEpochMillis
   updatedMillis: TimestampEpochMillis
@@ -478,7 +479,9 @@ export const dottedNameFns = {
   },
 }
 
+// @ts-ignore
 export type ModelOption = Option<Model>
+// @ts-ignore
 export type PropertyOption = Option<Property>
 
 export function emptyModel(name: string | ModelName): Model {

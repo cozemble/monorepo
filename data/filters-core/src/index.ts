@@ -1,4 +1,4 @@
-export { filterActions, FilterAction, FilterActionHandler } from './actions'
+export { filterActions, FilterAction, FilterActionHandler } from './actions.js'
 
 export {
   FilterGroupList,
@@ -30,12 +30,12 @@ export {
   RealWorldRhsOption,
   realWorldRhsOption,
   postgresComparatorTemplateFns,
-} from './types'
+} from './types.js'
 
 export {
   partiallyAppliedFilterGroupListReducer,
   FilterGroupListReducer,
-} from './filterGroupListReducer'
+} from './filterGroupListReducer.js'
 
 export {
   beforeFilterOperator,
@@ -49,4 +49,4 @@ export {
   isNotNullFilterOperator,
   containsFilterOperator,
   startsWithFilterOperator,
-} from './operators'
+} from './operators.js'

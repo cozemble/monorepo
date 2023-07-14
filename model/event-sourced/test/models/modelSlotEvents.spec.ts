@@ -8,7 +8,7 @@ import {
   Property,
 } from '@cozemble/model-core'
 import { modelFns, modelOptions, propertyFns } from '@cozemble/model-api'
-import { modelSlotEvents } from '../../src'
+import { modelSlotEvents } from '../../src/index.ts'
 
 describe('given a model with a property', () => {
   let model: Model

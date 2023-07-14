@@ -11,7 +11,6 @@
     "test": "svelte-check --tsconfig ./tsconfig.json --threshold error"
   },
   "devDependencies": {
-    "@originjs/vite-plugin-commonjs": "^1.0.3",
     "@sveltejs/adapter-auto": "^1.0.0",
     "@sveltejs/kit": "^1.0.0",
     "autoprefixer": "^10.4.13",
@@ -21,7 +20,7 @@
     "tailwindcss": "^3.2.4",
     "tslib": "^2.4.1",
     "typescript": "^5.0.2",
-    "vite": "4.1.4"
+    "vite": "4.4.3"
   },
   "type": "module",
   "dependencies": {
@@ -42,7 +41,7 @@
     "@cozemble/model-event-sourced": "workspace:*",
     "@cozemble/model-to-json": "workspace:*",
     "@cozemble/ui-filter-editor": "workspace:*",
-    "@cozemble/data-editor": "workspace:*",
+    "@cozemble/frontend-json-schema-form": "workspace:*",
     "@tailwindcss/typography": "^0.5.9",
     "ajv": "^8.12.0",
     "axios": "^1.2.3",

@@ -5,7 +5,7 @@ import {
   EventSourcedModelList,
   eventSourcedModelListEvents,
   eventSourcedModelListFns,
-} from '../../src'
+} from '../../src/index.js'
 import {
   ModelReference,
   modelReferenceFns,

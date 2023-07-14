@@ -2,15 +2,15 @@ import type {
   JsonSchema,
   JsonSchemaProperty,
   Model,
-  ModelId,
   ModelSlot,
   NestedModel,
   Property,
 } from '@cozemble/model-core'
 import { strings } from '@cozemble/lang-util'
 import { modelFns } from '@cozemble/model-api'
+import type { AttachmentProperty } from '@cozemble/model-attachment-core'
 
-function basicJsonProperty(property: Property): JsonSchemaProperty {
+function basicProperty(property: Property): JsonSchemaProperty {
   const propertyType = property.propertyType
   switch (propertyType.value) {
     case 'json.string.property':
@@ -29,13 +29,19 @@ function basicJsonProperty(property: Property): JsonSchemaProperty {
       return { type: 'string', format: 'phone' }
     case 'json.email.property':
       return { type: 'string', format: 'email' }
+    case 'attachment.property':
+      return {
+        type: 'string',
+        contentEncoding: 'base64',
+        contentMediaType: (property as AttachmentProperty).accept ?? 'application/octet-stream',
+      }
     default:
       throw new Error(`Unknown property type: ${propertyType.value}`)
   }
 }
 
 function propertyToJsonDataType(property: Property): JsonSchemaProperty {
-  const jsonProperty = basicJsonProperty(property)
+  const jsonProperty = basicProperty(property)
   if (property.unique) {
     jsonProperty.unique = true
   }

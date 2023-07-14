@@ -63,10 +63,10 @@ export {
   LeafModelSlotId,
   modelReferenceValuePlaceholder,
   dottedNameFns,
-} from './core'
+} from './core.js'
 
-export { propertyDescriptors } from './propertyDescriptor'
-export { PropertyDescriptor } from './propertyDescriptor'
+export { propertyDescriptors } from './propertyDescriptor.js'
+export { PropertyDescriptor } from './propertyDescriptor.js'
 
 export {
   ModelEvent,
@@ -75,9 +75,9 @@ export {
   ModelEventId,
   modelEventIdFns,
   modelEventFns,
-} from './events'
+} from './events.js'
 
-export { propertyIdFns } from './propertyIdFns'
+export { propertyIdFns } from './propertyIdFns.js'
 
 export {
   ModelHtmlTemplate,
@@ -88,9 +88,9 @@ export {
   modelViewFns,
   NamingView,
   summaryViewFns,
-} from './views'
+} from './views.js'
 
-export { SystemConfiguration, systemConfigurationFns } from './systemConfiguration'
+export { SystemConfiguration, systemConfigurationFns } from './systemConfiguration.js'
 
 export {
   recordGraphEdgeFns,
@@ -102,11 +102,11 @@ export {
   recordAndEdges,
   RecordsAndEdges,
   recordsAndEdges,
-} from './graph'
+} from './graph.js'
 
-export { Id, tinyValueFns, TinyValue, Name } from './TinyValue'
+export { Id, tinyValueFns, TinyValue, Name } from './TinyValue.js'
 
-export { modelIdFns } from './modelIdFns'
+export { modelIdFns } from './modelIdFns.js'
 
 export {
   JsonDataType,
@@ -120,4 +120,4 @@ export {
   jsonPropertyDescriptorFns,
   JsonSchemaProperty,
   JsonDataTypes,
-} from './JsonPropertyDescriptor'
+} from './JsonPropertyDescriptor.js'

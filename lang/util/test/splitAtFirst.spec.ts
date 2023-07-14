@@ -1,5 +1,5 @@
 import { test, expect } from 'vitest'
-import { splitAtFirst } from '../src/string'
+import { splitAtFirst } from '../src/string.js'
 
 test('deals with empty string', () => {
   expect(splitAtFirst(':', '')).toEqual(['', ''])

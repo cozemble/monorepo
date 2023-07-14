@@ -1,15 +1,17 @@
 <script lang="ts">
     import type {Model, Property} from '@cozemble/model-core'
     import {propertyDescriptors,} from '@cozemble/model-core'
-    import {propertyConfigurerRegistry} from '@cozemble/model-assembled'
+    import {propertyConfigurerRegistry} from '@cozemble/model-registries'
     import type {EventSourcedModelList} from "@cozemble/model-event-sourced";
     import {coreModelEvents, eventSourcedModelListFns} from '@cozemble/model-event-sourced'
     import type {Writable} from "svelte/store";
+    import {editorClient} from "@cozemble/model-editor-sdk";
 
     export let modelList: Writable<EventSourcedModelList>
     export let model: Model
     export let property: Property
 
+    const errorState = editorClient.getErrorState()
     $:propertyDescriptor = propertyDescriptors.get(property.propertyType) ?? null
 
     function onModelChangedEvent(event: CustomEvent) {
@@ -47,5 +49,6 @@
 {/if}
 
 {#if configurer}
-    <svelte:component this={configurer} {model} {property} on:modelChanged={onModelChangedEvent}/>
+    <svelte:component this={configurer} {model} {property} showErrors={$errorState.showErrors}
+                      on:modelChanged={onModelChangedEvent}/>
 {/if}

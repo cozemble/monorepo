@@ -1,9 +1,9 @@
 import { uuids } from '@cozemble/lang-util'
 import type { PoolClient } from 'pg'
 import jwt from 'jsonwebtoken'
-import { mandatoryEnv } from '../infra/loadEnv'
-import { db, User } from './db'
-import { GithubUser } from './githubAuth'
+import { mandatoryEnv } from '../infra/loadEnv.js'
+import { db, User } from './db.js'
+import { GithubUser } from './githubAuth.js'
 
 export async function newSessionTokens(pg: PoolClient, env: string, user: User, userPool: string) {
   const payload = {

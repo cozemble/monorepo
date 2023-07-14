@@ -5,16 +5,16 @@ import {
   invoiceModel,
   invoiceModels,
   lineItemModel,
-} from './invoiceModel'
+} from './invoiceModel.js'
 
-export { modelFns, modelOptions } from './modelsFns'
-export { propertyFns, propertyOptions } from './propertyFns'
-export { dataRecordFns } from './dataRecordFns'
-export { dataRecordValuePathFns } from './dataRecordValuePathFns'
-export { nestedModelFns } from './nestedModelFns'
-export { modelPathFns } from './modelPathFns'
-export { valuesForModelPathFns } from './valuesForModelPath'
-export { dataRecordPathElementFns } from './dataRecordPathElementFns'
+export { modelFns, modelOptions } from './modelsFns.js'
+export { propertyFns, propertyOptions } from './propertyFns.js'
+export { dataRecordFns } from './dataRecordFns.js'
+export { dataRecordValuePathFns } from './dataRecordValuePathFns.js'
+export { nestedModelFns } from './nestedModelFns.js'
+export { modelPathFns } from './modelPathFns.js'
+export { valuesForModelPathFns } from './valuesForModelPath.js'
+export { dataRecordPathElementFns } from './dataRecordPathElementFns.js'
 
 export const testExports = {
   customerModel,

@@ -8,9 +8,9 @@ import {
   PropertyName,
   PropertyType,
   propertyTypeFns,
-} from './core'
-import { ModelEvent } from './events'
-import { SystemConfiguration } from './systemConfiguration'
+} from './core.js'
+import { ModelEvent } from './events.js'
+import { SystemConfiguration } from './systemConfiguration.js'
 
 /**
  * This is the interface that all property descriptors must implement, and is the means of adding properties
@@ -51,12 +51,7 @@ export interface PropertyDescriptor<P = any, V = any> {
   name: DottedName
   isRequireable: boolean
   isUniqueable: boolean
-  newProperty: (
-    systemConfiguration: SystemConfiguration,
-    modelId: ModelId,
-    propertyName: PropertyName,
-    propertyId?: PropertyId,
-  ) => ModelEvent
+  newProperty: (modelId: ModelId, propertyName: PropertyName, propertyId?: PropertyId) => ModelEvent
 
   validateProperty(property: P): Map<string, string>
 
@@ -90,10 +85,13 @@ export const propertyDescriptors = {
       registeredProperties.push(descriptor)
     }
   },
-  get: (propertyType: PropertyType): PropertyDescriptor | null => {
-    return (
-      registeredProperties.find((p) => propertyTypeFns.equals(p.propertyType, propertyType)) ?? null
-    )
+  get: (propertyType: PropertyType | string): PropertyDescriptor | null => {
+    const typedPropertyType =
+      typeof propertyType === 'string' ? propertyTypeFns.newInstance(propertyType) : propertyType
+    const result =
+      registeredProperties.find((p) => propertyTypeFns.equals(p.propertyType, typedPropertyType)) ??
+      null
+    return result
   },
   mandatory: (p: Property | PropertyType): PropertyDescriptor => {
     const propertyType = p._type === 'property' ? p.propertyType : p
@@ -104,7 +102,7 @@ export const propertyDescriptors = {
       }, available types are ${registeredProperties.map((rp) => rp.propertyType.value).join(', ')}`,
     )
   },
-  list: () => {
+  list: (): PropertyDescriptor[] => {
     return registeredProperties
   },
   getDefault(): PropertyDescriptor {

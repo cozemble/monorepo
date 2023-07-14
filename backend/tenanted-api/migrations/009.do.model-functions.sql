@@ -1,3 +1,11 @@
+CREATE TABLE sequence_name_mapping
+(
+    sequence_name TEXT PRIMARY KEY,
+    env           TEXT,
+    tenant_id     LTREE,
+    model_id      TEXT
+);
+
 create function put_tenant_info(given_env text, tenant_id_var ltree, models_and_events json) returns void
     language plpgsql
 as
@@ -10,7 +18,7 @@ DECLARE
     event_definition   json;
     i                  int;
     j                  int;
-    unique_paths_var       text[];
+    unique_paths_var   text[];
 BEGIN
 
     -- Loop over the models and insert them
@@ -28,12 +36,26 @@ BEGIN
                 -- Check if the model exists
                 IF EXISTS(SELECT 1 FROM model WHERE id = model_id_var and env = given_env) THEN
                     -- Update the model
-                    UPDATE model SET name = model_info -> 'name' ->> 'value', definition = model_info, unique_paths = unique_paths_var, updated_at = NOW() WHERE id = model_id_var;
+                    UPDATE model
+                    SET name         = model_info -> 'name' ->> 'value',
+                        definition   = model_info,
+                        unique_paths = unique_paths_var,
+                        updated_at   = NOW()
+                    WHERE id = model_id_var;
                 ELSE
                     -- Insert the model
-                    INSERT INTO model (env,id, name, definition, tenant, unique_paths)
-                    VALUES (given_env,model_id_var, model_info -> 'name' ->> 'value', model_info,
+                    INSERT INTO model (env, id, name, definition, tenant, unique_paths)
+                    VALUES (given_env, model_id_var, model_info -> 'name' ->> 'value', model_info,
                             tenant_id_var::ltree, unique_paths_var);
+                    -- Create a sequence for this env-tenant-model combination
+                    EXECUTE format('CREATE SEQUENCE %I MINVALUE 1', 'seq_' || md5(given_env || '_' ||
+                                                                                  replace(tenant_id_var::text, '.', '_') ||
+                                                                                  '_' || model_id_var));
+                    -- Insert a row in the mapping table
+                    INSERT INTO sequence_name_mapping (sequence_name, env, tenant_id, model_id)
+                    VALUES ('seq_' ||
+                            md5(given_env || '_' || replace(tenant_id_var::text, '.', '_') || '_' || model_id_var),
+                            given_env, tenant_id_var, model_id_var);
                 END IF;
                 delete from model_event me where me.model_id = model_id_var and me.env = given_env;
 
@@ -46,8 +68,8 @@ BEGIN
                             model_event_id_var := event_definition -> 'id' ->> 'value';
 
                             -- Insert the model event
-                            INSERT INTO model_event (env,id, definition, model_id, tenant)
-                            VALUES (given_env,model_event_id_var, event_definition, model_id_var,
+                            INSERT INTO model_event (env, id, definition, model_id, tenant)
+                            VALUES (given_env, model_event_id_var, event_definition, model_id_var,
                                     tenant_id_var::ltree);
                         END LOOP;
                 END IF;
@@ -67,14 +89,16 @@ BEGIN
                            'name', t.name,
                            'models', (COALESCE((SELECT json_agg(m.definition)
                                                 FROM model m
-                                                WHERE m.tenant = t.id and m.env = t.env), '[]')),
+                                                WHERE m.tenant = t.id
+                                                  and m.env = t.env), '[]')),
                            'events', (COALESCE((SELECT json_agg(me.definition)
                                                 FROM model_event me
-                                                WHERE me.tenant = t.id and m.env = t.env), '[]'))
+                                                WHERE me.tenant = t.id
+                                                  and me.env = t.env), '[]'))
                        )
             FROM tenant t
             WHERE t.id = tenant_id
-            AND t.env = given_env
+              AND t.env = given_env
             GROUP BY t.id);
 END;
 $$ LANGUAGE plpgsql;

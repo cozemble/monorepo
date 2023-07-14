@@ -1,6 +1,6 @@
-import { Property } from './core'
-import { PropertyDescriptor } from './propertyDescriptor'
-import { TinyValue } from './TinyValue'
+import { Property } from './core.js'
+import { PropertyDescriptor } from './propertyDescriptor.js'
+import { TinyValue } from './TinyValue.js'
 
 export type JsonDataTypes =
   | 'string'
@@ -10,6 +10,7 @@ export type JsonDataTypes =
   | 'object'
   | 'array'
   | 'null'
+
 export type JsonDataType = TinyValue<'json.data.type', JsonDataTypes>
 
 export const jsonDataTypes = {
@@ -60,7 +61,7 @@ export type JsonSchemaProperty = {
   type?: JsonDataTypes
   title?: string
   description?: string
-  enum?: Array<string | number | boolean | null>
+  enum?: Array<string | number | boolean | null | any>
   properties?: Record<string, JsonSchemaProperty>
   items?: JsonSchemaProperty | JsonSchemaProperty[]
   required?: string[]
@@ -72,6 +73,9 @@ export type JsonSchemaProperty = {
   allOf?: JsonSchemaProperty[]
   minimum?: number
   pattern?: string
+  contentEncoding?: string
+  contentMediaType?: string
+
   [key: string]: any
 }
 
@@ -92,14 +96,37 @@ export const jsonSchemaFns = {
     delete newSchema.properties[propertyName]
     return newSchema
   },
+  requiredPropertiesOnly(schema: JsonSchema): JsonSchema {
+    return (schema.required ?? []).reduce(
+      (acc, propertyName) => {
+        return {
+          ...acc,
+          properties: { ...acc.properties, [propertyName]: schema.properties[propertyName] },
+        }
+      },
+      { ...schema, properties: {} },
+    )
+  },
+  optionalPropertiesOnly(schema: JsonSchema): JsonSchema {
+    return (schema.required ?? []).reduce(
+      (acc, propertyName) => {
+        delete acc.properties[propertyName]
+        return acc
+      },
+      { ...schema },
+    )
+  },
 }
 
 export interface JsonPropertyDescriptor<T extends JsonProperty, V, C = any>
   extends PropertyDescriptor<T, V> {
   isJsonPropertyDescriptor: true
+  jsonType: JsonDataType
   configurationSchema?: JsonSchema | null
   systemConfigurationSchema?: JsonSchema | null
   fixedConfiguration?: C
+
+  augmentConfigurationSchema(schema: JsonSchema): JsonSchema
 }
 
 export function isJsonPropertyDescriptor(obj: any): obj is JsonPropertyDescriptor<any, any> {

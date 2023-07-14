@@ -9,7 +9,7 @@
 
   // Cozemble
   import { customNaming } from '@cozemble/model-editor'
-  import { slotEditorRegistry, slotViewerRegistry } from '@cozemble/model-assembled'
+  import { slotEditorRegistry, slotViewerRegistry } from '@cozemble/model-registries'
 
   // stores
   import { setAllModelViews } from '../../stores/allModelViews'

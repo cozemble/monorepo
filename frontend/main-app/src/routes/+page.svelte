@@ -1,8 +1,8 @@
 <script lang="ts">
 
-    import {cozauth} from "../lib/auth/cozauth";
+    import {cozauth} from "../lib/auth/cozauth.js";
     import {onMount} from "svelte";
-    import {config} from "../lib/config";
+    import {config} from "../lib/config.js";
 
     function loginWithGithub() {
         const rootUrl = encodeURIComponent(`${window.location.protocol}//${window.location.host}`);

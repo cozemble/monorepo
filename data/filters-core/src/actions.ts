@@ -1,4 +1,4 @@
-import type { Conjunction, IdAndLabel } from './types'
+import type { Conjunction, IdAndLabel } from './types.js'
 
 export interface NewFilterInstanceAction {
   _type: 'new.filter.instance.action'

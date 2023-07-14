@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, test } from 'vitest'
-import { appWithTestContainer } from '../../src/appWithTestContainer'
-import { makeTenant, makeTenantMemberAccessToken, putModels, putRecords } from './testHelpers'
+import { appWithTestContainer } from '../../src/appWithTestContainer.ts'
+import { makeTenant, makeTenantMemberAccessToken, putModels, putRecords } from './testHelpers.ts'
 import { uuids } from '@cozemble/lang-util'
 import {
   DataRecord,
@@ -11,7 +11,7 @@ import {
   systemConfigurationFns,
 } from '@cozemble/model-core'
 import { dataRecordFns, modelFns, modelOptions, propertyFns } from '@cozemble/model-api'
-import { testEnv } from '../helper'
+import { testEnv } from '../helper.ts'
 import { registerJsonStringProperty } from '@cozemble/model-properties-core'
 
 const jwtSigningSecret = 'secret'
@@ -103,7 +103,6 @@ describe('Given a Customer with a Booking', () => {
 
   test('returns the booking records for customer with booking', async () => {
     const customerWithBooking = customerRecords[0]
-    console.log({ customerWithBooking })
     const response = await fetch(
       `http://localhost:${port}/${testEnv}/api/v1/tenant/${tenantId}/model/${bookingModel.id.value}/referencing/${customerWithBooking.id.value}`,
       {
@@ -114,6 +113,6 @@ describe('Given a Customer with a Booking', () => {
     )
     expect(response.status).toBe(200)
     const records = await response.json()
-    expect(records.records).toEqual([bookingRecords[0]])
+    expect(records.records).toEqual([{ ...bookingRecords[0], seqId: 1 }])
   })
 })
