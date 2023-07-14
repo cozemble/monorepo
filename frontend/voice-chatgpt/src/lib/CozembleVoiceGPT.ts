@@ -1,9 +1,9 @@
 import { voiceStore } from '$lib/store/store'
 
 export class CozembleVoiceGPT {
-  private mediaRecorder: MediaRecorder
+  private mediaRecorder: MediaRecorder | undefined
   private mediaChunks: BlobPart[] = []
-  private options: { type: 'audio/webm;codecs=opus' }
+  private options: { [key: string]: string } = { type: 'audio/webm;codecs=opus' }
 
   constructor(private stream: MediaStream) { }
 
@@ -25,7 +25,7 @@ export class CozembleVoiceGPT {
     }
   }
 
-  blobToBase64(blob) {
+  blobToBase64(blob: Blob) {
     const reader = new FileReader()
     reader.readAsDataURL(blob)
 
@@ -36,8 +36,8 @@ export class CozembleVoiceGPT {
     })
   }
 
-  async transcribe(audioBlob): Promise<string> {
-    const ll = await this.blobToBase64(audioBlob)
+  async transcribe(audioBlob: Blob): Promise<string> {
+    const ll = (await this.blobToBase64(audioBlob)) as string
     const audioData = ll.split(',')
 
     return new Promise((resolve, reject) => {
@@ -56,7 +56,7 @@ export class CozembleVoiceGPT {
   }
 
   start() {
-    this.mediaRecorder.start()
+    if (this.mediaRecorder) this.mediaRecorder.start()
   }
 
   stop() {
