@@ -25,9 +25,9 @@ import {
   toMap,
   unique,
   uniqueBy,
-} from './arrays'
-import { mapOf, toObject } from './maps'
-import { promiseOf, truthPoller } from './promises'
+} from './arrays.js'
+import { mapOf, toObject } from './maps.js'
+import { promiseOf, truthPoller } from './promises.js'
 import {
   basename,
   camelcaseToSentenceCase,
@@ -41,10 +41,10 @@ import {
   splitAtFirst,
   stripHtml,
   toJsonCase,
-} from './string'
-import { getQueryParams } from './urls'
-import { ErrorWithContext, mergeContext, mergeErrorContext, prependToMessage } from './errors'
-import { Selectable } from './selections'
+} from './string.js'
+import { getQueryParams } from './urls.js'
+import { ErrorWithContext, mergeContext, mergeErrorContext, prependToMessage } from './errors.js'
+import { Selectable } from './selections.js'
 import {
   containsObject,
   dropKeys,
@@ -59,13 +59,13 @@ import {
   set,
   typeAwareEqual,
   walkTo,
-} from './objects'
-import { LinePredicate, TextBlockParser } from './TextBlockParser'
-import { dates } from './dates'
-import { random } from './random'
-import { Debouncer } from './Debouncer'
-import { Counter } from './Counter'
-import { Stack } from './Stack'
+} from './objects.js'
+import { LinePredicate, TextBlockParser } from './TextBlockParser.js'
+import { dates } from './dates.js'
+import { random } from './random.js'
+import { Debouncer } from './Debouncer.js'
+import { Counter } from './Counter.js'
+import { Stack } from './Stack.js'
 
 export const arrays = {
   secondLast,
@@ -257,11 +257,11 @@ export {
   Stack,
 }
 
-export { numbers } from './numbers'
+export { numbers } from './numbers.js'
 
-export { partial1, partial2 } from './partial'
+export { partial1, partial2 } from './partial.js'
 
-export { JustErrorMessage, justErrorMessage, ErrorMessage, MaybeErrorMessage } from './errors'
+export { JustErrorMessage, justErrorMessage, ErrorMessage, MaybeErrorMessage } from './errors.js'
 
 export function identity<T = any>(t: T): T {
   return t
@@ -280,22 +280,22 @@ export {
   errorMessageAndCode,
   ErrorCode,
   errorCode,
-} from './errors'
+} from './errors.js'
 
-export { CorrelatedRequest, CorrelatedSession, correlation } from './correlation'
+export { CorrelatedRequest, CorrelatedSession, correlation } from './correlation.js'
 
-export { uuids } from './uuids'
+export { uuids } from './uuids.js'
 
-export { Option, options } from './options'
+export { Option, options } from './options.js'
 
-export { Clock, SystemClock, FixedClock, clock } from './clock'
+export { Clock, SystemClock, FixedClock, clock } from './clock.js'
 
-export { HeadAndTail, headAndTailFns } from './HeadAndTail'
+export { HeadAndTail, headAndTailFns } from './HeadAndTail.js'
 
-export { Value, value } from './value'
+export { Value, value } from './value.js'
 
-export { nanoids } from './nanoids'
+export { nanoids } from './nanoids.js'
 
-export { UnsuccessfulOutcome, Outcome, SuccessfulOutcome, outcomeFns } from './outcomes'
+export { UnsuccessfulOutcome, Outcome, SuccessfulOutcome, outcomeFns } from './outcomes.js'
 
-export { time } from './time'
+export { time } from './time.js'

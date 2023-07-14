@@ -1,6 +1,6 @@
 import { modelNameFns } from '@cozemble/model-core'
 import { expect, test } from 'vitest'
-import { coreModelEvents, eventSourcedModelFns } from '../../src'
+import { coreModelEvents, eventSourcedModelFns } from '../../src/index.js'
 
 test('addEvent applies the insertion order to each event', () => {
   let model = eventSourcedModelFns.newInstance(modelNameFns.newInstance('my model'))

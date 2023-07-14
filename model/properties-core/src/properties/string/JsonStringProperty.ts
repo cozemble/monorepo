@@ -17,7 +17,7 @@ import {
   propertyNameFns,
   type SystemConfiguration,
 } from '@cozemble/model-core'
-import { emptyProperty, NewJsonPropertyModelEvent } from '../events'
+import { emptyProperty, NewJsonPropertyModelEvent } from '../events.js'
 import { type Option, options } from '@cozemble/lang-util'
 
 export const stringPropertyConfigurationSchema: JsonSchema = {
@@ -27,9 +27,11 @@ export const stringPropertyConfigurationSchema: JsonSchema = {
   properties: {
     pattern: {
       type: 'string',
+      description: 'A regular expression that the text must match',
     },
     patternExplanation: {
       type: 'string',
+      description: 'Text to display to the user if the text does not match the pattern',
     },
     multipleLines: {
       type: 'boolean',
@@ -37,9 +39,11 @@ export const stringPropertyConfigurationSchema: JsonSchema = {
     },
     prefix: {
       type: 'string',
+      description: 'A prefix to be displayed before the text',
     },
     suffix: {
       type: 'string',
+      description: 'A suffix to be displayed after the text',
     },
   },
 }
@@ -53,6 +57,7 @@ export interface StringPropertyConfiguration {
   suffix?: string
 }
 
+// @ts-ignore
 export type JsonStringProperty = JsonProperty<
   typeof jsonDataTypes.string,
   string,
@@ -64,16 +69,17 @@ export const stringPropertyType: PropertyType = {
   value: 'json.string.property',
 }
 
+// @ts-ignore
 export const jsonStringPropertyDescriptor: JsonPropertyDescriptor<JsonStringProperty, string> = {
   _type: 'property.descriptor',
   isJsonPropertyDescriptor: true,
+  jsonType: jsonDataTypes.string,
   configurationSchema: stringPropertyConfigurationSchema,
   propertyType: stringPropertyType,
   name: dottedNameFns.newInstance('String'),
   isRequireable: true,
   isUniqueable: true,
   newProperty: (
-    systemConfiguration: SystemConfiguration,
     modelId: ModelId,
     propertyName: PropertyName,
     propertyId?: PropertyId,
@@ -140,6 +146,10 @@ export const jsonStringPropertyDescriptor: JsonPropertyDescriptor<JsonStringProp
   ): string | null => {
     return record.values[property.id.value] ?? null
   },
+
+  augmentConfigurationSchema: (schema: JsonSchema): JsonSchema => {
+    return schema
+  },
 }
 
 export function registerJsonStringProperty() {
@@ -147,6 +157,7 @@ export function registerJsonStringProperty() {
   propertyDescriptors.setDefault(jsonStringPropertyDescriptor)
 }
 
+// @ts-ignore
 export type JsonStringPropertyOption = Option<JsonStringProperty>
 
 export const jsonStringPropertyFns = {
@@ -156,16 +167,16 @@ export const jsonStringPropertyFns = {
   },
 }
 
-const required: JsonStringPropertyOption = (property) => {
+const required: JsonStringPropertyOption = (property: any) => {
   return { ...property, required: true }
 }
 
-const unique: JsonStringPropertyOption = (property) => {
+const unique: JsonStringPropertyOption = (property: any) => {
   return { ...property, unique: true }
 }
 
 function pattern(pattern: string, patternExplanation?: string): JsonStringPropertyOption {
-  return (property) => {
+  return (property: any) => {
     return {
       ...property,
       configuration: {

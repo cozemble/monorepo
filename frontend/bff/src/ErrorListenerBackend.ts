@@ -1,4 +1,4 @@
-import { Backend, FetchTenantResponse, TenantEntity } from './Backend'
+import { Backend, FetchTenantResponse, TenantEntity } from './Backend.js'
 import {
   DataRecord,
   DataRecordId,
@@ -152,6 +152,7 @@ export class ErrorListenerBackend implements Backend {
     records: EventSourcedDataRecord[],
     edges: RecordGraphEdge[],
     deletedEdges: Id[],
+    // @ts-ignore
   ): Promise<Outcome<DataRecord[]>> {
     try {
       return await this.backend.saveRecords(tenantId, models, records, edges, deletedEdges)

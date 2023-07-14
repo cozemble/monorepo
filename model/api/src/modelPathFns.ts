@@ -9,8 +9,8 @@ import type {
   ModelPathElement,
 } from '@cozemble/model-core'
 import { dottedPathFns, LeafModelSlot, SystemConfiguration } from '@cozemble/model-core'
-import { modelFns } from './modelsFns'
-import { valuesForModelPath, ValuesForModelPath } from './valuesForModelPath'
+import { modelFns } from './modelsFns.js'
+import { valuesForModelPath, ValuesForModelPath } from './valuesForModelPath.js'
 
 export interface DataRecordPathAndValue<T = any> {
   _type: 'data.record.path.and.value'

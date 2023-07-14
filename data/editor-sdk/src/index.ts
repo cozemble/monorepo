@@ -1,5 +1,5 @@
-export { dataRecordEditorHost, AttachmentIdAndFileName } from './dataRecordEditorHost'
-export { dataRecordEditor } from './dataRecordEditorHost'
+export { dataRecordEditorHost, AttachmentIdAndFileName } from './dataRecordEditorHost.js'
+export { dataRecordEditor } from './dataRecordEditorHost.js'
 export {
   DataRecordEditorClient,
   Size,
@@ -8,12 +8,12 @@ export {
   UserInstruction,
   SetupSummaryViewUserInstruction,
   RecordGraphModifier,
-} from './dataRecordEditorHost'
+} from './dataRecordEditorHost.js'
 
 export {
   dataRecordViewerHost,
   DataRecordViewerClient,
   dataRecordViewer,
-} from './dataRecordViewerHost'
+} from './dataRecordViewerHost.js'
 
-export { ModelViewManager } from './ModelViewManager'
+export { ModelViewManager } from './ModelViewManager.js'

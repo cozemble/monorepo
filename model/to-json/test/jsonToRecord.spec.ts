@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest'
 import { testExports } from '@cozemble/model-api'
-import { modelToJson } from '../src'
-import { jsonToRecord } from '../src/jsonToRecord'
+import { modelToJson } from '../src/index.js'
+import { jsonToRecord } from '../src/jsonToRecord.js'
 
 const invoiceModels = testExports.invoiceModels
 const invoiceModel = testExports.invoiceModel

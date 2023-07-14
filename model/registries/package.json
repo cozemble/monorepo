@@ -1,0 +1,20 @@
+{
+  "name": "@cozemble/model-registries",
+  "version": "1.0.0",
+  "main": "package/index.js",
+  "type": "module",
+  "types": "./src/index.d.ts",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "build": "npx tsc -p tsconfig.json",
+    "test": "echo NA"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.2"
+  },
+  "dependencies": {
+    "@cozemble/model-core": "workspace:*"
+  }
+}

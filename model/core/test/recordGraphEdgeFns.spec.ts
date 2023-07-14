@@ -5,7 +5,7 @@ import {
   modelReferenceFns,
   modelReferenceIdFns,
   recordGraphEdgeFns,
-} from '../src'
+} from '../src/index.js'
 
 describe('given a many-to-one model reference', () => {
   const originModelId = modelIdFns.newInstance('originModelId')

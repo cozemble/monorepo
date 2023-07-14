@@ -1,4 +1,4 @@
-import { Model, ModelId, timestampEpochMillis, TimestampEpochMillis } from './core'
+import { Model, ModelId, timestampEpochMillis, TimestampEpochMillis } from './core.js'
 import { uuids } from '@cozemble/lang-util'
 
 export interface ModelEventId {

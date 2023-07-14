@@ -1,7 +1,9 @@
 <script lang="ts">
 
+    import type {ChangeHandler} from "$lib";
+
     export let value: string | null
-    export let changeHandler: (value: string | null, submitEvent: KeyboardEvent | null) => void
+    export let changeHandler: ChangeHandler<string>
     export let closeHandler: () => void
 
     function dateChanged(event: Event) {

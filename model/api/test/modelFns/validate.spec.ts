@@ -5,7 +5,7 @@ import {
   modelFns,
   modelOptions,
   nestedModelFns,
-} from '../../src'
+} from '../../src/index.js'
 import type { NestedModel } from '@cozemble/model-core'
 import { systemConfigurationFns } from '@cozemble/model-core'
 import { registerJsonStringProperty } from '@cozemble/model-properties-core'

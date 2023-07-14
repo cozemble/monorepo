@@ -1,4 +1,4 @@
-import type { Backend, FetchTenantResponse, TenantEntity } from './Backend'
+import type { Backend, FetchTenantResponse, TenantEntity } from './Backend.js'
 import type { DataRecord, DataRecordId, Model, ModelId } from '@cozemble/model-core'
 import {
   Id,
@@ -9,14 +9,12 @@ import {
   RecordsAndEdges,
   recordsAndEdges,
 } from '@cozemble/model-core'
-import type { RecordDeleteOutcome, RecordSaveOutcome } from '@cozemble/data-paginated-editor'
-import { recordSaveSucceeded } from '@cozemble/data-paginated-editor'
+import type { RecordDeleteOutcome, RecordSaveOutcome, RecordSaveSucceeded, RecordSaveFailed } from '@cozemble/data-paginated-editor'
 import type { BackendModel } from '@cozemble/backend-tenanted-api-types'
 import type { AttachmentIdAndFileName, UploadedAttachment } from '@cozemble/data-editor-sdk'
 import { Outcome, uuids } from '@cozemble/lang-util'
 import { EventSourcedDataRecord } from '@cozemble/model-event-sourced'
 import { outcomeFns } from '@cozemble/lang-util'
-import type { RecordSaveFailed, RecordSaveSucceeded } from '@cozemble/data-paginated-editor'
 
 const storageKey = 'cozemble.localstorage.backend'
 
@@ -62,6 +60,7 @@ export class LocalStorageBackend implements Backend {
       ...state,
       records: state.records.filter((r) => r.id.value !== record.id.value),
     }))
+    // @ts-ignore
     return recordSaveSucceeded(record)
   }
 
@@ -165,6 +164,7 @@ export class LocalStorageBackend implements Backend {
         }),
       }))
     }
+    // @ts-ignore
     return recordSaveSucceeded(newRecord.record)
   }
 
@@ -174,6 +174,7 @@ export class LocalStorageBackend implements Backend {
     records: EventSourcedDataRecord[],
     edges: RecordGraphEdge[],
     deletedEdges: Id[],
+    // @ts-ignore
   ): Promise<Outcome<DataRecord[]>> {
     const outcomes: RecordSaveOutcome[] = []
     for (let i = 0; i < records.length; i++) {

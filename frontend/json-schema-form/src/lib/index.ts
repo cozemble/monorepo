@@ -1,1 +1,1 @@
-export const x = 1
+export { default as JsonSchemaForm } from './components/JsonSchemaForm.svelte'

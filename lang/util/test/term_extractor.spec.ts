@@ -1,5 +1,5 @@
 import { test, expect } from 'vitest'
-import { extractTerms } from '../src'
+import { extractTerms } from '../src/index.js'
 
 test('deals with empty strings', () => {
   expect(extractTerms('', '{', '}')).toHaveLength(0)

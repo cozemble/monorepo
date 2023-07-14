@@ -1,5 +1,5 @@
-import { modelFns, modelOptions } from './modelsFns'
-import { nestedModelFns } from './nestedModelFns'
+import { modelFns, modelOptions } from './modelsFns.js'
+import { nestedModelFns } from './nestedModelFns.js'
 import { NestedModel } from '@cozemble/model-core'
 import { jsonStringPropertyFns, jsonStringPropertyOptions } from '@cozemble/model-properties-core'
 

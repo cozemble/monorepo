@@ -1,9 +1,9 @@
 <script lang="ts">
     import {onMount} from 'svelte';
-    import {backend, setBackend} from "../../../../lib/backend/backendStore";
-    import {cozauth} from "../../../../lib/auth/cozauth";
+    import {backend, setBackend} from "../../../../lib/backend/backendStore.js";
+    import {cozauth} from "../../../../lib/auth/cozauth.js";
     import {LocalStorageBackend, RestBackend} from "@cozemble/frontend-bff";
-    import {accessTokenProvider, backendUrlProvider} from "../../../../lib/backend/adapters";
+    import {accessTokenProvider, backendUrlProvider} from "../../../../lib/backend/adapters.js";
 
     export let data: any;
     onMount(async () => {

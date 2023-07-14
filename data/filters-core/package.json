@@ -1,20 +1,21 @@
 {
   "name": "@cozemble/data-filters-core",
   "version": "1.0.0",
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
+  "main": "./dist/esm/index.js",
+  "type": "module",
+  "types": "./src/index.d.ts",
   "files": [
     "dist/"
   ],
   "scripts": {
-    "build": "npx tsc -p tsconfig.json && npx tsc -p tsconfig-cjs.json",
+    "build": "npx tsc -p tsconfig.json",
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest watch"
   },
   "devDependencies": {
     "typescript": "^5.0.2",
-    "vite": "4.1.4",
-    "vitest": "^0.26.2"
+    "vite": "4.4.3",
+    "vitest": "0.33.0"
   },
   "dependencies": {
     "@cozemble/lang-util": "workspace:*"

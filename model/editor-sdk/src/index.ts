@@ -1,1 +1,1 @@
-export { editorHost, editorClient, FormErrorState, emptyFormErrorState } from './propertyEditor'
+export { editorHost, editorClient, FormErrorState, emptyFormErrorState } from './propertyEditor.js'

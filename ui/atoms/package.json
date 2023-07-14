@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "svelte": "./package/index.js",
   "module": "./package/index.js",
-  "main": "./package/index.js",
   "types": "./package/index.d.ts",
   "scripts": {
     "dev": "vite dev",
@@ -21,7 +20,7 @@
     "svelte-check": "^2.9.2",
     "tslib": "^2.4.1",
     "typescript": "^5.0.2",
-    "vite": "4.1.4"
+    "vite": "4.4.3"
   },
   "type": "module",
   "dependencies": {}

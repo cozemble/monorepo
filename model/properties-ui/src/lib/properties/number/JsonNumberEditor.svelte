@@ -1,17 +1,18 @@
 <script lang="ts">
-    import type {JsonProperty} from "@cozemble/model-core";
     import GenericDecimalEditor from "./GenericDecimalEditor.svelte";
     import JsonIntegerEditor from "$lib/properties/number/JsonIntegerEditor.svelte";
+    import type {NumberPropertyConfiguration} from "@cozemble/model-properties-core";
+    import type {ChangeHandler} from "$lib";
 
-    export let property: JsonProperty
+    export let configuration: NumberPropertyConfiguration
     export let value: number | null
-    export let changeHandler: (value: number | null, submitEvent: KeyboardEvent | null) => void
+    export let changeHandler: ChangeHandler<number>
 
-    $: decimalPlaces = property.configuration?.decimalPlaces ?? 0
+    $: decimalPlaces = configuration?.decimalPlaces ?? 0
 </script>
 
 {#if decimalPlaces === 0}
     <JsonIntegerEditor {value} {changeHandler}/>
 {:else}
-    <GenericDecimalEditor {value} numberOfDecimalPlaces={property.configuration.decimalPlaces} {changeHandler}/>
+    <GenericDecimalEditor {value} numberOfDecimalPlaces={decimalPlaces} {changeHandler}/>
 {/if}

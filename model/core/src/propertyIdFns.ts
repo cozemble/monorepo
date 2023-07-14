@@ -1,5 +1,5 @@
 import { uuids } from '@cozemble/lang-util'
-import { PropertyId } from './core'
+import { PropertyId } from './core.js'
 
 export const propertyIdFns = {
   newInstance(value: string = uuids.v4()): PropertyId {

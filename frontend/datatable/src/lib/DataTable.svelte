@@ -7,7 +7,6 @@
     import type {Writable} from "svelte/store";
     import {writable} from "svelte/store";
     import {onMount} from "svelte";
-    import {slotEditorRegistry, slotViewerRegistry} from "@cozemble/model-assembled";
     import {setAllModelViews} from "./stores/allModelViews";
     import {recordFilteringComponentStore} from "./stores/recordFilteringComponentStore";
     import type {EventSourcedModelStore} from "./types";
@@ -15,6 +14,7 @@
     import {contextHelper} from "./stores/contextHelper";
     import ModelReferenceViewer from "$lib/records/modelReferences/ModelReferenceViewer.svelte";
     import ModelReferenceEditor from "$lib/records/modelReferences/ModelReferenceEditor.svelte";
+    import {slotEditorRegistry, slotViewerRegistry} from "@cozemble/model-registries";
 
     export let models: EventSourcedModelStore
     export let modelViews: Writable<ModelView[]>

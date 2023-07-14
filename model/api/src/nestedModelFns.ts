@@ -6,7 +6,7 @@ import {
   nestedModelIdFns,
   NestedModelName,
 } from '@cozemble/model-core'
-import { modelFns } from './modelsFns'
+import { modelFns } from './modelsFns.js'
 
 export const nestedModelFns = {
   newInstance: (

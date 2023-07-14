@@ -1,33 +1,46 @@
 <script lang="ts">
     import type {JsonSchema} from "@cozemble/model-core";
-    import {strings} from "@cozemble/lang-util";
+    import type {Writable} from "svelte/store";
+    import Label from "$lib/components/Label.svelte";
+    import MaybeErrorMessage from "$lib/components/MaybeErrorMessage.svelte";
+    import EnumSelector from "$lib/components/EnumSelector.svelte";
 
     export let schema: JsonSchema
-    export let value: any
+    export let value: Writable<any>
+    export let showErrors = false
+    export let errors: Map<string, string> = new Map<string, string>()
 
     function checkboxChanged(event: Event, propertyKey: string) {
-        value[propertyKey] = (event.target as HTMLInputElement).checked;
+        $value[propertyKey] = (event.target as HTMLInputElement).checked;
     }
 
     function handleCheckboxChange(propertyKey: string) {
         return (event: Event) => checkboxChanged(event, propertyKey);
     }
+
 </script>
 
 {#each Object.keys(schema.properties) as propertyKey}
     {@const property = schema.properties[propertyKey]}
     <div class="form-group mb-3">
         {#if property.type === "string"}
-            <label>{property.title ?? strings.camelcaseToSentenceCase(propertyKey)}</label>
-            <input type="text" class="form-control input input-bordered" bind:value={value[propertyKey]}/>
+            <Label {property} {propertyKey}/>
+            {#if property.enum}
+                <EnumSelector {property} {propertyKey} {value}/>
+            {:else}
+                <input type="text" class="form-control input input-bordered w-full {propertyKey}" bind:value={$value[propertyKey]}/>
+            {/if}
+            <MaybeErrorMessage key={propertyKey} {errors} {showErrors}/>
         {:else if property.type === "number"}
-            <label>{property.title ?? strings.camelcaseToSentenceCase(propertyKey)}</label>
-            <input type="number" class="form-control input input-bordered" bind:value={value[propertyKey]}/>
+            <Label {property} {propertyKey}/>
+            <input type="number" class="form-control input input-bordered w-full {propertyKey}" bind:value={$value[propertyKey]}/>
+            <MaybeErrorMessage key={propertyKey} {errors} {showErrors}/>
         {:else if property.type === "boolean"}
             <div class="flex">
-                <input type="checkbox" class="checkbox" checked={value[propertyKey] === true}
+                <input type="checkbox" class="checkbox {propertyKey}" checked={$value[propertyKey] === true}
                        on:change={handleCheckboxChange(propertyKey)}/>
-                <label class="ml-3">{property.title ?? strings.camelcaseToSentenceCase(propertyKey)}</label>
+                <Label {property} {propertyKey} clazz="ml-3"/>
+                <MaybeErrorMessage key={propertyKey} {errors} {showErrors}/>
             </div>
         {:else}
             to do: {property.type}

@@ -10,9 +10,11 @@
         properties: {
             pattern: {
                 type: 'string',
+                description: 'A regular expression that the text must match',
             },
             patternExplanation: {
                 type: 'string',
+                description: 'Text to display to the user if the text does not match the pattern',
             },
             multipleLines: {
                 type: 'boolean',
@@ -20,9 +22,30 @@
             },
             prefix: {
                 type: 'string',
+                description: 'A prefix to be displayed before the text',
             },
             suffix: {
                 type: 'string',
+                description: 'A suffix to be displayed after the text',
+            },
+            colour: {
+                type: 'string',
+                description: 'The colour of the text',
+                enum: [
+                    'black',
+                    'blue',
+                    'green',
+                    'orange',
+                    'purple',
+                    'red',
+                    'white',
+                    'yellow',
+                ],
+            },
+            numbers: {
+                type: 'string',
+                description: 'Numbers where selected value is an id',
+                enum:[{id:1, name:'one'}, {id:2, name:'two'}, {id:3, name:'three'}, {id:4, name:'four'}],
             },
         },
     }
@@ -32,7 +55,7 @@
 
 </script>
 <div>
-    <JsonSchemaForm schema={schema} bind:value={$value}/>
+    <JsonSchemaForm schema={schema} {value}/>
 </div>
 <div>
     <pre>{JSON.stringify($value, null, 2)}</pre>

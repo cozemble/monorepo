@@ -1,6 +1,6 @@
 import { Request, Response, Router } from 'express'
-import { withAdminPgClient } from '../infra/postgresPool'
-import { authenticatedDatabaseRequest } from '../infra/authenticatedDatabaseRequest'
+import { withAdminPgClient } from '../infra/postgresPool.js'
+import { authenticatedDatabaseRequest } from '../infra/authenticatedDatabaseRequest.js'
 import {
   BackendModel,
   CreateTenant,
@@ -9,7 +9,7 @@ import {
 } from '@cozemble/backend-tenanted-api-types'
 import { Model } from '@cozemble/model-core'
 import { modelFns, modelPathFns } from '@cozemble/model-api'
-import { formattedFilters } from './formattedFilters'
+import { formattedFilters } from './formattedFilters.js'
 import { mandatory } from '@cozemble/lang-util'
 
 const router: Router = Router()
@@ -116,7 +116,7 @@ function putRecords(req: Request, res: Response) {
     if (result.rows[0].records._type === 'error.conflict') {
       return res.status(409).json(result.rows[0].records)
     }
-    return res.status(200).json([])
+    return res.status(200).json(result.rows[0].records)
   })
 }
 

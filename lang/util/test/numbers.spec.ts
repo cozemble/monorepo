@@ -1,5 +1,5 @@
 import { test, expect } from 'vitest'
-import { toDecimalPlaces } from '../src/numbers'
+import { toDecimalPlaces } from '../src/numbers.js'
 
 test('can round to two decimal places', () => {
   expect(toDecimalPlaces(1, 1)).toBe(1)

@@ -16,7 +16,7 @@ import {
   type PropertyName,
   type SystemConfiguration,
 } from '@cozemble/model-core'
-import { NewJsonPropertyModelEvent } from '../events'
+import { NewJsonPropertyModelEvent } from '../events.js'
 
 export const numberPropertyConfigurationSchema: JsonSchema = {
   $schema: 'http://json-schema.org/draft-07/schema#',
@@ -45,6 +45,7 @@ export interface NumberPropertyConfiguration {
 
 const emptyNumberPropertyConfiguration = {}
 
+// @ts-ignore
 export type JsonNumberProperty = JsonProperty<
   typeof jsonDataTypes.number,
   number,
@@ -56,16 +57,17 @@ export const numberPropertyType: PropertyType = {
   value: 'json.number.property',
 }
 
+// @ts-ignore
 export const jsonNumberPropertyDescriptor: JsonPropertyDescriptor<JsonNumberProperty, number> = {
   _type: 'property.descriptor',
   isJsonPropertyDescriptor: true,
+  jsonType: jsonDataTypes.number,
   configurationSchema: numberPropertyConfigurationSchema,
   propertyType: numberPropertyType,
   name: dottedNameFns.newInstance('Number'),
   isRequireable: true,
   isUniqueable: true,
   newProperty: (
-    systemConfiguration: SystemConfiguration,
     modelId: ModelId,
     propertyName: PropertyName,
     propertyId?: PropertyId,
@@ -132,6 +134,10 @@ export const jsonNumberPropertyDescriptor: JsonPropertyDescriptor<JsonNumberProp
     record: DataRecord,
   ): number | null => {
     return record.values[property.id.value] ?? null
+  },
+
+  augmentConfigurationSchema: (schema: JsonSchema): JsonSchema => {
+    return schema
   },
 }
 

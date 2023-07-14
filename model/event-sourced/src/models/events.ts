@@ -20,6 +20,7 @@ import {
   PropertyName,
 } from '@cozemble/model-core'
 import { nestedModelFns } from '@cozemble/model-api'
+import { ModelSlot } from '@cozemble/model-core'
 
 export interface ModelRenamed extends ModelEvent {
   _type: 'model.renamed.event'
@@ -75,6 +76,12 @@ export interface SlotRenamed extends ModelEvent {
   newName: ModelSlotName
 }
 
+export interface SlotChanged extends ModelEvent {
+  _type: 'slot.changed.event'
+  modelSlotId: ModelSlotId
+  changedSlot: ModelSlot
+}
+
 function slotRenamed(
   modelId: ModelId,
   modelSlotId: ModelSlotId,
@@ -85,6 +92,19 @@ function slotRenamed(
     ...modelEventFns.coreParts(modelId),
     modelSlotId,
     newName,
+  }
+}
+
+function slotChanged(
+  modelId: ModelId,
+  modelSlotId: ModelSlotId,
+  changedSlot: ModelSlot,
+): SlotChanged {
+  return {
+    _type: 'slot.changed.event',
+    ...modelEventFns.coreParts(modelId),
+    modelSlotId,
+    changedSlot,
   }
 }
 
@@ -103,6 +123,23 @@ const modelSlotRenamedDescriptor: ModelEventDescriptor<SlotRenamed> = {
             }
           }
           throw new Error(`Cannot rename a model slot of type ${slot._type}`)
+        } else {
+          return slot
+        }
+      }),
+    }
+  },
+}
+
+const modelSlotChangedDescriptor: ModelEventDescriptor<SlotChanged> = {
+  _type: 'model.event.descriptor',
+  modelEventType: 'slot.changed.event',
+  applyEvent: (model, event) => {
+    return {
+      ...model,
+      slots: model.slots.map((slot) => {
+        if (slot.id.value === event.modelSlotId.value) {
+          return event.changedSlot
         } else {
           return slot
         }
@@ -257,11 +294,13 @@ modelEventDescriptors.register(modelSlotRenamedDescriptor)
 modelEventDescriptors.register(nestedModelAddedDescriptor)
 modelEventDescriptors.register(nestedModelRenamedDescriptor)
 modelEventDescriptors.register(booleanPropertyChangeDescriptor)
+modelEventDescriptors.register(modelSlotChangedDescriptor)
 
 export const coreModelEvents = {
   modelRenamed,
   modelPluralRenamed,
   slotRenamed,
+  slotChanged,
   nestedModelAdded,
   nestedModelRenamed,
   modelCreated,

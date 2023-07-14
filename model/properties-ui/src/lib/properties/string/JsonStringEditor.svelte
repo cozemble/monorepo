@@ -1,11 +1,12 @@
 <script lang="ts">
     import GenericStringEditor from "./GenericStringEditor.svelte";
-    import type {JsonProperty} from "@cozemble/model-core";
+    import type {StringPropertyConfiguration} from "@cozemble/model-properties-core";
+    import type {ChangeHandler} from "$lib";
 
-    export let property: JsonProperty
+    export let configuration: StringPropertyConfiguration
     export let value: string | null
-    export let changeHandler: (value: string | null, submitEvent: KeyboardEvent | null) => void
+    export let changeHandler: ChangeHandler<string>
     export let closeHandler: () => void
 </script>
 
-<GenericStringEditor {value} multiline={property.configuration.multiline} {changeHandler} {closeHandler}/>
+<GenericStringEditor {value} multiline={configuration.multipleLines === true} {changeHandler} {closeHandler}/>
