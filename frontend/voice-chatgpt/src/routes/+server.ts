@@ -1,9 +1,6 @@
-import { error, type RequestEvent } from '@sveltejs/kit'
-import { Configuration, OpenAIApi } from 'openai'
-import { Readable } from 'stream'
+import { error, type RequestEvent, type RequestHandler } from '@sveltejs/kit'
+import OpenAI, { toFile } from 'openai' // Configuration, OpenAIApi, type CreateTranscriptionResponse
 import { mandatory } from '@cozemble/lang-util'
-import fs from 'node:fs'
-import ffmpeg from 'fluent-ffmpeg'
 
 type OpenAiCreds = {
   organization: string
@@ -17,44 +14,54 @@ const getOpenApiCred = (): OpenAiCreds => {
   }
 }
 
-// Transcribe
-export const POST = async (event: RequestEvent) => {
+// Using JSON & Readble
+export const POST: RequestHandler = async (event: RequestEvent) => {
   const data = await event.request.json()
   if (!data) {
     throw error(400, 'No data provided')
   }
 
-  const audioBuffer = Buffer.from(data, 'base64')
-
-  const fileStream = Readable.from(audioBuffer)
-  // @ts-expect-error Workaround till OpenAI fixed the sdk
-  fileStream.path = 'audio.mp3'
-
-  // Use ffmpeg to convert base64decode to mpga/m4a/wav/webm
-  // const stream = fs.createReadStream(audioBuffer)
-
-  // ;(function () {
-  //   new Promise((resolve, reject) => {
-  //     ffmpeg(stream)
-  //       .toFormat('mp3')
-  //       .saveToFile('audio.mp3')
-  //       .on('error', () => reject)
-  //       .on('end', () => resolve)
-  //   })
-  // })()
-
-  // fs.writeFileSync(fileStream)
-  // fs.createWriteStream(audioBuffer).pipe()
-
   try {
-    const openai = new OpenAIApi(new Configuration(getOpenApiCred()))
+    const file = await toFile(Buffer.from(data, 'base64'), 'audio.mp3', { type: 'audio/mp3' })
 
-    const response = await openai.createTranscription(fileStream as unknown as File, 'whisper-1')
+    const openai = new OpenAI(getOpenApiCred()) // new Configuration(getOpenApiCred())
 
-    console.log(response.data)
-    return response.data
-  } catch (e: any) {
-    console.error(e)
-    throw error(500, e.message)
+    const response = await openai.audio.transcriptions.create({
+      file,
+      model: 'whisper-1',
+      language: 'en',
+      // temperature: 8.0,
+      // response_format: 'json',
+    })
+
+    console.log(response.text)
+    return new Response(JSON.stringify({ response }), { status: 200 })
+  } catch (err: any) {
+    if (err instanceof OpenAI.APIError) {
+      console.log(err.message)
+      return new Response(err.message, { status: err.status })
+    }
+
+    throw error(500, err.message)
   }
 }
+
+// const fileStream = Readable.from(audioBuffer)
+//// @ts-expect-error Workaround till OpenAI fixed the sdk
+// fileStream.path = 'audio.mp3'
+
+// Use ffmpeg to convert base64decode to mpga/m4a/wav/webm
+// const stream = fs.createReadStream(audioBuffer)
+
+// ;(function () {
+//   new Promise((resolve, reject) => {
+//     ffmpeg(stream)
+//       .toFormat('mp3')
+//       .saveToFile('audio.mp3')
+//       .on('error', () => reject)
+//       .on('end', () => resolve)
+//   })
+// })()
+
+// fs.writeFileSync(fileStream)
+// fs.createWriteStream(audioBuffer).pipe()

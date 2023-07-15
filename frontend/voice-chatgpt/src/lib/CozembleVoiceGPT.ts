@@ -5,7 +5,7 @@ export class CozembleVoiceGPT {
   private mediaChunks: BlobPart[] = []
   private options: { [key: string]: string } = { type: 'audio/webm;codecs=opus' }
 
-  constructor(private stream: MediaStream) { }
+  constructor(private stream: MediaStream) {}
 
   async init() {
     this.mediaRecorder = new MediaRecorder(this.stream)
@@ -56,10 +56,12 @@ export class CozembleVoiceGPT {
   }
 
   start() {
+    console.log('START')
     if (this.mediaRecorder) this.mediaRecorder.start()
   }
 
   stop() {
+    console.log('STOP')
     this.stream.getAudioTracks().forEach((audio) => audio.stop())
     if (this.mediaRecorder) this.mediaRecorder.stop()
   }
