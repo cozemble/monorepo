@@ -120,7 +120,7 @@ Remember, there's no need to explain the code, as it will be parsed to generate 
   }
 
   private async _sendPrompt(
-    promptType: 'first' | 'amendment' | 'generate-data',
+    promptType: 'first' | 'amendment' | 'generate-data' | 'text-to-data',
     userPrompt: string,
     prompt: string,
     previousChat: OpenAiMessage[] = [],
@@ -143,7 +143,7 @@ Remember, there's no need to explain the code, as it will be parsed to generate 
         frequency_penalty: 0,
       })
       const content = response.data.choices[0].message?.content
-      console.log({ content })
+      console.log({ content, prompt })
       if (!content) {
         await this.promptEventListener(
           unsuccessfulEventConstructor(
@@ -169,5 +169,53 @@ Remember, there's no need to explain the code, as it will be parsed to generate 
       console.error(e)
       throw new Error('Failed to call OpenAI : ' + e.message)
     }
+  }
+
+  async textToDataPrompt(
+    schema: JsonSchema,
+    text: string,
+    existingObject: any | null,
+  ): Promise<string | undefined> {
+    const prompt = existingObject
+      ? this.existingObjectPrompt(schema, text, existingObject)
+      : this.newObjectPrompt(schema, text)
+
+    return await this._sendPrompt('text-to-data', text, prompt)
+  }
+
+  private existingObjectPrompt(schema: JsonSchema, text: string, existingObject: any) {
+    return `I have this json schema:
+    
+    ----------BEGIN SCHEMA---------------
+    ${JSON.stringify(schema, null, 2)}
+    ----------END SCHEMA---------------
+    
+    A user spoke this block of text, to amend this json object, which should already be valid according to this schema:
+    
+    ----------BEGIN EXISTING JSON OBJECT---------------
+    ${JSON.stringify(existingObject, null, 2)}
+    ----------END EXISTING JSON OBJECT---------------
+    
+    ----------BEGIN WHAT THE USER SPOKE---------------
+    ${text}
+    ----------END WHAT THE USER SPOKE---------------
+    
+    Please return an amended json object adhering to the schema, using values from the text.  Do not explain the json.  I want json only.  If you explain the json, I will not be able to parse it.`
+  }
+
+  private newObjectPrompt(schema: JsonSchema, text: string) {
+    return `I have this json schema:
+    
+    -------------------------
+    ${JSON.stringify(schema, null, 2)}
+    -------------------------
+    
+    A user spoke this block of text, to create a json object that would be valid according to this schema
+    
+    -------------------------
+    ${text}
+    -------------------------
+    
+    Please return a json object adhering to the schema, using values from the text.  Do not explain the json.  I want json only.  If you explain the json, I will not be able to parse it.`
   }
 }
