@@ -14,8 +14,8 @@ import {
   PropertyType,
   SystemConfiguration,
 } from '@cozemble/model-core'
-import { NewJsonPropertyModelEvent } from '../events.js'
-import { JsonDataType } from '@cozemble/model-core/dist/esm'
+import { NewJsonPropertyModelEvent } from '../events.ts'
+import { JsonDataType } from '@cozemble/model-core'
 
 export const arrayPropertyConfigurationSchema: JsonSchema = {
   $schema: 'http://json-schema.org/draft-07/schema#',

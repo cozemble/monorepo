@@ -17,7 +17,7 @@ import {
   propertyNameFns,
   type SystemConfiguration,
 } from '@cozemble/model-core'
-import { emptyProperty, NewJsonPropertyModelEvent } from '../events.js'
+import { emptyProperty, NewJsonPropertyModelEvent } from '../events.ts'
 import { type Option, options } from '@cozemble/lang-util'
 
 export const stringPropertyConfigurationSchema: JsonSchema = {

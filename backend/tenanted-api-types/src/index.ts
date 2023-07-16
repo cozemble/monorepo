@@ -46,9 +46,9 @@ export {
   fetchedRecords,
   FetchedRecords,
   SuccessfulSaveResponse,
-} from './records.js'
+} from './records.ts'
 
-export { ErrorType, ConflictErrorType } from './errorsTypes.js'
+export { ErrorType, ConflictErrorType } from './errorsTypes.ts'
 
 export {
   FilledFilterInstanceGroup,
@@ -58,4 +58,4 @@ export {
   FilterRequestPayload,
   filterRequestPayloadFns,
   filledFilterInstanceGroupFns,
-} from './filters.js'
+} from './filters.ts'

@@ -32,6 +32,13 @@
     })
     invoiceRecord.values[nestedLineItems.id.value] = [applesLineItem, orangesLineItem]
 
+    export const invoiceRecordModel = {
+        orangesLineItem,
+        applesLineItem,
+        invoiceModel,
+        invoiceRecord
+    }
+
     const eventSourcedModels = models.map(m => eventSourcedModelFns.newInstance(m))
     const backend = makeInMemoryBackend(eventSourcedModels, [invoiceRecord])
     const customerRecordsContext = new RootRecordsContext(backend, () => $systemConfiguration, defaultOnError, invoiceModel.id, writable(eventSourcedModels))

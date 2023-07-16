@@ -1,29 +1,29 @@
-export { registerJsonProperties } from './properties/JsonProperty.js'
-export { jsonDatePropertyDescriptor } from './properties/date/JsonDateProperty.js'
+export { registerJsonProperties } from './properties/JsonProperty.ts'
+export { jsonDatePropertyDescriptor } from './properties/date/JsonDateProperty.ts'
 export {
   jsonStringPropertyOptions,
   jsonStringPropertyFns,
   registerJsonStringProperty,
   stringPropertyType,
   StringPropertyConfiguration,
-} from './properties/string/JsonStringProperty.js'
+} from './properties/string/JsonStringProperty.ts'
 
-export { datePropertyType } from './properties/date/JsonDateProperty.js'
+export { datePropertyType } from './properties/date/JsonDateProperty.ts'
 export {
   numberPropertyType,
   NumberPropertyConfiguration,
-} from './properties/number/JsonNumberProperty.js'
+} from './properties/number/JsonNumberProperty.ts'
 
 export {
   integerPropertyType,
   phoneNumberPropertyType,
   emailPropertyType,
   timePropertyType,
-} from './properties/derived/derivedProperties.js'
+} from './properties/derived/derivedProperties.ts'
 
 export {
   JsonArrayProperty,
   ArrayPropertyConfiguration,
   jsonArrayPropertyDescriptor,
   arrayPropertyType,
-} from './properties/array/JsonArrayProperty.js'
+} from './properties/array/JsonArrayProperty.ts'

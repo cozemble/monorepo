@@ -8,7 +8,8 @@
     "dist/"
   ],
   "scripts": {
-    "build": "npx tsc -p tsconfig.json",
+    "build": "npx tsc --noEmit -p tsconfig.json",
+    "build-npm": "npx tsc -p tsconfig.json",
     "test": "echo N/A"
   },
   "devDependencies": {

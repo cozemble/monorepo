@@ -6,7 +6,7 @@ import {
   propertyDescriptors,
 } from '@cozemble/model-core'
 import { format, parse } from 'date-fns'
-import { makeDerivedStringProperty } from '../derived/makeDerivedProperty.js'
+import { makeDerivedStringProperty } from '../derived/makeDerivedProperty.ts'
 
 const defaultDateFormat = 'yyyy-MM-dd'
 

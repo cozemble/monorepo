@@ -16,14 +16,14 @@ import {
   jsonStringPropertyDescriptor,
   StringPropertyConfiguration,
   stringPropertyConfigurationSchema,
-} from '../string/JsonStringProperty.js'
+} from '../string/JsonStringProperty.ts'
 import {
   JsonNumberProperty,
   jsonNumberPropertyDescriptor,
   NumberPropertyConfiguration,
   numberPropertyConfigurationSchema,
-} from '../number/JsonNumberProperty.js'
-import { NewJsonPropertyModelEvent } from '../events.js'
+} from '../number/JsonNumberProperty.ts'
+import { NewJsonPropertyModelEvent } from '../events.ts'
 
 export function makeDerivedStringProperty(
   name: string,

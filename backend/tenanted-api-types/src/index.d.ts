@@ -1,3 +1,3 @@
 declare module '@cozemble/backend-tenanted-api-types'
 
-export * from './index.js'
+export * from './index.ts'

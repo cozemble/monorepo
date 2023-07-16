@@ -6,7 +6,8 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
-    "moduleResolution": "NodeNext"
+    "moduleResolution": "NodeNext",
+    "allowImportingTsExtensions": true
   },
   "include": ["./src"]
 }
