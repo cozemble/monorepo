@@ -1,3 +1,5 @@
+const PROMPT_TEMPLATE_ID = '22-06-2023'
+
 export interface PromptEvent {
   _type: 'prompt.event'
   promptType: 'first' | 'amendment'
@@ -54,7 +56,7 @@ export function successfulFirstPromptEvent(
   responseText: string,
   submitTimestamp: number,
 ): PromptEvent {
-  return firstPromptEvent('22-06-2023', userPromptText, responseText, null, submitTimestamp)
+  return firstPromptEvent(PROMPT_TEMPLATE_ID, userPromptText, responseText, null, submitTimestamp)
 }
 
 export function failedFirstPromptEvent(
@@ -62,7 +64,7 @@ export function failedFirstPromptEvent(
   error: string,
   submitTimestamp: number,
 ): PromptEvent {
-  return firstPromptEvent('22-06-2023', userPromptText, null, error, submitTimestamp)
+  return firstPromptEvent(PROMPT_TEMPLATE_ID, userPromptText, null, error, submitTimestamp)
 }
 
 export function successfulAmendmentPromptEvent(
@@ -70,7 +72,13 @@ export function successfulAmendmentPromptEvent(
   responseText: string,
   submitTimestamp: number,
 ): PromptEvent {
-  return amendmentPromptEvent('22-06-2023', userPromptText, responseText, null, submitTimestamp)
+  return amendmentPromptEvent(
+    PROMPT_TEMPLATE_ID,
+    userPromptText,
+    responseText,
+    null,
+    submitTimestamp,
+  )
 }
 
 export function failedAmendmentPromptEvent(
@@ -78,7 +86,7 @@ export function failedAmendmentPromptEvent(
   error: string,
   submitTimestamp: number,
 ): PromptEvent {
-  return amendmentPromptEvent('22-06-2023', userPromptText, null, error, submitTimestamp)
+  return amendmentPromptEvent(PROMPT_TEMPLATE_ID, userPromptText, null, error, submitTimestamp)
 }
 
 export async function submitPromptEvent(sessionId: string, event: PromptEvent) {

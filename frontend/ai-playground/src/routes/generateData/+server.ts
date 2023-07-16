@@ -7,22 +7,21 @@ export const POST: RequestHandler = async (event: RequestEvent) => {
   if (!data) {
     throw error(400, 'No data provided')
   }
-  if (!data.existingSchema) {
+
+  const { existingSchema, pluralTitle, existingRecordsSummary } = data
+
+  if (!existingSchema) {
     throw error(400, 'No existingSchema provided')
   }
-  if (!data.pluralTitle) {
+  if (!pluralTitle) {
     throw error(400, 'No pluralTitle provided')
   }
-  if (!data.existingRecordsSummary) {
+  if (!existingRecordsSummary) {
     throw error(400, 'No existingRecordsSummary provided')
   }
   try {
     const openAi = new OpenAi(mandatoryOpenAiCreds(), promptEventSender)
-    const result = await openAi.generateData(
-      data.existingSchema,
-      data.pluralTitle,
-      data.existingRecordsSummary,
-    )
+    const result = await openAi.generateData(existingSchema, pluralTitle, existingRecordsSummary)
     if (!result) {
       return new Response('No result', { status: 500 })
     }
