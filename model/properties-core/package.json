@@ -2,6 +2,7 @@
   "name": "@cozemble/model-properties-core",
   "version": "1.0.0",
   "main": "./src/index.ts",
+
   "type": "module",
   "types": "./src/index.d.ts",
   "files": [
@@ -9,6 +10,7 @@
   ],
   "scripts": {
     "build": "npx tsc --noEmit -p tsconfig.json",
+    "build-npm": "npx tsc -p tsconfig.json",
     "test": "echo NA"
   },
   "devDependencies": {
