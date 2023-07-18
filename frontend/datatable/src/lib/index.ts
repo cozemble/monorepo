@@ -7,3 +7,4 @@ export { default as RecordFilteringPanel } from './filtering/RecordFilteringPane
 export { default as DataModellingExplainer } from './explainer/DataModellingExplainer.svelte'
 export { makeInMemoryBackend } from './backend/InMemoryBackend'
 export { modelRecordsContextFns } from './records/modelRecordsContextFns'
+export { editorExtensions } from './extensions/editorExtensions.js'

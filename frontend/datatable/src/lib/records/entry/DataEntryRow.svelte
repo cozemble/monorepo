@@ -15,11 +15,9 @@
     // components
     import WithSingleRecordContext from '../WithSingleRecordContext.svelte'
     import NestedDataRecordsInContext from '../NestedDataRecordsInContext.svelte'
-    import ExpandCollapseButton from '../ExpandCollapseButton.svelte'
     import AddSubItemDialogue from '../AddSubItemDialogue.svelte'
     import DataTd from '$lib/records/cells/DataTd.svelte'
-
-    //
+    import DataEntryActions from "$lib/records/entry/DataEntryActions.svelte";
 
     export let parentPath: DataRecordPathParentElement[] = []
     export let options: DataRecordsTableOptions
@@ -29,7 +27,6 @@
     export let oneOnly: boolean
     export let extraClasses = ""
     let sequenceIdTooltip: HTMLDivElement
-
 
     // context
     const permitModelling = contextHelper.getPermitModelling()
@@ -131,15 +128,7 @@
 
         {#if options.showActions}
             <td class="border border-base-300">
-                <div class="flex items-center">
-                    <ExpandCollapseButton {expandedRecordIds} model={$model} {record}/>
-
-                    {#if !oneOnly}
-                        <button class="btn btn-ghost btn-active btn-sm  mr-2" on:click={() => alert('to do')}>
-                            Delete
-                        </button>
-                    {/if}
-                </div>
+                <DataEntryActions {expandedRecordIds} model={$model} {record} {oneOnly}/>
             </td>
         {/if}
     </tr>
