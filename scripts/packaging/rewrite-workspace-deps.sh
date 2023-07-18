@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 set -x
 FUNCTION_DIR=`pwd`
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
