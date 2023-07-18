@@ -27,7 +27,46 @@ export const nullPromptEventListener: PromptEventListener = async () => {}
 
 export type OpenAiMessage = { role: 'user' | 'assistant'; content: string }
 
-export class OpenAi {
+export interface OpenAiInterface {
+  firstPrompt(databaseType: string): Promise<string | undefined>
+
+  amendmentPrompt(existingSchema: JsonSchema, promptText: string): Promise<string | undefined>
+
+  generateData(
+    existingSchema: JsonSchema,
+    pluralTitle: string,
+    existingRecordsSummary: any[],
+  ): Promise<string | undefined>
+
+  textToDataPrompt(
+    schema: JsonSchema,
+    text: string,
+    existingObject: any | null,
+  ): Promise<string | undefined>
+}
+
+export function idRemovingOpenAi(delegate: OpenAiInterface): OpenAiInterface {
+  function removeId(str: string | undefined): string | undefined {
+    if (!str) {
+      return str
+    }
+    const parsed = extractJSON(str) as JsonSchema
+    const mutatedProperties = { ...parsed.properties }
+    delete mutatedProperties.id
+    const mutated = { ...parsed, properties: mutatedProperties }
+    return JSON.stringify(mutated)
+  }
+
+  return {
+    firstPrompt: (databaseType) => delegate.firstPrompt(databaseType).then(removeId),
+    amendmentPrompt: (existingSchema, promptText) =>
+      delegate.amendmentPrompt(existingSchema, promptText).then(removeId),
+    generateData: delegate.generateData,
+    textToDataPrompt: delegate.textToDataPrompt,
+  }
+}
+
+export class OpenAi implements OpenAiInterface {
   constructor(
     private creds: OpenAiCreds,
     private promptEventListener: PromptEventListener = nullPromptEventListener,
@@ -143,7 +182,6 @@ Remember, there's no need to explain the code, as it will be parsed to generate 
         frequency_penalty: 0,
       })
       const content = response.data.choices[0].message?.content
-      console.log({ content, prompt })
       if (!content) {
         await this.promptEventListener(
           unsuccessfulEventConstructor(
