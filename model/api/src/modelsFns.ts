@@ -136,7 +136,7 @@ export const modelFns = {
   },
   setPropertyValue(
     systemConfiguration: SystemConfiguration,
-    model: Model,
+    _model: Model,
     property: Property,
     value: any | null,
     record: DataRecord,

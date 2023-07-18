@@ -16,14 +16,14 @@ import {
   jsonStringPropertyDescriptor,
   StringPropertyConfiguration,
   stringPropertyConfigurationSchema,
-} from '../string/JsonStringProperty.ts'
+} from '../string/JsonStringProperty.js'
 import {
   JsonNumberProperty,
   jsonNumberPropertyDescriptor,
   NumberPropertyConfiguration,
   numberPropertyConfigurationSchema,
-} from '../number/JsonNumberProperty.ts'
-import { NewJsonPropertyModelEvent } from '../events.ts'
+} from '../number/JsonNumberProperty.js'
+import { NewJsonPropertyModelEvent } from '../events.js'
 
 export function makeDerivedStringProperty(
   name: string,
@@ -75,7 +75,7 @@ function makeDerivedProperty<T extends JsonProperty, V, C>(
   // @ts-ignore
   baseType: JsonPropertyDescriptor<T, V>,
   jsonType: JsonDataType,
-    // @ts-ignore
+  // @ts-ignore
 ): JsonPropertyDescriptor<T, V, C> {
   const thisPropertyType: PropertyType = {
     _type: 'property.type',

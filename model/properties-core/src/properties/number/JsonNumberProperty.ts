@@ -16,7 +16,7 @@ import {
   type PropertyName,
   type SystemConfiguration,
 } from '@cozemble/model-core'
-import { NewJsonPropertyModelEvent } from '../events.ts'
+import { NewJsonPropertyModelEvent } from '../events.js'
 
 export const numberPropertyConfigurationSchema: JsonSchema = {
   $schema: 'http://json-schema.org/draft-07/schema#',

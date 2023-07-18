@@ -206,7 +206,7 @@ export const dataRecordValuePathFns = {
     )
   },
   addHasManyItem(
-    models: Model[],
+    _models: Model[],
     parentPath: DataRecordPathParentElement[],
     nestedModel: NestedModel,
     initialRecord: DataRecord,

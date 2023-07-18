@@ -1,10 +1,10 @@
 import { jsonSchemaFns, propertyDescriptors } from '@cozemble/model-core'
-import { makeDerivedNumberProperty, makeDerivedStringProperty } from './makeDerivedProperty.ts'
-import { StringPropertyConfiguration } from '../string/JsonStringProperty.ts'
+import { makeDerivedNumberProperty, makeDerivedStringProperty } from './makeDerivedProperty.js'
+import { StringPropertyConfiguration } from '../string/JsonStringProperty.js'
 import {
   NumberPropertyConfiguration,
   numberPropertyConfigurationSchema,
-} from '../number/JsonNumberProperty.ts'
+} from '../number/JsonNumberProperty.js'
 
 const phoneNumberConfiguration: StringPropertyConfiguration = {
   _type: 'string.property.configuration',

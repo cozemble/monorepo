@@ -12,7 +12,7 @@ import {
   propertyNameFns,
   type PropertyType,
 } from '@cozemble/model-core'
-import { stringPropertyType } from './string/JsonStringProperty.ts'
+import { stringPropertyType } from './string/JsonStringProperty.js'
 
 export interface NewJsonPropertyModelEvent extends ModelEvent {
   _type: 'new.json.property.model.event'

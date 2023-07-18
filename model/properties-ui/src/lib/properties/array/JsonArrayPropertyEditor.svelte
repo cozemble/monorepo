@@ -59,7 +59,7 @@
     }
 
     function deleteItem(index: number) {
-        value = (value ?? []).filter((v, i) => i !== index)
+        value = (value ?? []).filter((_v, i) => i !== index)
         valueChanged = true
     }
 </script>
