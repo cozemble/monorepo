@@ -4,6 +4,8 @@
   import {onMount, tick} from "svelte";
   import {expandRecordAdditionRow} from "$lib/generative/autoExpander";
   import SocialButtons from "$lib/social/SocialButtons.svelte";
+  import {editorExtensions} from "@cozemble/frontend-datatable";
+  import ExtraRecordButtons from "$lib/dictate/ExtraRecordButtons.svelte";
 
   function startOver() {
     goto("/?startOver=true")
@@ -13,6 +15,8 @@
     await tick()
     setTimeout(expandRecordAdditionRow, 5)
   })
+
+  editorExtensions.registerRecordButtonExtensions(ExtraRecordButtons)
 </script>
 
 <div class="content w-100">

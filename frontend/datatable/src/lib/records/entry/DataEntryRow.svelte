@@ -128,7 +128,7 @@
 
         {#if options.showActions}
             <td class="border border-base-300">
-                <DataEntryActions {expandedRecordIds} model={$model} {record} {oneOnly}/>
+                <DataEntryActions {expandedRecordIds} model={$model} {record} {oneOnly} {parentPath}/>
             </td>
         {/if}
     </tr>

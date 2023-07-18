@@ -3,16 +3,16 @@
     import type {DataRecord, DataRecordId, Model} from "@cozemble/model-core";
     import type {Writable} from "svelte/store";
     import {editorExtensions} from "$lib/extensions/editorExtensions.js";
+    import type {DataRecordPathParentElement} from "@cozemble/model-core";
 
     export let model: Model
     export let record: DataRecord
     export let oneOnly: boolean
     export let expandedRecordIds: Writable<DataRecordId[]>
+    export let parentPath: DataRecordPathParentElement[]
+
 
     const maybeButtonExtensions = editorExtensions.getRecordButtonExtensions()
-
-    console.log({maybeButtonExtensions})
-
 </script>
 
 <div class="flex items-center">
@@ -23,7 +23,7 @@
             Delete
         </button>
     {/if}
-    {#if maybeButtonExtensions}
+    {#if maybeButtonExtensions && parentPath.length === 0}
         <svelte:component this={maybeButtonExtensions.component} {...maybeButtonExtensions.props}/>
     {/if}
 </div>
