@@ -3,7 +3,7 @@ RUN apk add --no-cache libc6-compat
 RUN apk update
 # Set working directory
 WORKDIR /app
-COPY ../../ .
+COPY . .
 
 # Add lockfile and package.json's of isolated subworkspace
 FROM node:alpine AS installer

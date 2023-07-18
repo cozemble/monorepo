@@ -1,7 +1,7 @@
 // @ts-ignore
 import mergician from 'mergician'
 
-import { first, tail } from './arrays.js'
+import { first, tail } from './arrays.ts'
 
 export function pick(obj: any, keys: string[]): any {
   return keys.reduce((previousValue: any, currentValue) => {

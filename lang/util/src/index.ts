@@ -25,9 +25,9 @@ import {
   toMap,
   unique,
   uniqueBy,
-} from './arrays.js'
-import { mapOf, toObject } from './maps.js'
-import { promiseOf, truthPoller } from './promises.js'
+} from './arrays.ts'
+import { mapOf, toObject } from './maps.ts'
+import { promiseOf, truthPoller } from './promises.ts'
 import {
   basename,
   camelcaseToSentenceCase,
@@ -41,10 +41,10 @@ import {
   splitAtFirst,
   stripHtml,
   toJsonCase,
-} from './string.js'
-import { getQueryParams } from './urls.js'
-import { ErrorWithContext, mergeContext, mergeErrorContext, prependToMessage } from './errors.js'
-import { Selectable } from './selections.js'
+} from './string.ts'
+import { getQueryParams } from './urls.ts'
+import { ErrorWithContext, mergeContext, mergeErrorContext, prependToMessage } from './errors.ts'
+import { Selectable } from './selections.ts'
 import {
   containsObject,
   dropKeys,
@@ -59,13 +59,13 @@ import {
   set,
   typeAwareEqual,
   walkTo,
-} from './objects.js'
-import { LinePredicate, TextBlockParser } from './TextBlockParser.js'
-import { dates } from './dates.js'
-import { random } from './random.js'
-import { Debouncer } from './Debouncer.js'
-import { Counter } from './Counter.js'
-import { Stack } from './Stack.js'
+} from './objects.ts'
+import { type LinePredicate, TextBlockParser } from './TextBlockParser.ts'
+import { dates } from './dates.ts'
+import { random } from './random.ts'
+import { Debouncer } from './Debouncer.ts'
+import { Counter } from './Counter.ts'
+import { Stack } from './Stack.ts'
 
 export const arrays = {
   secondLast,
@@ -253,49 +253,52 @@ export {
   dates,
   random,
   Debouncer,
-  Counter,
+  Counter,  
   Stack,
 }
 
-export { numbers } from './numbers.js'
+export { numbers } from './numbers.ts'
+ 
+export { partial1, partial2 } from './partial.ts'
 
-export { partial1, partial2 } from './partial.js'
-
-export { JustErrorMessage, justErrorMessage, ErrorMessage, MaybeErrorMessage } from './errors.js'
+export { type JustErrorMessage, justErrorMessage, type ErrorMessage, type MaybeErrorMessage } from './errors.ts'
 
 export function identity<T = any>(t: T): T {
   return t
 }
 
-export {
+export type {
   Bug,
   TypedError,
   ClientError,
   ErrorMessageAndCode,
+  ErrorCode,
+} from './errors.ts'
+
+export {
   toTypedError,
   toClientError,
   toBug,
   clientErrorCode,
   clientError,
   errorMessageAndCode,
-  ErrorCode,
   errorCode,
-} from './errors.js'
+} from './errors.ts'
 
-export { CorrelatedRequest, CorrelatedSession, correlation } from './correlation.js'
+export { type CorrelatedRequest, type CorrelatedSession, correlation } from './correlation.ts'
 
-export { uuids } from './uuids.js'
+export { uuids } from './uuids.ts'
 
-export { Option, options } from './options.js'
+export { type Option, options } from './options.ts'
 
-export { Clock, SystemClock, FixedClock, clock } from './clock.js'
+export { type Clock, type SystemClock, type FixedClock, clock } from './clock.ts'
 
-export { HeadAndTail, headAndTailFns } from './HeadAndTail.js'
+export { type HeadAndTail, headAndTailFns } from './HeadAndTail.ts'
 
-export { Value, value } from './value.js'
+export { type Value, value } from './value.ts'
 
-export { nanoids } from './nanoids.js'
+export { nanoids } from './nanoids.ts'
 
-export { UnsuccessfulOutcome, Outcome, SuccessfulOutcome, outcomeFns } from './outcomes.js'
+export { type UnsuccessfulOutcome, type Outcome, type SuccessfulOutcome, outcomeFns } from './outcomes.ts'
 
-export { time } from './time.js'
+export { time } from './time.ts'

@@ -161,7 +161,7 @@ async function localiseWorkspaceDependency(
   const destDir = `${functionDir}/staging/local_deps/${dep.relativePath}`
   const sourceDir = `${rootDir}/${dep.relativePath}`
   await shell(`mkdir -p ${destDir}`)
-  await shell(`cp -r ${sourceDir}/dist ${destDir}`)
+  await shell(`cp -r ${sourceDir}/src ${destDir}`)
   const packageJson = rewriteWorkspaceDependencies(
     makeLocalDepsRewriter(rootDir, dep, allWorkspaceDependencies),
     readPackageJson(`${sourceDir}/package.json`),

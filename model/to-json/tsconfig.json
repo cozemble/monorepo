@@ -7,7 +7,7 @@
 		"forceConsistentCasingInFileNames": true,
 		"outDir": "./package",
 		"declaration": true,
-		"moduleResolution": "NodeNext",
+		"moduleResolution": "NodeNext",	
 		"allowImportingTsExtensions": true
   },
   "include": ["./src"]

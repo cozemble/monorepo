@@ -1,1 +1,1 @@
-node dist/cjs/index.js
+ts-node src/index.ts

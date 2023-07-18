@@ -1,4 +1,4 @@
-import { Windower } from './window.js'
+import { Windower } from './window.ts'
 
 export function camelcaseToSentenceCase(camelcase: string, uppercaseInitial = true): string {
   let result = camelcase.replace(/([A-Z])/g, ' $1')

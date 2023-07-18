@@ -8,7 +8,8 @@
 		"outDir": "./dist/esm",
 		"declaration": true,
 		"moduleResolution": "NodeNext",
-		"isolatedModules": false
+		"isolatedModules": false,
+		"allowImportingTsExtensions": true
 	},
   "include": ["./src"]
 }
