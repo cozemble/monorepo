@@ -1,10 +1,16 @@
 <script lang="ts">
-    import DictationModal from "$lib/dictate/DictationModal.svelte";
+    import {editorExtensions} from "@cozemble/frontend-datatable";
+    import RecordDictationPage from "$lib/dictate/RecordDictationPage.svelte";
+    import {singleRecordEditContext} from "@cozemble/frontend-datatable";
+    import {modelRecordsContextFns} from "@cozemble/frontend-datatable";
 
-    let showDictationModal = false
+    const switchableModelPane = editorExtensions.getSwitchableModelPane()
+    const rootRecordId = singleRecordEditContext.getRootRecordId()
+    const records = modelRecordsContextFns.getRecords()
+    const recordGraph = modelRecordsContextFns.getEventSourcedRecordGraph()
 
     function showDictation() {
-        showDictationModal = true
+        switchableModelPane.set({component: RecordDictationPage, props: {rootRecordId, records, recordGraph}})
     }
 
 </script>
@@ -13,6 +19,3 @@
     Dictate
 </button>
 
-{#if showDictationModal}
-    <DictationModal on:close={() => showDictationModal = false}/>
-{/if}

@@ -9,3 +9,10 @@ export { makeInMemoryBackend } from './backend/InMemoryBackend'
 export { modelRecordsContextFns } from './records/modelRecordsContextFns'
 export { editorExtensions } from './extensions/editorExtensions.js'
 export { singleRecordEditContext } from './records/contextHelper.js'
+export {
+  type EventSourcedRecordGraphStore,
+  eventSourcedRecordGraphStore,
+} from './records/EventSourcedRecordGraphStore.js'
+export { default as ModelRecordsContext } from './records/ModelRecordsContext.svelte'
+export { default as DataRecordsTableInContext } from './records/DataRecordsTableInContext.svelte'
+export type { ErrorVisibilityByRecordId } from './records/helpers.js'
