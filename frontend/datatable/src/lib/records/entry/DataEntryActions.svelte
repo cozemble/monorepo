@@ -11,8 +11,8 @@
     export let expandedRecordIds: Writable<DataRecordId[]>
     export let parentPath: DataRecordPathParentElement[]
 
-
     const maybeButtonExtensions = editorExtensions.getRecordButtonExtensions()
+
 </script>
 
 <div class="flex items-center">

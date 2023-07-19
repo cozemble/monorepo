@@ -8,3 +8,4 @@ export { default as DataModellingExplainer } from './explainer/DataModellingExpl
 export { makeInMemoryBackend } from './backend/InMemoryBackend'
 export { modelRecordsContextFns } from './records/modelRecordsContextFns'
 export { editorExtensions } from './extensions/editorExtensions.js'
+export { singleRecordEditContext } from './records/contextHelper.js'

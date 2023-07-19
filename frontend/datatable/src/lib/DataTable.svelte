@@ -15,6 +15,7 @@
     import ModelReferenceViewer from "$lib/records/modelReferences/ModelReferenceViewer.svelte";
     import ModelReferenceEditor from "$lib/records/modelReferences/ModelReferenceEditor.svelte";
     import {slotEditorRegistry, slotViewerRegistry} from "@cozemble/model-registries";
+    import {editorExtensions} from "$lib/extensions/editorExtensions";
 
     export let models: EventSourcedModelStore
     export let modelViews: Writable<ModelView[]>
@@ -32,6 +33,7 @@
     recordFilteringComponentStore.set(recordFilteringComponent)
     contextHelper.setPermitModelling(permitModelling)
     contextHelper.setShowDevConsole(showDevConsole)
+    editorExtensions.register()
 
     let mounted = false
     onMount(() => {

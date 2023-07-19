@@ -15,7 +15,7 @@ import {
   SystemConfiguration,
 } from '@cozemble/model-core'
 import { NewJsonPropertyModelEvent } from '../events.js'
-import { JsonDataType } from '@cozemble/model-core/dist/esm'
+import { JsonDataType } from '@cozemble/model-core'
 
 export const arrayPropertyConfigurationSchema: JsonSchema = {
   $schema: 'http://json-schema.org/draft-07/schema#',
@@ -139,7 +139,10 @@ export const jsonArrayPropertyDescriptor: JsonPropertyDescriptor<JsonArrayProper
       const options = propertyDescriptors
         .list()
         .filter((pd: any) => pd !== jsonArrayPropertyDescriptor)
-        .map((descriptor: any) => ({ id: descriptor.propertyType.value, name: descriptor.name.value }))
+        .map((descriptor: any) => ({
+          id: descriptor.propertyType.value,
+          name: descriptor.name.value,
+        }))
       return {
         ...schema,
         properties: {
