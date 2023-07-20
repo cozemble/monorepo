@@ -9,7 +9,8 @@
     "declaration": true,
     "moduleResolution": "NodeNext",
     "allowSyntheticDefaultImports": true,
-    "allowImportingTsExtensions": true
+    "allowImportingTsExtensions": true,
+    "noImplicitAny": false
   },
   "include": ["./src"]
 }

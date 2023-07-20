@@ -4,9 +4,6 @@
   "main": "src/index.ts",
   "type": "module",
   "types": "./src/index.d.ts",
-  "files": [
-    "dist/"
-  ],
   "scripts": {
     "build": "npx tsc --noEmit -p tsconfig.json",
     "build-npm": "npx tsc -p tsconfig.json",

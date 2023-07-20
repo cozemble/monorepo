@@ -3,7 +3,7 @@ RUN apk add --no-cache libc6-compat
 RUN apk update
 # Set working directory
 WORKDIR /app
-COPY ../../ .
+COPY staging/ .
 
 # Add lockfile and package.json's of isolated subworkspace
 FROM node:alpine AS installer
@@ -15,9 +15,7 @@ WORKDIR /app
 
 # First install the dependencies (as they change less often)
 COPY --from=builder /app/ .
-RUN ls -R
 RUN pnpm install
-RUN pnpm run build
 
 FROM node:alpine AS runner
 WORKDIR /app
