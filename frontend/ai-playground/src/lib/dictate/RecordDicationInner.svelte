@@ -6,9 +6,10 @@
     import {convertModelToJsonSchema} from "$lib/convertModelToJsonSchema";
     import {allModels, modelStore, systemConfiguration} from "$lib/generative/stores";
     import {writable} from "svelte/store";
-    import {jsonToRecord, modelToJson} from "@cozemble/model-to-json";
+    import {modelToJson} from "@cozemble/model-to-json";
     import {onDestroy} from "svelte";
     import DictatedRecordPreview from "$lib/dictate/DictatedRecordPreview.svelte";
+    import {safeConvertJsonToRecord} from "./safeConvertJsonToRecord";
 
     export let record: DataRecord
     export let model: EventSourcedModel
@@ -22,9 +23,9 @@
 
     const unsub = jsonObject.subscribe(json => {
         if (json) {
-            try {
-                const fromJsonRecord = jsonToRecord($allModels, model.model, 'text-user', json)
-                transcribedRecord = {...record, values: fromJsonRecord.values}
+            const converted = safeConvertJsonToRecord($systemConfiguration, $allModels, model.model, json,)
+            if (converted) {
+                transcribedRecord = {...record, values: converted.values}
                 eventSourcedRecordGraph.update(graph => ({
                     ...graph,
                     records: graph.records.map(esr => esr.record.id.value === transcribedRecord.id.value ? {
@@ -32,8 +33,7 @@
                         record: transcribedRecord
                     } : esr)
                 }))
-            } catch (e:any) {
-                console.error('Failed to convert json to record', e)
+
             }
         }
         console.log('jsonObject', {json, transcribedRecord, graph: $eventSourcedRecordGraph})

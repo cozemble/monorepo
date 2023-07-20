@@ -138,7 +138,7 @@ Now, consider this existing schema:
 ${JSON.stringify(existingSchema, null, 2)}
 
 We need the following amendment: "${promptText}". 
-Remember, there's no need to explain the code, as it will be parsed to generate documentation.`
+Remember, there's no need to explain the code, as it will be parsed to generate documentation.  Also, please return the entire schema, so I can parse it easily/accurately.`
     return await this._sendPrompt('amendment', promptText, prompt)
   }
 
