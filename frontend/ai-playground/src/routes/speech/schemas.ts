@@ -65,4 +65,85 @@ export const customerSchema: JsonSchema = {
   required: ['id', 'name', 'email', 'phone'],
 }
 
+export const propertyEssentials: JsonSchema = {
+  $schema: 'http://json-schema.org/draft-03/schema#',
+  $id: 'property',
+  type: 'object',
+  title: 'Property',
+  pluralTitle: 'Properties',
+  required: ['property_type', 'status', 'address', 'price', 'bedrooms'],
+  properties: {
+    property_type: {
+      type: 'string',
+      enum: [
+        'Terraced House',
+        'Semi-Detached House',
+        'Detached House',
+        'Flat',
+        'Maisonette',
+        'Bungalow',
+        'Studio',
+      ],
+    },
+    address: {
+      type: 'object',
+      properties: {
+        buildingNumberOrPropertyName: {
+          type: 'string',
+        },
+        street: {
+          type: 'string',
+        },
+        townOrCity: {
+          type: 'string',
+        },
+        postcode: {
+          type: 'string',
+        },
+      },
+      required: ['buildingNumberOrPropertyName', 'street', 'townOrCity', 'postcode'],
+    },
+    price: {
+      type: 'number',
+      minimum: 1,
+    },
+    bedrooms: {
+      type: 'integer',
+      minimum: 0,
+    },
+    bathrooms: {
+      type: 'integer',
+      minimum: 0,
+    },
+    description: {
+      type: 'string',
+    },
+    parking: {
+      type: 'string',
+      enum: ['Allocated', 'Garage', 'Driveway', 'On Street', 'Off Street'],
+    },
+    outside_space: {
+      type: 'array',
+      items: {
+        type: 'string',
+        enum: ['Garden', 'Patio', 'Balcony', 'Terrace'],
+      },
+    },
+    floors: {
+      type: 'integer',
+    },
+    condition: {
+      type: 'string',
+      enum: ['Good', 'Needs Work', 'Major Renovation'],
+    },
+    heating: {
+      type: 'string',
+      enum: ['Gas', 'Electric', 'Oil', 'Under Floor'],
+    },
+    council_tax_band: {
+      type: 'string',
+      enum: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
+    },
+  },
+}
 const { model: customerModel, allModels: allCustomerModels } = convertSchemaToModels(customerSchema)

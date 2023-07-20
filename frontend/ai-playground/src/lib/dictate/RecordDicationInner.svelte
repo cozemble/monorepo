@@ -22,15 +22,19 @@
 
     const unsub = jsonObject.subscribe(json => {
         if (json) {
-            const fromJsonRecord = jsonToRecord($allModels, model.model, 'text-user', json)
-            transcribedRecord = {...record, values: fromJsonRecord.values}
-            eventSourcedRecordGraph.update(graph => ({
-                ...graph,
-                records: graph.records.map(esr => esr.record.id.value === transcribedRecord.id.value ? {
-                    ...esr,
-                    record: transcribedRecord
-                } : esr)
-            }))
+            try {
+                const fromJsonRecord = jsonToRecord($allModels, model.model, 'text-user', json)
+                transcribedRecord = {...record, values: fromJsonRecord.values}
+                eventSourcedRecordGraph.update(graph => ({
+                    ...graph,
+                    records: graph.records.map(esr => esr.record.id.value === transcribedRecord.id.value ? {
+                        ...esr,
+                        record: transcribedRecord
+                    } : esr)
+                }))
+            } catch (e:any) {
+                console.error('Failed to convert json to record', e)
+            }
         }
         console.log('jsonObject', {json, transcribedRecord, graph: $eventSourcedRecordGraph})
     })
