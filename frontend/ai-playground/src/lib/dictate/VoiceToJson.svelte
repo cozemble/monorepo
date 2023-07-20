@@ -62,7 +62,7 @@
 </script>
 
 <button class="btn btn-primary" on:click={toggleListening}>
-    {listening ? 'Stop Listening' : 'Start Listening'}
+    {listening ? 'Stop Dictation' : 'Start Dictation'}
 </button>
 <textarea readonly>{$transcript}</textarea>
 

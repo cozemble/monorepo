@@ -44,7 +44,6 @@
     })
 </script>
 
-<p>This is the dictation page for record id {record.id.value} and model {model.model?.name?.value}</p>
 <div>
     <VoiceToJson {schema} {jsonObject} {transcript}/>
 </div>
