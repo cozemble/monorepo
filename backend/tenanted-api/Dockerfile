@@ -15,17 +15,16 @@ WORKDIR /app
 
 # First install the dependencies (as they change less often)
 COPY --from=builder /app/ .
-RUN pnpm install
-RUN pnpm run build
-
-FROM node:alpine AS runner
-WORKDIR /app
-
-# Don't run production as root
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 cozemble
-USER cozemble
-
-COPY --from=installer --chown=cozemble:nodejs /app/ ./
-EXPOSE 3000
-CMD node dist/cjs/index.js
+RUN #pnpm install
+RUN #npm run build
+#
+#FROM node:alpine AS runner
+#WORKDIR /app
+#
+#RUN addgroup --system --gid 1001 nodejs
+#RUN adduser --system --uid 1001 cozemble
+#USER cozemble
+#
+#COPY --from=installer --chown=cozemble:nodejs /app/ ./
+#EXPOSE 3000
+#CMD node dist/cjs/index.js

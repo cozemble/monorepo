@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 ../../scripts/packaging/rewrite-workspace-deps.sh
 cp Dockerfile .dockerignore staging
 cp tsconfig.json tsconfig-cjs.json staging

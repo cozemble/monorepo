@@ -186,6 +186,7 @@ Remember, there's no need to explain the code, as it will be parsed to generate 
         await this.promptEventListener(
           unsuccessfulEventConstructor(
             userPrompt,
+            prompt,
             'Get undefined back from Open AI',
             startTimestamp,
           ),
@@ -197,12 +198,17 @@ Remember, there's no need to explain the code, as it will be parsed to generate 
         throw new Error('No JSON found')
       }
       await this.promptEventListener(
-        successfulEventConstructor(userPrompt, JSON.stringify(json, null, 2), startTimestamp),
+        successfulEventConstructor(
+          userPrompt,
+          prompt,
+          JSON.stringify(json, null, 2),
+          startTimestamp,
+        ),
       )
       return JSON.stringify(json, null, 2)
     } catch (e: any) {
       await this.promptEventListener(
-        unsuccessfulEventConstructor(userPrompt, e.message, startTimestamp),
+        unsuccessfulEventConstructor(userPrompt, prompt, e.message, startTimestamp),
       )
       console.error(e)
       throw new Error('Failed to call OpenAI : ' + e.message)
