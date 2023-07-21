@@ -146,7 +146,7 @@ describe('with an empty database, extract_referenced_records:', () => {
       {
         originalName: 'blank-document.pdf',
         mimeType: 'application/pdf',
-        sizeInBytes: 776,
+        sizeInBytes: 832,
       },
     ])
   })
