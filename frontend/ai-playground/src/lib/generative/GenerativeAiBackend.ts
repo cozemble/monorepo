@@ -228,7 +228,8 @@ Remember, there's no need to explain the code, as it will be parsed to generate 
   }
 
   private existingObjectPrompt(schema: JsonSchema, text: string, existingObject: any) {
-    return `I have this json schema:
+    const [todayIso, timeNow] = new Date().toISOString().split('T')
+    return `Today's date is ${todayIso} and the time is ${timeNow}. I have this json schema:
     
     ----------BEGIN SCHEMA---------------
     ${JSON.stringify(schema, null, 2)}
@@ -260,6 +261,6 @@ Remember, there's no need to explain the code, as it will be parsed to generate 
     ${text}
     -------------------------
     
-    Please return a json object adhering to the schema, using values from the text.  Do not explain the json.  I want json only.  If you explain the json, I will not be able to parse it.`
+    Please return a json object adhering to the schema, using values from the text.  DO NOT MAKE UP DATA.  If you see values in the spoken text, please use them.  But do not attempt to fill any blanks.  Do not explain the json.  I want json only.  If you explain the json, I will not be able to parse it.`
   }
 }

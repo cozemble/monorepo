@@ -152,4 +152,76 @@ export const propertyEssentials: JsonSchema = {
     },
   },
 }
+
+export const windowDeliverySchema: JsonSchema = {
+  $schema: 'http://json-schema.org/draft-07/schema#',
+  $id: 'windowDelivery',
+  title: 'Window Delivery',
+  pluralTitle: 'Window Deliveries',
+  type: 'object',
+  properties: {
+    intendedInstallationAddress: {
+      type: 'string',
+    },
+    residentName: {
+      type: 'string',
+    },
+    windowDetails: {
+      type: 'object',
+      properties: {
+        manufacturerName: {
+          type: 'string',
+        },
+        dateOfManufacture: {
+          type: 'string',
+          format: 'date',
+          isoFormat: 'YYYY-MM-DD',
+        },
+        color: {
+          type: 'string',
+        },
+        material: {
+          type: 'string',
+        },
+        glassType: {
+          type: 'string',
+        },
+        frameSecuritySpecification: {
+          type: 'string',
+        },
+      },
+    },
+    dimensions: {
+      type: 'object',
+      properties: {
+        width: {
+          type: 'number',
+        },
+        height: {
+          type: 'number',
+        },
+        depth: {
+          type: 'number',
+        },
+      },
+      required: ['width', 'height', 'depth'],
+    },
+    numberOfPartsInShipment: {
+      type: 'integer',
+    },
+    dateOfDelivery: {
+      type: 'string',
+      format: 'date',
+      isoFormat: 'YYYY-MM-DD',
+    },
+  },
+  required: [
+    'intendedInstallationAddress',
+    'residentName',
+    'dimensions',
+    'numberOfPartsInShipment',
+    'dateOfDelivery',
+  ],
+}
+
 const { model: customerModel, allModels: allCustomerModels } = convertSchemaToModels(customerSchema)
