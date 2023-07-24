@@ -71,9 +71,9 @@ export const propertyEssentials: JsonSchema = {
   type: 'object',
   title: 'Property',
   pluralTitle: 'Properties',
-  required: ['property_type', 'status', 'address', 'price', 'bedrooms'],
+  required: ['propertyType', 'status', 'address', 'price', 'bedrooms'],
   properties: {
-    property_type: {
+    propertyType: {
       type: 'string',
       enum: [
         'Terraced House',
@@ -122,11 +122,17 @@ export const propertyEssentials: JsonSchema = {
       type: 'string',
       enum: ['Allocated', 'Garage', 'Driveway', 'On Street', 'Off Street'],
     },
-    outside_space: {
+    outsideSpace: {
       type: 'array',
       items: {
         type: 'string',
         enum: ['Garden', 'Patio', 'Balcony', 'Terrace'],
+      },
+    },
+    keyFeatures: {
+      type: 'array',
+      items: {
+        type: 'string',
       },
     },
     floors: {
@@ -140,7 +146,7 @@ export const propertyEssentials: JsonSchema = {
       type: 'string',
       enum: ['Gas', 'Electric', 'Oil', 'Under Floor'],
     },
-    council_tax_band: {
+    councilTaxBand: {
       type: 'string',
       enum: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
     },
