@@ -1,4 +1,3 @@
-import { Configuration, OpenAIApi } from 'openai'
 import type { JsonSchema } from '@cozemble/model-core'
 import { mandatory } from '@cozemble/lang-util'
 import type { PromptEvent } from '$lib/analytics/types'
@@ -9,6 +8,7 @@ import {
   successfulFirstPromptEvent,
 } from '$lib/analytics/types'
 import { extractJSON } from '$lib/generative/extractJson'
+import { OpenAI as TheOpenAI } from 'openai'
 
 export function mandatoryOpenAiCreds(): OpenAiCreds {
   return {
@@ -70,7 +70,7 @@ export class OpenAi implements OpenAiInterface {
   constructor(
     private creds: OpenAiCreds,
     private promptEventListener: PromptEventListener = nullPromptEventListener,
-    private readonly openai = new OpenAIApi(new Configuration(creds)),
+    private readonly openai = new TheOpenAI(creds),
   ) {}
 
   async firstPrompt(databaseType: string): Promise<string | undefined> {
@@ -173,7 +173,7 @@ Remember, there's no need to explain the code, as it will be parsed to generate 
     const message: OpenAiMessage = { role: 'user', content: prompt }
     const messages: OpenAiMessage[] = [...previousChat, message]
     try {
-      const response = await this.openai.createChatCompletion({
+      const response = await this.openai.chat.completions.create({
         model: 'gpt-3.5-turbo-16k-0613',
         messages,
         temperature: 0.3,
@@ -181,7 +181,7 @@ Remember, there's no need to explain the code, as it will be parsed to generate 
         top_p: 1,
         frequency_penalty: 0,
       })
-      const content = response.data.choices[0].message?.content
+      const content = response.choices[0].message?.content
       if (!content) {
         await this.promptEventListener(
           unsuccessfulEventConstructor(

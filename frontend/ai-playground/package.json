@@ -43,7 +43,7 @@
     "axios": "^1.2.3",
     "chatgpt": "^5.2.5",
     "daisyui": "^2.47.0",
-    "openai": "^3.2.1",
+    "openai": "4.0.0-beta.4",
     "svelte-codemirror-editor": "^1.1.0",
     "theme-change": "^2.5.0"
   }
