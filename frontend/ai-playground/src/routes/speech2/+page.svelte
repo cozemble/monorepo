@@ -1,91 +1,29 @@
 <script lang="ts">
-    import {browser} from '$app/environment';
-    import { onMount } from 'svelte';
+    import VoiceRecorder from "$lib/dictate/whisper/VoiceRecorder.svelte";
+    import type {TranscribedAudio} from "$lib/dictate/whisper/TranscribedAudio";
+    import VoiceNote from "$lib/dictate/whisper/VoiceNote.svelte";
 
-    let audio: HTMLAudioElement;
-    let chunks: BlobPart[] = [];
-    let mediaRecorder: MediaRecorder;
-    let audioURL: string | undefined;
-    let audioBlob: Blob | undefined;
-    let recordButtonLabel = "Start Recording";
-    let isRecording = false;
-    let transcription: string | null = null
+    let voiceNotes:TranscribedAudio[] = []
+    let fullText = "";
 
-    const handleRecord = async () => {
-        if (!isRecording) {
-            isRecording = true;
-            transcription = null
-            recordButtonLabel = "Stop Recording";
 
-            if (!navigator.mediaDevices.getUserMedia) {
-                throw new Error('getUserMedia not supported on your browser!');
-            }
+    function onTranscribed() {
+        fullText = voiceNotes.map(vn => vn.transcription ?? "").join(" ");
+    }
 
-            const stream: MediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            mediaRecorder = new MediaRecorder(stream);
+    function onRecording(event:CustomEvent<Blob>) {
+        const blob = event.detail;
+        voiceNotes = [...voiceNotes, {audio: blob, transcription: null}]
+    }
 
-            mediaRecorder.start();
-
-            mediaRecorder.ondataavailable = (e: BlobEvent) => {
-                chunks.push(e.data);
-            };
-
-            mediaRecorder.onstop = () => {
-                const blob: Blob = new Blob(chunks, { 'type' : mediaRecorder.mimeType });
-                chunks = [];
-                audioURL = window.URL.createObjectURL(blob);
-                audio.src = audioURL;
-                audioBlob = blob;
-                handleTranscribe()
-            };
-        } else {
-            isRecording = false;
-            recordButtonLabel = "Start Recording";
-            mediaRecorder.stop();
-        }
-    };
-
-    const handlePlay = () => {
-        audio.play();
-    };
-
-    const handleTranscribe = async () => {
-        if (!audioBlob) {
-            console.error('No audio recorded');
-            return;
-        }
-
-        const data = new FormData();
-        data.append('audio', audioBlob);
-        data.append('mimeType', mediaRecorder.mimeType);
-
-        try {
-            const response = await fetch('/speech2', {
-                method: 'POST',
-                body: data,
-            });
-
-            const result = await response.json();
-            console.log(result);
-            transcription = result.text
-        } catch (error) {
-            console.error('Failed to transcribe audio:', error);
-        }
-    };
-
-    onMount(() => {
-        if(browser) {
-            audio = new Audio()
-        }
-    })
 </script>
 
-<main>
-    <button on:click={handleRecord}>{recordButtonLabel}</button>
-    <button on:click={handlePlay} disabled={!audioURL}>Play</button>
-    <button on:click={handleTranscribe} disabled={!audioBlob}>Transcribe</button>
-</main>
+<VoiceRecorder on:recording={onRecording} />
 
-{#if transcription}
-    <p>{transcription}</p>
-{/if}
+{#each voiceNotes as voiceNote}
+    <VoiceNote {voiceNote} on:transcribed={onTranscribed}/>
+{/each}
+
+<p class="mt-2">
+    {fullText}
+</p>

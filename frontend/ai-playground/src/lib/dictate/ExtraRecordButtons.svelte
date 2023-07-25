@@ -1,8 +1,8 @@
 <script lang="ts">
     import {editorExtensions} from "@cozemble/frontend-datatable";
-    import RecordDictationPage from "$lib/dictate/RecordDictationPage.svelte";
     import {singleRecordEditContext} from "@cozemble/frontend-datatable";
     import {modelRecordsContextFns} from "@cozemble/frontend-datatable";
+    import WhisperDictationPage from "$lib/dictate/whisper/WhisperDictationPage.svelte";
 
     const switchableModelPane = editorExtensions.getSwitchableModelPane()
     const rootRecordId = singleRecordEditContext.getRootRecordId()
@@ -10,7 +10,7 @@
     const recordGraph = modelRecordsContextFns.getEventSourcedRecordGraph()
 
     function showDictation() {
-        switchableModelPane.set({component: RecordDictationPage, props: {rootRecordId, records, recordGraph}})
+        switchableModelPane.set({component: WhisperDictationPage, props: {rootRecordId, records, recordGraph}})
     }
 
 </script>

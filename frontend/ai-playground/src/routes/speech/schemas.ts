@@ -115,9 +115,6 @@ export const propertyEssentials: JsonSchema = {
       type: 'integer',
       minimum: 0,
     },
-    description: {
-      type: 'string',
-    },
     parking: {
       type: 'string',
       enum: ['Allocated', 'Garage', 'Driveway', 'On Street', 'Off Street'],
