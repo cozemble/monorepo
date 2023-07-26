@@ -1,5 +1,4 @@
 import { type RequestEvent, type RequestHandler } from '@sveltejs/kit'
-import { writeFileSync } from 'fs'
 import { mandatory } from '@cozemble/lang-util'
 import { OpenAI, toFile } from 'openai'
 
@@ -21,8 +20,6 @@ export const POST: RequestHandler = async (event: RequestEvent) => {
   const fileData = await audioFile.arrayBuffer()
 
   const buffer = Buffer.from(fileData)
-  // const filename = audioFile.filename ?? 'audio.webm'
-  // writeFileSync(`./${filename}`, buffer)
 
   const openai = new OpenAI(getOpenApiCred())
   const file = await toFile(buffer, 'audio.webm', { type: 'audio/webm' })
@@ -30,8 +27,6 @@ export const POST: RequestHandler = async (event: RequestEvent) => {
     file,
     model: 'whisper-1',
     language: 'en',
-    // temperature: 8.0,
-    // response_format: 'json',
   })
   if (response.text) {
     return new Response(JSON.stringify({ text: response.text }), { status: 200 })

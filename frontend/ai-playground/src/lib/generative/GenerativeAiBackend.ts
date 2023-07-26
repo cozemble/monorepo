@@ -228,7 +228,9 @@ Remember, there's no need to explain the code, as it will be parsed to generate 
   }
 
   private existingObjectPrompt(schema: JsonSchema, text: string, existingObject: any) {
-    const [todayIso, timeNow] = new Date().toISOString().split('T')
+    const [todayIso, timePart] = new Date().toISOString().split('T')
+    const timeNow = timePart.substring(0, 5)
+
     return `Today's date is ${todayIso} and the time is ${timeNow}. I have this json schema:
     
     ----------BEGIN SCHEMA---------------

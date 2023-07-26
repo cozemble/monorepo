@@ -3,24 +3,25 @@
     import type {JsonSchema} from "@cozemble/model-core";
     import VoiceRecorder from "$lib/dictate/whisper/VoiceRecorder.svelte";
     import VoiceNote from "$lib/dictate/whisper/VoiceNote.svelte";
-    import type {TranscribedAudio} from "$lib/dictate/whisper/TranscribedAudio";
+    import type {TranscriptionSource} from "$lib/dictate/whisper/TranscribedAudio";
     import {convertTextToJson} from "$lib/dictate/convertTextToJson";
+    import ImageNote from "$lib/dictate/whisper/ImageNote.svelte";
 
     export let schema: JsonSchema
     export let jsonObject = writable(null as null | any)
     export let transcript = writable('')
 
-    let voiceNotes: TranscribedAudio[] = []
+    let transcriptions: TranscriptionSource[] = []
 
     function onTranscribed() {
-        const fullText = voiceNotes.map(vn => vn.transcription ?? "").join(" ");
+        const fullText = transcriptions.map(vn => vn.transcription ?? "").join(" ");
         transcript.set(fullText)
         handleText()
     }
 
     function onRecording(event: CustomEvent<Blob>) {
         const blob = event.detail;
-        voiceNotes = [...voiceNotes, {audio: blob, transcription: null}]
+        transcriptions = [...transcriptions, {_type: "transcribed.audio", audio: blob, transcription: null}]
     }
 
     async function handleText() {
@@ -33,11 +34,19 @@
         }
     }
 
-
+    function onImage(event: CustomEvent<File>) {
+        const image = event.detail
+        transcriptions = [...transcriptions, {_type: "transcribed.image", image, transcription: null}]
+    }
 </script>
 
-<VoiceRecorder on:recording={onRecording}/>
+<VoiceRecorder on:recording={onRecording} on:image={onImage}/>
 
-{#each voiceNotes as voiceNote}
-    <VoiceNote {voiceNote} on:transcribed={onTranscribed}/>
+{#each transcriptions as transcription}
+    {#if transcription._type === "transcribed.audio"}
+        <VoiceNote voiceNote={transcription} on:transcribed={onTranscribed}/>
+    {/if}
+    {#if transcription._type === 'transcribed.image'}
+        <ImageNote image={transcription} on:transcribed={onTranscribed}/>
+    {/if}
 {/each}

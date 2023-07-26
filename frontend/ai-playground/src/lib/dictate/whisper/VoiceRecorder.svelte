@@ -1,17 +1,19 @@
 <script lang="ts">
     import {createEventDispatcher} from 'svelte';
+    import UploadImage from "$lib/dictate/whisper/UploadImage.svelte";
 
     let chunks: BlobPart[] = [];
     let mediaRecorder: MediaRecorder;
-    let recordButtonLabel = "Start Recording";
+    let recordButtonLabel = "Record";
     let isRecording = false;
+    let uploadImage = false
 
     const dispatch = createEventDispatcher();
 
     const handleRecord = async () => {
         if (!isRecording) {
             isRecording = true;
-            recordButtonLabel = "Stop Recording";
+            recordButtonLabel = "Stop";
 
             if (!navigator.mediaDevices.getUserMedia) {
                 throw new Error('getUserMedia not supported on your browser!');
@@ -33,13 +35,33 @@
             };
         } else {
             isRecording = false;
-            recordButtonLabel = "Start Recording";
+            recordButtonLabel = "Record";
             mediaRecorder.stop();
         }
     };
 
+    function handleImage() {
+        uploadImage = true
+    }
+
+    function onUpload(event:CustomEvent<File>) {
+        console.log("onUpload", event)
+        dispatch('image', event.detail)
+        uploadImage = false
+        console.log('Dispatched image')
+    }
+
+    function onUploadCancel() {
+        uploadImage = false
+    }
+
 </script>
 
-<div class="flex">
-    <button class="btn btn-primary mx-auto" on:click={handleRecord}>{recordButtonLabel}</button>
+<div class="flex mx-auto">
+    {#if uploadImage}
+        <UploadImage on:upload={onUpload} on:cancel={onUploadCancel}/>
+    {:else}
+        <button class="btn btn-primary" on:click={handleRecord}>{recordButtonLabel}</button>
+        <button class="btn btn-primary ml-2" on:click={handleImage} disabled={isRecording}>Photo</button>
+    {/if}
 </div>
