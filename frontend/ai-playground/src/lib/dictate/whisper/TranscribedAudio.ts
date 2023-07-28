@@ -1,4 +1,4 @@
-export type TranscriptionSource = TranscribedAudio | TranscribedImage
+export type TranscriptionSource = TranscribedAudio | TranscribedImage | TranscribedWebsite
 
 export interface TranscribedAudio {
   _type: 'transcribed.audio'
@@ -9,5 +9,11 @@ export interface TranscribedAudio {
 export interface TranscribedImage {
   _type: 'transcribed.image'
   image: Blob
+  transcription: string | null
+}
+
+export interface TranscribedWebsite {
+  _type: 'transcribed.website'
+  url: string
   transcription: string | null
 }

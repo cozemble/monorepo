@@ -7,6 +7,8 @@
     let recordButtonLabel = "Record";
     let isRecording = false;
     let uploadImage = false
+    let uploadWebsite = false
+    let websiteUrl:string|null = null
 
     const dispatch = createEventDispatcher();
 
@@ -44,10 +46,8 @@
         uploadImage = true
     }
 
-    function onUpload(event:CustomEvent<File>) {
-        console.log("onUpload", event)
+    function onUpload(event: CustomEvent<File>) {
         dispatch('image', event.detail)
-        uploadImage = false
         console.log('Dispatched image')
     }
 
@@ -55,13 +55,32 @@
         uploadImage = false
     }
 
+    function handleWebsite() {
+        uploadWebsite = true
+    }
+
+    function websiteUrlKeydown(event: KeyboardEvent) {
+        if (event.key === 'Enter') {
+            dispatch('website', websiteUrl)
+            uploadWebsite = false
+            websiteUrl = null
+        }
+    }
+
+    function focus(element: HTMLInputElement) {
+        element.focus()
+    }
+
 </script>
 
 <div class="flex mx-auto">
     {#if uploadImage}
         <UploadImage on:upload={onUpload} on:cancel={onUploadCancel}/>
+    {:else if uploadWebsite}
+        <input type="text" class="input input-bordered form-control" placeholder="Website URL" bind:value={websiteUrl} on:keydown={websiteUrlKeydown} use:focus/>
     {:else}
         <button class="btn btn-primary" on:click={handleRecord}>{recordButtonLabel}</button>
         <button class="btn btn-primary ml-2" on:click={handleImage} disabled={isRecording}>Photo</button>
+        <button class="btn btn-primary ml-2" on:click={handleWebsite} disabled={isRecording}>Website</button>
     {/if}
 </div>
