@@ -15,5 +15,6 @@ export interface TranscribedImage {
 export interface TranscribedWebsite {
   _type: 'transcribed.website'
   url: string
+  image: Blob | null
   transcription: string | null
 }

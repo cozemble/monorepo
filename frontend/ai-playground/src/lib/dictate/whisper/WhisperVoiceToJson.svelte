@@ -42,7 +42,7 @@
 
     function onWebsite(event: CustomEvent<string>) {
         const url = event.detail;
-        transcriptions = [...transcriptions, {_type: "transcribed.website", url, transcription: null}]
+        transcriptions = [...transcriptions, {_type: "transcribed.website", url, image:null,transcription: null}]
     }
 
 </script>

@@ -5,7 +5,6 @@ export const POST: RequestHandler = async (event: RequestEvent) => {
   const formData = await event.request.formData()
   const imageFile: any = formData.get('image')
 
-  console.log({ imageFile, props: Object.getOwnPropertyNames(imageFile) })
   const fileData = await imageFile.arrayBuffer()
 
   const buffer = Buffer.from(fileData)
