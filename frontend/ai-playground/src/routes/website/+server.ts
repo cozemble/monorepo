@@ -23,7 +23,7 @@ export const POST: RequestHandler = async (event: RequestEvent) => {
   const dom = new JSDOM(html)
 
   // Remove all <style>, <script>, and <link rel="stylesheet"> elements
-  const elementsToRemove = dom.window.document.querySelectorAll('style, script, link, svg')
+  const elementsToRemove = dom.window.document.querySelectorAll('style, script, link, svg, a, img')
   elementsToRemove.forEach((el) => el.parentNode?.removeChild(el))
 
   // Try to select the <main> element

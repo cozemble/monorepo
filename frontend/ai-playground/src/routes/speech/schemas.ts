@@ -101,7 +101,7 @@ export const propertyEssentials: JsonSchema = {
           type: 'string',
         },
       },
-      required: ['buildingNumberOrPropertyName', 'street', 'townOrCity', 'postcode'],
+      required: ['street', 'townOrCity', 'postcode'],
     },
     price: {
       type: 'number',
@@ -118,6 +118,7 @@ export const propertyEssentials: JsonSchema = {
     parking: {
       type: 'string',
       enum: ['Allocated', 'Garage', 'Driveway', 'On Street', 'Off Street'],
+      description: 'What kinds of parking are available for the property?',
     },
     outsideSpace: {
       type: 'array',
@@ -125,6 +126,7 @@ export const propertyEssentials: JsonSchema = {
         type: 'string',
         enum: ['Garden', 'Patio', 'Balcony', 'Terrace'],
       },
+      description: 'What kinds of outside space are available for the property?',
     },
     keyFeatures: {
       type: 'array',
@@ -134,10 +136,12 @@ export const propertyEssentials: JsonSchema = {
     },
     floors: {
       type: 'integer',
+      description: 'How many floors does the property have?',
     },
     condition: {
       type: 'string',
       enum: ['Good', 'Needs Work', 'Major Renovation'],
+      description: 'What condition is the property in?',
     },
     heating: {
       type: 'string',
