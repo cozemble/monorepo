@@ -9,8 +9,9 @@ export const POST: RequestHandler = async (event: RequestEvent) => {
 
   const buffer = Buffer.from(fileData)
 
-  // await worker.load()
-  const worker = await createWorker()
+  const worker = await createWorker({
+    corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@v4.0.3/tesseract-core-simd.wasm.js',
+  })
   await worker.loadLanguage('eng')
   await worker.initialize('eng')
 
