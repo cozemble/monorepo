@@ -48,6 +48,7 @@
 
     function onUpload(event: CustomEvent<File>) {
         dispatch('image', event.detail)
+        uploadImage = false
         console.log('Dispatched image')
     }
 
