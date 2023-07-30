@@ -1,0 +1,42 @@
+{
+  "name": "@cozemble/backend-google-vision-ocr",
+  "version": "1.0.0",
+  "module": "dist/esm/index.js",
+  "type": "module",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "build": "npx tsc -p tsconfig.json",
+    "test": "vitest run --passWithNoTests",
+    "test:watch": "vitest watch",
+    "start": "nodemon dist/esm/index.js",
+    "dev": "nodemon -x \"npm run buildrun\"",
+    "buildrun": "npm run compile && npm run server",
+    "compile": "npx tsc -p tsconfig.json",
+    "server": "NODE_ENV=development node dist/esm/index.js"
+  },
+  "devDependencies": {
+    "@types/child-process-promise": "^2.2.2",
+    "@types/cors": "^2.8.13",
+    "@types/express": "^4.17.15",
+    "@types/multer": "^1.4.7",
+    "@types/node": "^16.11.6",
+    "dotenv-cli": "^7.2.1",
+    "form-data": "^4.0.0",
+    "nodemon": "^2.0.20",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.2",
+    "undici": "^5.21.0",
+    "vite": "4.4.3",
+    "vitest": "0.33.0"
+  },
+  "dependencies": {
+    "@google-cloud/vision": "^3.1.4",
+    "child-process-promise": "^2.2.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "multer": "1.4.5-lts.1"
+  }
+}

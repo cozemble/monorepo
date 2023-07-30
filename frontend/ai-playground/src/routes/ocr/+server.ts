@@ -1,28 +1,41 @@
 import { type RequestEvent, type RequestHandler } from '@sveltejs/kit'
-import { createWorker } from 'tesseract.js'
 
 export const POST: RequestHandler = async (event: RequestEvent) => {
+  const fetch = event.fetch
   const formData = await event.request.formData()
   const imageFile: any = formData.get('image')
+  const apiKey = process.env.API_KEY
+  const ocrUrl = process.env.OCR_URL
 
-  const fileData = await imageFile.arrayBuffer()
-
-  const buffer = Buffer.from(fileData)
-
-  const worker = await createWorker({
-    corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@v4.0.3/tesseract-core-simd.wasm.js',
-  })
-  await worker.loadLanguage('eng')
-  await worker.initialize('eng')
-
-  const {
-    data: { text },
-  } = await worker.recognize(buffer)
-
-  await worker.terminate()
-
-  if (text) {
-    return new Response(JSON.stringify({ text }), { status: 200 })
+  if (!imageFile) {
+    return new Response('No image file provided', { status: 400 })
   }
-  return new Response('No result', { status: 500 })
+  if (!ocrUrl) {
+    console.log('No ocr url configured')
+    return new Response('No ocr url configured', { status: 500 })
+  }
+  if (!apiKey) {
+    console.log('No apiKey configured')
+    return new Response('No apiKey configured', { status: 500 })
+  }
+
+  try {
+    const response = await fetch(ocrUrl, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        Authorization: apiKey,
+      },
+    })
+
+    if (response.ok) {
+      const result = await response.json()
+      return new Response(JSON.stringify(result), { status: 200 })
+    } else {
+      const error = await response.text()
+      return new Response(`Error from Google Cloud: ${error}`, { status: 500 })
+    }
+  } catch (error: any) {
+    return new Response(`Error: ${error.message}`, { status: 500 })
+  }
 }

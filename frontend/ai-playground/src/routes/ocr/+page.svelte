@@ -1,5 +1,6 @@
 <script lang="ts">
     let file: File | null = null;
+    let apiKey = '';
     let text = '';
 
     const uploadFile = async () => {
