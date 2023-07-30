@@ -4,7 +4,7 @@ export const POST: RequestHandler = async (event: RequestEvent) => {
   const fetch = event.fetch
   const formData = await event.request.formData()
   const imageFile: any = formData.get('image')
-  const apiKey = process.env.API_KEY
+  const apiKey = process.env.OCR_API_KEY
   const ocrUrl = process.env.OCR_URL
 
   if (!imageFile) {
