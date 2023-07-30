@@ -4,12 +4,12 @@ export const POST: RequestHandler = async (event: RequestEvent) => {
   const fetch = event.fetch
   const formData = await event.request.formData()
   const imageFile: any = formData.get('image')
-  const apiKey = process.env.OCR_API_KEY
-  const ocrUrl = process.env.OCR_URL
-
   if (!imageFile) {
     return new Response('No image file provided', { status: 400 })
   }
+
+  const apiKey = process.env.OCR_API_KEY
+  const ocrUrl = process.env.OCR_URL
   if (!ocrUrl) {
     console.log('No ocr url configured')
     return new Response('No ocr url configured', { status: 500 })

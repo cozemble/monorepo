@@ -23,8 +23,18 @@ WORKDIR /app
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 cozemble
-USER cozemble
+
+RUN apk add --no-cache \
+      chromium \
+      nss \
+      freetype \
+      harfbuzz \
+      ca-certificates \
+      ttf-freefont
+
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
 COPY --from=installer --chown=cozemble:nodejs /app/ ./
 EXPOSE 3000
+USER cozemble
 CMD node dist/esm/index.js
