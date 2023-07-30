@@ -10,6 +10,7 @@
     import ModelTab from "./ModelTab.svelte";
     import {contextHelper} from "./stores/contextHelper";
     import RecordCreatorContext from "./records/creator/RecordCreatorContext.svelte";
+    import SwitchableModelPane from "$lib/models/SwitchableModelPane.svelte";
 
     export let navbarState: Writable<string | null> = writable(null)
     const permitModelling = contextHelper.getPermitModelling()
@@ -49,7 +50,9 @@
 {#if $navbarState}
     {#key $navbarState}
         <RecordCreatorContext>
-            <ModelPane modelId={$navbarState}/>
+            <SwitchableModelPane>
+                <ModelPane modelId={$navbarState}/>
+            </SwitchableModelPane>
         </RecordCreatorContext>
     {/key}
 {/if}

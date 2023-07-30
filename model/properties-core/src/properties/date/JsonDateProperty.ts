@@ -45,7 +45,7 @@ export const jsonDatePropertyDescriptor = {
     record: DataRecord,
   ) => {
     const value = record.values[property.id.value] ?? null
-    if (value === null) {
+    if (value === null || value === undefined || value === '') {
       return null
     }
     const parsed = parse(value, defaultDateFormat, new Date())

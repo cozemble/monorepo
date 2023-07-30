@@ -13,9 +13,10 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="daisyui" level="application" />
     <orderEntry type="library" name="tailwindcss" level="application" />
     <orderEntry type="library" name="svelte" level="application" />
+    <orderEntry type="library" name="daisyui" level="application" />
+    <orderEntry type="library" name="tailwindcss" level="application" />
     <orderEntry type="library" name="daisyui" level="application" />
   </component>
 </module>

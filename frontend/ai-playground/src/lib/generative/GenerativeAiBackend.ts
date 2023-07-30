@@ -1,4 +1,3 @@
-import { Configuration, OpenAIApi } from 'openai'
 import type { JsonSchema } from '@cozemble/model-core'
 import { mandatory } from '@cozemble/lang-util'
 import type { PromptEvent } from '$lib/analytics/types'
@@ -9,6 +8,7 @@ import {
   successfulFirstPromptEvent,
 } from '$lib/analytics/types'
 import { extractJSON } from '$lib/generative/extractJson'
+import { OpenAI as TheOpenAI } from 'openai'
 
 export function mandatoryOpenAiCreds(): OpenAiCreds {
   return {
@@ -27,11 +27,50 @@ export const nullPromptEventListener: PromptEventListener = async () => {}
 
 export type OpenAiMessage = { role: 'user' | 'assistant'; content: string }
 
-export class OpenAi {
+export interface OpenAiInterface {
+  firstPrompt(databaseType: string): Promise<string | undefined>
+
+  amendmentPrompt(existingSchema: JsonSchema, promptText: string): Promise<string | undefined>
+
+  generateData(
+    existingSchema: JsonSchema,
+    pluralTitle: string,
+    existingRecordsSummary: any[],
+  ): Promise<string | undefined>
+
+  textToDataPrompt(
+    schema: JsonSchema,
+    text: string,
+    existingObject: any | null,
+  ): Promise<string | undefined>
+}
+
+export function idRemovingOpenAi(delegate: OpenAiInterface): OpenAiInterface {
+  function removeId(str: string | undefined): string | undefined {
+    if (!str) {
+      return str
+    }
+    const parsed = extractJSON(str) as JsonSchema
+    const mutatedProperties = { ...parsed.properties }
+    delete mutatedProperties.id
+    const mutated = { ...parsed, properties: mutatedProperties }
+    return JSON.stringify(mutated)
+  }
+
+  return {
+    firstPrompt: (databaseType) => delegate.firstPrompt(databaseType).then(removeId),
+    amendmentPrompt: (existingSchema, promptText) =>
+      delegate.amendmentPrompt(existingSchema, promptText).then(removeId),
+    generateData: delegate.generateData,
+    textToDataPrompt: delegate.textToDataPrompt,
+  }
+}
+
+export class OpenAi implements OpenAiInterface {
   constructor(
     private creds: OpenAiCreds,
     private promptEventListener: PromptEventListener = nullPromptEventListener,
-    private readonly openai = new OpenAIApi(new Configuration(creds)),
+    private readonly openai = new TheOpenAI(creds),
   ) {}
 
   async firstPrompt(databaseType: string): Promise<string | undefined> {
@@ -99,7 +138,7 @@ Now, consider this existing schema:
 ${JSON.stringify(existingSchema, null, 2)}
 
 We need the following amendment: "${promptText}". 
-Remember, there's no need to explain the code, as it will be parsed to generate documentation.`
+Remember, there's no need to explain the code, as it will be parsed to generate documentation.  Also, please return the entire schema, so I can parse it easily/accurately.`
     return await this._sendPrompt('amendment', promptText, prompt)
   }
 
@@ -120,7 +159,7 @@ Remember, there's no need to explain the code, as it will be parsed to generate 
   }
 
   private async _sendPrompt(
-    promptType: 'first' | 'amendment' | 'generate-data',
+    promptType: 'first' | 'amendment' | 'generate-data' | 'text-to-data',
     userPrompt: string,
     prompt: string,
     previousChat: OpenAiMessage[] = [],
@@ -134,7 +173,7 @@ Remember, there's no need to explain the code, as it will be parsed to generate 
     const message: OpenAiMessage = { role: 'user', content: prompt }
     const messages: OpenAiMessage[] = [...previousChat, message]
     try {
-      const response = await this.openai.createChatCompletion({
+      const response = await this.openai.chat.completions.create({
         model: 'gpt-3.5-turbo-16k-0613',
         messages,
         temperature: 0.3,
@@ -142,12 +181,12 @@ Remember, there's no need to explain the code, as it will be parsed to generate 
         top_p: 1,
         frequency_penalty: 0,
       })
-      const content = response.data.choices[0].message?.content
-      console.log({ content })
+      const content = response.choices[0].message?.content
       if (!content) {
         await this.promptEventListener(
           unsuccessfulEventConstructor(
             userPrompt,
+            prompt,
             'Get undefined back from Open AI',
             startTimestamp,
           ),
@@ -159,15 +198,71 @@ Remember, there's no need to explain the code, as it will be parsed to generate 
         throw new Error('No JSON found')
       }
       await this.promptEventListener(
-        successfulEventConstructor(userPrompt, JSON.stringify(json, null, 2), startTimestamp),
+        successfulEventConstructor(
+          userPrompt,
+          prompt,
+          JSON.stringify(json, null, 2),
+          startTimestamp,
+        ),
       )
       return JSON.stringify(json, null, 2)
     } catch (e: any) {
       await this.promptEventListener(
-        unsuccessfulEventConstructor(userPrompt, e.message, startTimestamp),
+        unsuccessfulEventConstructor(userPrompt, prompt, e.message, startTimestamp),
       )
       console.error(e)
       throw new Error('Failed to call OpenAI : ' + e.message)
     }
+  }
+
+  async textToDataPrompt(
+    schema: JsonSchema,
+    text: string,
+    existingObject: any | null,
+  ): Promise<string | undefined> {
+    const prompt = existingObject
+      ? this.existingObjectPrompt(schema, text, existingObject)
+      : this.newObjectPrompt(schema, text)
+
+    return await this._sendPrompt('text-to-data', text, prompt)
+  }
+
+  private existingObjectPrompt(schema: JsonSchema, text: string, existingObject: any) {
+    const [todayIso, timePart] = new Date().toISOString().split('T')
+    const timeNow = timePart.substring(0, 5)
+
+    return `Today's date is ${todayIso} and the time is ${timeNow}. I have this json schema:
+    
+    ----------BEGIN SCHEMA---------------
+    ${JSON.stringify(schema, null, 2)}
+    ----------END SCHEMA---------------
+    
+    A user spoke this block of text, to amend this json object, which should already be valid according to this schema:
+    
+    ----------BEGIN EXISTING JSON OBJECT---------------
+    ${JSON.stringify(existingObject, null, 2)}
+    ----------END EXISTING JSON OBJECT---------------
+    
+    ----------BEGIN WHAT THE USER SPOKE---------------
+    ${text}
+    ----------END WHAT THE USER SPOKE---------------
+    
+    Please return an amended json object adhering to the schema, using values from the text.  Do not explain the json.  I want json only.  If you explain the json, I will not be able to parse it.`
+  }
+
+  private newObjectPrompt(schema: JsonSchema, text: string) {
+    return `I have this json schema:
+    
+    -------------------------
+    ${JSON.stringify(schema, null, 2)}
+    -------------------------
+    
+    A user spoke this block of text, to create a json object that would be valid according to this schema
+    
+    -------------------------
+    ${text}
+    -------------------------
+    
+    Please return a json object adhering to the schema, using values from the text.  DO NOT MAKE UP DATA.  If you see values in the spoken text, please use them.  But do not attempt to fill any blanks.  Do not explain the json.  I want json only.  If you explain the json, I will not be able to parse it.`
   }
 }

@@ -43,7 +43,7 @@
     }
 
     $: hasModellingColumn = options.permitModelEditing && $permitModelling
-    $: colspan = $model.slots.length + (hasModellingColumn ? 1 : 0) + (options.showActions ? 1 : 0)
+    $: colspan = $model.slots.length + (hasModellingColumn ? 1 : 0) + (options.showActions ? 1 : 0) + 1
 </script>
 
 

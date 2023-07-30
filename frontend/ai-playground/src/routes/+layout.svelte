@@ -15,4 +15,6 @@
 <!-- hidden content to force tailwind styles to be compiled in.  Yes, crazy -->
 <div class="form-group mb-3 invisible">
     <input type="text" class="form-control input input-bordered border border-primary border-4"/>
+    <div class="tooltip z-50 tooltip-right tooltip-open bg-base-200">
+    </div>
 </div>

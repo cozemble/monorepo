@@ -43,6 +43,7 @@ type Dependencies = { [name: string]: string }
 
 interface PackageJson {
   name: string
+  files?: string[]
   dependencies: Dependencies
   devDependencies?: Dependencies
 }
@@ -161,7 +162,17 @@ async function localiseWorkspaceDependency(
   const destDir = `${functionDir}/staging/local_deps/${dep.relativePath}`
   const sourceDir = `${rootDir}/${dep.relativePath}`
   await shell(`mkdir -p ${destDir}`)
-  await shell(`cp -r ${sourceDir}/dist ${destDir}`)
+  const pkgJson = readPackageJson(`${sourceDir}/package.json`)
+  if (pkgJson.files) {
+    for (let file of pkgJson.files) {
+      if (file.endsWith('/')) {
+        file = file.substring(0, file.length - 1)
+      }
+
+      await shell(`cp -r ${sourceDir}/${file} ${destDir}`)
+    }
+  }
+  // await shell(`cp -r ${sourceDir}/dist ${destDir}`)
   const packageJson = rewriteWorkspaceDependencies(
     makeLocalDepsRewriter(rootDir, dep, allWorkspaceDependencies),
     readPackageJson(`${sourceDir}/package.json`),

@@ -1,4 +1,4 @@
-FROM node:alpine AS builder
+FROM node:18.16.0-alpine AS builder
 RUN apk add --no-cache libc6-compat
 RUN apk update
 # Set working directory
@@ -6,7 +6,7 @@ WORKDIR /app
 COPY staging/ .
 
 # Add lockfile and package.json's of isolated subworkspace
-FROM node:alpine AS installer
+FROM node:18.16.0-alpine AS installer
 RUN apk add --no-cache libc6-compat
 RUN apk update
 RUN apk add build-base libc6-compat gcompat curl
@@ -18,14 +18,13 @@ COPY --from=builder /app/ .
 RUN pnpm install
 RUN pnpm run build
 
-FROM node:alpine AS runner
+FROM node:18.16.0-alpine AS runner
 WORKDIR /app
 
-# Don't run production as root
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 cozemble
 USER cozemble
 
 COPY --from=installer --chown=cozemble:nodejs /app/ ./
 EXPOSE 3000
-CMD node dist/cjs/index.js
+CMD node dist/esm/index.js

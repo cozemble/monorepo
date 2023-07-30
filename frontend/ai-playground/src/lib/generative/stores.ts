@@ -6,12 +6,14 @@ import {
 import type { DataRecord, ModelView } from '@cozemble/model-core'
 import { systemConfigurationFns } from '@cozemble/model-core'
 import type { Writable } from 'svelte/store'
-import { writable } from 'svelte/store'
+import { writable, derived } from 'svelte/store'
 import { uuids } from '@cozemble/lang-util'
 import type { GeneratedDataBatch } from '$lib/generative/generateData'
-import type { ChatRequest } from '$lib/chat/ChatTypes'
 
 export const modelStore = eventSourcedModelStore([])
+export const allModels = derived(modelStore, (modelStore) =>
+  modelStore.models.map((model) => model.model),
+)
 export const modelViews = writable([] as ModelView[])
 export const systemConfiguration = writable(systemConfigurationFns.empty())
 export const permitModelling = writable(false)

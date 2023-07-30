@@ -17,6 +17,7 @@
     import {registerEverything} from "@cozemble/model-assembled";
     import type {Model} from "@cozemble/model-core";
     import type {EventSourcedModel} from "@cozemble/model-event-sourced";
+    import DataTable from "$lib/DataTable.svelte";
 
     //  dev options
     const permitModelling = writable(true)
@@ -79,7 +80,7 @@
 <DevOptions {permitModelling} {showDevConsole}/>
 
 {#if mounted}
-    <Editor
+    <DataTable
             models={eventSourcedModelStore(eventSourcedModels)}
             {modelViews}
             {systemConfiguration}

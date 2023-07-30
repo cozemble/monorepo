@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "main": "package/index.js",
   "type": "module",
-  "types": "./src/index.d.ts",
+  "types": "./package/index.d.ts",
   "files": [
-    "dist/"
+    "package/"
   ],
   "scripts": {
     "build": "npx tsc -p tsconfig.json",
@@ -20,6 +20,5 @@
     "@cozemble/lang-util": "workspace:*",
     "@cozemble/model-core": "workspace:*",
     "date-fns": "^2.29.3"
-
   }
 }

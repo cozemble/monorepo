@@ -15,11 +15,9 @@
     // components
     import WithSingleRecordContext from '../WithSingleRecordContext.svelte'
     import NestedDataRecordsInContext from '../NestedDataRecordsInContext.svelte'
-    import ExpandCollapseButton from '../ExpandCollapseButton.svelte'
     import AddSubItemDialogue from '../AddSubItemDialogue.svelte'
     import DataTd from '$lib/records/cells/DataTd.svelte'
-
-    //
+    import DataEntryActions from "$lib/records/entry/DataEntryActions.svelte";
 
     export let parentPath: DataRecordPathParentElement[] = []
     export let options: DataRecordsTableOptions
@@ -28,6 +26,7 @@
     export let expandedRecordIds: Writable<DataRecordId[]>
     export let oneOnly: boolean
     export let extraClasses = ""
+    let sequenceIdTooltip: HTMLDivElement
 
     // context
     const permitModelling = contextHelper.getPermitModelling()
@@ -70,12 +69,38 @@
             focusControls.ensureNotFocusedOnRow(rootRecordIndex)
         }
     }
+
+    function recordSequenceTitle(seqId: number | undefined) {
+        if (seqId) {
+            return `Record sequential ID: ${seqId}`
+        } else {
+            return "Will be assigned a sequential ID when saved"
+        }
+    }
+
+    function toggleRecordSequenceTooltip() {
+        if (!sequenceIdTooltip) {
+            return
+        }
+        if (sequenceIdTooltip.classList.contains('tooltip-open')) {
+            sequenceIdTooltip.classList.remove('tooltip-open')
+            return
+        }
+        sequenceIdTooltip.classList.toggle('tooltip-open')
+        setTimeout(() => {
+            sequenceIdTooltip.classList.remove('tooltip-open')
+        }, 2000)
+    }
 </script>
 
 <WithSingleRecordContext recordId={record.id} {rowIndex} let:rootRecordIndex>
     <tr data-row-index={rowIndex} class={extraClasses}>
         {#if parentPath.length === 0}
-            <td class="border border-base-300 bg-base-300">
+            <td class="border border-base-300" title={recordSequenceTitle(record.seqId)}
+                on:click={toggleRecordSequenceTooltip}>
+                <div class="tooltip z-50 tooltip-right" bind:this={sequenceIdTooltip} data-tip={recordSequenceTitle(record.seqId)}>
+                    &nbsp;
+                </div>
                 {record.seqId ?? ""}
             </td>
         {/if}
@@ -103,15 +128,7 @@
 
         {#if options.showActions}
             <td class="border border-base-300">
-                <div class="flex items-center">
-                    <ExpandCollapseButton {expandedRecordIds} model={$model} {record}/>
-
-                    {#if !oneOnly}
-                        <button class="btn btn-ghost btn-active btn-sm  mr-2" on:click={() => alert('to do')}>
-                            Delete
-                        </button>
-                    {/if}
-                </div>
+                <DataEntryActions {expandedRecordIds} model={$model} {record} {oneOnly} {parentPath}/>
             </td>
         {/if}
     </tr>
