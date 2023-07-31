@@ -225,4 +225,137 @@ export const windowDeliverySchema: JsonSchema = {
   ],
 }
 
+export const deliveryNoteSchema: JsonSchema = {
+  $schema: 'http://json-schema.org/draft-07/schema#',
+  $id: 'deliveryNote',
+  title: 'Delivery Note',
+  pluralTitle: 'Delivery Notes',
+  type: 'object',
+  properties: {
+    deliveryNumber: {
+      type: 'string',
+    },
+    poNumber: {
+      type: 'string',
+    },
+    deliveryAddress: {
+      type: 'object',
+      properties: {
+        name: {
+          type: 'string',
+        },
+        street: {
+          type: 'string',
+        },
+        city: {
+          type: 'string',
+        },
+        postcode: {
+          type: 'string',
+        },
+      },
+      required: ['name', 'street', 'city', 'postcode'],
+    },
+    items: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          qty: {
+            type: 'number',
+          },
+          description: {
+            type: 'string',
+          },
+          unitPrice: {
+            type: 'number',
+          },
+          amount: {
+            type: 'number',
+          },
+        },
+        required: ['qty', 'description', 'unitPrice', 'amount'],
+      },
+    },
+    termsAndConditions: {
+      type: 'string',
+    },
+    shipToAddress: {
+      type: 'object',
+      properties: {
+        name: {
+          type: 'string',
+        },
+        street: {
+          type: 'string',
+        },
+        city: {
+          type: 'string',
+        },
+        postcode: {
+          type: 'string',
+        },
+      },
+      required: ['name', 'street', 'city', 'postcode'],
+    },
+    dueDate: {
+      type: 'string',
+      format: 'date',
+    },
+    deliveryNote: {
+      type: 'string',
+    },
+    deliveryDate: {
+      type: 'string',
+      format: 'date',
+    },
+    subtotal: {
+      type: 'number',
+    },
+    vat: {
+      type: 'number',
+    },
+    total: {
+      type: 'number',
+    },
+    fromAddress: {
+      type: 'object',
+      properties: {
+        name: {
+          type: 'string',
+        },
+        street: {
+          type: 'string',
+        },
+        city: {
+          type: 'string',
+        },
+        postcode: {
+          type: 'string',
+        },
+      },
+      required: ['name', 'street', 'city', 'postcode'],
+    },
+    signedBy: {
+      type: 'string',
+    },
+  },
+  required: [
+    'deliveryNumber',
+    'poNumber',
+    'deliveryAddress',
+    'items',
+    'termsAndConditions',
+    'shipToAddress',
+    'dueDate',
+    'deliveryNote',
+    'deliveryDate',
+    'subtotal',
+    'vat',
+    'total',
+    'fromAddress',
+    'signedBy',
+  ],
+}
+
 const { model: customerModel, allModels: allCustomerModels } = convertSchemaToModels(customerSchema)
