@@ -16,7 +16,7 @@
     }
 </script>
 
-<input type="file" class="input input-bordered pt-2" bind:files={file}/>
+<input type="file" accept="image/*" class="input input-bordered pt-2" bind:files={file}/>
 <button class="btn btn-primary ml-2" on:click={uploadFile}>Upload</button>
 <button class="btn btn-secondary ml-2" on:click={cancel}>Cancel</button>
 

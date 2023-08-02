@@ -7,10 +7,6 @@
   import {editorExtensions} from "@cozemble/frontend-datatable";
   import ExtraRecordButtons from "$lib/dictate/ExtraRecordButtons.svelte";
 
-  function startOver() {
-    goto("/?startOver=true")
-  }
-
   onMount(async () => {
     await tick()
     setTimeout(expandRecordAdditionRow, 5)
