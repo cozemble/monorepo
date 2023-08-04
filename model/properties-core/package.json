@@ -4,9 +4,9 @@
   "main": "./src/index.ts",
 
   "type": "module",
-  "types": "./src/index.d.ts",
+  "types": "./package/index.d.ts",
   "files": [
-    "dist/"
+    "package/"
   ],
   "scripts": {
     "build": "npx tsc --noEmit -p tsconfig.json",
@@ -22,6 +22,5 @@
     "@cozemble/lang-util": "workspace:*",
     "@cozemble/model-core": "workspace:*",
     "date-fns": "^2.29.3"
-
   }
 }

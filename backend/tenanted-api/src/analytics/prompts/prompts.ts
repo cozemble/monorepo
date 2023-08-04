@@ -18,10 +18,11 @@ router.post('/prompt-event', async (req: Request, res: Response) => {
     const { sessionId, promptEvent } = data
     return await withAdminPgClient(async (client) => {
       const result = await client.query(
-        'select * from insert_prompt_event($1, $2, $3, $4, $5, $6, $7, $8) as inserted;',
+        'select * from insert_prompt_event($1, $2, $3, $4, $5, $6, $7, $8, $9) as inserted;',
         [
           promptEvent.promptType,
           promptEvent.userPromptText,
+          promptEvent.issuedPrompt,
           promptEvent.responseText,
           promptEvent.promptTemplateId,
           promptEvent.error,

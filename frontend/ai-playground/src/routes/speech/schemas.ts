@@ -65,4 +65,297 @@ export const customerSchema: JsonSchema = {
   required: ['id', 'name', 'email', 'phone'],
 }
 
+export const propertyEssentials: JsonSchema = {
+  $schema: 'http://json-schema.org/draft-03/schema#',
+  $id: 'property',
+  type: 'object',
+  title: 'Property',
+  pluralTitle: 'Properties',
+  required: ['propertyType', 'status', 'address', 'price', 'bedrooms'],
+  properties: {
+    propertyType: {
+      type: 'string',
+      enum: [
+        'Terraced House',
+        'Semi-Detached House',
+        'Detached House',
+        'Flat',
+        'Maisonette',
+        'Bungalow',
+        'Studio',
+      ],
+    },
+    address: {
+      type: 'object',
+      properties: {
+        buildingNumberOrPropertyName: {
+          type: 'string',
+        },
+        street: {
+          type: 'string',
+        },
+        townOrCity: {
+          type: 'string',
+        },
+        postcode: {
+          type: 'string',
+        },
+      },
+      required: ['street', 'townOrCity', 'postcode'],
+    },
+    price: {
+      type: 'number',
+      minimum: 1,
+    },
+    bedrooms: {
+      type: 'integer',
+      minimum: 0,
+    },
+    bathrooms: {
+      type: 'integer',
+      minimum: 0,
+    },
+    parking: {
+      type: 'string',
+      enum: ['Allocated', 'Garage', 'Driveway', 'On Street', 'Off Street'],
+      description: 'What kinds of parking are available for the property?',
+    },
+    outsideSpace: {
+      type: 'array',
+      items: {
+        type: 'string',
+        enum: ['Garden', 'Patio', 'Balcony', 'Terrace'],
+      },
+      description: 'What kinds of outside space are available for the property?',
+    },
+    keyFeatures: {
+      type: 'array',
+      items: {
+        type: 'string',
+      },
+    },
+    floors: {
+      type: 'integer',
+      description: 'How many floors does the property have?',
+    },
+    condition: {
+      type: 'string',
+      enum: ['Good', 'Needs Work', 'Major Renovation'],
+      description: 'What condition is the property in?',
+    },
+    heating: {
+      type: 'string',
+      enum: ['Gas', 'Electric', 'Oil', 'Under Floor'],
+    },
+    councilTaxBand: {
+      type: 'string',
+      enum: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
+    },
+  },
+}
+
+export const windowDeliverySchema: JsonSchema = {
+  $schema: 'http://json-schema.org/draft-07/schema#',
+  $id: 'windowDelivery',
+  title: 'Window Delivery',
+  pluralTitle: 'Window Deliveries',
+  type: 'object',
+  properties: {
+    intendedInstallationAddress: {
+      type: 'string',
+    },
+    residentName: {
+      type: 'string',
+    },
+    windowDetails: {
+      type: 'object',
+      properties: {
+        manufacturerName: {
+          type: 'string',
+        },
+        dateOfManufacture: {
+          type: 'string',
+          format: 'date',
+          isoFormat: 'YYYY-MM-DD',
+        },
+        color: {
+          type: 'string',
+        },
+        material: {
+          type: 'string',
+        },
+        glassType: {
+          type: 'string',
+        },
+        frameSecuritySpecification: {
+          type: 'string',
+        },
+      },
+    },
+    dimensions: {
+      type: 'object',
+      properties: {
+        width: {
+          type: 'number',
+        },
+        height: {
+          type: 'number',
+        },
+        depth: {
+          type: 'number',
+        },
+      },
+      required: ['width', 'height', 'depth'],
+    },
+    numberOfPartsInShipment: {
+      type: 'integer',
+    },
+    dateOfDelivery: {
+      type: 'string',
+      format: 'date',
+      isoFormat: 'YYYY-MM-DD',
+    },
+  },
+  required: [
+    'intendedInstallationAddress',
+    'residentName',
+    'dimensions',
+    'numberOfPartsInShipment',
+    'dateOfDelivery',
+  ],
+}
+
+export const deliveryNoteSchema: JsonSchema = {
+  $schema: 'http://json-schema.org/draft-07/schema#',
+  $id: 'deliveryNote',
+  title: 'Delivery Note',
+  pluralTitle: 'Delivery Notes',
+  type: 'object',
+  properties: {
+    deliveryNumber: {
+      type: 'string',
+    },
+    poNumber: {
+      type: 'string',
+    },
+    deliveryAddress: {
+      type: 'object',
+      properties: {
+        name: {
+          type: 'string',
+        },
+        street: {
+          type: 'string',
+        },
+        city: {
+          type: 'string',
+        },
+        postcode: {
+          type: 'string',
+        },
+      },
+      required: ['name', 'street', 'city', 'postcode'],
+    },
+    items: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          qty: {
+            type: 'number',
+          },
+          description: {
+            type: 'string',
+          },
+          unitPrice: {
+            type: 'number',
+          },
+          amount: {
+            type: 'number',
+          },
+        },
+        required: ['qty', 'description', 'unitPrice', 'amount'],
+      },
+    },
+    termsAndConditions: {
+      type: 'string',
+    },
+    shipToAddress: {
+      type: 'object',
+      properties: {
+        name: {
+          type: 'string',
+        },
+        street: {
+          type: 'string',
+        },
+        city: {
+          type: 'string',
+        },
+        postcode: {
+          type: 'string',
+        },
+      },
+      required: ['name', 'street', 'city', 'postcode'],
+    },
+    dueDate: {
+      type: 'string',
+      format: 'date',
+    },
+    deliveryNote: {
+      type: 'string',
+    },
+    deliveryDate: {
+      type: 'string',
+      format: 'date',
+    },
+    subtotal: {
+      type: 'number',
+    },
+    vat: {
+      type: 'number',
+    },
+    total: {
+      type: 'number',
+    },
+    fromAddress: {
+      type: 'object',
+      properties: {
+        name: {
+          type: 'string',
+        },
+        street: {
+          type: 'string',
+        },
+        city: {
+          type: 'string',
+        },
+        postcode: {
+          type: 'string',
+        },
+      },
+      required: ['name', 'street', 'city', 'postcode'],
+    },
+    signedBy: {
+      type: 'string',
+    },
+  },
+  required: [
+    'deliveryNumber',
+    'poNumber',
+    'deliveryAddress',
+    'items',
+    'termsAndConditions',
+    'shipToAddress',
+    'dueDate',
+    'deliveryNote',
+    'deliveryDate',
+    'subtotal',
+    'vat',
+    'total',
+    'fromAddress',
+    'signedBy',
+  ],
+}
+
 const { model: customerModel, allModels: allCustomerModels } = convertSchemaToModels(customerSchema)

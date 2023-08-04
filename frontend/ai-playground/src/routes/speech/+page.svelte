@@ -2,8 +2,8 @@
     import {browser} from '$app/environment';
     import {writable} from 'svelte/store'
     import {customerSchema} from "./schemas";
-    import {convertTextToJson} from "./convertTextToJson";
     import {Debouncer} from "@cozemble/lang-util";
+    import {convertTextToJson} from "$lib/dictate/convertTextToJson";
 
     let recognition: any | undefined;
     let listening = false;

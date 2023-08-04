@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "main": "package/index.js",
   "type": "module",
-  "types": "./src/index.d.ts",
+  "types": "./package/index.d.ts",
   "files": [
-    "dist/"
+    "package/"
   ],
   "scripts": {
     "build": "npx tsc --noEmit -p tsconfig.json",

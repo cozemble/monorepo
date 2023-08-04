@@ -8,17 +8,6 @@
     import {eventSourcedModelListFns} from "@cozemble/model-event-sourced";
     import {browser} from '$app/environment';
     import SocialButtons from "$lib/social/SocialButtons.svelte";
-    import {setCurrentAiChatRequest} from "$lib/chat/ChatTypes";
-    import {justErrorMessage} from "@cozemble/lang-util";
-
-    function onChatRequestComplete(json: any) {
-        console.log({json})
-    }
-
-    function looksLikeJsonSchema(json: any) {
-        const looksOk = json && json.title && json.type && json.properties
-        return looksOk ? null : justErrorMessage("Not a valid JSON Schema")
-    }
 
     onMount(() => {
         newGenerationSessionId()

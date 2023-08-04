@@ -112,9 +112,7 @@ export const modelRecordsContextFns = {
     )
   },
   setPermitRecordAdditions(writable: Writable<boolean>) {
-    if (getContext(permitRecordAdditionsContextKey) === undefined) {
-      setContext(permitRecordAdditionsContextKey, writable)
-    }
+    setContext(permitRecordAdditionsContextKey, writable)
   },
   getPermitRecordAdditions(): Writable<boolean> {
     return mandatory(

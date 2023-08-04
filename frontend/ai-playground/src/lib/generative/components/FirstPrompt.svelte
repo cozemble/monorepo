@@ -4,6 +4,8 @@
     import CommonDatabaseType from "$lib/generative/components/CommonDatabaseType.svelte";
     import type {JustErrorMessage, Value} from "@cozemble/lang-util";
     import {setCurrentAiChatRequest} from "$lib/chat/ChatTypes";
+    import {goto} from "$app/navigation";
+
 
     let value = ""
     let errorMessage: string | null = null
@@ -61,6 +63,10 @@
         generate()
     }
 
+    function fromDocument() {
+        goto("/fromDocument")
+    }
+
 </script>
 
 <div class="grid h-screen place-items-center w-5/6 mx-auto mb-8">
@@ -80,6 +86,7 @@
                 <CommonDatabaseType {commonDatabaseType} {index} on:choice={onChoice}/>
             {/each}
         </div>
+        <p class="text-center mt-8"><em><a class="link link-primary" href="#!" on:click={fromDocument}>Or create a database to scrape the contents of a document</a></em></p>
     </div>
 </div>
 

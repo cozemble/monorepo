@@ -46,6 +46,7 @@ import { getQueryParams } from './urls.ts'
 import { ErrorWithContext, mergeContext, mergeErrorContext, prependToMessage } from './errors.ts'
 import { Selectable } from './selections.ts'
 import {
+  castValue,
   containsObject,
   dropKeys,
   dropKeysRecursive,
@@ -142,6 +143,7 @@ export const objects = {
   orderKeys,
   keysAndValues,
   mapValues,
+  castValue,
 }
 
 export type StringKeyedObject<T = any> = { [key: string]: T }

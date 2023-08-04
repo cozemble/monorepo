@@ -4,6 +4,7 @@ import { get } from 'svelte/store'
 
 const uri =
   'https://backend-tenanted-api-qwquwvrytq-nw.a.run.app/dev/api/v1/ai-playground/prompt-event'
+// const uri = 'http://localhost:3000/dev/api/v1/ai-playground/prompt-event'
 
 export async function promptEventSender(promptEvent: PromptEvent): Promise<void> {
   try {
