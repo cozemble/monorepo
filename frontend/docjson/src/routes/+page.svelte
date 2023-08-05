@@ -6,8 +6,15 @@
 
 <section class="hero min-h-full flex-grow">
   <div class="hero-content">
-    <h1>Streamline your workflow with easy file to JSON conversions</h1>
-    <p>Pick a document to create schema of</p>
+    <div>
+      <h1>
+        Streamline your workflow with easy
+        <span class="text-primary"> file to JSON </span>
+        conversions
+      </h1>
+      <p>Pick a document to create schema of</p>
+    </div>
+
     <!-- TODO file drop input -->
 
     <div>
