@@ -173,6 +173,7 @@ async function localiseWorkspaceDependency(
     }
   }
   // await shell(`cp -r ${sourceDir}/dist ${destDir}`)
+  await shell(`cp -r ${sourceDir}/src ${destDir}`)
   const packageJson = rewriteWorkspaceDependencies(
     makeLocalDepsRewriter(rootDir, dep, allWorkspaceDependencies),
     readPackageJson(`${sourceDir}/package.json`),
