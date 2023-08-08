@@ -1,0 +1,22 @@
+service: complete-example
+
+plugins:
+  - serverless-esbuild
+  - serverless-offline
+
+custom:
+  esbuild:
+    minify: true
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-west-2
+
+functions:
+  validateIsin:
+    handler: src/index.handler
+    events:
+      - http:
+          path: say
+          method: get

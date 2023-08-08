@@ -3,6 +3,7 @@
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/backend/aws-textract/.serverless" />
       <excludeFolder url="file://$MODULE_DIR$/sql/actions/data" />
       <excludePattern pattern="node_modules" />
       <excludePattern pattern="dist" />
