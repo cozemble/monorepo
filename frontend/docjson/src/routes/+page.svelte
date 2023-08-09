@@ -2,6 +2,8 @@
   import FileDrop from '$lib/components/FileDrop.svelte'
 
   let files: File[]
+
+  $: console.log(files)
 </script>
 
 <section class="hero min-h-full flex-grow">
@@ -15,12 +17,18 @@
       <p>Pick a document to create schema of</p>
     </div>
 
-    <!-- TODO file drop input -->
-
-    <div>
-      <FileDrop bind:files />
-    </div>
-
     <!-- TODO list of previous schemas -->
+
+    <div
+      class="card shadow-lg p-8 gap-8 bg-gradient-to-tr from-accent from-25% via-primary via-70% to-secondary"
+    >
+      <FileDrop bind:files />
+
+      <div class="actions flex justify-center">
+        <button class="btn btn-block btn-md text-xl normal-case shadow-xl btn-secondary"
+          >Start</button
+        >
+      </div>
+    </div>
   </div>
 </section>

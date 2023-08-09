@@ -69,9 +69,8 @@
 
 <div
   class={`card card-bordered shadow-lg bg-base-200 w-[24rem]
-  border-dashed border-4 border-accent hover:border-accent-focus 
   p-4 transition-all duration-200 ease-in-out
-  ${highlightState && 'border-accent-focus bg-base-300'}`}
+  ${highlightState && 'bg-base-300'}`}
 >
   <label
     for="file-input"
@@ -98,6 +97,7 @@
     <!-- TODO max-height and scrollbar -->
     <div class="flex flex-col gap-1">
       {#if files.length}
+        <!-- TODO make all files the same height -->
         {#each files as file}
           <div
             title={file.name}
