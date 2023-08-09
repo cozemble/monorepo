@@ -1,7 +1,7 @@
 <script lang="ts">
   import FileDrop from '$lib/components/FileDrop.svelte'
 
-  let files: FileList | null = null
+  let files: File[]
 </script>
 
 <section class="hero min-h-full flex-grow">
