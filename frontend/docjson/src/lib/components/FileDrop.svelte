@@ -3,26 +3,43 @@
 
   export let files: FileList | null = null
 
-  // <!-- TODO handle file drop
   const handleFileDrop = (event: DragEvent) => {
-    event.preventDefault()
-    event.stopPropagation()
+    const inputVal = event.dataTransfer?.files
 
-    files = event.dataTransfer?.files
+    if (!inputVal) return
+
+    files = inputVal
   }
+
+  // Highlight state
+  let highlightState = false
+
+  const handleDragEnter = (event: DragEvent) => {
+    highlightState = true
+  }
+  const handleDragLeave = (event: DragEvent) => {
+    highlightState = false
+  }
+
+  $: if (files) highlightState = true
+  //
 
   $: if (files) console.log(files)
 </script>
 
 <div
-  class="card card-bordered shadow-lg bg-base-200 border-dashed border-4 border-accent hover:border-accent-focus p-4 transition-all duration-200 ease-in-out "
+  class={`card card-bordered shadow-lg bg-base-200 
+  border-dashed border-4 border-accent hover:border-accent-focus 
+  p-4 transition-all duration-200 ease-in-out
+  ${highlightState && 'border-accent-focus bg-base-300'}`}
 >
   <label
     for="file-input"
     class="inline cursor-pointer"
-    on:drag={handleFileDrop}
-    on:drop={handleFileDrop}
-    on:dragover={handleFileDrop}
+    on:dragenter|preventDefault={handleDragEnter}
+    on:dragover|preventDefault={handleDragEnter}
+    on:dragleave|preventDefault={handleDragLeave}
+    on:drop|preventDefault|stopPropagation={handleFileDrop}
   >
     <figure class="pt-10">
       <!-- TODO determine what illustration/icon to use -->
