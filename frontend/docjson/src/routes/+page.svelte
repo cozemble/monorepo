@@ -24,8 +24,18 @@
     >
       <FileDrop bind:files />
 
-      <div class="actions flex justify-center">
-        <button class="btn btn-block btn-md text-xl normal-case shadow-xl">Start</button>
+      <div
+        class="tooltip {!files?.length ? 'tooltip-error' : 'tooltip-success'}"
+        data-tip={!files?.length ? 'You need to select a file first' : 'Start creating a database'}
+      >
+        <div class="actions flex justify-center">
+          <button
+            class="btn btn-block btn-md text-xl normal-case shadow-xl"
+            disabled={!files?.length}
+          >
+            Start
+          </button>
+        </div>
       </div>
     </div>
   </div>
