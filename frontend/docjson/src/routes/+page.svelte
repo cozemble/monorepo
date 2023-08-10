@@ -20,14 +20,12 @@
     <!-- TODO list of previous schemas -->
 
     <div
-      class="card shadow-lg p-8 gap-8 bg-gradient-to-tr from-accent from-25% via-primary via-70% to-secondary"
+      class="card shadow-lg p-8 gap-8 bg-gradient-to-tr from-accent from-25% via-secondary via-70% to-primary"
     >
       <FileDrop bind:files />
 
       <div class="actions flex justify-center">
-        <button class="btn btn-block btn-md text-xl normal-case shadow-xl btn-secondary"
-          >Start</button
-        >
+        <button class="btn btn-block btn-md text-xl normal-case shadow-xl">Start</button>
       </div>
     </div>
   </div>

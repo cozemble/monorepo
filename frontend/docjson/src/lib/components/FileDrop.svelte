@@ -6,9 +6,11 @@
   import _ from 'lodash'
   import Icon from '@iconify/svelte'
 
-  /** The main file array */
+  // <!-- TODO refactor readability -->
+
+  /** The actual value array */
   export let files: File[] = []
-  /** To use with the HTML input*/
+  /** To use with the HTML input */
   let fileList: FileList | null = null
 
   // utils
@@ -38,10 +40,7 @@
     files = formatFiles([...files, ...Array.from(fList || [])])
   }
 
-  $: if (fileList) {
-    console.log(fileList)
-    handleFileInput(fileList)
-  }
+  $: if (fileList) handleFileInput(fileList)
 
   const handleFileRemove = (fileName: string) => {
     if (!files) return
@@ -63,8 +62,6 @@
 
   $: highlightState = !!files?.length
   //
-
-  $: if (files) console.log(files)
 </script>
 
 <div
@@ -101,13 +98,13 @@
         {#each files as file}
           <div
             title={file.name}
-            class="card flex flex-row justify-between bg-info gap-2 w-full flex-1"
+            class="badge badge-outline flex flex-row justify-between w-full flex-1 gap-2 overflow-hidden"
           >
-            <figure class="shadow-inner w-10 rounded-none">
+            <figure class="h-7 w-11 rounded-none ">
               {#if ['.jpg', '.png', '.webp', '.jpeg'].some((ext) => _.endsWith(file.name, ext))}
                 <img src={URL.createObjectURL(file)} alt={file.name} class="h-full" />
               {:else}
-                <Icon icon="ic:round-insert-drive-file" class="text-2xl text-neutral-content" />
+                <Icon icon="ic:round-insert-drive-file" class="text-2xl" />
               {/if}
             </figure>
 
@@ -118,10 +115,11 @@
             >
 
             <button
-              class="btn btn-circle btn-xs btn-outline cursor-pointer scale-75"
+              class="btn btn-circle btn-xs btn-ghost"
+              title="Remove file"
               on:click={() => handleFileRemove(file.name)}
             >
-              <Icon icon="ep:close-bold" class="text-sm" />
+              <Icon icon="ep:close-bold" />
             </button>
           </div>
         {/each}
@@ -129,11 +127,6 @@
         <p class="text-center text-xs opacity-50 mb-5">You haven't selected any files yet</p>
       {/if}
     </div>
-
-    <!-- TODO action -->
-    <!-- <div class="card-actions justify-end">
-      <button class="btn btn-primary">Proceed</button>
-    </div> -->
   </label>
 
   <input type="file" bind:files={fileList} id="file-input" class="hidden" multiple />

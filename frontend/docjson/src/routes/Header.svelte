@@ -10,10 +10,12 @@
         <span class="text-primary">json</span>
       </a>
     </div>
-    <div class="flex-none gap-6">
-      <a class="hover:link normal-case" href="/dashboard"> Dashboard </a>
-      <a class="hover:link normal-case" href="/docs"> Docs </a>
-      <a class="hover:link normal-case text-secondary" href="/pricing"> Pricing </a>
+
+    <div class="flex-none gap-8 text-neutral">
+      <a class="link-hover normal-case" href="/dashboard"> Dashboard </a>
+      <a class="link-hover normal-case" href="/docs"> Docs </a>
+      <a class="link-hover normal-case text-secondary" href="/pricing"> Pricing </a>
+
       <div class="dropdown dropdown-end">
         <button tabindex="0" class="btn btn-ghost btn-circle avatar">
           <div class="w-12 rounded-full">
@@ -21,10 +23,11 @@
             <Icon icon="ic:round-account-circle" class="w-full h-full" />
           </div>
         </button>
+
         <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
         <ul
           tabindex="0"
-          class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+          class="menu menu-sm dropdown-content mt-3 z-[1] p-4 shadow-2xl bg-base-100 rounded-box w-52"
         >
           <li>
             <a class="justify-between" href="/user">
@@ -33,7 +36,7 @@
             </a>
           </li>
           <li><a href="/user/settings">Settings</a></li>
-          <li><a href="/user/logout">Logout</a></li>
+          <li><a href="/user/login" class="active">Sign Up</a></li>
         </ul>
       </div>
     </div>
