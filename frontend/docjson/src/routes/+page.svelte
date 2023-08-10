@@ -3,7 +3,30 @@
 
   let files: File[]
 
-  $: console.log(files)
+  function handleStart() {
+    if (!files) return console.log('No files selected')
+
+    handleOCR(files).then((res) => {
+      console.log(res)
+    })
+
+    // <!-- TODO next step: create schema -->
+    // <!-- TODO next step: create database and populate -->
+  }
+
+  // <!-- TODO stores to keep track of schemas -->
+  // with localStorage support for visitors and server sync for users
+
+  // <!-- TODO move to helpers -->
+  async function handleOCR(files: File[]) {
+    const formData = new FormData()
+    formData.append('image', files[0])
+
+    return await fetch('/api/ocr', {
+      method: 'POST',
+      body: formData,
+    }).then((res) => res.json())
+  }
 </script>
 
 <section class="hero min-h-full flex-grow">
@@ -14,8 +37,10 @@
         <span class="text-primary"> file to JSON </span>
         conversions
       </h1>
-      <p>Pick a document to create schema of</p>
+      <p class="text-xl opacity-70">Pick a document to create schema of</p>
     </div>
+
+    <!-- TODO catchy "Try it" indicator -->
 
     <!-- TODO list of previous schemas -->
 
@@ -31,6 +56,7 @@
         <div class="actions flex justify-center">
           <button
             class="btn btn-block btn-md text-xl normal-case shadow-xl"
+            on:click={handleStart}
             disabled={!files?.length}
           >
             Start
