@@ -41,6 +41,9 @@ importers:
       '@cozemble/lang-util':
         specifier: workspace:*
         version: link:../../lang/util
+      lambda-multipart-parser:
+        specifier: ^1.0.1
+        version: 1.0.1
     devDependencies:
       '@pulumi/aws':
         specifier: ^5.42.0

@@ -22,6 +22,20 @@ new aws.iam.RolePolicyAttachment('lambdaFullAccess', {
   policyArn: 'arn:aws:iam::aws:policy/AWSLambda_FullAccess',
 })
 
+const lambdaRolePolicy = new aws.iam.RolePolicy('lambdaFullAccess', {
+  role: lambdaRole.id,
+  policy: JSON.stringify({
+    Version: '2012-10-17',
+    Statement: [
+      {
+        Action: ['logs:CreateLogGroup', 'logs:CreateLogStream', 'logs:PutLogEvents'],
+        Resource: 'arn:aws:logs:*:*:*',
+        Effect: 'Allow',
+      },
+    ],
+  }),
+})
+
 const lambda = new aws.lambda.Function('mylambda', {
   role: lambdaRole.arn,
   runtime: 'nodejs18.x',

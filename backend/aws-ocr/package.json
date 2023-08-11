@@ -13,6 +13,7 @@
     "typescript": "^5.0.2"
   },
   "dependencies": {
-    "@cozemble/lang-util": "workspace:*"
+    "@cozemble/lang-util": "workspace:*",
+    "lambda-multipart-parser": "^1.0.1"
   }
 }
