@@ -1,11 +1,27 @@
 import { parse } from 'lambda-multipart-parser'
 
 export const handler = async (event: any) => {
+  const path = event.path || event.requestContext?.http?.path
+
+  switch (path) {
+    case '/prod/echo':
+      return handleEchoRoute(event)
+    case '/prod/another-route':
+      return handleAnotherRoute(event)
+    default:
+      return {
+        statusCode: 404,
+        body: JSON.stringify({ message: 'Route not found' }),
+      }
+  }
+}
+
+const handleEchoRoute = async (event: any) => {
   try {
     const result = await parse(event)
 
     // Extract the PDF and rectangles
-    const pdfFile = result.files[0] // Assuming the PDF is the first file in the form
+    const pdfFile = result.files[0]
     const rectangles = JSON.parse(result.rectangles)
 
     // Console log the rectangles
@@ -26,5 +42,12 @@ export const handler = async (event: any) => {
       statusCode: 500,
       body: JSON.stringify({ message: 'Error processing the request: ' + error.message }),
     }
+  }
+}
+
+const handleAnotherRoute = async (event: any) => {
+  return {
+    statusCode: 200,
+    body: JSON.stringify({ message: 'Response from another route' }),
   }
 }
