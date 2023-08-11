@@ -1,0 +1,3 @@
+name: cozemble-aws-ocr
+runtime: nodejs
+description: OCR endpoints using Textract

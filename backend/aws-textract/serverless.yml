@@ -6,7 +6,7 @@ plugins:
 
 custom:
   esbuild:
-    minify: true
+    minify: false
 
 provider:
   name: aws
@@ -20,3 +20,10 @@ functions:
       - http:
           path: say
           method: get
+  processPDF:
+    handler: src/pdfProcessor.processPDF
+    events:
+      - http:
+          path: processPDF
+          method: post
+          cors: true

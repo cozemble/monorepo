@@ -393,6 +393,7 @@ app.post('/doc-ocr', upload.single('image'), async (req, res) => {
   }
 })
 
+//https://backend-google-vision-ocr-qwquwvrytq-nw.a.run.app/ocr
 // Route to handle file upload
 app.post('/ocr', upload.single('image'), async (req, res) => {
   const imageFile = req.file

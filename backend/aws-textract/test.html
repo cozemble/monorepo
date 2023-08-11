@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Upload</title>
+</head>
+<body>
+<h2>Upload PDF</h2>
+<form action="http://localhost:3000/dev/processPDF" method="post" enctype="multipart/form-data">
+    <label for="pdf">Choose a PDF:</label>
+    <input type="file" id="pdf" name="pdf" accept=".pdf">
+    <br><br>
+    <label for="rectangles">Rectangles (JSON):</label>
+    <textarea id="rectangles" name="rectangles" rows="4" cols="50"></textarea>
+    <br><br>
+    <input type="submit" value="Upload PDF">
+</form>
+</body>
+</html>
