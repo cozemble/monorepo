@@ -1,9 +1,12 @@
 import { parse } from 'lambda-multipart-parser'
+import { processPDF } from './pdfProcessor'
 
 export const handler = async (event: any) => {
   const path = event.path || event.requestContext?.http?.path
 
   switch (path) {
+    case '/prod/processPdf':
+      return processPDF(event)
     case '/prod/echo':
       return handleEchoRoute(event)
     case '/prod/another-route':

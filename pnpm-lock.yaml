@@ -44,6 +44,9 @@ importers:
       lambda-multipart-parser:
         specifier: ^1.0.1
         version: 1.0.1
+      pdf-lib:
+        specifier: ^1.17.1
+        version: 1.17.1
     devDependencies:
       '@pulumi/aws':
         specifier: ^5.42.0

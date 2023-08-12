@@ -43,6 +43,7 @@ const lambda = new aws.lambda.Function('mylambda', {
   code: new pulumi.asset.AssetArchive({
     '.': new pulumi.asset.FileArchive('./dist'),
   }),
+  timeout: 20,
 })
 
 // Give the Lambda permission to be invoked by the API Gateway
