@@ -1,6 +1,8 @@
 import * as pulumi from '@pulumi/pulumi'
 import * as aws from '@pulumi/aws'
 
+const ocrBucket = new aws.s3.Bucket('ocrBucket')
+
 const lambdaRole = new aws.iam.Role('lambdaRole', {
   assumeRolePolicy: JSON.stringify({
     Version: '2012-10-17',
@@ -44,6 +46,11 @@ const lambda = new aws.lambda.Function('mylambda', {
     '.': new pulumi.asset.FileArchive('./dist'),
   }),
   timeout: 20,
+  environment: {
+    variables: {
+      OCR_BUCKET_NAME: ocrBucket.bucket, // Assuming s3Bucket is the Pulumi resource for your S3 bucket
+    },
+  },
 })
 
 // Give the Lambda permission to be invoked by the API Gateway
@@ -88,6 +95,40 @@ const stage = new aws.apigatewayv2.Stage('stage', {
   deploymentId: deployment.id,
   autoDeploy: true,
   name: stageName, // Set the stage name explicitly here
+})
+
+const lambdaS3BucketPolicy = ocrBucket.arn.apply((arn) => ({
+  Version: '2012-10-17',
+  Statement: [
+    {
+      Effect: 'Allow',
+      Action: ['s3:PutObject', 's3:PutObjectAcl'],
+      Resource: `${arn}/*`,
+    },
+  ],
+}))
+
+const lambdaS3BucketRolePolicy = new aws.iam.RolePolicy('lambdaS3BucketRolePolicy', {
+  role: lambdaRole.id,
+  policy: lambdaS3BucketPolicy.apply((policy) => JSON.stringify(policy)),
+})
+
+// Create a Textract policy
+const textractPolicy = JSON.stringify({
+  Version: '2012-10-17',
+  Statement: [
+    {
+      Action: ['textract:StartDocumentTextDetection', 'textract:GetDocumentTextDetection'],
+      Resource: '*',
+      Effect: 'Allow',
+    },
+  ],
+})
+
+// Attach Textract policy to the Lambda role
+const lambdaTextractRolePolicy = new aws.iam.RolePolicy('lambdaTextractRolePolicy', {
+  role: lambdaRole.id,
+  policy: textractPolicy,
 })
 
 // Export the HTTP endpoint of the API Gateway

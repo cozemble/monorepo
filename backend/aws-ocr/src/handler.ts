@@ -1,10 +1,14 @@
 import { parse } from 'lambda-multipart-parser'
 import { processPDF } from './pdfProcessor'
+import { ocr } from './ocr'
 
+console.log('Loading function')
 export const handler = async (event: any) => {
   const path = event.path || event.requestContext?.http?.path
 
   switch (path) {
+    case '/prod/ocr':
+      return ocr(event)
     case '/prod/processPdf':
       return processPDF(event)
     case '/prod/echo':
