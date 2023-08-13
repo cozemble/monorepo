@@ -45,7 +45,7 @@ const lambda = new aws.lambda.Function('mylambda', {
   code: new pulumi.asset.AssetArchive({
     '.': new pulumi.asset.FileArchive('./dist'),
   }),
-  timeout: 20,
+  timeout: 60,
   environment: {
     variables: {
       OCR_BUCKET_NAME: ocrBucket.bucket, // Assuming s3Bucket is the Pulumi resource for your S3 bucket
@@ -102,8 +102,8 @@ const lambdaS3BucketPolicy = ocrBucket.arn.apply((arn) => ({
   Statement: [
     {
       Effect: 'Allow',
-      Action: ['s3:PutObject', 's3:PutObjectAcl'],
-      Resource: `${arn}/*`,
+      Action: 's3:*',
+      Resource: [`${arn}`, `${arn}/*`],
     },
   ],
 }))
@@ -129,6 +129,64 @@ const textractPolicy = JSON.stringify({
 const lambdaTextractRolePolicy = new aws.iam.RolePolicy('lambdaTextractRolePolicy', {
   role: lambdaRole.id,
   policy: textractPolicy,
+})
+
+// S3 Bucket Policy that allows Textract to access objects
+const ocrBucketPolicy = new aws.s3.BucketPolicy('ocrBucketPolicy', {
+  bucket: ocrBucket.bucket,
+  policy: ocrBucket.arn.apply((arn) =>
+    JSON.stringify({
+      Version: '2012-10-17',
+      Statement: [
+        {
+          Sid: 'AllowTextractAccess',
+          Effect: 'Allow',
+          Principal: {
+            Service: 'textract.amazonaws.com',
+          },
+          Action: ['s3:*'],
+          Resource: [`${arn}`, `${arn}/*`],
+        },
+      ],
+    }),
+  ),
+})
+
+// Textract Service Role
+const textractServiceRole = new aws.iam.Role('textractServiceRole', {
+  assumeRolePolicy: JSON.stringify({
+    Version: '2012-10-17',
+    Statement: [
+      {
+        Action: 'sts:AssumeRole',
+        Principal: {
+          Service: 'textract.amazonaws.com',
+        },
+        Effect: 'Allow',
+        Sid: '',
+      },
+    ],
+  }),
+})
+
+// Policy granting Textract access to S3 bucket
+const textractS3BucketPolicy = ocrBucket.arn.apply((arn) =>
+  JSON.stringify({
+    Version: '2012-10-17',
+    Statement: [
+      {
+        Effect: 'Allow',
+        Action: ['s3:*'],
+        Resource: [`${arn}`, `${arn}/*`],
+      },
+    ],
+  }),
+)
+
+// Attach the policy to the Textract Service Role
+const textractS3BucketRolePolicy = new aws.iam.RolePolicy('textractS3BucketRolePolicy', {
+  role: textractServiceRole.id,
+  policy: textractS3BucketPolicy,
 })
 
 // Export the HTTP endpoint of the API Gateway

@@ -2,8 +2,8 @@ import { parse } from 'lambda-multipart-parser'
 import { S3, Textract } from 'aws-sdk'
 import { mandatory, uuids } from '@cozemble/lang-util'
 
-const textract = new Textract()
-const s3 = new S3()
+const textract = new Textract({ region: 'eu-west-2' })
+const s3 = new S3({ region: 'eu-west-2' })
 
 // Helper function to upload file to S3
 async function uploadToS3(bucketName: string, key: string, fileContent: Buffer) {
@@ -33,8 +33,20 @@ export async function ocr(event: any) {
   // Upload the file to S3
   const bucketName = mandatory(process.env.OCR_BUCKET_NAME, 'BUCKET_NAME')
   const s3Key = `ocr/${uuids.v4()}/${mandatory(file.filename, 'FILENAME')}`
+  // const s3Key = mandatory(file.filename, 'FILENAME')
   await uploadToS3(bucketName, s3Key, file.content)
   console.log(`File uploaded to S3: s3://${bucketName}/${s3Key}`)
+
+  // read the s3 file to check that we can access it
+  const s3Params: S3.GetObjectRequest = {
+    Bucket: bucketName,
+    Key: s3Key,
+  }
+  const s3Response = await s3.getObject(s3Params).promise()
+  // check the byte count is the same
+  if (s3Response.ContentLength !== file.content.length) {
+    throw new Error('S3 file size does not match')
+  }
 
   try {
     const startResponse = await textract
