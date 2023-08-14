@@ -118,7 +118,12 @@ const textractPolicy = JSON.stringify({
   Version: '2012-10-17',
   Statement: [
     {
-      Action: ['textract:StartDocumentTextDetection', 'textract:GetDocumentTextDetection'],
+      Action: [
+        'textract:StartDocumentTextDetection',
+        'textract:GetDocumentTextDetection',
+        'textract:StartDocumentAnalysis',
+        'textract:GetDocumentAnalysis',
+      ],
       Resource: '*',
       Effect: 'Allow',
     },

@@ -3,16 +3,20 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "build": "node build.js"
+    "build": "node build.js",
+    "test": "vitest run --passWithNoTests"
   },
   "devDependencies": {
     "@pulumi/aws": "^5.42.0",
     "@pulumi/pulumi": "^3.0.0",
     "@types/node": "^20.4.9",
     "esbuild": "^0.19.0",
-    "typescript": "^5.0.2"
+    "typescript": "^5.0.2",
+    "vitest": "^0.34.1"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.388.0",
+    "@aws-sdk/client-textract": "^3.388.0",
     "@cozemble/lang-util": "workspace:*",
     "aws-sdk": "^2.1435.0",
     "lambda-multipart-parser": "^1.0.1",

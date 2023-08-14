@@ -1,24 +1,110 @@
 import { parse } from 'lambda-multipart-parser'
-import { S3, Textract } from 'aws-sdk'
+import * as AWS_S3 from '@aws-sdk/client-s3'
+import {
+  Block,
+  GetDocumentAnalysisCommandOutput,
+  Relationship,
+  Textract,
+} from '@aws-sdk/client-textract'
 import { mandatory, uuids } from '@cozemble/lang-util'
 
-const textract = new Textract({ region: 'eu-west-2' })
-const s3 = new S3({ region: 'eu-west-2' })
+const { S3 } = AWS_S3
 
-// Helper function to upload file to S3
-async function uploadToS3(bucketName: string, key: string, fileContent: Buffer) {
-  const params: S3.PutObjectRequest = {
+const textract = new Textract()
+const s3 = new S3()
+
+async function uploadToS3(bucketName: string, key: string, fileContent: Buffer | string) {
+  const params: AWS_S3.PutObjectCommandInput = {
     Bucket: bucketName,
     Key: key,
     Body: fileContent,
   }
 
-  return s3.putObject(params).promise()
+  return s3.putObject(params)
+}
+
+function joinWords(allBlocks: Block[], wordIds: Relationship[]): string {
+  const ids = wordIds.flatMap((word) => word.Ids)
+  return allBlocks
+    .filter((block) => block.BlockType === 'WORD' && ids.includes(block.Id!))
+    .map((word) => word.Text)
+    .join(' ')
+}
+
+export function extractTables(allBlocks: Block[]) {
+  const detectedTables = [] as any[]
+
+  const tableBlocks = allBlocks.filter((block) => block.BlockType === 'TABLE')
+
+  for (const tableBlock of tableBlocks) {
+    const cellIds = tableBlock.Relationships?.find((rel) => rel.Type === 'CHILD')?.Ids || []
+    const tableCells = allBlocks
+      .filter((block) => block?.Id && cellIds.includes(block.Id))
+      .map((cellBlock) => ({
+        rowIndex: cellBlock.RowIndex!,
+        columnIndex: cellBlock.ColumnIndex!,
+        text: joinWords(allBlocks, cellBlock.Relationships ?? []),
+      }))
+
+    // Convert cells into a structured table
+    const tableStructure = tableCells.reduce((acc, cell) => {
+      const rowIndex = cell.rowIndex! - 1
+      const colIndex = cell.columnIndex! - 1
+      if (!acc[rowIndex]) {
+        acc[rowIndex] = []
+      }
+      acc[rowIndex][colIndex] = cell.text
+      return acc
+    }, {} as Record<number, string[]>)
+
+    detectedTables.push(tableStructure)
+  }
+  return detectedTables
+}
+
+async function fetchAllBlocks(
+  jobId: string,
+  response: GetDocumentAnalysisCommandOutput,
+  collector: Block[] = [],
+): Promise<Block[]> {
+  collector = [...collector, ...(response.Blocks ?? [])]
+  if (response.NextToken) {
+    const nextResponse = await textract.getDocumentAnalysis({
+      JobId: jobId,
+      NextToken: response.NextToken,
+    })
+    return fetchAllBlocks(jobId, nextResponse, collector)
+  }
+  return collector
+}
+
+async function waitForAnalysis(jobId: string): Promise<Block[]> {
+  let pollCount = 0
+  let finished = false
+  let allBlocks: Block[] = []
+
+  while (!finished && pollCount < 30) {
+    const response: GetDocumentAnalysisCommandOutput = await textract.getDocumentAnalysis({
+      JobId: jobId,
+    })
+    console.log(`Job status: ${response.JobStatus}`)
+    if (response.JobStatus === 'FAILED') {
+      throw new Error('Textract processing failed')
+    }
+    if (response.JobStatus === 'IN_PROGRESS') {
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      pollCount++
+    } else if (response.JobStatus === 'SUCCEEDED') {
+      allBlocks = await fetchAllBlocks(jobId, response)
+      finished = true
+    }
+  }
+
+  return allBlocks
 }
 
 export async function ocr(event: any) {
   const result = await parse(event)
-  console.log('Parsed result:', result)
 
   const file = result.files[0]
 
@@ -28,65 +114,28 @@ export async function ocr(event: any) {
       body: JSON.stringify({ message: 'No file uploaded' }),
     }
   }
-  console.log('Number of bytes:', file.content.length)
-
-  // Upload the file to S3
   const bucketName = mandatory(process.env.OCR_BUCKET_NAME, 'BUCKET_NAME')
-  const s3Key = `ocr/${uuids.v4()}/${mandatory(file.filename, 'FILENAME')}`
-  // const s3Key = mandatory(file.filename, 'FILENAME')
+  const s3Parent = `ocr/${uuids.v4()}`
+  const s3Key = `${s3Parent}/${mandatory(file.filename, 'FILENAME')}`
   await uploadToS3(bucketName, s3Key, file.content)
   console.log(`File uploaded to S3: s3://${bucketName}/${s3Key}`)
 
-  // read the s3 file to check that we can access it
-  const s3Params: S3.GetObjectRequest = {
-    Bucket: bucketName,
-    Key: s3Key,
-  }
-  const s3Response = await s3.getObject(s3Params).promise()
-  // check the byte count is the same
-  if (s3Response.ContentLength !== file.content.length) {
-    throw new Error('S3 file size does not match')
-  }
-
   try {
-    const startResponse = await textract
-      .startDocumentTextDetection({
-        DocumentLocation: {
-          S3Object: {
-            Bucket: bucketName,
-            Name: s3Key,
-          },
+    const startResponse = await textract.startDocumentAnalysis({
+      DocumentLocation: {
+        S3Object: {
+          Bucket: bucketName,
+          Name: s3Key,
         },
-      })
-      .promise()
+      },
+      FeatureTypes: ['TABLES'],
+    })
+    const blocks = await waitForAnalysis(startResponse.JobId!)
 
-    let finished = false
-    let detectedTexts = [] as (string | undefined)[]
-
-    while (!finished) {
-      const response = await textract
-        .getDocumentTextDetection({
-          JobId: startResponse.JobId!,
-        })
-        .promise()
-
-      if (response.JobStatus === 'SUCCEEDED') {
-        finished = true
-        detectedTexts =
-          response.Blocks?.filter((block) => block.BlockType === 'LINE').map(
-            (block) => block.Text,
-          ) || []
-      } else if (response.JobStatus === 'FAILED') {
-        throw new Error('Textract processing failed')
-      } else {
-        // Wait for a short period before polling again
-        await new Promise((resolve) => setTimeout(resolve, 5000))
-      }
-    }
-
+    const detectedTables = extractTables(blocks)
     return {
       statusCode: 200,
-      body: JSON.stringify({ ocrText: detectedTexts }),
+      body: JSON.stringify({ tables: detectedTables }),
     }
   } catch (error: any) {
     console.error('Error doing OCR on the file:', error)
