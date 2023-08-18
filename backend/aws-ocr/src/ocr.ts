@@ -46,9 +46,10 @@ export function extractTables(allBlocks: Block[]) {
         text: joinWords(allBlocks, cellBlock.Relationships ?? []),
       }))
 
-    // Convert cells into a structured table
-    const tableStructure = tableCells.reduce((acc, cell) => {
+    let maxRowIndex = 0
+    const rowObjects = tableCells.reduce((acc, cell) => {
       const rowIndex = cell.rowIndex! - 1
+      maxRowIndex = Math.max(maxRowIndex, rowIndex)
       const colIndex = cell.columnIndex! - 1
       if (!acc[rowIndex]) {
         acc[rowIndex] = []
@@ -56,8 +57,13 @@ export function extractTables(allBlocks: Block[]) {
       acc[rowIndex][colIndex] = cell.text
       return acc
     }, {} as Record<number, string[]>)
+    const rows = []
+    // convert the rowObjects into an array of arrays
+    for (let i = 0; i <= maxRowIndex; i++) {
+      rows.push(rowObjects[i] ?? [])
+    }
 
-    detectedTables.push(tableStructure)
+    detectedTables.push(rows)
   }
   return detectedTables
 }
