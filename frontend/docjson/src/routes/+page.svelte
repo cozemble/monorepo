@@ -30,14 +30,14 @@
 </script>
 
 <section class="hero min-h-full flex-grow">
-  <div class="hero-content gap-[15em]">
-    <div>
+  <div class="hero-content flex flex-col md:flex-row gap-12 lg:gap-[10em]">
+    <div class="flex-grow-0 min-w">
       <h1 class="mb-6">
         Streamline your workflow with easy
         <span class="text-primary"> file to JSON </span>
         conversions
       </h1>
-      <p class="text-xl opacity-70">
+      <p class="lg:text-xl opacity-70">
         Auto-read data from your documents and organize it in the structure you want, with help from
         <span class="text-secondary"> AI. </span>
       </p>
@@ -48,7 +48,9 @@
     <!-- TODO list of previous schemas -->
 
     <div
-      class="card shadow-lg p-8 gap-8 bg-gradient-to-tr from-accent from-25% via-secondary via-70% to-primary"
+      class={`card shadow-lg p-8 gap-8 w-full flex-shrink-0
+              sm:w-[40vw] sm:min-w-[24em] max-w-[30em] 
+              bg-gradient-to-tr from-accent from-25% via-secondary via-70% to-primary`}
     >
       <FileDrop bind:files />
 

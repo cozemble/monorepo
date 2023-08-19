@@ -3,18 +3,18 @@
 </script>
 
 <header>
-  <div class="navbar px-6">
+  <div class="navbar sm:px-6">
     <div class="flex-1">
-      <a class="btn btn-ghost normal-case text-3xl" href="/"
+      <a class="btn btn-ghost p-2 normal-case text-xl sm:text-3xl" href="/"
         >doc
         <span class="text-primary">json</span>
       </a>
     </div>
 
     <div class="flex-none gap-8 text-neutral">
-      <a class="link-hover normal-case" href="/dashboard"> Dashboard </a>
-      <a class="link-hover normal-case" href="/docs"> Docs </a>
-      <a class="link-hover normal-case text-secondary" href="/pricing"> Pricing </a>
+      <a class="link-hover normal-case hidden sm:block" href="/dashboard"> Dashboard </a>
+      <a class="link-hover normal-case hidden sm:block" href="/docs"> Docs </a>
+      <a class="link-hover normal-case text-secondary hidden sm:block" href="/pricing"> Pricing </a>
 
       <div class="dropdown dropdown-end">
         <button tabindex="0" class="btn btn-ghost btn-circle avatar">

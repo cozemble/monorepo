@@ -4,7 +4,7 @@
 </script>
 
 <Header />
-<main class="p-4 flex flex-col flex-grow">
+<main class="sm:p-4 pb-10 flex flex-col flex-grow">
   <slot />
 </main>
 <Footer />

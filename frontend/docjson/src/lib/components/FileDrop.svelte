@@ -65,9 +65,9 @@
 </script>
 
 <div
-  class={`card card-bordered shadow-lg bg-base-200 w-[24rem]
-  p-4 transition-all duration-200 ease-in-out
-  ${highlightState && 'bg-base-300'}`}
+  class={`card card-bordered shadow-lg bg-base-200 p-4 w-full 
+          transition-all duration-200 ease-in-out
+          ${highlightState && 'bg-base-300'}`}
 >
   <label
     for="file-input"
