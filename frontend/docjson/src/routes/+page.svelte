@@ -30,14 +30,17 @@
 </script>
 
 <section class="hero min-h-full flex-grow">
-  <div class="hero-content">
+  <div class="hero-content gap-[15em]">
     <div>
-      <h1>
+      <h1 class="mb-6">
         Streamline your workflow with easy
         <span class="text-primary"> file to JSON </span>
         conversions
       </h1>
-      <p class="text-xl opacity-70">Pick a document to create schema of</p>
+      <p class="text-xl opacity-70">
+        Auto-read data from your documents and organize it in the structure you want, with help from
+        <span class="text-secondary"> AI. </span>
+      </p>
     </div>
 
     <!-- TODO catchy "Try it" indicator -->
@@ -59,7 +62,7 @@
             on:click={handleStart}
             disabled={!files?.length}
           >
-            Start
+            Try it now
           </button>
         </div>
       </div>
