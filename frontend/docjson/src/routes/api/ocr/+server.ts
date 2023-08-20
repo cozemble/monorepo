@@ -8,6 +8,7 @@ export async function POST({ fetch, request }) {
       const form = await request.formData()
       return form
     } catch (error) {
+      console.log('Error parsing form data:', error)
       return null
     }
   })()
@@ -30,6 +31,7 @@ export async function POST({ fetch, request }) {
     console.log('No ocr url configured')
     return new Response('No ocr url configured', { status: 500 })
   }
+  console.log('OCR URL:', ocrUrl)
 
   // TODO move to separate function
   try {
@@ -44,6 +46,7 @@ export async function POST({ fetch, request }) {
       },
     })
 
+    console.log('OCR response:', response)
     if (response.ok) {
       const result = await response.json()
       return new Response(JSON.stringify(result), { status: 200 })
@@ -54,6 +57,7 @@ export async function POST({ fetch, request }) {
       })
     }
   } catch (error: any) {
+    console.log('Error doing OCR:', error)
     return new Response(`Error: ${error.message}`, { status: 500 })
   }
 }

@@ -12,6 +12,7 @@ const { S3 } = AWS_S3
 
 const textract = new Textract()
 const s3 = new S3()
+const bucketName = mandatory(process.env.OCR_BUCKET_NAME, 'BUCKET_NAME')
 
 async function uploadToS3(bucketName: string, key: string, fileContent: Buffer | string) {
   const params: AWS_S3.PutObjectCommandInput = {
@@ -84,7 +85,7 @@ async function fetchAllBlocks(
   return collector
 }
 
-async function waitForAnalysis(jobId: string): Promise<Block[]> {
+async function waitForAnalysis(s3Key: string, jobId: string): Promise<Block[]> {
   let pollCount = 0
   let finished = false
   let allBlocks: Block[] = []
@@ -101,6 +102,7 @@ async function waitForAnalysis(jobId: string): Promise<Block[]> {
       await new Promise((resolve) => setTimeout(resolve, 1000))
       pollCount++
     } else if (response.JobStatus === 'SUCCEEDED') {
+      await uploadToS3(bucketName, s3Key + '/textract.json', JSON.stringify(response, null, 2))
       allBlocks = await fetchAllBlocks(jobId, response)
       finished = true
     }
@@ -120,7 +122,6 @@ export async function ocr(event: any) {
       body: JSON.stringify({ message: 'No file uploaded' }),
     }
   }
-  const bucketName = mandatory(process.env.OCR_BUCKET_NAME, 'BUCKET_NAME')
   const s3Parent = `ocr/${uuids.v4()}`
   const s3Key = `${s3Parent}/${mandatory(file.filename, 'FILENAME')}`
   await uploadToS3(bucketName, s3Key, file.content)
@@ -136,7 +137,7 @@ export async function ocr(event: any) {
       },
       FeatureTypes: ['TABLES'],
     })
-    const blocks = await waitForAnalysis(startResponse.JobId!)
+    const blocks = await waitForAnalysis(s3Parent, startResponse.JobId!)
 
     const detectedTables = extractTables(blocks)
     return {
