@@ -8,6 +8,7 @@ import {
 } from '@aws-sdk/client-textract'
 import { mandatory, uuids } from '@cozemble/lang-util'
 import { textractToJson } from './textractToJson'
+import { jsonToHtml } from './jsonToHtml'
 
 const { S3 } = AWS_S3
 
@@ -140,10 +141,11 @@ export async function ocr(event: any) {
     })
     const blocks = await waitForAnalysis(s3Parent, startResponse.JobId!)
     const json = textractToJson(blocks)
+    const html = jsonToHtml(json)
 
     return {
       statusCode: 200,
-      body: JSON.stringify(json),
+      body: JSON.stringify({ json, html }),
     }
   } catch (error: any) {
     console.error('Error doing OCR on the file:', error)

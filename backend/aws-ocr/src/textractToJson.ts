@@ -1,5 +1,5 @@
-import { arrays } from '@cozemble/lang-util'
-import { Block, Relationship, GetDocumentAnalysisCommandOutput } from '@aws-sdk/client-textract'
+import { arrays, mandatory } from '@cozemble/lang-util'
+import { Block, Relationship } from '@aws-sdk/client-textract'
 
 export interface Line {
   _type: 'line'
@@ -103,9 +103,18 @@ function pageToJson(blockFinder: BlockFinder, page: Block): Page {
   if (page.BlockType !== 'PAGE') {
     throw new Error(`Expected page, got ${page.BlockType}`)
   }
-  let linesAndTables = getChildBlocks(blockFinder, page).filter(
-    (block) => block.BlockType === 'LINE' || block.BlockType === 'TABLE',
-  )
+  let linesAndTables = getChildBlocks(blockFinder, page)
+    .filter((block) => block.BlockType === 'LINE' || block.BlockType === 'TABLE')
+    .sort((a, b) => {
+      const leftA = mandatory(a.Geometry?.BoundingBox?.Left, `Left A`).toFixed(2)
+      const topA = mandatory(a.Geometry?.BoundingBox?.Top, `Top A`).toFixed(2)
+      const leftB = mandatory(b.Geometry?.BoundingBox?.Left, `Left B`).toFixed(2)
+      const topB = mandatory(b.Geometry?.BoundingBox?.Top, `Top B`).toFixed(2)
+      if (topA === topB) {
+        return leftA < leftB ? -1 : 1
+      }
+      return topA < topB ? -1 : 1
+    })
 
   const lines = linesAndTables.filter((item) => item.BlockType === 'LINE')
   const tables = linesAndTables.filter((item) => item.BlockType === 'TABLE')
