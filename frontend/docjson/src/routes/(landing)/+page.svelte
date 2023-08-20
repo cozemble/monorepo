@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { goto } from '$app/navigation'
   import FileDrop from '$lib/components/FileDrop.svelte'
 
   let files: File[]
@@ -9,6 +10,8 @@
     handleOCR(files).then((res) => {
       console.log(res)
     })
+
+    goto('/create')
 
     // <!-- TODO next step: create schema -->
     // <!-- TODO next step: create database and populate -->
