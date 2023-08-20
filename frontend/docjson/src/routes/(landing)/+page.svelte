@@ -4,14 +4,21 @@
 
   let files: File[]
 
+  let buttonLoading = false
+
   function handleStart() {
     if (!files) return console.log('No files selected')
+
+    buttonLoading = true
 
     handleOCR(files).then((res) => {
       console.log(res)
     })
 
-    goto('/create')
+    // <!-- ! for demo purposes -->
+    setTimeout(() => {
+      goto('/create')
+    }, 2000)
 
     // <!-- TODO next step: create schema -->
     // <!-- TODO next step: create database and populate -->
@@ -63,11 +70,15 @@
       >
         <div class="actions flex justify-center">
           <button
-            class="btn btn-block btn-md text-xl normal-case shadow-xl"
+            class="btn btn-block btn-md btn-neutral text-xl normal-case shadow-xl"
             on:click={handleStart}
             disabled={!files?.length}
           >
-            Try it now
+            {#if buttonLoading}
+              <span class="loading loading-md loading-spinner" />
+            {:else}
+              Try it now
+            {/if}
           </button>
         </div>
       </div>
