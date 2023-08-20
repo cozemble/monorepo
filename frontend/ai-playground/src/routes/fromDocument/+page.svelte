@@ -60,7 +60,7 @@
         const converted = convertSchemaToModels(schema)
         reconfigureApp(converted)
         newGenerationSessionId()
-        goto("/amend")
+        goto("/fromDocument/data")
     }
 
     function cancel() {
