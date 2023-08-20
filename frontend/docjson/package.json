@@ -29,7 +29,7 @@
   },
   "type": "module",
   "dependencies": {
-    "daisyui": "^2.47.0",
+    "daisyui": "^3.5.1",
     "env-cmd": "^10.1.0"
   }
 }
