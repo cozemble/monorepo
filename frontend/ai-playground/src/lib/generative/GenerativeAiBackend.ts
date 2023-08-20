@@ -60,7 +60,7 @@ export interface OpenAiInterface {
     existingObject: any | null,
   ): Promise<string | undefined>
 
-  schemaFromDocumentText(documentText: string): Promise<string | undefined>
+  schemaFromDocumentHtml(documentText: string): Promise<string | undefined>
 }
 
 export function idRemovingOpenAi(delegate: OpenAiInterface): OpenAiInterface {
@@ -81,8 +81,8 @@ export function idRemovingOpenAi(delegate: OpenAiInterface): OpenAiInterface {
       delegate.amendmentPrompt(existingSchema, promptText).then(removeId),
     generateData: delegate.generateData,
     textToDataPrompt: delegate.textToDataPrompt,
-    schemaFromDocumentText: (documentText) =>
-      delegate.schemaFromDocumentText(documentText).then(removeId),
+    schemaFromDocumentHtml: (documentText) =>
+      delegate.schemaFromDocumentHtml(documentText).then(removeId),
   }
 }
 
@@ -283,14 +283,14 @@ Remember, there's no need to explain the code, as it will be parsed to generate 
     Please return a json object adhering to the schema, using values from the text.  DO NOT MAKE UP DATA.  If you see values in the spoken text, please use them.  But do not attempt to fill any blanks.  Do not explain the json.  I want json only.  If you explain the json, I will not be able to parse it.`
   }
 
-  async schemaFromDocumentText(documentText: string): Promise<string | undefined> {
-    const prompt = `Below you will find a block of text that is the result of performing OCR on a document.  
+  async schemaFromDocumentHtml(documentHtml: string): Promise<string | undefined> {
+    const prompt = `Below you will find a HTML that is the result of performing OCR on a document.  
     Please return a json schema to capture the data represented by this OCR text.  
     Make sure to include a "title" field to represent the kind of data you think this is.  Please also add a "pluralTitle" field to represent the plural form of the title. 
     Do not explain the json.  I want json only.  If you explain the json, I will not be able to parse it.  The OCR text is below:
     -------------------------
-    ${documentText}
+    ${documentHtml}
     -------------------------`
-    return this._sendPrompt('schema-from-text', documentText, prompt, { model: 'gpt-4-0613' })
+    return this._sendPrompt('schema-from-text', documentHtml, prompt, { model: 'gpt-4-0613' })
   }
 }

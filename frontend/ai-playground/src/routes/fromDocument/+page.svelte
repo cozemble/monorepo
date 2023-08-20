@@ -24,14 +24,14 @@
         formData.append('image', file[0]);
         imageUrl = URL.createObjectURL(file[0]);
 
-        const response = await fetch('/ocr', {
+        const response = await fetch('/aws-ocr', {
             method: 'POST',
             body: formData
         });
 
         if (response.ok) {
             const result = await response.json();
-            ocrResult = result.text;
+            ocrResult = result.html;
             await figureOutDatabaseStructure()
         } else {
             errorMessage = 'Error occurred during OCR processing.';
@@ -44,7 +44,7 @@
         }
         const response = await fetch('/fromDocument', {
             method: 'POST',
-            body: JSON.stringify({text: ocrResult})
+            body: JSON.stringify({html: ocrResult})
         });
 
         if (response.ok) {
