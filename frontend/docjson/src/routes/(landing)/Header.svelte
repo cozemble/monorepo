@@ -5,9 +5,8 @@
 <header>
   <div class="navbar sm:px-6">
     <div class="flex-1">
-      <a class="btn btn-ghost p-2 normal-case text-xl sm:text-3xl" href="/"
-        >doc
-        <span class="text-primary">json</span>
+      <a class="font-semibold normal-case text-xl sm:text-3xl" href="/"
+        >doc<span class="text-primary">json</span>
       </a>
     </div>
 
