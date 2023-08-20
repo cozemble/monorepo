@@ -7,7 +7,7 @@ test('real example', () => {
   const loaded: GetDocumentAnalysisCommandOutput = JSON.parse(
     fs.readFileSync(`${__dirname}/green-delivery-note.json`, 'utf8'),
   )
-  const processed = textractToJson(loaded)
+  const processed = textractToJson(loaded.Blocks ?? [])
   expect(processed.pages).toHaveLength(1)
   const firstLine = processed.pages[0].items[0] as Line
   expect(firstLine.text).toEqual('DELIVERY #')

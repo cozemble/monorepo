@@ -122,15 +122,13 @@ function pageToJson(blockFinder: BlockFinder, page: Block): Page {
   return { items }
 }
 
-function makeBlockFinder(analysis: GetDocumentAnalysisCommandOutput): BlockFinder {
-  return (id: string) => analysis.Blocks?.find((block) => block.Id === id)
+function makeBlockFinder(allBlocks: Block[]): BlockFinder {
+  return (id: string) => allBlocks.find((block) => block.Id === id)
 }
 
-export function textractToJson(
-  analysis: GetDocumentAnalysisCommandOutput,
-): ProcessedTextractDocument {
-  const pages = (analysis.Blocks ?? [])
+export function textractToJson(allBlocks: Block[]): ProcessedTextractDocument {
+  const pages = allBlocks
     .filter((block) => block.BlockType === 'PAGE')
-    .map((page) => pageToJson(makeBlockFinder(analysis), page))
+    .map((page) => pageToJson(makeBlockFinder(allBlocks), page))
   return { pages }
 }
