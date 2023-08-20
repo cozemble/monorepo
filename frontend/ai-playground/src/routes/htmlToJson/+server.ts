@@ -7,13 +7,15 @@ export const POST: RequestHandler = async (event: RequestEvent) => {
   if (!data) {
     throw error(400, 'No data provided')
   }
+  if (!data.schema) {
+    throw error(400, 'No schema provided')
+  }
   if (!data.html) {
     throw error(400, 'No html provided')
   }
-  console.log({ data })
   try {
     const openAi = new OpenAi(mandatoryOpenAiCreds(), promptEventSender)
-    const result = await openAi.schemaFromDocumentHtml(data.html)
+    const result = await openAi.htmlToData(data.schema, data.html)
     if (!result) {
       return new Response('No result', { status: 500 })
     }

@@ -1,11 +1,6 @@
 import { parse } from 'lambda-multipart-parser'
 import * as AWS_S3 from '@aws-sdk/client-s3'
-import {
-  Block,
-  GetDocumentAnalysisCommandOutput,
-  Relationship,
-  Textract,
-} from '@aws-sdk/client-textract'
+import { Block, GetDocumentAnalysisCommandOutput, Textract } from '@aws-sdk/client-textract'
 import { mandatory, uuids } from '@cozemble/lang-util'
 import { textractToJson } from './textractToJson'
 import { jsonToHtml } from './jsonToHtml'
@@ -24,51 +19,6 @@ async function uploadToS3(bucketName: string, key: string, fileContent: Buffer |
   }
 
   return s3.putObject(params)
-}
-
-function joinWords(allBlocks: Block[], wordIds: Relationship[]): string {
-  const ids = wordIds.flatMap((word) => word.Ids)
-  return allBlocks
-    .filter((block) => block.BlockType === 'WORD' && ids.includes(block.Id!))
-    .map((word) => word.Text)
-    .join(' ')
-}
-
-export function extractTables(allBlocks: Block[]) {
-  const detectedTables = [] as any[]
-
-  const tableBlocks = allBlocks.filter((block) => block.BlockType === 'TABLE')
-
-  for (const tableBlock of tableBlocks) {
-    const cellIds = tableBlock.Relationships?.find((rel) => rel.Type === 'CHILD')?.Ids || []
-    const tableCells = allBlocks
-      .filter((block) => block?.Id && cellIds.includes(block.Id))
-      .map((cellBlock) => ({
-        rowIndex: cellBlock.RowIndex!,
-        columnIndex: cellBlock.ColumnIndex!,
-        text: joinWords(allBlocks, cellBlock.Relationships ?? []),
-      }))
-
-    let maxRowIndex = 0
-    const rowObjects = tableCells.reduce((acc, cell) => {
-      const rowIndex = cell.rowIndex! - 1
-      maxRowIndex = Math.max(maxRowIndex, rowIndex)
-      const colIndex = cell.columnIndex! - 1
-      if (!acc[rowIndex]) {
-        acc[rowIndex] = []
-      }
-      acc[rowIndex][colIndex] = cell.text
-      return acc
-    }, {} as Record<number, string[]>)
-    const rows = []
-    // convert the rowObjects into an array of arrays
-    for (let i = 0; i <= maxRowIndex; i++) {
-      rows.push(rowObjects[i] ?? [])
-    }
-
-    detectedTables.push(rows)
-  }
-  return detectedTables
 }
 
 async function fetchAllBlocks(

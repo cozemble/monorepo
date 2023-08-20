@@ -7,6 +7,7 @@ import {
 } from '@cozemble/model-core'
 import { format, parse } from 'date-fns'
 import { makeDerivedStringProperty } from '../derived/makeDerivedProperty.js'
+import { errors } from '@cozemble/lang-util'
 
 const defaultDateFormat = 'yyyy-MM-dd'
 
@@ -48,8 +49,12 @@ export const jsonDatePropertyDescriptor = {
     if (value === null || value === undefined || value === '') {
       return null
     }
-    const parsed = parse(value, defaultDateFormat, new Date())
-    return formatDate(systemConfiguration, parsed)
+    try {
+      const parsed = parse(value, defaultDateFormat, new Date())
+      return formatDate(systemConfiguration, parsed)
+    } catch (e: any) {
+      throw errors.prependToMessage(e, `Failed to format as date: ${value}`)
+    }
   },
   configurationSchema: null,
 }
