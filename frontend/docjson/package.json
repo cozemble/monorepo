@@ -17,6 +17,7 @@
     "@tailwindcss/typography": "^0.5.9",
     "@types/lodash": "^4.14.191",
     "autoprefixer": "^10.4.13",
+    "env-cmd": "^10.1.0",
     "lodash": "^4.17.21",
     "postcss": "^8.4.27",
     "svelte": "^4.0.5",
@@ -29,7 +30,6 @@
   },
   "type": "module",
   "dependencies": {
-    "daisyui": "^3.5.1",
-    "env-cmd": "^10.1.0"
+    "daisyui": "^3.5.1"
   }
 }
