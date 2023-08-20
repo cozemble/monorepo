@@ -1,6 +1,8 @@
 import * as pulumi from '@pulumi/pulumi'
 import * as aws from '@pulumi/aws'
 
+const apiKeyValue = new pulumi.Config().requireSecret('ocrApiKey')
+
 const ocrBucket = new aws.s3.Bucket('ocrBucket')
 
 const lambdaRole = new aws.iam.Role('lambdaRole', {
@@ -49,6 +51,7 @@ const lambda = new aws.lambda.Function('mylambda', {
   environment: {
     variables: {
       OCR_BUCKET_NAME: ocrBucket.bucket, // Assuming s3Bucket is the Pulumi resource for your S3 bucket
+      OCR_API_KEY: apiKeyValue,
     },
   },
 })

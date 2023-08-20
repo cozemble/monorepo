@@ -1,9 +1,25 @@
 import { parse } from 'lambda-multipart-parser'
 import { processPDF } from './pdfProcessor'
 import { ocr } from './ocr'
-
-console.log('Loading function')
-export const handler = async (event: any) => {
+import { Handler } from 'aws-lambda'
+import { mandatory } from '@cozemble/lang-util'
+export const handler: Handler = async (event) => {
+  const apiKey = mandatory(process.env.OCR_API_KEY, 'OCR_API_KEY')
+  const auth = event.headers?.authorization
+  if (auth === undefined) {
+    console.log('No authorization header')
+    return {
+      statusCode: 401,
+      body: JSON.stringify({ message: 'Unauthorized' }),
+    }
+  }
+  if (auth !== apiKey) {
+    console.log('Invalid authorization header')
+    return {
+      statusCode: 401,
+      body: JSON.stringify({ message: 'Unauthorized' }),
+    }
+  }
   const path = event.path || event.requestContext?.http?.path
 
   switch (path) {
