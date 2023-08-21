@@ -1,26 +1,6 @@
 import { arrays, mandatory } from '@cozemble/lang-util'
 import { Block, Relationship } from '@aws-sdk/client-textract'
-
-export interface Line {
-  _type: 'line'
-  text: string
-}
-
-export interface Row {
-  _type: 'row'
-  cells: string[]
-}
-
-export interface Table {
-  _type: 'table'
-  rows: Row[]
-}
-
-export type BlockItem = Line | Table
-
-export interface Page {
-  items: BlockItem[]
-}
+import { Line, Page, Row, Table } from '@cozemble/backend-aws-ocr-types'
 
 export interface ProcessedTextractDocument {
   pages: Page[]

@@ -18,6 +18,7 @@
     "@aws-sdk/client-s3": "^3.388.0",
     "@aws-sdk/client-textract": "^3.388.0",
     "@cozemble/lang-util": "workspace:*",
+    "@cozemble/backend-aws-ocr-types": "workspace:*",
     "@types/aws-lambda": "^8.10.119",
     "aws-sdk": "^2.1435.0",
     "lambda-multipart-parser": "^1.0.1",
