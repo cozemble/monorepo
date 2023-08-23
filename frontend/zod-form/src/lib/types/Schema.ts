@@ -1,22 +1,18 @@
 export interface FormObject {
   type: 'object'
+  properties: Record<string, FormSchema>
 }
 
 export interface FormArray {
   type: 'array'
   element: FormSchema
-}
-
-export interface FormRootArray {
-  type: 'rootArray'
-  itemName: string
-  array: FormArray
+  itemName?: string
 }
 
 export interface FormDiscriminatedUnion {
   type: 'discriminatedUnion'
   discriminator: string
-  options: FormSchema
+  options: FormSchema[]
 }
 
 export interface FormLiteral {
@@ -37,7 +33,6 @@ export interface FormDefault {
 
 export interface FormText {
   type: 'text'
-  value: string
 }
 
 export type FormSchema =
@@ -48,5 +43,3 @@ export type FormSchema =
   | FormEnum
   | FormDefault
   | FormText
-
-export type FormRootSchema = FormObject | FormRootArray
