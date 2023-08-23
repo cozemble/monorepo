@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 export const labelTable = z.object({
-  action: z.literal('label.table'),
+  action: z.literal('labelTable'),
   label: z.string().min(1, { message: 'Required' }),
   criteria: z
     .array(
@@ -19,3 +19,11 @@ export const labelTable = z.object({
     )
     .nonempty(),
 })
+
+export const deleteRows = z.object({
+  action: z.literal('deleteRows'),
+  tableLabel: z.string().min(1, { message: 'Required' }),
+  rowRegex: z.string().min(1, { message: 'Must be at least 1 character long' }),
+})
+
+export const actions = z.discriminatedUnion('action', [labelTable, deleteRows]).array()

@@ -13,5 +13,5 @@ export function errorComponentFinder(getContext: (key: string) => any): ErrorCom
 }
 
 export function errorsAtPath(path: Path, errors: ZodIssue[]): ZodIssue[] {
-  return errors.filter((error) => error.path.join('.') === path.join('.'))
+  return errors.filter((error) => error.path.join('.').startsWith(path.join('.')))
 }
