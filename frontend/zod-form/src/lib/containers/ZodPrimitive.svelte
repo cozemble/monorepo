@@ -2,11 +2,11 @@
     import {z} from 'zod'
     import {getContext} from 'svelte'
     import {componentFinder} from "./helper";
-
+import type {Path} from "./helper";
     export let key: string
     export let field: z.ZodString
     export let value: any
-    export let path: string[]
+    export let path: Path
 
     $: componentAndProps = componentFinder(getContext)(field, path)
 </script>

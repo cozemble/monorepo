@@ -26,6 +26,7 @@
   },
   "type": "module",
   "dependencies": {
+    "@cozemble/lang-util": "workspace:*",
     "zod": "^3.22.2"
   }
 }

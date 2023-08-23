@@ -1,10 +1,9 @@
 <script lang="ts">
     import {z, type ZodIssue} from 'zod'
     import {derived, type Readable, writable} from 'svelte/store'
-    import ZodObject from "./ZodObject.svelte";
     import {afterUpdate, getContext, setContext} from 'svelte'
-    import {defaultComponentFinder} from "./componentPolicy";
-    import {defaultErrorComponentFinder} from "./componentPolicy.js";
+    import {defaultComponentFinder, defaultErrorComponentFinder} from "$lib/containers/componentPolicy";
+    import ZodObject from "$lib/containers/ZodObject.svelte";
 
     export let object: any
     export let schema: z.ZodType<any, any>
@@ -38,6 +37,7 @@
 
     afterUpdate(() => console.log({errors: $errorStore}))
 </script>
+
 {#if schema instanceof z.ZodObject}
     <ZodObject bind:value={$objectStore} {schema} errors={$errorStore} showErrors={$showErrors}/>
 {:else}

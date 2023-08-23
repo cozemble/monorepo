@@ -1,7 +1,7 @@
 <script lang="ts">
     import {labelTable} from "./types";
-    import ZodForm from "./ZodForm.svelte";
     import {writable} from "svelte/store";
+    import ZodForm from "$lib/containers/ZodForm.svelte";
 
     const object = {}
     const schema = labelTable
