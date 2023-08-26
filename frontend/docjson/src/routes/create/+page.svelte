@@ -2,6 +2,7 @@
   import { tweened } from 'svelte/motion'
   import { cubicOut } from 'svelte/easing'
   import type { SvelteComponent } from 'svelte'
+  import Progress from './Progress.svelte'
 
   type Step = {
     name: string
@@ -154,17 +155,4 @@
 
 <!-- TODO display component of the step if it exists -->
 
-<!-- * progress indicator -->
-<div class="progress-area w-full flex flex-col items-center justify-center ">
-  <!-- step message -->
-  <p class="mb-4 text-center ">
-    {step.message}
-  </p>
-
-  <span class="loading loading-md loading-dots mb-4" />
-
-  <progress
-    class="progress progress-secondary w-full h-3 justify-self-end transition ease-in"
-    value={$progressStore}
-  />
-</div>
+<Progress message={step.message} progress={$progressStore} />
