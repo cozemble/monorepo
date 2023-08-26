@@ -58,7 +58,7 @@
     <!-- TODO list of previous schemas -->
 
     <div
-      class={`card shadow-lg p-8 gap-8 w-full flex-shrink-0
+      class={`card shadow-2xl p-8 gap-8 w-full flex-shrink-0
               sm:w-[40vw] sm:min-w-[24em] max-w-[30em] 
               bg-gradient-to-tr from-accent from-25% via-secondary via-70% to-primary`}
     >
