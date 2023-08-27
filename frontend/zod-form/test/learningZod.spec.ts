@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { test } from 'vitest'
-import { noopFormElementMaker, zodToFormSchema } from '../src/routes/types'
+import { noopFormElementMaker } from '../src/routes/types'
+import { zodToFom } from '../src/lib/fom/zodToFom'
 
 export const labelTable = z.object({
   action: z.literal('labelTable'),
@@ -31,6 +32,6 @@ export const deleteRows = z.object({
 export const actions = z.discriminatedUnion('action', [labelTable, deleteRows]).array()
 
 test('learing zod', () => {
-  const form = zodToFormSchema(actions, [], noopFormElementMaker, [])
+  const form = zodToFom(actions, [], noopFormElementMaker, [])
   console.log(form)
 })

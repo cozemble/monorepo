@@ -1,14 +1,14 @@
 <script lang="ts">
 
-    import {z, type ZodIssue} from "zod";
-    import ZodObject from "$lib/containers/ZodObject.svelte";
-    import ZodDiscriminatedUnion from "$lib/containers/ZodDiscriminatedUnion.svelte";
-    import {errorsAtPath} from "$lib/containers/helper";
+    import type {FomArray, FomIssue} from "$lib/fom/Fom";
+    import {errorsAtPath} from "$lib/fom/components/errorsAtPath";
+    import FomDiscriminatedUnion from "$lib/fom/components/FomDiscriminatedUnion.svelte";
+    import FomObject from "$lib/fom/components/FomObject.svelte";
 
     export let value: any[]
     export let path: string[]
-    export let field: z.ZodArray<any>
-    export let errors: ZodIssue[] = []
+    export let field: FomArray
+    export let errors: FomIssue[]
     export let showErrors: boolean
     export let itemName: string
 
@@ -30,13 +30,13 @@
         <div class="mr-4"><h4>{index + 1}</h4></div>
         <div class="border p-4 flex">
             <div>
-                {#if field.element instanceof z.ZodObject}
-                    <ZodObject bind:value={item} schema={field.element} errors={extendedErrors} {showErrors}
+                {#if field.element.type === 'object'}
+                    <FomObject bind:value={item} schema={field.element} errors={extendedErrors} {showErrors}
                                path={extendedPath}/>
-                {:else if field.element instanceof z.ZodDiscriminatedUnion}
-                    <ZodDiscriminatedUnion field={field.element} bind:value={item} path={extendedPath} errors={extendedErrors} {showErrors}/>
+                {:else if field.element.type === "discriminatedUnion"}
+                    <FomDiscriminatedUnion field={field.element} bind:value={item} path={extendedPath} errors={extendedErrors} {showErrors}/>
                 {:else}
-                    ZodArrayContainerInner: to do {field.element.constructor.name}
+                    FomArrayContainerInner: to do {field.element.type}
                 {/if}
             </div>
             <div class="delete-icon" on:click={() => deleteItem(index)} title="Delete this item">X</div>

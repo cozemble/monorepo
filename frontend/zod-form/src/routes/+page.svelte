@@ -1,13 +1,14 @@
 <script lang="ts">
-    import {actions, extendSchema, zodToFormSchema} from "./types";
+    import {actions, extendSchema} from "./types";
     import {writable} from "svelte/store";
     import ZodForm from "$lib/containers/ZodForm.svelte";
+    import {zodToFom} from "$lib/fom/zodToFom";
 
     let object = []
     const schema = actions
     export let showErrors = writable(false)
 
-    $: formSchema = extendSchema(zodToFormSchema(schema), object)
+    $: formSchema = extendSchema(zodToFom(schema), object)
 
 </script>
 <label class="label">Show errors</label>
