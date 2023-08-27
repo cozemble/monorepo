@@ -1,129 +1,122 @@
 <script lang="ts">
+  import type { SvelteComponent } from 'svelte'
+  import { get, type Writable } from 'svelte/store'
   import { tweened } from 'svelte/motion'
   import { cubicOut } from 'svelte/easing'
-  import type { SvelteComponent } from 'svelte'
+
   import Progress from './Progress.svelte'
+  import { goto } from '$app/navigation'
 
   type Step = {
     name: string
     message: string
-    progress: number
     state: 'pending' | 'success' | 'error'
-    handler: () => Promise<void>
+    handler: (progressStore: Writable<number>) => Promise<{
+      success: boolean
+      error?: string
+    }>
     component?: SvelteComponent
   }
 
+  let modelId: string
   /** Between 0 and 1 */
-  let progress = 0.05
-  let step: Step = {
-    name: 'Initiating',
-    message: 'Initializing the process',
-    state: 'pending',
-    progress: 0.3,
-  }
-
   const progressStore = tweened(0, {
     duration: 400,
     easing: cubicOut,
   })
 
-  $: progressStore.set(progress)
+  const resetProgressStore = () => {
+    progressStore.set(0.02)
+  }
 
-  // <!-- TODO actual steps -->
+  // <!-- ! Mock handler that updates the progress store until it reaches 1 -->
+  const mockHandler: Step['handler'] = async function (progressStore) {
+    return await new Promise((resolve) => {
+      const mockInterval = setInterval(() => {
+        const progress = get(progressStore)
 
-  const steps = [
+        if (progress >= 1) {
+          clearInterval(mockInterval)
+          resolve({ success: true })
+        }
+
+        progressStore.set(progress + (Math.random() / 10) * 4)
+      }, 1000)
+    })
+  }
+
+  let steps: Step[] = [
     {
-      name: 'OCR Documents',
+      name: 'Document OCR',
       message: 'Reading your documents',
       state: 'pending',
-      progress: 0.3,
-      handler: async function () {
-        // <!-- TODO -->
-
-        const mockInterval = setInterval(() => {
-          if (progress >= 1) {
-            this.state = 'success'
-            clearInterval(mockInterval)
-          }
-          progress += Math.random() / 10
-        }, 1000)
-      },
+      handler: mockHandler,
     },
     {
-      name: 'Schema',
+      name: 'Create Schema',
       message: 'Creating your schema',
       state: 'pending',
-      progress: 0.6,
-      handler: async function () {
-        // <!-- TODO -->
-
-        const mockInterval = setInterval(() => {
-          if (progress >= 1) {
-            this.state = 'success'
-            clearInterval(mockInterval)
-          }
-          progress += Math.random() / 10
-        }, 1000)
+      handler: mockHandler,
+    },
+    {
+      name: 'Create Database',
+      message: 'Creating your database',
+      state: 'pending',
+      handler: async (progressStore) => {
+        // <!-- TODO create database -->
+        modelId = '123'
+        return await mockHandler(progressStore)
       },
     },
     {
-      name: 'Database',
-      message: 'Creating your database',
+      name: 'Populate Records',
+      message: 'Populating your records',
       state: 'pending',
-      progress: 0.9,
-      handler: async function () {
-        // <!-- TODO -->
-
-        const mockInterval = setInterval(() => {
-          if (progress >= 1) {
-            this.state = 'success'
-            clearInterval(mockInterval)
-          }
-          progress += Math.random() / 10
-        }, 1000)
-      },
+      handler: mockHandler,
     },
   ]
 
-  // <!-- ! simulate progress and steps for demo -->
-  function simulate() {
-    const mockSteps: Step[] = [
-      {
-        name: 'OCR Documents',
-        message: 'Reading your documents',
-        state: 'pending',
-        progress: 0.3,
-      },
-      {
-        name: 'Schema',
-        message: 'Creating your schema',
-        state: 'pending',
-        progress: 0.6,
-      },
-      {
-        name: 'Database',
-        message: 'Creating your database',
-        state: 'pending',
-        progress: 0.9,
-      },
-    ]
+  let activeStepIdx = 0
+  let currentStep: Step = steps[activeStepIdx]
+  $: currentStep = steps[activeStepIdx]
 
-    setInterval(() => {
-      if (progress >= 1) return (progress = 0.05)
-      progress += Math.random() / 10
+  /** 
+  - run steps recursively
+  - if a step fails, stop the process and display the error */
+  async function runSteps() {
+    resetProgressStore()
+
+    const stepResult = await steps[activeStepIdx].handler(progressStore)
+    steps[activeStepIdx].state = stepResult.success ? 'success' : 'error'
+
+    // fail
+    if (!stepResult.success) {
+      // <!-- TODO display error -->
+      return
+    }
+
+    // next step
+    if (activeStepIdx + 1 < steps.length) {
+      activeStepIdx += 1
+      runSteps()
+      return
+    }
+
+    // finish
+    currentStep = {
+      name: 'Finished',
+      message: 'Redirecting to your model',
+      state: 'success',
+      handler: async () => ({ success: true }),
+    }
+    setTimeout(() => {
+      goto(`/dashboard/models/${modelId}`)
     }, 1000)
 
-    setInterval(() => {
-      const index = mockSteps.indexOf(step)
-      if (index === -1) return (step = mockSteps[0])
-      if (index >= mockSteps.length - 1) return (step = mockSteps[0])
-
-      step = mockSteps[index + 1]
-      mockSteps[index].state = 'success'
-    }, 4000)
+    return
   }
 
-  simulate()
+  runSteps()
 </script>
 
 <!-- @component
@@ -136,10 +129,15 @@
   <!-- * steps list -->
   <div class="steps-area flex flex-col w-full max-w-[50em]">
     <ul class="steps gap-4">
-      <li class="step step-primary">Document OCR</li>
-      <li class="step step-primary">Create Schema</li>
-      <li class="step">Create Database</li>
-      <li class="step">Populate Records</li>
+      {#each steps as step}
+        {@const stepStyle =
+          (step.state === 'success' && 'step-primary') ||
+          (step.state === 'error' && 'step-error') ||
+          ''}
+        <li class="step {stepStyle}">
+          {step.name}
+        </li>
+      {/each}
     </ul>
   </div>
 
@@ -155,4 +153,4 @@
 
 <!-- TODO display component of the step if it exists -->
 
-<Progress message={step.message} progress={$progressStore} />
+<Progress message={currentStep.message} progress={$progressStore} />
