@@ -25,7 +25,6 @@
 </script>
 
 {#if schema.type === 'array'}
-    <p>array</p>
     {#if rootItemName}
         {#if Array.isArray($object)}
             <ArrayContainerInner bind:value={$object} path={[]} field={schema} errors={$errors} showErrors={$showErrors}

@@ -6,7 +6,7 @@ import type {
   FomSchema,
 } from '@cozemble/frontend-cozemble-forms'
 
-export const extendSchema = (schema: FomSchema, actions: Action[]) => {
+export const extendSchema = (schema: FomArray, actions: Action[]): FomArray => {
   const tableLabels = (actions ?? [])
     .filter((action) => action.action === 'labelTable')
     .map((action) => action.tableLabel)

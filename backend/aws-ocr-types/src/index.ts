@@ -11,6 +11,7 @@ export interface Row {
 export interface Table {
   _type: 'table'
   rows: Row[]
+  label?: string
 }
 
 export type BlockItem = Line | Table
