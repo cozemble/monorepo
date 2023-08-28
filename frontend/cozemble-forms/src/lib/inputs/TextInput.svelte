@@ -1,5 +1,5 @@
 <script lang="ts">
-    import InputLabel from "$lib/inputs/InputLabel.svelte";
+    import InputLabel from "../inputs/InputLabel.svelte";
 
     export let key: string
     export let value: string

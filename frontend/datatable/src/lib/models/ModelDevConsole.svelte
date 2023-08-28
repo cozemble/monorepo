@@ -1,6 +1,5 @@
 <script lang="ts">
     import {writable} from 'svelte/store'
-    import {JSONEditor} from 'svelte-jsoneditor'
 
     import {modelRecordsContextFns} from '../records/modelRecordsContextFns'
     import ModelDevConsoleOption from './ModelDevConsoleOption.svelte'
@@ -70,7 +69,4 @@
     <ModelDevConsoleOption id="focus" label="Focus" {tab}/>
     <ModelDevConsoleOption id="backend" label="Backend" {tab}/>
     <ModelDevConsoleOption id="subGraphs" label="Sub graphs" {tab}/>
-</div>
-<div class="text-xs">
-    <JSONEditor {content}/>
 </div>

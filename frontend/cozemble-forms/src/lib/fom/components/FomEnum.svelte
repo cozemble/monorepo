@@ -1,6 +1,6 @@
 <script lang="ts">
     import {getContext} from "svelte";
-    import type {FomEnum} from "$lib/fom/Fom";
+    import type {FomEnum} from "../Fom";
     import type {Path} from "./helper";
     import {componentFinder} from "./helper";
 

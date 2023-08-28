@@ -4,16 +4,14 @@ import type {
   FomDiscriminatedUnion,
   FomObject,
   FomSchema,
-} from '@cozemble/frontend-fom-form'
+} from '@cozemble/frontend-cozemble-forms'
 
 export const extendSchema = (schema: FomSchema, actions: Action[]) => {
-  console.log('extendSchema', { schema, actions })
   const tableLabels = (actions ?? [])
     .filter((action) => action.action === 'labelTable')
     .map((action) => action.tableLabel)
     .filter((label) => label !== undefined)
   if (tableLabels.length > 0) {
-    console.log({ tableLabels, schema })
     const arraySchema = schema as FomArray
     const arrayElement = arraySchema.element as FomDiscriminatedUnion
     const mutatedOptions = arrayElement.options.map((option, index) => {
@@ -27,7 +25,6 @@ export const extendSchema = (schema: FomSchema, actions: Action[]) => {
       return option
     }) as FomSchema[]
     return { ...arraySchema, element: { ...arrayElement, options: mutatedOptions } } as FomArray
-    // return { ...schema, element: { ...schema.element, options:  }
   }
 
   return schema

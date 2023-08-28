@@ -1,14 +1,14 @@
 <script lang="ts">
     import {getContext} from "svelte";
-    import type {FomObject, FomIssue} from "$lib/fom/Fom";
+    import type {FomObject, FomIssue} from "../Fom";
     import WithDefaultsHandled from "./WithDefaultsHandled.svelte";
-    import FomEnum from "$lib/fom/components/FomEnum.svelte";
-    import FomPrimitive from "$lib/fom/components/FomPrimitive.svelte";
-    import FomArray from "$lib/fom/components/FomArray.svelte";
-    import FomDiscriminatedUnion from "$lib/fom/components/FomDiscriminatedUnion.svelte";
-    import FomLiteral from "$lib/fom/components/FomLiteral.svelte";
-    import {errorsAtPath} from "$lib/fom/components/errorsAtPath";
-    import {errorComponentFinder} from "$lib/fom/components/helper";
+    import FomEnum from "./FomEnum.svelte";
+    import FomPrimitive from "./FomPrimitive.svelte";
+    import FomArray from "./FomArray.svelte";
+    import FomDiscriminatedUnion from "./FomDiscriminatedUnion.svelte";
+    import FomLiteral from "./FomLiteral.svelte";
+    import {errorsAtPath} from "./errorsAtPath";
+    import {errorComponentFinder} from "./helper";
     import type {Path} from "./helper";
 
     export let value: any

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import InputLabel from "$lib/inputs/InputLabel.svelte";
+    import InputLabel from "../inputs/InputLabel.svelte";
     import {strings} from "@cozemble/lang-util";
 
     export let key: string

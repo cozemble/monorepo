@@ -18,7 +18,6 @@ export default defineConfig({
       '@cozemble/model-to-json',
       '@cozemble/model-attachment-core',
       '@cozemble/model-assembled',
-      'svelte-jsoneditor',
       'svelte-awesome',
       'svelte-select',
     ],

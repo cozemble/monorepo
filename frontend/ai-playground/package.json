@@ -30,7 +30,7 @@
     "@codemirror/lang-javascript": "^6.1.9",
     "@cozemble/backend-aws-ocr-types": "workspace:*",
     "@cozemble/frontend-datatable": "workspace:*",
-    "@cozemble/frontend-fom-form": "workspace:^",
+    "@cozemble/frontend-cozemble-forms": "workspace:^",
     "@cozemble/lang-util": "workspace:*",
     "@cozemble/model-api": "workspace:*",
     "@cozemble/model-assembled": "workspace:*",

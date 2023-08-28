@@ -1,7 +1,7 @@
 <script lang="ts">
-    import type {FomArray, FomIssue, FomObject} from "$lib/fom/Fom";
+    import type {FomArray, FomIssue, FomObject} from "../Fom";
     import {type Readable, writable, type Writable} from "svelte/store";
-    import ArrayContainerInner from "$lib/fom/components/ArrayContainerInner.svelte";
+    import ArrayContainerInner from "./ArrayContainerInner.svelte";
     import {defaultComponentFinder, defaultErrorComponentFinder} from "./componentPolicy";
     import {getContext, setContext} from "svelte";
 

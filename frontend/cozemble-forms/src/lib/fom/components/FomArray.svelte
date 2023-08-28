@@ -1,6 +1,6 @@
 <script lang="ts">
     import {getContext, afterUpdate} from 'svelte'
-    import type {FomArray, FomIssue} from "$lib/fom/Fom";
+    import type {FomArray, FomIssue} from "../Fom";
     import {componentFinder, type Path} from "./helper";
 
     export let key: string

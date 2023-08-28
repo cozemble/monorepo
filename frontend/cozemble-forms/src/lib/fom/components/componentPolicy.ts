@@ -1,9 +1,9 @@
-import TextInput from '$lib/inputs/TextInput.svelte'
-import ErrorAlert from '$lib/inputs/ErrorAlert.svelte'
-import FomArrayContainer from '$lib/fom/components/ArrayContainer.svelte'
+import TextInput from '../../inputs/TextInput.svelte'
+import ErrorAlert from '../../inputs/ErrorAlert.svelte'
+import FomArrayContainer from './ArrayContainer.svelte'
 import type { Path } from './helper'
-import SelectInput from '$lib/inputs/SelectInput.svelte'
-import type { FomSchema } from '$lib/fom/Fom'
+import SelectInput from '../../inputs/SelectInput.svelte'
+import type { FomSchema } from '../Fom'
 
 export type ComponentAndProps = { component: any; props: any }
 

@@ -2,7 +2,7 @@
 
 
     import {writable} from "svelte/store";
-    import {zodToFom} from "$lib/fom/zodToFom";
+    import {zodToFom} from "../lib/fom/zodToFom";
     import FomForm from "$lib/fom/components/FomForm.svelte";
     import {derived, type Readable} from "svelte/store";
     import type {FomArray, FomIssue} from "$lib/fom/Fom";

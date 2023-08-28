@@ -1,8 +1,8 @@
 <script lang="ts">
 
-    import InputLabel from "$lib/inputs/InputLabel.svelte";
-    import type {FomArray, FomIssue} from "$lib/fom/Fom";
-    import ArrayContainerInner from "$lib/fom/components/ArrayContainerInner.svelte";
+    import InputLabel from "../../inputs/InputLabel.svelte";
+    import type {FomArray, FomIssue} from "../Fom";
+    import ArrayContainerInner from "./ArrayContainerInner.svelte";
 
     export let key: string
     export let value: any[]

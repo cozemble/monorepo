@@ -1,9 +1,9 @@
 <script lang="ts">
 
-    import type {FomArray, FomIssue} from "$lib/fom/Fom";
-    import {errorsAtPath} from "$lib/fom/components/errorsAtPath";
-    import FomDiscriminatedUnion from "$lib/fom/components/FomDiscriminatedUnion.svelte";
-    import FomObject from "$lib/fom/components/FomObject.svelte";
+    import type {FomArray, FomIssue} from "../Fom";
+    import {errorsAtPath} from "./errorsAtPath";
+    import FomDiscriminatedUnion from "./FomDiscriminatedUnion.svelte";
+    import FomObject from "./FomObject.svelte";
 
     export let value: any[]
     export let path: string[]

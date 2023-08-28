@@ -1,6 +1,6 @@
 <script lang="ts">
     import {getContext} from 'svelte'
-    import type {FomText} from "$lib/fom/Fom";
+    import type {FomText} from "../Fom";
     import {componentFinder, type Path} from "./helper";
 
     export let key: string

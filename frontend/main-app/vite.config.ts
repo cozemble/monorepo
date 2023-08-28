@@ -5,7 +5,7 @@ const config: UserConfig = {
   plugins: [sveltekit()],
   ssr: {
     noExternal: [
-      '@cozemble/backend-tenanted-api-types', 
+      '@cozemble/backend-tenanted-api-types',
       '@cozemble/data-filters-core',
       '@cozemble/lang-util',
       '@cozemble/frontend-bff',
@@ -18,9 +18,8 @@ const config: UserConfig = {
       '@cozemble/model-to-json',
       '@cozemble/model-attachment-core',
       '@cozemble/model-assembled',
-      'svelte-jsoneditor',
       'svelte-awesome',
-      'svelte-select'
+      'svelte-select',
     ],
   },
 }

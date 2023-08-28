@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type {FomSchema} from "$lib/fom/Fom";
+    import type {FomSchema} from "../Fom";
 
     export let value: any
     export let key: any

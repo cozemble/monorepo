@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type {FomLiteral} from "$lib/fom/Fom";
+    import type {FomLiteral} from "../Fom";
     export let key:string
     export let field:FomLiteral
     export let value:any
