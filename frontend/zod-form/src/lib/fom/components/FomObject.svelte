@@ -1,7 +1,5 @@
 <script lang="ts">
     import {getContext} from "svelte";
-    import type {Path} from "$lib/containers/helper";
-    import {errorComponentFinder} from "$lib/containers/helper";
     import type {FomObject, FomIssue} from "$lib/fom/Fom";
     import WithDefaultsHandled from "./WithDefaultsHandled.svelte";
     import FomEnum from "$lib/fom/components/FomEnum.svelte";
@@ -10,6 +8,8 @@
     import FomDiscriminatedUnion from "$lib/fom/components/FomDiscriminatedUnion.svelte";
     import FomLiteral from "$lib/fom/components/FomLiteral.svelte";
     import {errorsAtPath} from "$lib/fom/components/errorsAtPath";
+    import {errorComponentFinder} from "$lib/fom/components/helper";
+    import type {Path} from "./helper";
 
     export let value: any
     export let schema: FomObject

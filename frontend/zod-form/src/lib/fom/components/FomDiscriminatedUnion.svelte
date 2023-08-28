@@ -1,8 +1,8 @@
 <script lang="ts">
     import {strings} from "@cozemble/lang-util";
     import type {FomDiscriminatedUnion, FomIssue} from "$lib/fom/Fom";
-    import type {Path} from "$lib/containers/helper";
     import FomObject from "$lib/fom/components/FomObject.svelte";
+    import type {Path} from "./helper";
 
     export let field: FomDiscriminatedUnion
     export let value: any

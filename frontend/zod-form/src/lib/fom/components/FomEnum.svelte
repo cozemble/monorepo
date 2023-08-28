@@ -1,8 +1,8 @@
 <script lang="ts">
     import {getContext} from "svelte";
     import type {FomEnum} from "$lib/fom/Fom";
-    import {componentFinder} from "$lib/containers/helper";
-    import type {Path} from "$lib/containers/helper";
+    import type {Path} from "./helper";
+    import {componentFinder} from "./helper";
 
     export let key: string
     export let field: FomEnum

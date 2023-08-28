@@ -2,7 +2,7 @@
     import type {FomArray, FomIssue, FomObject} from "$lib/fom/Fom";
     import {type Readable, writable, type Writable} from "svelte/store";
     import ArrayContainerInner from "$lib/fom/components/ArrayContainerInner.svelte";
-    import {defaultComponentFinder, defaultErrorComponentFinder} from "$lib/containers/componentPolicy";
+    import {defaultComponentFinder, defaultErrorComponentFinder} from "./componentPolicy";
     import {getContext, setContext} from "svelte";
 
     export let schema: FomObject | FomArray

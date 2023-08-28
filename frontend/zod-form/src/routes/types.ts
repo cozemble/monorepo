@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import type { FomArray, FomDiscriminatedUnion, FomObject, FomSchema } from '$lib/fom/Fom'
-import type { Path } from '$lib/containers/helper'
 import { objects } from '@cozemble/lang-util'
+import type { Path } from '$lib/fom/components/helper'
 
 export const labelTable = z.object({
   action: z.literal('labelTable'),

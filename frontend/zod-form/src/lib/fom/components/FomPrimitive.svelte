@@ -1,7 +1,7 @@
 <script lang="ts">
     import {getContext} from 'svelte'
     import type {FomText} from "$lib/fom/Fom";
-    import {componentFinder, type Path} from "$lib/containers/helper";
+    import {componentFinder, type Path} from "./helper";
 
     export let key: string
     export let field: FomText
