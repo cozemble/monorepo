@@ -1,13 +1,12 @@
 <script lang="ts">
+  import Logo from '$lib/components/Logo.svelte'
   import Icon from '@iconify/svelte'
 </script>
 
 <header>
   <div class="navbar sm:px-6">
     <div class="flex-1">
-      <a class="font-semibold normal-case text-xl sm:text-3xl" href="/"
-        >doc<span class="text-primary">json</span>
-      </a>
+      <Logo />
     </div>
 
     <div class="flex-none gap-8 text-neutral">
