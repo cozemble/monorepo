@@ -1,2 +1,4 @@
 config:
   aws:region: eu-west-2
+  cozemble-aws-ocr:ocrApiKey:
+    secure: AAABAHQNTJktCs63fgnQYRWfmreqPZjrXEIC/OX3SkySbTOpmVDJzpDKkV5JHG1Ss6jn/KdLhA8jqJnR+CLbf3KoYos=

@@ -3,6 +3,7 @@ import { processPDF } from './pdfProcessor'
 import { ocr } from './ocr'
 import { Handler } from 'aws-lambda'
 import { mandatory } from '@cozemble/lang-util'
+
 export const handler: Handler = async (event) => {
   const apiKey = mandatory(process.env.OCR_API_KEY, 'OCR_API_KEY')
   const auth = event.headers?.authorization

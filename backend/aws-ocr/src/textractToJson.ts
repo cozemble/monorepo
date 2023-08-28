@@ -50,7 +50,7 @@ function tableToJson(blockFinder: BlockFinder, item: Block): Table {
   }
   const cells = getChildBlocks(blockFinder, item).map((cell) => toProcessedCell(blockFinder, cell))
   const rowMap = arrays.groupBy(cells, (cell) => cell.rowIndex)
-  const rowKeys = Array.from(rowMap.keys()).sort()
+  const rowKeys = Array.from(rowMap.keys())
   const rows = rowKeys
     .map((rowKey) => rowMap.get(rowKey) as ProcessedCell[])
     .map((cells) => ({ _type: 'row', cells: cells.map((cell) => cell.text) } as Row))

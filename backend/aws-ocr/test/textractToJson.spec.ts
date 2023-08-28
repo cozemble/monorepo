@@ -1,7 +1,8 @@
 import { expect, test } from 'vitest'
 import * as fs from 'fs'
 import { GetDocumentAnalysisCommandOutput } from '@aws-sdk/client-textract'
-import { Line, Table, textractToJson } from '../src/textractToJson'
+import { textractToJson } from '../src/textractToJson'
+import { Line, Table } from '@cozemble/backend-aws-ocr-types'
 
 test('real example', () => {
   const loaded: GetDocumentAnalysisCommandOutput = JSON.parse(

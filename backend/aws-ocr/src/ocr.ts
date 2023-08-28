@@ -90,6 +90,9 @@ export async function ocr(event: any) {
       FeatureTypes: ['TABLES'],
     })
     const blocks = await waitForAnalysis(s3Parent, startResponse.JobId!)
+    const blocksS3Key = `${s3Parent}/blocks.json`
+    await uploadToS3(bucketName, blocksS3Key, JSON.stringify(blocks, null, 2))
+    console.log(`Blocks uploaded to S3: s3://${bucketName}/${blocksS3Key}`)
     const json = textractToJson(blocks)
     const html = jsonToHtml(json)
 

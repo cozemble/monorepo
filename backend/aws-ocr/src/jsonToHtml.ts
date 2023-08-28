@@ -1,4 +1,5 @@
-import { BlockItem, Page, ProcessedTextractDocument, Row } from './textractToJson'
+import { BlockItem, Page, Row } from '@cozemble/backend-aws-ocr-types'
+import { ProcessedTextractDocument } from './textractToJson'
 
 function rowToHtml(row: Row): string {
   return `<tr>${row.cells.reduce((acc, cell) => acc + `<td>${cell}</td>`, '')}</tr>`
@@ -12,7 +13,7 @@ function itemToHtml(item: BlockItem): string {
   if (item._type === 'line') {
     return `<p>${item.text}</p>`
   }
-  return `<table border="1">${rowsToHtml(item.rows)}</table>`
+  return `<table>${rowsToHtml(item.rows)}</table>`
 }
 
 function pageToHtml(page: Page): string {
