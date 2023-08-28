@@ -10,6 +10,7 @@
     import {errorsAtPath} from "./errorsAtPath";
     import {errorComponentFinder} from "./helper";
     import type {Path} from "./helper";
+    import FomBoolean from "$lib/fom/components/FomBoolean.svelte";
 
     export let value: any
     export let schema: FomObject
@@ -31,6 +32,8 @@
                     <FomEnum {key} field={field} bind:value={value[key]} path={extendedPath}/>
                 {:else if field.type === "text"}
                     <FomPrimitive {key} field={field} bind:value={value[key]} path={extendedPath}/>
+                {:else if field.type === "boolean"}
+                    <FomBoolean {key} field={field} bind:value={value[key]} path={extendedPath}/>
                 {:else if field.type === "array"}
                     <FomArray {key} field={field} bind:value path={extendedPath} {errors} {showErrors}/>
                 {:else if field.type === "discriminatedUnion"}

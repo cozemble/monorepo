@@ -35,6 +35,10 @@ export interface FomText {
   type: 'text'
 }
 
+export interface FomBoolean {
+  type: 'boolean'
+}
+
 export type FomSchema =
   | FomObject
   | FomArray
@@ -43,6 +47,7 @@ export type FomSchema =
   | FomEnum
   | FomDefault
   | FomText
+  | FomBoolean
 
 export interface FomIssue {
   path: (string | number)[]

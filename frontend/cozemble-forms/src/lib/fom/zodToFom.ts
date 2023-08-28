@@ -48,6 +48,10 @@ export function zodToFom(zod: z.ZodType<any, any>): FomSchema {
     return {
       type: 'text',
     }
+  } else if (zod instanceof z.ZodBoolean) {
+    return {
+      type: 'boolean',
+    }
   } else {
     throw new Error(`Unsupported zod type ${zod}`)
   }

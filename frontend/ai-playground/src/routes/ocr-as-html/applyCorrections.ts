@@ -1,4 +1,4 @@
-import type { Action, DeleteRows, LabelTable } from './ocrCorrectiveActions'
+import type { Action, DeleteRows, LabelTable, MergeTables } from './ocrCorrectiveActions'
 import type { FomIssue } from '@cozemble/frontend-cozemble-forms'
 import type { Page, Table } from '@cozemble/backend-aws-ocr-types'
 
@@ -75,12 +75,47 @@ function deleteRows(action: DeleteRows, pages: Page[]) {
   return pages.map((page) => deleteRowsOnPage(action, page))
 }
 
+function mergeTables(action: MergeTables, pages: Page[]) {
+  const tables = pages.flatMap((p) =>
+    p.items.filter((i) => i._type === 'table' && i.label === action.tableLabel),
+  ) as Table[]
+  const rows = tables.flatMap((t, index) => {
+    if (index === 0) {
+      return t.rows
+    }
+    if (action.tableHasHeader) {
+      return t.rows.slice(1)
+    }
+    return t.rows
+  })
+  const mergedTable = { ...tables[0], rows }
+  let found = false
+  return pages.map((p) => {
+    return {
+      ...p,
+      items: p.items.flatMap((item) => {
+        if (item._type === 'table' && item.label === action.tableLabel) {
+          if (found) {
+            return []
+          }
+          found = true
+          return [mergedTable]
+        }
+        return item
+      }),
+    }
+  })
+}
+
 function applyCorrection(action: Action, pages: Page[]) {
   if (action.action === 'labelTable') {
     return labelTable(action, pages)
   }
   if (action.action === 'deleteRows') {
     return deleteRows(action, pages)
+  }
+  if (action.action === 'mergeTables') {
+    return mergeTables(action, pages)
   }
   return pages
 }
