@@ -28,7 +28,9 @@
   "type": "module",
   "dependencies": {
     "@codemirror/lang-javascript": "^6.1.9",
+    "@cozemble/backend-aws-ocr-types": "workspace:*",
     "@cozemble/frontend-datatable": "workspace:*",
+    "@cozemble/frontend-fom-form": "workspace:^",
     "@cozemble/lang-util": "workspace:*",
     "@cozemble/model-api": "workspace:*",
     "@cozemble/model-assembled": "workspace:*",
@@ -39,7 +41,6 @@
     "@cozemble/model-properties-core": "workspace:*",
     "@cozemble/model-to-json": "workspace:*",
     "@cozemble/ui-filter-editor": "workspace:*",
-    "@cozemble/backend-aws-ocr-types": "workspace:*",
     "@tailwindcss/typography": "^0.5.9",
     "ajv": "^8.12.0",
     "axios": "^1.2.3",
@@ -48,6 +49,7 @@
     "jsdom": "^22.1.0",
     "openai": "4.0.0-beta.4",
     "svelte-codemirror-editor": "^1.1.0",
-    "theme-change": "^2.5.0"
+    "theme-change": "^2.5.0",
+    "zod": "^3.22.2"
   }
 }

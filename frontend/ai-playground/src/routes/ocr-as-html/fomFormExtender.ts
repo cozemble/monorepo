@@ -1,0 +1,34 @@
+import type { Action } from './ocrCorrectiveActions'
+import type {
+  FomArray,
+  FomDiscriminatedUnion,
+  FomObject,
+  FomSchema,
+} from '@cozemble/frontend-fom-form'
+
+export const extendSchema = (schema: FomSchema, actions: Action[]) => {
+  console.log('extendSchema', { schema, actions })
+  const tableLabels = (actions ?? [])
+    .filter((action) => action.action === 'labelTable')
+    .map((action) => action.tableLabel)
+    .filter((label) => label !== undefined)
+  if (tableLabels.length > 0) {
+    console.log({ tableLabels, schema })
+    const arraySchema = schema as FomArray
+    const arrayElement = arraySchema.element as FomDiscriminatedUnion
+    const mutatedOptions = arrayElement.options.map((option, index) => {
+      if (index === 1) {
+        const item = option as FomObject
+        return {
+          ...item,
+          properties: { ...item.properties, tableLabel: { type: 'enum', options: tableLabels } },
+        }
+      }
+      return option
+    }) as FomSchema[]
+    return { ...arraySchema, element: { ...arrayElement, options: mutatedOptions } } as FomArray
+    // return { ...schema, element: { ...schema.element, options:  }
+  }
+
+  return schema
+}
