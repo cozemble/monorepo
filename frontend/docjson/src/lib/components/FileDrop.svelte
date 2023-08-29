@@ -6,66 +6,62 @@
   import _ from 'lodash'
   import Icon from '@iconify/svelte'
 
-  // <!-- TODO refactor readability -->
-
   /** The actual value array */
   export let files: File[] = []
+
   /** To use with the HTML input */
   let fileList: FileList | null = null
 
-  // utils
-  const arrayToFileList = (array: File[]) => {
+  /** Highlight the dropzone when files are present */
+  let highlightState = false
+
+  // Functions
+
+  function arrayToFileList(array: File[]) {
     let newList = new DataTransfer()
     array.forEach((file) => newList.items.add(file))
 
     return newList.files
   }
 
-  const handleDuplicates = (files: File[]) => _.uniqBy(files, 'name')
-  const sortFiles = (files: File[]) => _.sortBy(files, 'name')
-  const formatFiles = (files: File[]) => sortFiles(handleDuplicates(files))
+  /** Removes duplicates and sorts by name */
+  function addFiles(fList: FileList) {
+    const newFiles = Array.from(fList || [])
 
-  const handleFileDrop = (event: DragEvent) => {
+    const mergedFiles = _.uniqBy([...files, ...newFiles], 'name')
+    const sortedFiles = _.sortBy(mergedFiles, 'name')
+
+    files = sortedFiles
+    fileList = arrayToFileList(sortedFiles) // update input value
+  }
+
+  function removeFile(fileName: string) {
+    files = files?.filter((file) => file.name !== fileName)
+    fileList = arrayToFileList(files) // update input value
+  }
+
+  // Event handlers
+
+  function handleFileDrop(event: DragEvent) {
     const inputVal = event.dataTransfer?.files
 
     if (!inputVal) return
 
-    // combine the previous files with the new files
-    files = formatFiles([...Array.from(fileList || []), ...Array.from(inputVal)])
-    fileList = arrayToFileList(files)
+    addFiles(inputVal)
   }
 
-  // Map FileList to File[]
-  const handleFileInput = (fList: FileList) => {
-    files = formatFiles([...files, ...Array.from(fList || [])])
-  }
+  const handleDragEnter = (event: DragEvent) => (highlightState = true)
+  const handleDragLeave = (event: DragEvent) => (highlightState = false)
 
-  $: if (fileList) handleFileInput(fileList)
+  // Watchers
 
-  const handleFileRemove = (fileName: string) => {
-    if (!files) return
-
-    files = files?.filter((file) => file.name !== fileName)
-
-    fileList = arrayToFileList(files)
-  }
-
-  // Highlight state
-  let highlightState = false
-
-  const handleDragEnter = (event: DragEvent) => {
-    highlightState = true
-  }
-  const handleDragLeave = (event: DragEvent) => {
-    highlightState = false
-  }
-
-  $: highlightState = !!files?.length
+  $: if (fileList) addFiles(fileList) // add files from input
+  $: highlightState = !!files?.length // highlight when files are present
   //
 </script>
 
 <div
-  class={`card card-bordered shadow-lg bg-base-200 p-4 w-full 
+  class={`card card-bordered p-4 w-full shadow-lg bg-base-100 hover:bg-base-200
           transition-all duration-200 ease-in-out
           ${highlightState && 'bg-base-300'}`}
 >
@@ -79,27 +75,25 @@
   >
     <div class="card-body">
       <figure class=" w-50 relative">
-        <!-- TODO determine what illustration/icon to use -->
         <Icon icon="ic:round-upload-file" class="text-9xl text-neutral" />
-        <!-- <Icon icon="system-uicons:document-stack" class="text-9xl text-neutral" /> -->
-        <!-- <Icon icon="heroicons:document-text-solid" class="text-9xl text-neutral" /> -->
-        <!-- <Icon icon="fxemoji:documenttextpicture" class="text-9xl " /> -->
       </figure>
 
       <h5 class="card-title whitespace-nowrap text-center block">Drop a file here</h5>
       <p class="card-text whitespace-nowrap text-center">Or click to select a file</p>
     </div>
 
-    <!-- Display files -->
-    <!-- TODO max-height and scrollbar -->
+    <!-- Display files if there are, else display a message -->
     <div class="flex flex-col gap-1">
+      <!--  -->
+      <!-- TODO max-height and scrollbar -->
+
       {#if files.length}
-        <!-- TODO make all files the same height -->
         {#each files as file}
           <div
             title={file.name}
             class="badge badge-outline flex flex-row justify-between w-full flex-1 gap-2 overflow-hidden"
           >
+            <!-- Display preview or icon  -->
             <figure class="h-7 w-11 rounded-none ">
               {#if ['.jpg', '.png', '.webp', '.jpeg'].some((ext) => _.endsWith(file.name, ext))}
                 <img src={URL.createObjectURL(file)} alt={file.name} class="h-full" />
@@ -117,7 +111,7 @@
             <button
               class="btn btn-circle btn-xs btn-ghost"
               title="Remove file"
-              on:click={() => handleFileRemove(file.name)}
+              on:click={() => removeFile(file.name)}
             >
               <Icon icon="ep:close-bold" />
             </button>
