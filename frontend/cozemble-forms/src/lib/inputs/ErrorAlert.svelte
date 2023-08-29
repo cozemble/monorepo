@@ -1,9 +1,8 @@
 <script lang="ts">
-    import type { ZodIssue } from "zod"
-    import { afterUpdate } from "svelte"
+    import type {FomIssue} from "..";
 
     export let showErrors: boolean
-    export let errors: ZodIssue[]
+    export let errors: FomIssue[]
 
 </script>
 {#if showErrors && errors.length > 0}

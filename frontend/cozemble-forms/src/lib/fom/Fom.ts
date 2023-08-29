@@ -35,6 +35,12 @@ export interface FomText {
   type: 'text'
 }
 
+export interface FomNumber {
+  type: 'number'
+  min?: number
+  max?: number
+}
+
 export interface FomBoolean {
   type: 'boolean'
 }
@@ -47,6 +53,7 @@ export type FomSchema =
   | FomEnum
   | FomDefault
   | FomText
+  | FomNumber
   | FomBoolean
 
 export interface FomIssue {

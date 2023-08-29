@@ -1,6 +1,6 @@
 <script lang="ts">
     import {getContext} from "svelte";
-    import type {FomObject, FomIssue} from "../Fom";
+    import type {FomIssue, FomObject} from "../Fom";
     import WithDefaultsHandled from "./WithDefaultsHandled.svelte";
     import FomEnum from "./FomEnum.svelte";
     import FomPrimitive from "./FomPrimitive.svelte";
@@ -8,9 +8,11 @@
     import FomDiscriminatedUnion from "./FomDiscriminatedUnion.svelte";
     import FomLiteral from "./FomLiteral.svelte";
     import {errorsAtPath} from "./errorsAtPath";
-    import {errorComponentFinder} from "./helper";
     import type {Path} from "./helper";
+    import {errorComponentFinder} from "./helper";
     import FomBoolean from "$lib/fom/components/FomBoolean.svelte";
+    import EnsureNestedObject from "$lib/fom/components/EnsureNestedObject.svelte";
+    import InputLabel from "../../inputs/InputLabel.svelte";
 
     export let value: any
     export let schema: FomObject
@@ -30,14 +32,18 @@
             <div id={extendedPath.join('.')}>
                 {#if field.type === "enum"}
                     <FomEnum {key} field={field} bind:value={value[key]} path={extendedPath}/>
-                {:else if field.type === "text"}
+                {:else if field.type === "text" || field.type === "number"}
                     <FomPrimitive {key} field={field} bind:value={value[key]} path={extendedPath}/>
                 {:else if field.type === "boolean"}
                     <FomBoolean {key} field={field} bind:value={value[key]} path={extendedPath}/>
                 {:else if field.type === "array"}
                     <FomArray {key} field={field} bind:value path={extendedPath} {errors} {showErrors}/>
                 {:else if field.type === "discriminatedUnion"}
-                    <FomDiscriminatedUnion field={field} bind:value path={extendedPath} {errors} {showErrors}/>
+                    <EnsureNestedObject bind:value {key}>
+                        <InputLabel {key} />
+                        <FomDiscriminatedUnion field={field} bind:value={value[key]} path={extendedPath} {errors}
+                                               {showErrors}/>
+                    </EnsureNestedObject>
                 {:else if field.type === "literal"}
                     <FomLiteral {key} field={field} bind:value={value[key]}/>
                 {:else}

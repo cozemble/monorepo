@@ -1,4 +1,10 @@
-import type { Action, DeleteRows, LabelTable, MergeTables } from './ocrCorrectiveActions'
+import type {
+  Action,
+  DeleteRows,
+  ExtractRows,
+  LabelTable,
+  MergeTables,
+} from './ocrCorrectiveActions'
 import type { FomIssue } from '@cozemble/frontend-cozemble-forms'
 import type { Page, Table } from '@cozemble/backend-aws-ocr-types'
 
@@ -75,6 +81,56 @@ function deleteRows(action: DeleteRows, pages: Page[]) {
   return pages.map((page) => deleteRowsOnPage(action, page))
 }
 
+function extractRows(action: ExtractRows, pages: Page[]): Page[] {
+  const sourceTables = pages.flatMap((p) =>
+    p.items.filter((i) => i._type === 'table' && i.label === action.sourceTableLabel),
+  ) as Table[]
+  const sourceRows = sourceTables.flatMap((table) => {
+    if (action.rowSelector.type === 'rowRangeSelector') {
+      return table.rows.slice(action.rowSelector.start, action.rowSelector.end)
+    }
+    const regex = new RegExp(action.rowSelector.regex)
+    return table.rows.filter((row) => regex.test(row.cells.join(',')))
+  })
+  console.log({ sourceRows })
+  const maybeTargetTable = pages
+    .flatMap((p) => p.items)
+    .find((i) => i._type === 'table' && i.label === action.targetTableLabel)
+  if (maybeTargetTable) {
+    return pages.map((p) => ({
+      ...p,
+      items: p.items.map((item) => {
+        if (item._type === 'table' && item.label === action.targetTableLabel) {
+          return { ...item, rows: [...item.rows, ...sourceRows] }
+        }
+      }),
+    })) as Page[]
+  }
+  const newTable: Table = {
+    _type: 'table',
+    rows: sourceRows,
+    label: action.targetTableLabel,
+  }
+
+  let inserted = false
+  return pages.map((p) => {
+    return {
+      ...p,
+      items: p.items.flatMap((item) => {
+        if (item._type === 'table' && item.label === action.sourceTableLabel) {
+          item = { ...item, rows: item.rows.filter((row) => !sourceRows.includes(row)) }
+          if (inserted) {
+            return [item]
+          }
+          inserted = true
+          return [newTable, item]
+        }
+        return item
+      }),
+    }
+  })
+}
+
 function mergeTables(action: MergeTables, pages: Page[]) {
   const tables = pages.flatMap((p) =>
     p.items.filter((i) => i._type === 'table' && i.label === action.tableLabel),
@@ -116,6 +172,9 @@ function applyCorrection(action: Action, pages: Page[]) {
   }
   if (action.action === 'mergeTables') {
     return mergeTables(action, pages)
+  }
+  if (action.action === 'extractRows') {
+    return extractRows(action, pages)
   }
   return pages
 }

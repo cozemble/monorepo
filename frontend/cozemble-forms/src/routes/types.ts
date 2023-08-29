@@ -1,5 +1,6 @@
-import { z } from 'zod'
 import type { FomArray, FomDiscriminatedUnion, FomObject, FomSchema } from '$lib/fom/Fom'
+
+import { z } from 'zod'
 
 export const labelTable = z.object({
   action: z.literal('labelTable'),
@@ -27,11 +28,39 @@ export const deleteRows = z.object({
   rowRegex: z.string().min(1, { message: 'Must be at least 1 character long' }),
 })
 
-export const actions = z.discriminatedUnion('action', [labelTable, deleteRows]).array()
+export const mergeTables = z.object({
+  action: z.literal('mergeTables'),
+  tableLabel: z.string().min(1, { message: 'Required' }),
+  tableHasHeader: z.boolean(),
+})
+
+const rowRangeSelector = z.object({
+  type: z.literal('rowRangeSelector'),
+  start: z.number().int().min(0, { message: 'Must be at least 0' }),
+  end: z.number().int().min(0, { message: 'Must be at least 0' }),
+})
+
+const rowRegexSelector = z.object({
+  type: z.literal('rowRegexSelector'),
+  regex: z.string().min(1, { message: 'Must be at least 1 character long' }),
+})
+
+export const extractRows = z.object({
+  action: z.literal('extractRows'),
+  sourceTableLabel: z.string().min(1, { message: 'Required' }),
+  targetTableLabel: z.string().min(1, { message: 'Required' }),
+  rowSelector: z.discriminatedUnion('type', [rowRangeSelector, rowRegexSelector]),
+})
+
+export const action = z.discriminatedUnion('action', [
+  labelTable,
+  deleteRows,
+  mergeTables,
+  extractRows,
+])
+export const actions = action.array()
 
 export type FormSchemaExtender = (schema: FomSchema, value: any) => FomSchema
-
-export const noopFormSchemaExtender: FormSchemaExtender = (schema) => schema
 
 export const extendSchema: FormSchemaExtender = (schema, actions) => {
   console.log('extendSchema', { schema, actions })
@@ -54,7 +83,6 @@ export const extendSchema: FormSchemaExtender = (schema, actions) => {
       return option
     }) as FomSchema[]
     return { ...arraySchema, element: { ...arrayElement, options: mutatedOptions } } as FomArray
-    // return { ...schema, element: { ...schema.element, options:  }
   }
 
   return schema

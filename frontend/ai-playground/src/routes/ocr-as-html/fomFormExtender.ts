@@ -1,4 +1,4 @@
-import type { Action } from './ocrCorrectiveActions'
+import type { Action, LabelTable } from './ocrCorrectiveActions'
 import type {
   FomArray,
   FomDiscriminatedUnion,
@@ -9,7 +9,7 @@ import type {
 export const extendSchema = (schema: FomArray, actions: Action[]): FomArray => {
   const tableLabels = (actions ?? [])
     .filter((action) => action.action === 'labelTable')
-    .map((action) => action.tableLabel)
+    .map((action) => (action as LabelTable).tableLabel)
     .filter((label) => label !== undefined)
   if (tableLabels.length > 0) {
     const arraySchema = schema as FomArray

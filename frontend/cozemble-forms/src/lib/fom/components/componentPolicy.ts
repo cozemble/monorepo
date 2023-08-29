@@ -5,6 +5,7 @@ import type { Path } from './helper'
 import SelectInput from '../../inputs/SelectInput.svelte'
 import type { FomSchema } from '../Fom'
 import CheckboxInput from '../../inputs/CheckboxInput.svelte'
+import NumberInput from '../../inputs/NumberInput.svelte'
 
 export type ComponentAndProps = { component: any; props: any }
 
@@ -18,6 +19,9 @@ export type ErrorComponentFinder = (path: Path) => ComponentAndProps
 export const defaultComponentFinder: ComponentFinder = (type, path) => {
   if ((type as FomSchema).type === 'text') {
     return componentAndProps(TextInput)
+  }
+  if ((type as FomSchema).type === 'number') {
+    return componentAndProps(NumberInput)
   }
   if ((type as FomSchema).type === 'boolean') {
     return componentAndProps(CheckboxInput)

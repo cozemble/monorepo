@@ -1,4 +1,4 @@
-import type { FomSchema } from './Fom'
+import type { FomNumber, FomSchema } from './Fom'
 import { z } from 'zod'
 
 export function zodToFom(zod: z.ZodType<any, any>): FomSchema {
@@ -48,11 +48,22 @@ export function zodToFom(zod: z.ZodType<any, any>): FomSchema {
     return {
       type: 'text',
     }
+  } else if (zod instanceof z.ZodNumber) {
+    const number: FomNumber = {
+      type: 'number',
+    }
+    if (zod.minValue !== null) {
+      number.min = zod.minValue
+    }
+    if (zod.maxValue !== null) {
+      number.max = zod.maxValue
+    }
+    return number
   } else if (zod instanceof z.ZodBoolean) {
     return {
       type: 'boolean',
     }
   } else {
-    throw new Error(`Unsupported zod type ${zod}`)
+    throw new Error(`Unsupported zod type ${zod.constructor.name}`)
   }
 }
