@@ -12,6 +12,7 @@ export interface Table {
   _type: 'table'
   rows: Row[]
   label?: string
+  hasHeader?: boolean
 }
 
 export type BlockItem = Line | Table

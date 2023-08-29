@@ -3,6 +3,7 @@ import { z } from 'zod'
 export const labelTable = z.object({
   action: z.literal('labelTable'),
   tableLabel: z.string().min(1, { message: 'Required' }),
+  tableHasHeader: z.boolean(),
   criteria: z
     .array(
       z.object({
@@ -29,7 +30,6 @@ export const deleteRows = z.object({
 export const mergeTables = z.object({
   action: z.literal('mergeTables'),
   tableLabel: z.string().min(1, { message: 'Required' }),
-  tableHasHeader: z.boolean(),
 })
 
 const rowRangeSelector = z.object({

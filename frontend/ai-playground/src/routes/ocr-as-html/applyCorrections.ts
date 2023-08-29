@@ -31,6 +31,7 @@ function labelThisTable(action: LabelTable, table: Table): Table {
       return {
         ...table,
         label: action.tableLabel,
+        hasHeader: action.tableHasHeader,
       }
     }
   }
@@ -85,14 +86,17 @@ function extractRows(action: ExtractRows, pages: Page[]): Page[] {
   const sourceTables = pages.flatMap((p) =>
     p.items.filter((i) => i._type === 'table' && i.label === action.sourceTableLabel),
   ) as Table[]
-  const sourceRows = sourceTables.flatMap((table) => {
+  let sourceRows = sourceTables.flatMap((table) => {
     if (action.rowSelector.type === 'rowRangeSelector') {
       return table.rows.slice(action.rowSelector.start, action.rowSelector.end)
     }
     const regex = new RegExp(action.rowSelector.regex)
     return table.rows.filter((row) => regex.test(row.cells.join(',')))
   })
-  console.log({ sourceRows })
+  if (sourceTables[0].hasHeader) {
+    const clonedHeader = JSON.parse(JSON.stringify(sourceTables[0].rows[0]))
+    sourceRows = [clonedHeader, ...sourceRows]
+  }
   const maybeTargetTable = pages
     .flatMap((p) => p.items)
     .find((i) => i._type === 'table' && i.label === action.targetTableLabel)
@@ -139,7 +143,7 @@ function mergeTables(action: MergeTables, pages: Page[]) {
     if (index === 0) {
       return t.rows
     }
-    if (action.tableHasHeader) {
+    if (t.hasHeader) {
       return t.rows.slice(1)
     }
     return t.rows
