@@ -2,8 +2,8 @@
   import type { SvelteComponent } from 'svelte'
   import { get, writable, type Writable } from 'svelte/store'
 
-  import Progress from './Progress.svelte'
   import { goto } from '$app/navigation'
+  import ProgressBar from "$lib/components/ProgressBar.svelte";
 
   type Step = {
     name: string
@@ -148,4 +148,4 @@
 
 <!-- TODO display component of the step if it exists -->
 
-<Progress message={currentStep.message} progress={$progressStore} />
+<ProgressBar message={currentStep.message} progress={$progressStore} />
