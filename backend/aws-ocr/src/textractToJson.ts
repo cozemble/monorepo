@@ -25,30 +25,38 @@ function lineToJson(line: Block): Line {
   return { _type: 'line', text: line.Text }
 }
 
-function toProcessedCell(blockFinder: BlockFinder, cell: Block): ProcessedCell {
+function toProcessedCell(
+  blockFinder: BlockFinder,
+  linesInTables: Block[],
+  cell: Block,
+): ProcessedCell {
   if (cell.BlockType !== 'CELL') {
     throw new Error(`Expected cell, got ${cell.BlockType}`)
   }
   if (!cell.RowIndex || !cell.ColumnIndex) {
     throw new Error(`Expected cell to have RowIndex and ColumnIndex`)
   }
-  const text = getChildBlocks(blockFinder, cell)
-    .map((line) => {
-      if (line.BlockType !== 'WORD') {
-        throw new Error(`Expected word, got ${line.BlockType}`)
-      }
-      return line.Text
-    })
-    .join(' ')
+  const wordsInCell = getChildBlocks(blockFinder, cell)
+  const linesInCell = arrays.unique(
+    wordsInCell.map((word) =>
+      linesInTables.find(
+        (line) =>
+          word.Id !== undefined && line.Relationships?.some((rel) => rel.Ids?.includes(word.Id!)),
+      ),
+    ),
+  )
+  const text = linesInCell.map((line) => line.Text).join('\n')
 
   return { _type: 'cell', rowIndex: cell.RowIndex - 1, columnIndex: cell.ColumnIndex - 1, text }
 }
 
-function tableToJson(blockFinder: BlockFinder, item: Block): Table {
+function tableToJson(blockFinder: BlockFinder, linesInTables: Block[], item: Block): Table {
   if (item.BlockType !== 'TABLE') {
     throw new Error(`Expected table, got ${item.BlockType}`)
   }
-  const cells = getChildBlocks(blockFinder, item).map((cell) => toProcessedCell(blockFinder, cell))
+  const cells = getChildBlocks(blockFinder, item).map((cell) =>
+    toProcessedCell(blockFinder, linesInTables, cell),
+  )
   const rowMap = arrays.groupBy(cells, (cell) => cell.rowIndex)
   const rowKeys = Array.from(rowMap.keys())
   const rows = rowKeys
@@ -104,7 +112,7 @@ function pageToJson(blockFinder: BlockFinder, page: Block): Page {
     if (item.BlockType === 'LINE') {
       return lineToJson(item)
     } else if (item.BlockType === 'TABLE') {
-      return tableToJson(blockFinder, item)
+      return tableToJson(blockFinder, linesInTables, item)
     }
     throw new Error(`Unknown block type ${item.BlockType}`)
   })

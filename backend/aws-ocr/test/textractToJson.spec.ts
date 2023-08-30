@@ -41,5 +41,13 @@ test('waste collection invoice example', () => {
     fs.readFileSync(`${__dirname}/waste-collection-invoice-textract-blocks.json`, 'utf8'),
   )
   const processed = textractToJson(blocks)
-  console.log({ processed })
+  expect(processed.pages).toHaveLength(3)
+  const [firstTable, secondTable] = processed.pages[0].items.filter(
+    (i) => i._type === 'table',
+  ) as Table[]
+  expect(firstTable).toBeDefined()
+  expect(secondTable).toBeDefined()
+  const firstContentRow = secondTable.rows[2]
+  const description = firstContentRow.cells[2]
+  expect(description).toEqual('Waste Collection\nGeneral Waste\n1100 litre wheelie bin')
 })

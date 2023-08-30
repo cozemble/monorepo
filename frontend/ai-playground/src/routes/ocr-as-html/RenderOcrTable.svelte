@@ -1,5 +1,6 @@
 <script lang="ts">
     import type {Table} from "@cozemble/backend-aws-ocr-types";
+    import Paragraphs from "./Paragraphs.svelte";
 
     export let table:Table
 </script>
@@ -9,7 +10,7 @@
         <tr class="border">
             {#each row.cells as cell}
                 <td class="border">
-                    {cell}
+                    <Paragraphs text={cell} />
                 </td>
             {/each}
         </tr>

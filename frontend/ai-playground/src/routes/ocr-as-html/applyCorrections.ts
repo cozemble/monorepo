@@ -97,11 +97,10 @@ function apportionColumnContents(action: ApportionColumnContents, pages: Page[])
       const dataRows = table.hasHeader ? table.rows.slice(1) : table.rows
       return dataRows.map((row) => row.cells[selectedColumnIndex])
     })
-    .join('')
-  const regex = new RegExp(action.apportioningRegex, 'g')
+    .join('\n')
+  const regex = new RegExp(action.apportioningRegex, 'gm')
   const matches = Array.from(flattenedColumnContents.matchAll(regex))
   let matchIndex = 0
-  console.log({ flattenedColumnContents, regex, matches })
   return pages.map((p) => {
     return {
       ...p,
