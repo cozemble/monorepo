@@ -1,10 +1,14 @@
 <script lang="ts">
 
-    import InputLabel from "$lib/inputs/InputLabel.svelte";
+    import {strings} from "@cozemble/lang-util";
 
     export let key: string
     export let value: boolean
 </script>
 
-<InputLabel {key}/>
-<input type="checkbox" class="input input-bordered" bind:checked={value}/>
+
+<div class="flex">
+    <input type="checkbox" class="input input-bordered" bind:checked={value}/>
+    <label class="label">{strings.camelcaseToSentenceCase(key)}</label>
+</div>
+

@@ -11,7 +11,7 @@ export const labelTable = z.object({
         terms: z
           .array(
             z.object({
-              type: z.enum(['header_matches', 'column_matches', 'cell_matches']),
+              type: z.enum(['headerMatches', 'columnMatches', 'cellMatches']),
               regex: z.string().min(1, { message: 'regex must be at least 1 characters' }),
             }),
           )

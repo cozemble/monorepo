@@ -24,8 +24,8 @@ function labelThisTable(action: LabelTable, table: Table): Table {
       throw new Error('Only one term is supported atm')
     }
     const term = terms[0]
-    if (term.type !== 'header_matches') {
-      throw new Error('Only header_matches is supported atm')
+    if (term.type !== 'headerMatches') {
+      throw new Error('Only headerMatches is supported atm')
     }
     const regex = new RegExp(term.regex)
     if (regex.test(heading)) {
