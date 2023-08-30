@@ -4,7 +4,7 @@
 
   import Icon from '@iconify/svelte'
 
-  export let message: string = 'Initializing the process'
+  export let message: string | undefined = undefined
   export let progress: number
 
   /** For smooth animation */
@@ -22,10 +22,13 @@
 
 <div class="progress-area w-full flex flex-col items-center justify-center ">
   <!-- TODO determine which orientation to use-->
+
   <!-- <div class="flex gap-4"> -->
-  <p class="mb-4 text-center opacity-40">
-    {message}
-  </p>
+  {#if message}
+    <p class="mb-4 text-center opacity-40">
+      {message}
+    </p>
+  {/if}
 
   <span class="swap swap-flip mb-6  hover:cursor-default" class:swap-active={progress >= 1}>
     <Icon icon="subway:tick" class="swap-on text-2xl text-secondary" />
