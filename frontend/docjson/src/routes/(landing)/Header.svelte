@@ -4,7 +4,7 @@
 </script>
 
 <header>
-  <div class="navbar sm:px-6">
+  <div class="navbar px-4 sm:px-6">
     <div class="flex-1">
       <Logo />
     </div>

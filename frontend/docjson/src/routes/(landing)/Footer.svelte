@@ -1,4 +1,4 @@
-<footer class="footer px-10 py-5 bg-base-200 justify-between">
+<footer class="footer p-4 sm:px-8 bg-base-200 justify-between">
   <div class="flex flex-row gap-6">
     <a href="/docs/getting-started" class="link-hover">Getting Started</a>
     <a href="/docs" class="link-hover">Docs</a>
