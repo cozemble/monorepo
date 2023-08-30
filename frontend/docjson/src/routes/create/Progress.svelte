@@ -1,8 +1,19 @@
 <script lang="ts">
+  import { tweened } from 'svelte/motion'
+  import { cubicOut } from 'svelte/easing'
+
   import Icon from '@iconify/svelte'
 
   export let message: string = 'Initializing the process'
   export let progress: number
+
+  /** For smooth animation */
+  const progressStore = tweened(0, {
+    duration: 400,
+    easing: cubicOut,
+  })
+
+  $: progressStore.set(progress)
 </script>
 
 <!-- @component 
@@ -10,8 +21,6 @@
 -->
 
 <div class="progress-area w-full flex flex-col items-center justify-center ">
-  <!-- message -->
-  <p class="mb-4 text-center ">
   <!-- TODO determine which orientation to use-->
   <!-- <div class="flex gap-4"> -->
   <p class="mb-4 text-center opacity-40">
@@ -26,6 +35,6 @@
 
   <progress
     class="progress progress-secondary w-full h-3 justify-self-end transition ease-in"
-    value={progress}
+    value={$progressStore}
   />
 </div>

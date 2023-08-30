@@ -1,8 +1,6 @@
 <script lang="ts">
   import type { SvelteComponent } from 'svelte'
-  import { get, type Writable } from 'svelte/store'
-  import { tweened } from 'svelte/motion'
-  import { cubicOut } from 'svelte/easing'
+  import { get, writable, type Writable } from 'svelte/store'
 
   import Progress from './Progress.svelte'
   import { goto } from '$app/navigation'
@@ -20,10 +18,7 @@
 
   let modelId: string
   /** Between 0 and 1 */
-  const progressStore = tweened(0, {
-    duration: 400,
-    easing: cubicOut,
-  })
+  const progressStore = writable(0.02)
 
   const resetProgressStore = () => {
     progressStore.set(0.02)
