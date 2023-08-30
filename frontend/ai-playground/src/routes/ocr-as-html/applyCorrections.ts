@@ -1,5 +1,6 @@
 import type {
   Action,
+  ApportionColumnContents,
   DeleteRows,
   ExtractRows,
   LabelTable,
@@ -60,7 +61,6 @@ function deleteRowsInThisTable(action: DeleteRows, table: Table): Table {
     ...table,
     rows: table.rows.filter((row) => {
       const rowStr = row.cells.join(',')
-      console.log({ table, rowStr, regex })
       return !regex.test(rowStr)
     }),
   }
@@ -80,6 +80,57 @@ function deleteRowsOnPage(action: DeleteRows, page: Page) {
 
 function deleteRows(action: DeleteRows, pages: Page[]) {
   return pages.map((page) => deleteRowsOnPage(action, page))
+}
+
+function apportionColumnContents(action: ApportionColumnContents, pages: Page[]): Page[] {
+  const sourceTables = pages.flatMap((p) =>
+    p.items.filter((i) => i._type === 'table' && i.label === action.tableLabel),
+  ) as Table[]
+  const selectedColumnIndex = sourceTables[0].rows[0].cells.findIndex(
+    (cell) => cell === action.sourceColumnName,
+  )
+  const keyColumnIndex = sourceTables[0].rows[0].cells.findIndex(
+    (cell) => cell === action.keyColumnName,
+  )
+  const flattenedColumnContents = sourceTables
+    .flatMap((table) => {
+      const dataRows = table.hasHeader ? table.rows.slice(1) : table.rows
+      return dataRows.map((row) => row.cells[selectedColumnIndex])
+    })
+    .join('')
+  const regex = new RegExp(action.apportioningRegex, 'g')
+  const matches = Array.from(flattenedColumnContents.matchAll(regex))
+  let matchIndex = 0
+  console.log({ flattenedColumnContents, regex, matches })
+  return pages.map((p) => {
+    return {
+      ...p,
+      items: p.items.map((item) => {
+        if (item._type === 'table' && item.label === action.tableLabel) {
+          const rows = item.rows.flatMap((row, rowIndex) => {
+            if (item.hasHeader && rowIndex === 0) {
+              return [row]
+            }
+            if (row.cells[keyColumnIndex] === '') {
+              console.log('Skipping row due to key column being empty', row)
+              return []
+            }
+            const cells = row.cells.map((cell, columnIndex) => {
+              if (columnIndex === selectedColumnIndex) {
+                const match = matches[matchIndex]
+                matchIndex += 1
+                return match ? match[0] : ''
+              }
+              return cell
+            })
+            return [{ ...row, cells }]
+          })
+          return { ...item, rows }
+        }
+        return item
+      }),
+    }
+  })
 }
 
 function extractRows(action: ExtractRows, pages: Page[]): Page[] {
@@ -179,6 +230,9 @@ function applyCorrection(action: Action, pages: Page[]) {
   }
   if (action.action === 'extractRows') {
     return extractRows(action, pages)
+  }
+  if (action.action === 'apportionColumnContents') {
+    return apportionColumnContents(action, pages)
   }
   return pages
 }

@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest'
 import * as fs from 'fs'
-import { GetDocumentAnalysisCommandOutput } from '@aws-sdk/client-textract'
+import { Block, GetDocumentAnalysisCommandOutput } from '@aws-sdk/client-textract'
 import { textractToJson } from '../src/textractToJson'
 import { Line, Table } from '@cozemble/backend-aws-ocr-types'
 
@@ -34,4 +34,12 @@ test('real example', () => {
     '105.00',
     '105.00',
   ])
+})
+
+test('waste collection invoice example', () => {
+  const blocks: Block[] = JSON.parse(
+    fs.readFileSync(`${__dirname}/waste-collection-invoice-textract-blocks.json`, 'utf8'),
+  )
+  const processed = textractToJson(blocks)
+  console.log({ processed })
 })

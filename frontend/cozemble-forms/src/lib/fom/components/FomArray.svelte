@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {getContext, afterUpdate} from 'svelte'
+    import {getContext} from 'svelte'
     import type {FomArray, FomIssue} from "../Fom";
     import {componentFinder, type Path} from "./helper";
 
@@ -16,7 +16,6 @@
         value[key] = []
     }
 
-    afterUpdate(() => console.log({value}))
 </script>
 
 {#if value[key] !== undefined}
@@ -26,6 +25,6 @@
     {:else}
         <p class="text-error">Value is not an array</p>
     {/if}
-    {:else}
+{:else}
     <p class="text-error">Value[key] is undefined</p>
 {/if}
