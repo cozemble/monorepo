@@ -14,6 +14,7 @@
     export let pages: Writable<Page[]>
     export let actions: Writable<Action[]> = writable([])
     const dispatch = createEventDispatcher()
+    let preview: "html" | "json" = "html"
 
     const errors: Readable<FomIssue[]> = derived(actions, o => {
         console.log({o})
@@ -52,10 +53,19 @@
     </div>
     <div class="flex flex-col ml-8 overflow-y-auto h-5/6">
         <div class="mt-4 mx-auto">
-            <h4 class="mx-auto">HTML Preview</h4>
+            <div class="tabs ">
+                <a class="tab tab-lg tab-lifted" class:tab-active={preview === "html"}
+                   on:click={() => preview = "html"}>HTML Preview</a>
+                <a class="tab tab-lg tab-lifted" class:tab-active={preview === "json"}
+                   on:click={() => preview = "json"}>JSON Preview</a>
+            </div>
         </div>
         <div>
-            <RenderOcrJson pages={$mutatedPages}/>
+            {#if preview === "html"}
+                <RenderOcrJson pages={$mutatedPages}/>
+            {:else}
+                <pre class="text-xs"><code>{JSON.stringify($mutatedPages, null, 2)}</code></pre>
+            {/if}
         </div>
     </div>
 </div>
