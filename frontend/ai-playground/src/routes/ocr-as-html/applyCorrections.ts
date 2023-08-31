@@ -12,22 +12,7 @@ import type { Page, Table } from '@cozemble/backend-aws-ocr-types'
 function labelThisTable(action: LabelTable, table: Table): Table {
   if (table.rows.length > 1) {
     const heading = table.rows[0].cells.join(',')
-    if (action.criteria.length > 1) {
-      throw new Error('Only one criteria is supported atm')
-    }
-    const criteria = action.criteria[0]
-    if (criteria.logicalOperator !== 'and') {
-      throw new Error('Only and is supported atm')
-    }
-    const terms = criteria.terms
-    if (terms.length > 1) {
-      throw new Error('Only one term is supported atm')
-    }
-    const term = terms[0]
-    if (term.type !== 'headerMatches') {
-      throw new Error('Only headerMatches is supported atm')
-    }
-    const regex = new RegExp(term.regex)
+    const regex = new RegExp(action.tableHeaderRegex)
     if (regex.test(heading)) {
       return {
         ...table,

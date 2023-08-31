@@ -32,6 +32,7 @@
         return applyCorrections(actions, errors, pages)
     })
 </script>
+
 <div class="flex">
     <div>
         <div class="mt-4 mx-auto">
@@ -39,12 +40,12 @@
         </div>
         <OcrCorrections {actions}/>
     </div>
-    <div class="flex flex-col ml-8">
+    <div class="flex flex-col ml-8 overflow-y-auto  h-5/6"> <!-- I want this div to vertical scroll -->
         <div class="mt-4 mx-auto">
             <h4 class="mx-auto">HTML Preview</h4>
         </div>
         <div>
-        <RenderOcrJson pages={$mutatedPages}/>
+            <RenderOcrJson pages={$mutatedPages}/>
         </div>
     </div>
 </div>

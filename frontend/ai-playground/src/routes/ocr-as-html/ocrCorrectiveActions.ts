@@ -4,21 +4,7 @@ export const labelTable = z.object({
   action: z.literal('labelTable'),
   tableLabel: z.string().min(1, { message: 'Required' }),
   tableHasHeader: z.boolean(),
-  criteria: z
-    .array(
-      z.object({
-        logicalOperator: z.enum(['and', 'or']).default('and'),
-        terms: z
-          .array(
-            z.object({
-              type: z.enum(['headerMatches', 'columnMatches', 'cellMatches']),
-              regex: z.string().min(1, { message: 'regex must be at least 1 characters' }),
-            }),
-          )
-          .nonempty(),
-      }),
-    )
-    .nonempty(),
+  tableHeaderRegex: z.string().min(1, { message: 'Required' }),
 })
 
 export const deleteRows = z.object({
