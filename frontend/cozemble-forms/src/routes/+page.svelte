@@ -1,22 +1,19 @@
 <script lang="ts">
-
-
-    import {writable} from "svelte/store";
+    import {derived, type Readable, writable} from "svelte/store";
     import {zodToFom} from "../lib/fom/zodToFom";
-    import FomForm from "$lib/fom/components/FomForm.svelte";
-    import {derived, type Readable} from "svelte/store";
     import type {FomArray, FomIssue} from "$lib/fom/Fom";
     import {z} from "zod";
     import {actions, extendSchema} from "./types";
-
+    import FomArrayForm from "$lib/fom/components/FomArrayForm.svelte";
+    import ActionSummarizer from "./ActionSummarizer.svelte";
+    import {afterUpdate} from "svelte";
 
     const object = writable([] as any)
-    export let showErrors = writable(false)
+    export let showErrors = writable(true)
 
     $: schema = extendSchema(zodToFom(actions), $object) as FomArray
 
     const errors: Readable<FomIssue[]> = derived(object, o => {
-        console.log({o})
         try {
             actions.parse(o)
             return []
@@ -30,17 +27,10 @@
         }
     })
 
+    afterUpdate(() => console.log({object:$object, errors:$errors}))
 </script>
 
-<label class="label">Show errors</label>
-<input type="checkbox" bind:checked={$showErrors}/>
-<FomForm {schema} {object} {errors} {showErrors} rootItemName="Action"/>
+
+<FomArrayForm {schema} {object} {errors} {showErrors} rootItemName="Action" itemSummarizer={ActionSummarizer}/>
 
 
-<div class="mt-4">
-    <pre>{JSON.stringify($object, null, 2)}</pre>
-</div>
-
-<div>
-    <pre>{JSON.stringify(schema, null, 2)}</pre>
-</div>

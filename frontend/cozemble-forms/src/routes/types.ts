@@ -61,6 +61,13 @@ export const action = z.discriminatedUnion('action', [
 ])
 export const actions = action.array()
 
+export type LabelTable = z.infer<typeof labelTable>
+export type DeleteRows = z.infer<typeof deleteRows>
+export type MergeTables = z.infer<typeof mergeTables>
+export type ExtractRows = z.infer<typeof extractRows>
+export type Action = z.infer<typeof action>
+export type Actions = z.infer<typeof actions>
+
 export type FormSchemaExtender = (schema: FomSchema, value: any) => FomSchema
 
 export const extendSchema: FormSchemaExtender = (schema, actions) => {

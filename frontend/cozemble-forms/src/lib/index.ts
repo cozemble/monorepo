@@ -11,3 +11,4 @@ export type {
   FomText,
 } from './fom/Fom'
 export { default as FomForm } from './fom/components/FomForm.svelte'
+export { default as FomArrayForm } from './fom/components/FomArrayForm.svelte'

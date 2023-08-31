@@ -4,10 +4,11 @@
     import type {Action} from "./ocrCorrectiveActions";
     import {actions as actionsType} from "./ocrCorrectiveActions";
     import type {FomArray, FomIssue} from "@cozemble/frontend-cozemble-forms";
-    import {FomForm, zodToFom} from "@cozemble/frontend-cozemble-forms";
+    import {FomArrayForm, zodToFom} from "@cozemble/frontend-cozemble-forms";
     import {extendSchema} from "./fomFormExtender";
     import {z} from 'zod'
     import {afterUpdate} from "svelte";
+    import ActionSummarizer from "./ActionSummarizer.svelte";
 
     export let actions: Writable<Action[]>
     const showErrors = writable(true)
@@ -34,4 +35,5 @@
     })
 </script>
 
-<FomForm {schema} object={actions} {errors} {showErrors} rootItemName="OCR Corrective Action"/>
+<FomArrayForm {schema} object={actions} {errors} {showErrors} rootItemName="Corrective Action"
+              itemSummarizer={ActionSummarizer}/>
