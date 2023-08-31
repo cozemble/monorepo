@@ -1,8 +1,8 @@
 <script lang="ts">
-    import type {AwsOcrResponse} from "../aws-ocr/awsOcrTypes";
     import OcrJsonCorrection from "../ocr-as-html/OcrJsonCorrection.svelte";
-    import {writable} from "svelte/store";
+    import type {Writable} from "svelte/store";
+    import type {Page} from "@cozemble/backend-aws-ocr-types";
 
-    export let awsOcrResponse:AwsOcrResponse
+    export let pages: Writable<Page[]>
 </script>
-<OcrJsonCorrection pages={writable(awsOcrResponse.json.pages)}/>
+<OcrJsonCorrection {pages} on:actions/>

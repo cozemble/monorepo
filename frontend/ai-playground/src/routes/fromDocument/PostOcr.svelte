@@ -1,0 +1,40 @@
+<script lang="ts">
+    import type {AwsOcrResponse} from "../aws-ocr/awsOcrTypes";
+    import HandleAwsOcrResponse from "./HandleAwsOcrResponse.svelte";
+    import {createEventDispatcher} from "svelte";
+    import {writable} from "svelte/store";
+    import type {Action} from "../ocr-as-html/ocrCorrectiveActions";
+
+    export let awsOcrResponse: AwsOcrResponse
+    const pages = writable(awsOcrResponse.json.pages)
+    const dispatch = createEventDispatcher()
+    let actions = [] as Action[]
+
+    function cancel() {
+        dispatch('cancel')
+    }
+
+    function configureJson() {
+        // dispatch('configureJson')
+    }
+
+    function onActions(event:CustomEvent) {
+        actions = event.detail
+        console.log({actions})
+    }
+</script>
+
+<h1 class="text-center">OCR Post Processing</h1>
+
+<div class="mx-auto mb-4">
+    <button class="btn btn-primary mt-4 btn-lg" on:click={configureJson}>
+        OCR looks OK - NEXT >>
+    </button>
+
+    <button class="btn btn-secondary mt-4 btn-lg" on:click={cancel}>
+        Cancel
+    </button>
+</div>
+<div class="border rounded p-4">
+    <HandleAwsOcrResponse {pages} on:actions={onActions}/>
+</div>

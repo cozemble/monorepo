@@ -9,9 +9,11 @@
     import type {FomIssue} from "@cozemble/frontend-cozemble-forms";
     import {applyCorrections} from "./applyCorrections";
     import {z} from "zod";
+    import {createEventDispatcher} from "svelte";
 
     export let pages: Writable<Page[]>
     export let actions: Writable<Action[]> = writable([])
+    const dispatch = createEventDispatcher()
 
     const errors: Readable<FomIssue[]> = derived(actions, o => {
         console.log({o})
@@ -31,6 +33,14 @@
     const mutatedPages = derived([pages, actions, errors], ([pages, actions, errors]) => {
         return applyCorrections(actions, errors, pages)
     })
+
+    function continuousActionDispatch(actions: Action[], errors: FomIssue[]) {
+        if (errors.length === 0) {
+            dispatch("actions", actions)
+        }
+    }
+
+    $: continuousActionDispatch($actions, $errors)
 </script>
 
 <div class="flex">
@@ -38,9 +48,9 @@
         <div class="mt-4 mx-auto">
             <h4 class="mx-auto">OCR Corrective Actions</h4>
         </div>
-        <OcrCorrections {actions}/>
+        <OcrCorrections {actions} on:actions/>
     </div>
-    <div class="flex flex-col ml-8 overflow-y-auto  h-5/6"> <!-- I want this div to vertical scroll -->
+    <div class="flex flex-col ml-8 overflow-y-auto h-5/6">
         <div class="mt-4 mx-auto">
             <h4 class="mx-auto">HTML Preview</h4>
         </div>
