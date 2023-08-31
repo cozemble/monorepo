@@ -73,7 +73,9 @@
                 <h1 class="text-center mb-4">Performing OCR</h1>
             {:else}
                 <h1 class="text-center mb-4">OCR Post Processing</h1>
-                <HandleAwsOcrResponse {awsOcrResponse} />
+                <div class="border rounded p-4">
+                    <HandleAwsOcrResponse {awsOcrResponse}/>
+                </div>
             {/if}
         {:else}
             <h1 class="text-center mb-4">Upload your document</h1>
