@@ -10,6 +10,7 @@
     import {applyCorrections} from "./applyCorrections";
     import {z} from "zod";
     import {createEventDispatcher} from "svelte";
+    import {toSectionedJson} from "./toSectionedJson";
 
     export let pages: Writable<Page[]>
     export let actions: Writable<Action[]> = writable([])
@@ -64,7 +65,7 @@
             {#if preview === "html"}
                 <RenderOcrJson pages={$mutatedPages}/>
             {:else}
-                <pre class="text-xs"><code>{JSON.stringify($mutatedPages, null, 2)}</code></pre>
+                <pre class="text-xs"><code>{JSON.stringify(toSectionedJson($mutatedPages), null, 2)}</code></pre>
             {/if}
         </div>
     </div>

@@ -148,6 +148,7 @@ function extractRows(action: ExtractRows, pages: Page[]): Page[] {
   const newTable: Table = {
     _type: 'table',
     rows: sourceRows,
+    hasHeader: sourceTables[0].hasHeader,
     label: action.targetTableLabel,
   }
 
