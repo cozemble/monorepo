@@ -301,7 +301,7 @@ Remember, there's no need to explain the code, as it will be parsed to generate 
     -------------------------
     ${documentHtml}
     -------------------------`
-    return this._sendPrompt('schema-from-text', documentHtml, prompt)
+    return this._sendPrompt('schema-from-text', documentHtml, prompt, { model: 'gpt-4-0613' })
   }
 
   async htmlToData(schema: JsonSchema, text: string): Promise<string | undefined> {

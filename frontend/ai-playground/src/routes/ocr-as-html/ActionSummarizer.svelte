@@ -15,6 +15,8 @@
         {strings.camelcaseToSentenceCase(item.action)} from "{item.sourceTableLabel}" to "{item.targetTableLabel}"
     {:else if item.action === 'deleteRows'}
         {strings.camelcaseToSentenceCase(item.action)} from "{item.tableLabel}"
+    {:else if item.action === 'dropColumns'}
+        {strings.camelcaseToSentenceCase(item.action)} from "{item.tableLabel}"
     {:else}
         Apportion column "{item.sourceColumnName}" in "{item.tableLabel}"
     {/if}

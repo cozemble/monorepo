@@ -4,8 +4,10 @@
 
     export let item: BlockItem
 </script>
-{#if item._type === "line"}
-    <p>{item.text}</p>
-{:else if item._type === "table"}
-    <RenderOcrTable table={item}/>
+{#if item}
+    {#if item._type === "line"}
+        <p>{item.text}</p>
+    {:else if item._type === "table"}
+        <RenderOcrTable table={item}/>
+    {/if}
 {/if}

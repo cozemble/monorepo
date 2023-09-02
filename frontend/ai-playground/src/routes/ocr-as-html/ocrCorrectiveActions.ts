@@ -44,12 +44,19 @@ export const apportionColumnContents = z.object({
   keyColumnName: z.string().min(1, { message: 'Required' }),
 })
 
+export const dropColumns = z.object({
+  action: z.literal('dropColumns'),
+  tableLabel: z.string().min(1, { message: 'Required' }),
+  columnNames: z.string().min(1, { message: 'Required' }),
+})
+
 export const action = z.discriminatedUnion('action', [
   labelTable,
   deleteRows,
   mergeTables,
   extractRows,
   apportionColumnContents,
+  dropColumns,
 ])
 export const actions = action.array()
 
@@ -57,6 +64,7 @@ export type LabelTable = z.infer<typeof labelTable>
 export type DeleteRows = z.infer<typeof deleteRows>
 export type MergeTables = z.infer<typeof mergeTables>
 export type ExtractRows = z.infer<typeof extractRows>
+export type DropColumns = z.infer<typeof dropColumns>
 export type ApportionColumnContents = z.infer<typeof apportionColumnContents>
 export type Action = z.infer<typeof action>
 export type Actions = z.infer<typeof actions>

@@ -2,6 +2,7 @@ import type {
   Action,
   ApportionColumnContents,
   DeleteRows,
+  DropColumns,
   ExtractRows,
   LabelTable,
   MergeTables,
@@ -117,6 +118,33 @@ function apportionColumnContents(action: ApportionColumnContents, pages: Page[])
   })
 }
 
+function dropColumnsInPage(action: DropColumns, p: Page): Page {
+  const columnNames = action.columnNames.split(',')
+  return {
+    ...p,
+    items: p.items.map((item) => {
+      if (item._type === 'table' && item.label === action.tableLabel) {
+        return {
+          ...item,
+          rows: item.rows.map((row) => {
+            return {
+              ...row,
+              cells: row.cells.filter(
+                (cell, index) => !columnNames.includes(item.rows[0].cells[index]),
+              ),
+            }
+          }),
+        }
+      }
+      return item
+    }),
+  } as Page
+}
+
+function dropColumns(action: DropColumns, pages: Page[]): Page[] {
+  return pages.map((p) => dropColumnsInPage(action, p))
+}
+
 function extractRows(action: ExtractRows, pages: Page[]): Page[] {
   const sourceTables = pages.flatMap((p) =>
     p.items.filter((i) => i._type === 'table' && i.label === action.sourceTableLabel),
@@ -218,6 +246,9 @@ function applyCorrection(action: Action, pages: Page[]) {
   }
   if (action.action === 'apportionColumnContents') {
     return apportionColumnContents(action, pages)
+  }
+  if (action.action === 'dropColumns') {
+    return dropColumns(action, pages)
   }
   return pages
 }

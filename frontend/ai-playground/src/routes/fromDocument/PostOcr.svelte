@@ -5,12 +5,15 @@
     import {writable} from "svelte/store";
     import type {Action} from "../ocr-as-html/ocrCorrectiveActions";
     import ConfigureTargetJsonSchema from "./ConfigureTargetJsonSchema.svelte";
+    import type {JsonSchema} from "@cozemble/model-core";
+    import ApiExplainer from "./ApiExplainer.svelte";
 
     export let awsOcrResponse: AwsOcrResponse
     const pages = writable(awsOcrResponse.json.pages)
     const dispatch = createEventDispatcher()
     let actions = [] as Action[]
     let section: 'postProcessOcr' | 'configureJsonSchema' = 'postProcessOcr'
+    let jsonSchema: JsonSchema | null = null
 
     function cancel() {
         dispatch('cancel')
@@ -23,6 +26,10 @@
     function onActions(event: CustomEvent) {
         actions = event.detail
         console.log({actions})
+    }
+
+    function jsonSchemaDefined(event: CustomEvent) {
+        jsonSchema = event.detail
     }
 </script>
 
@@ -42,6 +49,9 @@
         <HandleAwsOcrResponse {pages} on:actions={onActions}/>
     </div>
 {:else}
-    <h1 class="text-center">Configure Target JSON Schema</h1>
-    <ConfigureTargetJsonSchema pages={$pages} {actions} on:cancel={cancel}/>
+    {#if jsonSchema === null}
+        <ConfigureTargetJsonSchema pages={$pages} {actions} on:cancel={cancel} on:schema={jsonSchemaDefined}/>
+    {:else}
+        <ApiExplainer />
+    {/if}
 {/if}
