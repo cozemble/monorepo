@@ -3,7 +3,7 @@
   import { get, writable, type Writable } from 'svelte/store'
 
   import { goto } from '$app/navigation'
-  import ProgressBar from "$lib/components/ProgressBar.svelte";
+  import ProgressBar from '$lib/components/ProgressBar.svelte'
 
   type Step = {
     name: string
