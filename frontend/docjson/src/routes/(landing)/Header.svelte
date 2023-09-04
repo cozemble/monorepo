@@ -3,14 +3,14 @@
   import Icon from '@iconify/svelte'
 
   let scrollY = 0
-  $: scrolled = scrollY > 100
+  $: scrolled = scrollY > 50
 </script>
 
 <svelte:window bind:scrollY />
 
 <header
-  class="sticky top-0 left-0 right-0 bg-base-100 bg-opacity-70 backdrop-blur-xl z-50 
-  {scrolled ? 'shadow-xl' : ''}"
+  class="sticky top-0 left-0 right-0 bg-base-100/60 backdrop-blur-xl z-50 
+  {scrolled ? 'shadow-2xl glass' : ''}"
 >
   <div class="navbar px-4 sm:px-6">
     <div class="flex-1">
