@@ -5,10 +5,8 @@
 </script>
 
 <section
-  class="pb-32 pt-10 px-5 flex-grow w-full
-  bg-gradient-to-br from-primary/75 via-30% via-accent/100 to-primary/75 to
- rounded-box
-"
+  class="pb-32 pt-10 px-5 flex-grow w-full rounded-2xl
+  bg-gradient-to-br from-primary/75 via-30% via-accent/100 to-primary/75"
 >
   <div class="flex flex-col items-center mt-10 mb-20">
     <h1 class="text-6xl mb-[0.4em]">Pricing Plans</h1>

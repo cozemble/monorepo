@@ -6,13 +6,23 @@ import { goto } from '$app/navigation'
 // we need to display features' limits if they are available
 // some features like "Customer Support" don't have limits so we need not to display limits for them
 // TODO decide if features should have infos for each plan
-// TODO decide if every feature should have info
 // TODO decide if every feature should have an icon
 // TODO decide if price explanations should be defined individually
 
 // Plans: Free, Basic, Pro, Enterprise
 
 const PLANS = ['Free', 'Basic', 'Pro', 'Enterprise'] as const
+const Icons = {
+  api: 'mdi:api',
+  ocr: 'mdi:file-document',
+  conversion: 'mdi:file-pdf',
+  upload: 'mdi:upload',
+  size: 'mdi:file',
+  download: 'mdi:download',
+  storage: 'mdi:database',
+  schema: 'mdi:code-json',
+  special: 'mdi:star',
+}
 
 export type Feature = {
   name: string
@@ -24,11 +34,11 @@ export type Feature = {
 
 export type OptionFeature = {
   name: string
+  icon: string
   info?: string
-  icon?: string
-  available: boolean
-  limit?: number | string
-  unit: string
+  available?: boolean
+  // limit?: number | string
+  // unit: string
 }
 
 export type Plan = {
@@ -40,94 +50,12 @@ export type Plan = {
     name: string
     handler: () => void
   }
+  note?: string
+  featuresHeading: string
   features: OptionFeature[]
 }
 
 export type Plans = [Plan, Plan, Plan, Plan]
-
-const features: Feature[] = [
-  {
-    name: 'API Creation',
-    info: 'Create APIs from your documents',
-    icon: 'mdi:api',
-    unit: '',
-    plans: {
-      Free: { available: true, limit: 10 },
-      Basic: { available: true, limit: 100 },
-      Pro: { available: true, limit: 500 },
-      Enterprise: { available: true },
-    },
-  },
-  {
-    name: 'Document OCR',
-    info: 'Scan your documents',
-    icon: 'mdi:file-document',
-    unit: '',
-    plans: {
-      Free: { available: true, limit: 50 },
-      Basic: { available: true, limit: 500 },
-      Pro: { available: true, limit: 1000 },
-      Enterprise: { available: true },
-    },
-  },
-  {
-    name: 'Document Conversion',
-    icon: 'mdi:file-pdf',
-    unit: '',
-    plans: {
-      Free: { available: true, limit: 50 },
-      Basic: { available: true, limit: 500 },
-      Pro: { available: true, limit: 1000 },
-      Enterprise: { available: true },
-    },
-  },
-  {
-    name: 'Document Upload',
-    icon: 'mdi:upload',
-    unit: '',
-    plans: {
-      Free: { available: true, limit: 50 },
-      Basic: { available: true, limit: 500 },
-      Pro: { available: true, limit: 1000 },
-      Enterprise: { available: true },
-    },
-  },
-  {
-    name: 'Document Size',
-    icon: 'mdi:file',
-    unit: 'MB',
-    info: 'Maximum size of a single document',
-    plans: {
-      Free: { available: true, limit: 1 },
-      Basic: { available: true, limit: 5 },
-      Pro: { available: true, limit: 10 },
-      Enterprise: { available: true },
-    },
-  },
-  {
-    name: 'Document Download',
-    icon: 'mdi:download',
-    unit: '',
-    plans: {
-      Free: { available: false },
-      Basic: { available: true, limit: 500 },
-      Pro: { available: true, limit: 1000 },
-      Enterprise: { available: true },
-    },
-  },
-  {
-    name: 'Document Storage',
-    info: 'Store your documents in the cloud',
-    icon: 'mdi:database',
-    unit: '',
-    plans: {
-      Free: { available: false },
-      Basic: { available: true, limit: 500 },
-      Pro: { available: true, limit: 1000 },
-      Enterprise: { available: true },
-    },
-  },
-]
 
 export const pricingOptions: Plans = [
   {
@@ -140,12 +68,35 @@ export const pricingOptions: Plans = [
         goto('/signup')
       },
     },
-    features: features.map(
-      (feature): OptionFeature => ({
-        ...feature,
-        ...feature.plans.Free,
-      }),
-    ),
+    featuresHeading: 'Get started with these features:',
+    features: [
+      {
+        name: 'Create up to 10 APIs at the same time',
+        icon: Icons.api,
+      },
+      {
+        name: 'Edit your data schema',
+        icon: Icons.schema,
+      },
+      {
+        name: 'Scan up to 50 documents per month',
+        icon: Icons.ocr,
+      },
+      {
+        name: '1MB max-size of a single document',
+        icon: Icons.size,
+      },
+      {
+        name: 'No cloud document storage available',
+        icon: Icons.storage,
+        available: false,
+      },
+      {
+        name: 'No document download available',
+        icon: Icons.download,
+        available: false,
+      },
+    ],
   },
   {
     name: 'Basic',
@@ -158,12 +109,33 @@ export const pricingOptions: Plans = [
         goto('/signup')
       },
     },
-    features: features.map(
-      (feature): OptionFeature => ({
-        ...feature,
-        ...feature.plans.Basic,
-      }),
-    ),
+    featuresHeading: 'Everything in Free, plus:',
+    features: [
+      {
+        name: 'Create up to 100 APIs at the same time',
+        icon: Icons.api,
+      },
+      {
+        name: 'Edit your data schema',
+        icon: Icons.schema,
+      },
+      {
+        name: 'Scan up to 5000 documents per month',
+        icon: Icons.ocr,
+      },
+      {
+        name: '5MB max-size of a single document',
+        icon: Icons.size,
+      },
+      {
+        name: '100,000 document storage',
+        icon: Icons.storage,
+      },
+      {
+        name: 'Download up to 10,000 documents per month',
+        icon: Icons.download,
+      },
+    ],
   },
   {
     name: 'Pro',
@@ -176,17 +148,38 @@ export const pricingOptions: Plans = [
         goto('/signup')
       },
     },
-    features: features.map(
-      (feature): OptionFeature => ({
-        ...feature,
-        ...feature.plans.Pro,
-      }),
-    ),
+    featuresHeading: 'Everything in Basic, plus:',
+    features: [
+      {
+        name: 'Create up to 500 APIs at the same time',
+        icon: Icons.api,
+      },
+      {
+        name: 'Edit your data schema',
+        icon: Icons.schema,
+      },
+      {
+        name: 'Scan up to 20,000 documents per month',
+        icon: Icons.ocr,
+      },
+      {
+        name: '10MB max-size of a single document',
+        icon: Icons.size,
+      },
+      {
+        name: '1,000,000 document storage',
+        icon: Icons.storage,
+      },
+      {
+        name: 'Download up to 100,000 documents per month',
+        icon: Icons.download,
+      },
+    ],
   },
   {
     name: 'Enterprise',
     highlight: false,
-    info: 'Contact us for a custom plan',
+    info: 'Predefined limits are not enough? Contact us!',
     price: '-',
     action: {
       name: 'Contact us',
@@ -194,11 +187,16 @@ export const pricingOptions: Plans = [
         goto('/contact')
       },
     },
-    features: features.map(
-      (feature): OptionFeature => ({
-        ...feature,
-        ...feature.plans.Enterprise,
-      }),
-    ),
+    featuresHeading: 'Everything in Pro, plus:',
+    features: [
+      {
+        name: 'Custom limits based on your needs',
+        icon: Icons.special,
+      },
+      {
+        name: 'First class support',
+        icon: Icons.special,
+      },
+    ],
   },
 ]
