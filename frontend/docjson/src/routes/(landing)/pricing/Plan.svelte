@@ -8,7 +8,10 @@
   export let ghost: boolean = false
 </script>
 
-<div class={`card p-8 max-w-[22em] w-full glass bg-base-100/10 shadow-xl text-base-content`}>
+<div
+  class="card p-8 max-w-[22em] w-full glass bg-base-100/10 shadow-xl text-base-content transition-all duration-200 hover:bg-base-100/20 hover:shadow-2xl
+  {plan?.highlight && 'border-2 border-neutral border-solid'}"
+>
   <div class="card-title flex flex-col items-start justify-start gap-0">
     <h3 class="text-3xl mb-2">{plan.name}</h3>
 

@@ -84,7 +84,7 @@ export const plans: Plan[] = [
   },
   {
     name: 'Basic',
-    highlight: false,
+    highlight: true,
     info: 'Ideal for small businesses',
     price: '$20',
     priceInfo: 'per month / project',
@@ -123,7 +123,6 @@ export const plans: Plan[] = [
     info: 'For businesses with more documents',
     price: '$50',
     priceInfo: 'per month',
-    highlight: true,
     action: {
       name: 'Subscribe',
       handler: () => {
