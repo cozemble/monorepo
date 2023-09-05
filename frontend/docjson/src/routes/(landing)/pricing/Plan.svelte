@@ -1,28 +1,28 @@
 <script lang="ts">
   import Icon from '@iconify/svelte'
 
-  import type { Plan } from './'
+  import type { Plan } from '.'
 
-  export let option: Plan
+  export let plan: Plan
   /** Disabled state to show the option is not available */
   export let ghost: boolean = false
 </script>
 
 <div class={`card p-8 max-w-[22em] w-full glass bg-base-100/10 shadow-xl text-base-content`}>
   <div class="card-title flex flex-col items-start justify-start gap-0">
-    <h3 class="text-3xl mb-2">{option.name}</h3>
+    <h3 class="text-3xl mb-2">{plan.name}</h3>
 
-    <p class="h-8 leading-5 text-base font-light text-base-100">{option.info}</p>
+    <p class="h-8 leading-5 text-base font-light text-base-100">{plan.info}</p>
 
     <div class="divider opacity-50" />
 
     <div class="w-full my-4 flex items-end">
       <div class="text-6xl mr-2 leading-10">
-        {option.price}
+        {plan.price}
       </div>
 
       <span class="text-lg font-normal text-base-100/70 leading-5">
-        {option?.priceInfo || ''}
+        {plan?.priceInfo || ''}
       </span>
     </div>
   </div>
@@ -35,11 +35,11 @@
       <li class="flex items-start text-center">
         <div class="w-7 h-6 text-base-100/70 flex-shrink-0" />
         <h4 class="ml-2 text-sm font-normal text-base-100/70 ">
-          {option.featuresHeading}
+          {plan.featuresHeading}
         </h4>
       </li>
 
-      {#each option.features as feature}
+      {#each plan.features as feature}
         <li class="flex items-start text-center {feature?.available === false && 'opacity-40'}">
           {#if feature.icon}
             <Icon icon={feature.icon} class="w-7 h-6 text-base-100/70 flex-shrink-0" />
@@ -60,8 +60,8 @@
   </div>
 
   <div class="card-actions">
-    <button class="btn btn-neutral w-full" on:click={option.action.handler}>
-      {option.action.name}
+    <button class="btn btn-neutral w-full" on:click={plan.action.handler}>
+      {plan.action.name}
     </button>
   </div>
 </div>
