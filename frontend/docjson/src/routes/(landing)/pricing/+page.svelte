@@ -8,10 +8,10 @@
   class="pb-32 pt-10 px-5 flex-grow w-full rounded-2xl
   bg-gradient-to-br from-primary/75 via-30% via-accent/100 to-primary/75"
 >
-  <div class="flex flex-col items-center mt-10 mb-20">
-    <h1 class="text-6xl mb-[0.4em]">Pricing Plans</h1>
+  <div class="mb-8 md:mt-10 md:mb-20 flex flex-col items-center">
+    <h1 class="text-4xl md:text-6xl mb-[0.4em]">Pricing Plans</h1>
 
-    <p class="text-xl text-base-100">
+    <p class="text-base md:text-xl text-base-100 text-center">
       We are currently in beta, paid plans will be available soon.
     </p>
 
