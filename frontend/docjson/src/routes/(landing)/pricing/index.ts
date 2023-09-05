@@ -1,16 +1,5 @@
 import { goto } from '$app/navigation'
 
-// display all features on each pricing option because usage limits will be different
-
-// TODO decide if every feature should have a limit
-// we need to display features' limits if they are available
-// some features like "Customer Support" don't have limits so we need not to display limits for them
-// TODO decide if features should have infos for each plan
-// TODO decide if every feature should have an icon
-// TODO decide if price explanations should be defined individually
-
-// Plans: Free, Basic, Pro, Enterprise
-
 const PLANS = ['Free', 'Basic', 'Pro', 'Enterprise'] as const
 const Icons = {
   api: 'mdi:api',
@@ -24,44 +13,37 @@ const Icons = {
   special: 'mdi:star',
 }
 
-export type Feature = {
-  name: string
-  info?: string
-  icon?: string
-  unit: string
-  plans: Record<(typeof PLANS)[number], { available: boolean; limit?: number | string }>
-}
-
 export type OptionFeature = {
   name: string
   icon: string
   info?: string
   available?: boolean
-  // limit?: number | string
-  // unit: string
 }
 
 export type Plan = {
   name: (typeof PLANS)[number]
   info: string
-  price: number | string
   highlight?: boolean
+
+  price: string
+  priceInfo?: string
+
+  featuresHeading: string
+  features: OptionFeature[]
+
+  note?: string
+
   action: {
     name: string
     handler: () => void
   }
-  note?: string
-  featuresHeading: string
-  features: OptionFeature[]
 }
 
-export type Plans = [Plan, Plan, Plan, Plan]
-
-export const pricingOptions: Plans = [
+export const plans: Plan[] = [
   {
     name: 'Free',
-    info: 'Trial version of tojson to get you started',
-    price: 0,
+    info: 'Trial version of tojson to let you see how it works',
+    price: 'Free',
     action: {
       name: 'Get started',
       handler: () => {
@@ -77,6 +59,7 @@ export const pricingOptions: Plans = [
       {
         name: 'Edit your data schema',
         icon: Icons.schema,
+        info: "Edit the data schema if you didn't like the one generated",
       },
       {
         name: 'Scan up to 50 documents per month',
@@ -90,6 +73,7 @@ export const pricingOptions: Plans = [
         name: 'No cloud document storage available',
         icon: Icons.storage,
         available: false,
+        info: 'Only local storage available',
       },
       {
         name: 'No document download available',
@@ -102,7 +86,8 @@ export const pricingOptions: Plans = [
     name: 'Basic',
     highlight: false,
     info: 'Ideal for small businesses',
-    price: 20,
+    price: '$20',
+    priceInfo: 'per month / project',
     action: {
       name: 'Start now',
       handler: () => {
@@ -114,10 +99,6 @@ export const pricingOptions: Plans = [
       {
         name: 'Create up to 100 APIs at the same time',
         icon: Icons.api,
-      },
-      {
-        name: 'Edit your data schema',
-        icon: Icons.schema,
       },
       {
         name: 'Scan up to 5000 documents per month',
@@ -140,7 +121,8 @@ export const pricingOptions: Plans = [
   {
     name: 'Pro',
     info: 'For businesses with more documents',
-    price: 50,
+    price: '$50',
+    priceInfo: 'per month',
     highlight: true,
     action: {
       name: 'Subscribe',
@@ -153,10 +135,6 @@ export const pricingOptions: Plans = [
       {
         name: 'Create up to 500 APIs at the same time',
         icon: Icons.api,
-      },
-      {
-        name: 'Edit your data schema',
-        icon: Icons.schema,
       },
       {
         name: 'Scan up to 20,000 documents per month',
@@ -180,7 +158,7 @@ export const pricingOptions: Plans = [
     name: 'Enterprise',
     highlight: false,
     info: 'Predefined limits are not enough? Contact us!',
-    price: '-',
+    price: 'Custom',
     action: {
       name: 'Contact us',
       handler: () => {

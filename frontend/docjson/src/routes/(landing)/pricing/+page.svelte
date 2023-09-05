@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { pricingOptions } from './'
+  import { plans } from './'
 
   import PricingOptionComponent from './PricingOption.svelte'
 </script>
@@ -24,7 +24,7 @@
   
   "
   >
-    {#each pricingOptions as option}
+    {#each plans as option}
       <PricingOptionComponent {option} />
     {/each}
   </div>
