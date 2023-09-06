@@ -1,5 +1,6 @@
 <script lang="ts">
   import { plans } from './'
+  import EmailOnRelease from './EmailOnRelease.svelte'
 
   import Plan from './Plan.svelte'
 </script>
@@ -11,11 +12,11 @@
   <div class="mb-8 md:mt-10 md:mb-20 flex flex-col items-center">
     <h1 class="text-4xl md:text-6xl mb-[0.4em]">Pricing Plans</h1>
 
-    <p class="text-base md:text-xl text-base-100 text-center">
+    <p class="mb-8 text-base md:text-xl text-base-100 text-center">
       We are currently in beta, paid plans will be available soon.
     </p>
 
-    <!-- TODO notify me via email -->
+    <EmailOnRelease />
   </div>
 
   <!-- TODO monthly/yearly switch if needed -->
