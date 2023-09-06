@@ -85,7 +85,7 @@ export const plans: Plan[] = [
   },
   {
     name: 'Basic',
-    highlight: true,
+    highlight: false,
     ghost: true,
     info: 'Ideal for small businesses',
     price: '$20',

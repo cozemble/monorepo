@@ -10,10 +10,10 @@
 
 <!-- TODO explore bg-gray-500 -->
 <div
-  class="card p-8 max-w-[22em] w-full glass bg-base-100/10 shadow-xl text-base-content
+  class="card p-8 max-w-[22em] w-full glass bg-base-100/10 shadow-xl text-base-content overflow-hidden
          transition-all duration-200 hover:shadow-2xl
          {plan?.highlight && 'border-2 border-neutral border-solid'}
-         {ghost && 'opacity-10 text-neutral/20 pointer-events-none'}
+         {ghost && 'pointer-events-none'}
          "
 >
   <div class="card-title flex flex-col items-start justify-start gap-0">
@@ -70,4 +70,19 @@
       {plan.action.name}
     </button>
   </div>
+
+  <!-- Ghost state cover -->
+  {#if ghost}
+    <div
+      class="fixed inset-0 flex items-center justify-center
+      backdrop-blur-md z-[1] 
+      "
+    >
+      <h1
+        class="p-2 w-[35em] shrink-0 -rotate-12 max-w-none opacity-50 bg-base-content text-base-100 text-2xl text-center"
+      >
+        Coming Soon
+      </h1>
+    </div>
+  {/if}
 </div>
