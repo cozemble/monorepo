@@ -24,6 +24,7 @@ export type Plan = {
   name: (typeof PLANS)[number]
   info: string
   highlight?: boolean
+  ghost?: boolean
 
   price: string
   priceInfo?: string
@@ -85,6 +86,7 @@ export const plans: Plan[] = [
   {
     name: 'Basic',
     highlight: true,
+    ghost: true,
     info: 'Ideal for small businesses',
     price: '$20',
     priceInfo: 'per month / project',
@@ -124,6 +126,7 @@ export const plans: Plan[] = [
     info: 'For businesses with more documents',
     price: '$50',
     priceInfo: 'per month',
+    ghost: true,
     action: {
       name: 'Choose Pro',
       handler: () => {
@@ -157,6 +160,7 @@ export const plans: Plan[] = [
   {
     name: 'Enterprise',
     highlight: false,
+    ghost: true,
     info: 'Predefined limits are not enough? Contact us!',
     price: 'Custom',
     action: {

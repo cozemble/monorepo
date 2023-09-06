@@ -5,13 +5,16 @@
 
   export let plan: Plan
   /** Disabled state to show the option is not available */
-  export let ghost: boolean = false
+  $: ghost = plan?.ghost || false
 </script>
 
+<!-- TODO explore bg-gray-500 -->
 <div
   class="card p-8 max-w-[22em] w-full glass bg-base-100/10 shadow-xl text-base-content
          transition-all duration-200 hover:shadow-2xl
-         {plan?.highlight && 'border-2 border-neutral border-solid'}"
+         {plan?.highlight && 'border-2 border-neutral border-solid'}
+         {ghost && 'opacity-10 text-neutral/20 pointer-events-none'}
+         "
 >
   <div class="card-title flex flex-col items-start justify-start gap-0">
     <h3 class="text-3xl mb-2">{plan.name}</h3>
@@ -63,7 +66,7 @@
   </div>
 
   <div class="card-actions mt-6">
-    <button class="btn btn-neutral w-full" on:click={plan.action.handler}>
+    <button class="btn btn-neutral w-full {ghost && 'btn-disabled'}" on:click={plan.action.handler}>
       {plan.action.name}
     </button>
   </div>
