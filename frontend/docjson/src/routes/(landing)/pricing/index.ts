@@ -89,11 +89,12 @@ export const plans: Plan[] = [
     price: '$20',
     priceInfo: 'per month / project',
     action: {
-      name: 'Start now',
+      name: 'Choose Basic',
       handler: () => {
         goto('/signup')
       },
     },
+    note: 'Hard limits, no overages',
     featuresHeading: 'Everything in Free, plus:',
     features: [
       {
@@ -124,7 +125,7 @@ export const plans: Plan[] = [
     price: '$50',
     priceInfo: 'per month',
     action: {
-      name: 'Subscribe',
+      name: 'Choose Pro',
       handler: () => {
         goto('/signup')
       },

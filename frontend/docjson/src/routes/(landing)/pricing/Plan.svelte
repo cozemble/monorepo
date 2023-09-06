@@ -9,18 +9,20 @@
 </script>
 
 <div
-  class="card p-8 max-w-[22em] w-full glass bg-base-100/10 shadow-xl text-base-content transition-all duration-200 hover:bg-base-100/20 hover:shadow-2xl
-  {plan?.highlight && 'border-2 border-neutral border-solid'}"
+  class="card p-8 max-w-[22em] w-full glass bg-base-100/10 shadow-xl text-base-content
+         transition-all duration-200 hover:shadow-2xl
+         {plan?.highlight && 'border-2 border-neutral border-solid'}"
 >
   <div class="card-title flex flex-col items-start justify-start gap-0">
     <h3 class="text-3xl mb-2">{plan.name}</h3>
 
-    <p class="h-8 leading-5 text-base font-light text-base-100">{plan.info}</p>
+    <p class="h-10 leading-5 text-base font-light text-base-100">{plan.info}</p>
 
-    <div class="divider opacity-50" />
+    <div class="divider mt-0 opacity-50" />
 
-    <div class="w-full my-4 flex items-end">
-      <div class="text-6xl mr-2 leading-10">
+    <!-- Price -->
+    <div class="w-full my-2 flex items-end">
+      <div class="text-5xl mr-2 leading-10">
         {plan.price}
       </div>
 
@@ -32,16 +34,14 @@
 
   <div class="divider opacity-50" />
 
-  <!-- Features List -->
   <div class="card-body px-0 pt-2">
-    <ul class="card gap-3">
-      <li class="flex items-start text-center">
-        <div class="w-7 h-6 text-base-100/70 flex-shrink-0" />
-        <h4 class="ml-2 text-sm font-normal text-base-100/70 ">
-          {plan.featuresHeading}
-        </h4>
-      </li>
+    <!-- Features heading -->
+    <h4 class="mb-4 text-sm font-normal text-base-100/70 ">
+      {plan.featuresHeading}
+    </h4>
 
+    <!-- Features List -->
+    <ul class="card gap-3">
       {#each plan.features as feature}
         <li class="flex items-start text-center {feature?.available === false && 'opacity-40'}">
           {#if feature.icon}
@@ -62,7 +62,7 @@
     </ul>
   </div>
 
-  <div class="card-actions">
+  <div class="card-actions mt-6">
     <button class="btn btn-neutral w-full" on:click={plan.action.handler}>
       {plan.action.name}
     </button>
