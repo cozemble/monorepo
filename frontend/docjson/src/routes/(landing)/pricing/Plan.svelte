@@ -46,19 +46,26 @@
     <!-- Features List -->
     <ul class="card gap-3">
       {#each plan.features as feature}
-        <li class="flex items-start text-center {feature?.available === false && 'opacity-40'}">
-          <Icon icon={feature.icon} class="w-7 h-6 text-base-100/70 flex-shrink-0" />
+        <li
+          class="flex items-start text-center {feature?.available === false && 'text-neutral/30'}"
+        >
+          <Icon
+            icon={feature.icon}
+            class="w-7 h-6 text-base-100/70 flex-shrink-0
+          {feature?.available === false && 'opacity-50'}
+          "
+          />
 
           <h5 class="self-center ml-2 mr-4 font-normal text-sm text-start leading-4">
             {feature.name}
-          </h5>
 
-          <!-- TODO fix tooltip being cut issue -->
-          {#if feature?.info}
-            <div class="tooltip" data-tip={feature.info}>
-              <Icon icon="mdi:information" class="text-sm text-neutral" />
-            </div>
-          {/if}
+            <!-- Info tooltip -->
+            {#if feature?.info}
+              <div class="tooltip ml-2 before:z-50 before:max-w-[15rem]" data-tip={feature.info}>
+                <Icon icon="mdi:information" class="text-sm" />
+              </div>
+            {/if}
+          </h5>
         </li>
       {/each}
     </ul>
