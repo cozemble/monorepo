@@ -54,7 +54,7 @@ export const plans: Plan[] = [
     featuresHeading: 'Get started with these features:',
     features: [
       {
-        name: 'Create up to 10 APIs at the same time',
+        name: 'Create up to 2 APIs at the same time',
         icon: Icons.api,
       },
       {
@@ -70,17 +70,17 @@ export const plans: Plan[] = [
         name: '1MB max-size of a single document',
         icon: Icons.size,
       },
-      {
-        name: 'No cloud document storage available',
-        icon: Icons.storage,
-        available: false,
-        info: 'Only local storage available',
-      },
-      {
-        name: 'No document download available',
-        icon: Icons.download,
-        available: false,
-      },
+      // {
+      //   name: 'No cloud document storage available',
+      //   icon: Icons.storage,
+      //   available: false,
+      //   info: 'Only local storage available',
+      // },
+      // {
+      //   name: 'No document download available',
+      //   icon: Icons.download,
+      //   available: false,
+      // },
     ],
   },
   {
@@ -100,7 +100,7 @@ export const plans: Plan[] = [
     featuresHeading: 'Everything in Free, plus:',
     features: [
       {
-        name: 'Create up to 100 APIs at the same time',
+        name: 'Create up to 20 APIs at the same time',
         icon: Icons.api,
       },
       {
@@ -124,7 +124,7 @@ export const plans: Plan[] = [
   {
     name: 'Pro',
     info: 'For businesses with more documents',
-    price: '$50',
+    price: '$45',
     priceInfo: 'per month',
     ghost: true,
     action: {
@@ -136,7 +136,7 @@ export const plans: Plan[] = [
     featuresHeading: 'Everything in Basic, plus:',
     features: [
       {
-        name: 'Create up to 500 APIs at the same time',
+        name: 'Create up to 50 APIs at the same time',
         icon: Icons.api,
       },
       {
