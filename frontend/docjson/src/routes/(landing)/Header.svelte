@@ -18,8 +18,8 @@
     </div>
 
     <div class="flex-none gap-8 text-neutral">
-      <a class="link-hover normal-case hidden sm:block" href="/dashboard"> Dashboard </a>
-      <a class="link-hover normal-case hidden sm:block" href="/docs"> Docs </a>
+      <a class="link-hover normal-case hidden sm:block" href="/coming-soon"> Dashboard </a>
+      <a class="link-hover normal-case hidden sm:block" href="/coming-soon"> Docs </a>
       <a class="link-hover normal-case text-secondary hidden sm:block" href="/pricing"> Pricing </a>
 
       <div class="dropdown dropdown-end">
@@ -36,13 +36,13 @@
           class="menu menu-sm dropdown-content mt-3 z-[1] p-4 shadow-2xl bg-base-100 rounded-box w-52"
         >
           <li>
-            <a class="justify-between" href="/user">
+            <a class="justify-between" href="/coming-soon">
               Profile
               <span class="badge">New</span>
             </a>
           </li>
-          <li><a href="/user/settings">Settings</a></li>
-          <li><a href="/user/login" class="active">Sign Up</a></li>
+          <li><a href="/coming-soon">Settings</a></li>
+          <li><a href="/coming-soon" class="active">Sign Up</a></li>
         </ul>
       </div>
     </div>
