@@ -4,16 +4,21 @@
 
   import { goto } from '$app/navigation'
   import ProgressBar from '$lib/components/ProgressBar.svelte'
+  import CorrectOcr from './CorrectOCR.svelte'
+
+  // <!-- TODO user can go back to previous steps -->
 
   type Step = {
     name: string
     message: string
+    detail?: string
     state: 'pending' | 'success' | 'error'
+    withProgress: boolean
     handler: (progressStore: Writable<number>) => Promise<{
       success: boolean
       error?: string
     }>
-    component?: SvelteComponent
+    component?: any
   }
 
   let modelId: string
@@ -43,20 +48,30 @@
   let steps: Step[] = [
     {
       name: 'Document OCR',
-      message: 'Reading your documents',
+      message: 'Scanning your document',
+      detail: 'This may take a while',
       state: 'pending',
+      withProgress: true,
       handler: mockHandler,
     },
     {
-      name: 'Create Schema',
-      message: 'Creating your schema',
+      name: 'Correct OCR',
+      message: 'Correcting your document',
+      detail: 'Please correct your scanning results',
       state: 'pending',
-      handler: mockHandler,
+      withProgress: false,
+      component: CorrectOcr,
+      handler: async () => {
+        // take forever and never resolve
+        return await new Promise(() => {})
+      },
     },
     {
-      name: 'Create Database',
-      message: 'Creating your database',
+      name: 'Define Schema',
+      message: 'Generating JSON Schema',
+      detail: 'You can edit the schema afterwards',
       state: 'pending',
+      withProgress: true,
       handler: async (progressStore) => {
         // <!-- TODO create database -->
         modelId = '123'
@@ -64,9 +79,11 @@
       },
     },
     {
-      name: 'Populate Records',
+      name: 'Create API',
       message: 'Populating your records',
+      detail: 'This usually takes a little while. Sit back and relax or come back later.',
       state: 'pending',
+      withProgress: true,
       handler: mockHandler,
     },
   ]
@@ -102,10 +119,14 @@
       name: 'Finished',
       message: 'Redirecting to your model',
       state: 'success',
+      withProgress: false,
       handler: async () => ({ success: true }),
     }
     setTimeout(() => {
-      goto(`/dashboard/models/${modelId}`)
+      // goto(`/dashboard/models/${modelId}`)
+      activeStepIdx = 0
+      steps = steps.map((step) => ({ ...step, state: 'pending' }))
+      runSteps()
     }, 1000)
 
     return
@@ -118,7 +139,7 @@
   Handles the steps of the model creation process and redirects to the dashboard when the process is finished.
 -->
 
-<div class="flex flex-col items-center justify-center w-full sm:mt-20">
+<div class="flex flex-col items-center justify-center w-full sm:mt-12">
   <!--  -->
 
   <!-- * steps list -->
@@ -128,6 +149,7 @@
         {@const stepStyle =
           (step.state === 'success' && 'step-primary') ||
           (step.state === 'error' && 'step-error') ||
+          (step.name === currentStep.name && 'font-bold') ||
           ''}
         <li class="step {stepStyle}">
           {step.name}
@@ -137,15 +159,24 @@
   </div>
 
   <!-- * heading -->
-  <div class="title-area mb-40 mt-8 sm:mt-28 text-center">
-    <h1 class="text-accent mb-4">Creating your model</h1>
+  <div class="title-area my-8 sm:mt-12 text-center">
+    <h1 class="text-accent mb-4">{currentStep.message}</h1>
 
     <p class="opacity-50">
-      This usually takes a little while. Sit back and relax or come back later.
+      {currentStep.detail || ''}
     </p>
   </div>
 </div>
 
 <!-- TODO display component of the step if it exists -->
+{#if currentStep.component}
+  <div
+    class=" w-full h-full max-w-6xl p-6 gap-6 my-8 flex flex-col flex-grow items-center justify-center bg-base-300 rounded-2xl"
+  >
+    <svelte:component this={currentStep.component} />
+  </div>
+{/if}
 
-<ProgressBar message={currentStep.message} progress={$progressStore} />
+{#if currentStep.withProgress}
+  <ProgressBar message={currentStep.message} progress={$progressStore} />
+{/if}
