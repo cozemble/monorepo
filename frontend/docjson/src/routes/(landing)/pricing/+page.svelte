@@ -1,6 +1,6 @@
 <script lang="ts">
   import { plans } from './'
-  import EmailOnRelease from './EmailOnRelease.svelte'
+  import EmailOnRelease from '$lib/components/EmailOnRelease.svelte'
 
   import Plan from './Plan.svelte'
 </script>
