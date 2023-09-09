@@ -44,7 +44,7 @@
               sm:w-[40vw] sm:min-w-[24em] max-w-[30em] 
               bg-gradient-to-tr from-accent from-25% via-secondary via-70% to-primary`}
 >
-  <FileDrop bind:files />
+  <FileDrop bind:files multiple={false} />
 
   <div
     class="tooltip {!files?.length ? 'tooltip-error' : 'tooltip-success'}"

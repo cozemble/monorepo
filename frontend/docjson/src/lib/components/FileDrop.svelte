@@ -8,6 +8,8 @@
 
   /** The actual value array */
   export let files: File[] = []
+  /** Whether to allow multiple files */
+  export let multiple = true
 
   /** To use with the HTML input */
   let fileList: FileList | null = null
@@ -27,6 +29,12 @@
   /** Removes duplicates and sorts by name */
   function addFiles(fList: FileList) {
     const newFiles = Array.from(fList || [])
+
+    if (!multiple) {
+      files = newFiles
+      fileList = arrayToFileList(newFiles)
+      return
+    }
 
     const mergedFiles = _.uniqBy([...files, ...newFiles], 'name')
     const sortedFiles = _.sortBy(mergedFiles, 'name')
@@ -79,7 +87,7 @@
       </figure>
 
       <h5 class="card-title whitespace-nowrap text-center block">Drop a file here</h5>
-      <p class="card-text whitespace-nowrap text-center">Or click to select a file</p>
+      <p class="card-text whitespace-nowrap text-center">To get started</p>
     </div>
 
     <!-- Display files if there are, else display a message -->
@@ -123,5 +131,5 @@
     </div>
   </label>
 
-  <input type="file" bind:files={fileList} id="file-input" class="hidden" multiple />
+  <input type="file" bind:files={fileList} id="file-input" class="hidden" {multiple} />
 </div>
