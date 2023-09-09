@@ -2,8 +2,8 @@
   import Icon from '@iconify/svelte'
 
   const prototypeAlert = {
-    text: 'This is an early prototype.',
-    description: 'No functionality is implemented yet.',
+    text: 'This is an early prototype',
+    description: 'No functionality is implemented yet',
     show: true,
     close: () => {
       prototypeAlert.show = false
