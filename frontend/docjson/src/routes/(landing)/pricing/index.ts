@@ -48,7 +48,7 @@ export const plans: Plan[] = [
     action: {
       name: 'Get started',
       handler: () => {
-        goto('/signup')
+        goto('/')
       },
     },
     featuresHeading: 'Get started with these features:',

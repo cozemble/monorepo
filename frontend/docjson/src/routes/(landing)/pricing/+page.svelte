@@ -21,7 +21,7 @@
 
   <!-- TODO monthly/yearly switch if needed -->
   <div
-    class="plans flex flex-wrap justify-center gap-10
+    class="plans flex flex-wrap justify-center gap-12
   
   "
   >

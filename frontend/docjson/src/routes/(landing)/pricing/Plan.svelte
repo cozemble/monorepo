@@ -6,15 +6,15 @@
   export let plan: Plan
   /** Disabled state to show the option is not available */
   $: ghost = plan?.ghost || false
+  $: highlight = plan?.highlight || false
 </script>
 
-<!-- TODO explore bg-gray-500 -->
-<!-- in Chrome, nesting items with backdrop-filter: blur is buggy -->
+<!-- in Chrome, nesting items with backdrop-filter: blur is buggy so blur is only applied if there is no ghost overlay -->
 <div
-  class="card p-8 max-w-[22em] w-full relative bg-base-100 shadow-xl text-base-content
-         transition-all duration-200 hover:shadow-2xl
-         {plan?.highlight && 'border-2 border-neutral border-solid'}
-         {ghost ? 'pointer-events-none bg-opacity-20' : 'glass bg-opacity-10'}"
+  class="card p-8 max-w-[22em] w-full relative shadow-xl text-base-content
+         transition-all duration-200 hover:shadow-2xl bg-base-100 bg-opacity-20
+         {highlight && 'bg-opacity-30 shadow-2xl'}
+         {ghost ? 'pointer-events-none bg-gray-500/20' : 'backdrop-blur-2xl'}"
 >
   <div class="card-title flex flex-col items-start justify-start gap-0">
     <h3 class="text-3xl mb-2">{plan.name}</h3>
@@ -83,11 +83,11 @@
       class="card absolute inset-0 flex items-center justify-center
             backdrop-blur-md z-[1] overflow-hidden"
     >
-      <h1
-        class="p-2 w-[35em] shrink-0 -rotate-12 max-w-none opacity-50 bg-base-content text-base-100 text-2xl text-center"
+      <span
+        class="p-2 w-[35em] shrink-0 -rotate-12 max-w-none opacity-50 text-black text-3xl font-bold text-center italic tracking-tight"
       >
         Coming Soon!
-      </h1>
+      </span>
     </div>
   {/if}
 </div>
