@@ -42,7 +42,7 @@ async function waitForAnalysis(s3Key: string, jobId: string): Promise<Block[]> {
   let finished = false
   let allBlocks: Block[] = []
 
-  while (!finished && pollCount < 30) {
+  while (!finished && pollCount < 60) {
     const response: GetDocumentAnalysisCommandOutput = await textract.getDocumentAnalysis({
       JobId: jobId,
     })

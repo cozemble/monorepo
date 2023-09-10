@@ -556,9 +556,6 @@ importers:
 
   frontend/ai-playground:
     dependencies:
-      '@codemirror/lang-javascript':
-        specifier: ^6.1.9
-        version: 6.1.9
       '@cozemble/backend-aws-ocr-types':
         specifier: workspace:*
         version: link:../../backend/aws-ocr-types
@@ -3675,7 +3672,7 @@ packages:
       micromatch: 4.0.5
       pretty-format: 29.6.3
       slash: 3.0.0
-      strip-ansi: 6.0.0
+      strip-ansi: 6.0.1
     transitivePeerDependencies:
       - babel-plugin-macros
       - supports-color
@@ -3764,7 +3761,7 @@ packages:
       jest-worker: 29.6.4
       slash: 3.0.0
       string-length: 4.0.2
-      strip-ansi: 6.0.0
+      strip-ansi: 6.0.1
       v8-to-istanbul: 9.1.0
     transitivePeerDependencies:
       - supports-color
@@ -11418,7 +11415,7 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       char-regex: 1.0.2
-      strip-ansi: 6.0.0
+      strip-ansi: 6.0.1
     dev: true
 
   /string-width@4.2.3:
