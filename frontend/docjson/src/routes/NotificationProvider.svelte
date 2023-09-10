@@ -17,21 +17,19 @@
         "
 >
   {#if prototypeAlert.show}
-    <div class="indicator">
-      <div class="alert shadow-xl">
-        <Icon icon="wpf:maintenance" class="stroke-current shrink-0 w-6 h-6" />
+    <div class="alert shadow-xl">
+      <Icon icon="wpf:maintenance" class="stroke-current shrink-0 w-6 h-6" />
 
-        <div class="flex flex-col">
-          <span class="font-semibold">{prototypeAlert.text}</span>
-          <span class="text-sm">{prototypeAlert.description}</span>
-        </div>
-
-        <button
-          class="indicator-item btn btn-circle btn-xs btn-neutral"
-          on:click={prototypeAlert.close}
-          ><Icon icon="mdi:close" class="stroke-current text-base" />
-        </button>
+      <div class="flex flex-col">
+        <span class="font-semibold">{prototypeAlert.text}</span>
+        <span class="text-sm">{prototypeAlert.description}</span>
       </div>
+
+      <button
+        class="absolute top-2 right-2 btn btn-circle btn-xs btn-neutral"
+        on:click={prototypeAlert.close}
+        ><Icon icon="mdi:close" class="stroke-current text-base" />
+      </button>
     </div>
   {/if}
 </div>
