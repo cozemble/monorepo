@@ -1,4 +1,5 @@
 <script lang="ts">
+  import EmailOnRelease from '$lib/components/EmailOnRelease.svelte'
   import TryItForm from './TryItForm.svelte'
 </script>
 
@@ -25,10 +26,12 @@
           files to JSON
         </span>
       </h1>
-      <p class="lg:text-xl opacity-70 mb-4 ">
+      <p class="lg:text-xl opacity-70 mb-4 sm:mb-12 ">
         Auto-read data from your <span class="text-secondary">documents or text data</span> and organize
         it in the structure you want, with help from AI.
       </p>
+
+      <EmailOnRelease />
     </div>
 
     <!-- TODO catchy "Try it" indicator -->
