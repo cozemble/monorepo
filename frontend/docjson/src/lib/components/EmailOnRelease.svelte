@@ -46,11 +46,12 @@
 </script>
 
 <div class="tooltip {tooltipClass}" data-tip={tooltipText}>
-  <div class="join">
+  <div class="join xs-only:join-vertical ">
+    <!-- Sliding open like a drawer from the left on desktop, from the top in mobile -->
     <input
       type="email"
-      class="input input-primary join-item w-0 transition-all duration-200 
-            {isOpen ? 'w-64 visible ' : 'pointer-events-none p-0 border-0'}"
+      class="input input-primary join-item w-0 xs-only:h-0 transition-all duration-200 
+            {isOpen ? 'w-64 xs-only:h-12 visible ' : 'pointer-events-none p-0 border-0'}"
       placeholder="Your email address"
       bind:value
     />
