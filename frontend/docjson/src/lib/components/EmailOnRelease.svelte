@@ -1,9 +1,17 @@
 <script lang="ts">
   import Icon from '@iconify/svelte'
+  import { onMount } from 'svelte'
 
   let value: string
   let isOpen = false
   let hasSubmitted = false
+
+  // check if user has already submitted email
+  onMount(() => {
+    const hasSubmittedEmail = localStorage.getItem('hasSubmittedEmail')
+
+    if (hasSubmittedEmail) hasSubmitted = true
+  })
 
   function handleSubmit() {
     console.log('You submitted: ' + value)
@@ -15,6 +23,9 @@
     handleSubmit()
     isOpen = false
     hasSubmitted = true
+
+    // save to local storage if user has submitted email
+    localStorage.setItem('hasSubmittedEmail', 'true')
   }
 
   $: buttonText =
