@@ -11,22 +11,25 @@
         !leading-[1.2] tracking-tighter [word-spacing:0.06em]"
       >
         Quickly and easily create <span
-          class="bg-gradient-to-r from-accent to-primary rounded-lg px-3  text-base-100">APIs</span
+          class="bg-gradient-to-r from-accent to-primary rounded-lg px-3 text-base-100">APIs</span
         >
         to convert
         <span
           class="text-primary relative 
-                bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent whitespace-nowrap drop-shadow-md
-        "
+                bg-gradient-to-r from-primary to-secondary bg-clip-text 
+                text-transparent whitespace-nowrap"
         >
           <div
             class="bg-gradient-to-r from-primary to-secondary
-                  rounded-lg blur-xl opacity-10 absolute inset-0"
+                  rounded-lg blur-lg opacity-10 absolute inset-0"
           />
           files to JSON
         </span>
       </h1>
-      <p class="lg:text-xl opacity-70 mb-4 sm:mb-12 ">
+      <p
+        class="mb-4 sm:mb-12 opacity-60 lg:text-lg leading-relaxed tracking-tighter [word-spacing:0.1em]
+      "
+      >
         Auto-read data from your <span class="text-secondary">documents or text data</span> and organize
         it in the structure you want, with help from AI.
       </p>
