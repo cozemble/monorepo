@@ -13,8 +13,16 @@
     if (hasSubmittedEmail) hasSubmitted = true
   })
 
-  function handleSubmit() {
-    console.log('You submitted: ' + value)
+  async function handleSubmit() {
+    const fetched = await fetch('/api/subscriber', {
+        method: 'POST',
+        body: JSON.stringify({ email: value }),
+        headers: { 'Content-Type': 'application/json' },
+      })
+
+      if (fetched.ok) {
+        return await fetched.json()
+      }
   }
 
   function mainHandler() {
