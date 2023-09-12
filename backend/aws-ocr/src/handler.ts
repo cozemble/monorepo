@@ -1,7 +1,7 @@
 import { ocr } from './ocr'
 import { Handler } from 'aws-lambda'
 import { mandatory } from '@cozemble/lang-util'
-import { asyncOcr } from './asyncOcr'
+import { stashPdf } from './stashPdf'
 
 export const handler: Handler = async (event) => {
   const apiKey = mandatory(process.env.OCR_API_KEY, 'OCR_API_KEY')
@@ -25,8 +25,8 @@ export const handler: Handler = async (event) => {
   switch (path) {
     case '/prod/ocr':
       return ocr(event)
-    case '/prod/async/ocr':
-      return asyncOcr(event)
+    case '/prod/stash/pdf':
+      return stashPdf(event)
     default:
       return {
         statusCode: 404,

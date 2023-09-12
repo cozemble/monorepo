@@ -22,7 +22,7 @@ async function uploadToS3(
   return s3.putObject(params)
 }
 
-export async function asyncOcr(event: any) {
+export async function stashPdf(event: any) {
   try {
     const result = await parse(event)
 
@@ -43,8 +43,8 @@ export async function asyncOcr(event: any) {
       }
     }
 
-    const ocrId = uuids.v4()
-    const s3Parent = `asyncOcr/${ocrId}`
+    const pdfId = uuids.v4()
+    const s3Parent = `pdfs/${pdfId}`
     const s3Key = `${s3Parent}/${mandatory(file.filename, 'FILENAME')}`
     await uploadToS3(bucketName, s3Key, file.content)
     console.log(`File uploaded to S3: s3://${bucketName}/${s3Key}`)
@@ -67,7 +67,7 @@ export async function asyncOcr(event: any) {
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ ocrId, pageCount }),
+      body: JSON.stringify({ pdfId, pageCount, s3Parent }),
     }
   } catch (error: any) {
     console.error('Error uploading the PDF:', error)
