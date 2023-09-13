@@ -21,7 +21,7 @@ export interface Page {
   items: BlockItem[]
 }
 
-interface StashedPdfPage {
+export interface StashedPdfPage {
   pdfS3Key: string
 }
 
