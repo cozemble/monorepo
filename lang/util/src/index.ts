@@ -1,4 +1,5 @@
 import {
+  chunk,
   compare,
   drop,
   dropFields,
@@ -95,6 +96,7 @@ export const arrays = {
   sortBy,
   dropFields,
   splitLast,
+  chunk,
 }
 
 export const maps = {

@@ -50,9 +50,6 @@ importers:
       '@cozemble/lang-util':
         specifier: workspace:*
         version: link:../../lang/util
-      '@types/aws-lambda':
-        specifier: ^8.10.119
-        version: 8.10.119
       aws-sdk:
         specifier: ^2.1435.0
         version: 2.1435.0
@@ -69,6 +66,9 @@ importers:
       '@pulumi/pulumi':
         specifier: ^3.0.0
         version: 3.0.0
+      '@types/aws-lambda':
+        specifier: ^8.10.119
+        version: 8.10.119
       '@types/node':
         specifier: ^20.4.9
         version: 20.4.9
@@ -4718,7 +4718,7 @@ packages:
 
   /@types/aws-lambda@8.10.119:
     resolution: {integrity: sha512-Vqm22aZrCvCd6I5g1SvpW151jfqwTzEZ7XJ3yZ6xaZG31nUEOEyzzVImjRcsN8Wi/QyPxId/x8GTtgIbsy8kEw==}
-    dev: false
+    dev: true
 
   /@types/babel__core@7.20.1:
     resolution: {integrity: sha512-aACu/U/omhdk15O4Nfb+fHgH/z3QsfQzpnvRZhYhThms83ZnAOZz7zZAWO7mn2yyNQaA4xTO8GLK3uqFU4bYYw==}

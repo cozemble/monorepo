@@ -54,7 +54,7 @@ async function waitForAnalysis(s3Key: string, jobId: string): Promise<Block[]> {
   return allBlocks
 }
 
-export async function ocr(event: any) {
+export async function syncOcr(event: any) {
   const result = await parse(event)
 
   const file = result.files[0]
@@ -71,8 +71,8 @@ export async function ocr(event: any) {
   console.log(`File uploaded to S3: s3://${bucketName}/${s3Key}`)
 
   try {
-    const startResponse = await textract.startDocumentAnalysis({
-      DocumentLocation: {
+    const analysis = await textract.analyzeDocument({
+      Document: {
         S3Object: {
           Bucket: bucketName,
           Name: s3Key,
@@ -80,10 +80,8 @@ export async function ocr(event: any) {
       },
       FeatureTypes: ['TABLES'],
     })
-    const blocks = await waitForAnalysis(s3Parent, startResponse.JobId!)
-    const blocksS3Key = `${s3Parent}/blocks.json`
-    await uploadToS3(bucketName, blocksS3Key, JSON.stringify(blocks, null, 2))
-    console.log(`Blocks uploaded to S3: s3://${bucketName}/${blocksS3Key}`)
+    const blocks = analysis.Blocks ?? []
+
     const json = textractToJson(blocks)
     const html = jsonToHtml(json)
 

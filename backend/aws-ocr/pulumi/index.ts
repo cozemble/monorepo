@@ -126,6 +126,7 @@ const textractPolicy = JSON.stringify({
         'textract:GetDocumentTextDetection',
         'textract:StartDocumentAnalysis',
         'textract:GetDocumentAnalysis',
+        'textract:AnalyzeDocument',
       ],
       Resource: '*',
       Effect: 'Allow',

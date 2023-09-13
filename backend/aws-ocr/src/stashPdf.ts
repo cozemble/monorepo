@@ -2,6 +2,7 @@ import { parse } from 'lambda-multipart-parser'
 import * as AWS_S3 from '@aws-sdk/client-s3'
 import { mandatory, uuids } from '@cozemble/lang-util'
 import { PDFDocument } from 'pdf-lib'
+import { StashPdfResponse } from '@cozemble/backend-aws-ocr-types'
 
 const { S3 } = AWS_S3
 
@@ -20,6 +21,10 @@ async function uploadToS3(
   }
 
   return s3.putObject(params)
+}
+
+export function s3KeyForPage(s3Parent: string, pageNumber: number): string {
+  return `${s3Parent}/page${pageNumber}.pdf`
 }
 
 export async function stashPdf(event: any) {
@@ -49,25 +54,32 @@ export async function stashPdf(event: any) {
     await uploadToS3(bucketName, s3Key, file.content)
     console.log(`File uploaded to S3: s3://${bucketName}/${s3Key}`)
 
-    // Step 2: Split the PDF into individual pages
     const pdfDoc = await PDFDocument.load(file.content)
     const pageCount = pdfDoc.getPageCount()
 
-    // Step 3: Create a new PDF for each page and upload it to S3
+    const pageS3Keys = []
     for (let i = 0; i < pageCount; i++) {
       const pageDoc = await PDFDocument.create()
       const [page] = await pageDoc.copyPages(pdfDoc, [i])
       pageDoc.addPage(page)
 
       const pagePdfBytes = await pageDoc.save()
-      const pageS3Key = `${s3Parent}/page${i + 1}.pdf`
+      const pageS3Key = s3KeyForPage(s3Parent, i + 1)
       await uploadToS3(bucketName, pageS3Key, pagePdfBytes)
       console.log(`Page ${i + 1} uploaded to S3: s3://${bucketName}/${pageS3Key}`)
+      pageS3Keys.push(pageS3Key)
+    }
+
+    const payload: StashPdfResponse = {
+      pdfId,
+      pageCount,
+      s3Parent,
+      pages: pageS3Keys.map((pdfS3Key) => ({ pdfS3Key })),
     }
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ pdfId, pageCount, s3Parent }),
+      body: JSON.stringify(payload),
     }
   } catch (error: any) {
     console.error('Error uploading the PDF:', error)

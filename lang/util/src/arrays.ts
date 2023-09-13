@@ -219,3 +219,11 @@ export function splitLast<T>(array: T[]): [T[], T] {
   const rest = array.slice(0, array.length - 1)
   return [rest, last]
 }
+
+export function chunk<T>(array: T[], size: number): T[][] {
+  const result = []
+  for (let i = 0; i < array.length; i += size) {
+    result.push(array.slice(i, i + size))
+  }
+  return result
+}
