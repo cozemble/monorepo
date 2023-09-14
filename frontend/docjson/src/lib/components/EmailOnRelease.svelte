@@ -8,7 +8,6 @@
   let hasSubmitted = false
   let errorState = false
 
-  $: if (!errorState) isOpen = true // open tooltip if there is error
   $: if (value) errorState = false // clear error when user types
 
   const clearError = () => (errorState = false)
