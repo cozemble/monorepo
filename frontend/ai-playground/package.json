@@ -46,7 +46,7 @@
     "chatgpt": "^5.2.5",
     "daisyui": "^2.47.0",
     "jsdom": "^22.1.0",
-    "openai": "4.0.0-beta.4",
+    "openai": "4.6.0",
     "svelte-codemirror-editor": "^1.1.0",
     "theme-change": "^2.5.0",
     "zod": "^3.22.2"
