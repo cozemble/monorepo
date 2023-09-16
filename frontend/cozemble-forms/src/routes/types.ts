@@ -53,11 +53,25 @@ export const extractRows = z.object({
   rowSelector: z.discriminatedUnion('type', [rowRangeSelector, rowRegexSelector]),
 })
 
+export const outlineSection = z.object({
+  action: z.literal('outlineSection'),
+  sectionLabel: z.string().min(1, { message: 'Required' }),
+  left: z.string().min(1, { message: 'Required' }),
+  leftIsInclusive: z.boolean().default(true),
+  top: z.string().min(1, { message: 'Required' }),
+  topIsInclusive: z.boolean().default(true),
+  right: z.string().optional(),
+  rightIsInclusive: z.boolean().default(true),
+  bottom: z.string().optional(),
+  bottomIsInclusive: z.boolean().default(true),
+})
+
 export const action = z.discriminatedUnion('action', [
   labelTable,
   deleteRows,
   mergeTables,
   extractRows,
+  outlineSection,
 ])
 export const actions = action.array()
 
@@ -65,19 +79,18 @@ export type LabelTable = z.infer<typeof labelTable>
 export type DeleteRows = z.infer<typeof deleteRows>
 export type MergeTables = z.infer<typeof mergeTables>
 export type ExtractRows = z.infer<typeof extractRows>
+export type OutlineSection = z.infer<typeof outlineSection>
 export type Action = z.infer<typeof action>
 export type Actions = z.infer<typeof actions>
 
 export type FormSchemaExtender = (schema: FomSchema, value: any) => FomSchema
 
 export const extendSchema: FormSchemaExtender = (schema, actions) => {
-  console.log('extendSchema', { schema, actions })
   const tableLabels = (actions ?? [])
     .filter((action) => action.action === 'labelTable')
     .map((action) => action.tableLabel)
     .filter((label) => label !== undefined)
   if (tableLabels.length > 0) {
-    console.log({ tableLabels, schema })
     const arraySchema = schema as FomArray
     const arrayElement = arraySchema.element as FomDiscriminatedUnion
     const mutatedOptions = arrayElement.options.map((option, index) => {

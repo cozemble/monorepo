@@ -57,9 +57,9 @@ export const outlineSection = z.object({
   leftIsInclusive: z.boolean().default(true),
   top: z.string().min(1, { message: 'Required' }),
   topIsInclusive: z.boolean().default(true),
-  right: z.string().min(1, { message: 'Required' }),
+  right: z.string().optional(),
   rightIsInclusive: z.boolean().default(true),
-  bottom: z.string().min(1, { message: 'Required' }),
+  bottom: z.string().optional(),
   bottomIsInclusive: z.boolean().default(true),
 })
 

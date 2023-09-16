@@ -40,12 +40,18 @@
                     <FomArray {key} field={field} bind:value path={extendedPath} {errors} {showErrors}/>
                 {:else if field.type === "discriminatedUnion"}
                     <EnsureNestedObject bind:value {key}>
-                        <InputLabel {key} />
+                        <InputLabel {key}/>
                         <FomDiscriminatedUnion field={field} bind:value={value[key]} path={extendedPath} {errors}
                                                {showErrors}/>
                     </EnsureNestedObject>
                 {:else if field.type === "literal"}
                     <FomLiteral {key} field={field} bind:value={value[key]}/>
+                {:else if field.type === "optional"}
+                    {#if field.innerSchema.type === "text"}
+                        <FomPrimitive {key} field={field.innerSchema} bind:value={value[key]} path={extendedPath}/>
+                    {:else}
+                        FomObject to do : optional support for {key} as {field.innerSchema.type}
+                    {/if}
                 {:else}
                     FomObject to do : {key} as {field.type}
                 {/if}

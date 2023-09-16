@@ -63,6 +63,11 @@ export function zodToFom(zod: z.ZodType<any, any>): FomSchema {
     return {
       type: 'boolean',
     }
+  } else if (zod instanceof z.ZodOptional) {
+    return {
+      type: 'optional',
+      innerSchema: zodToFom(zod._def.innerType),
+    }
   } else {
     throw new Error(`Unsupported zod type ${zod.constructor.name}`)
   }

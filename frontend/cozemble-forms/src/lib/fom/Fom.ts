@@ -20,6 +20,11 @@ export interface FomLiteral {
   value: string
 }
 
+export interface FomOptional {
+  type: 'optional'
+  innerSchema: FomSchema
+}
+
 export interface FomEnum {
   type: 'enum'
   options: string[]
@@ -55,6 +60,7 @@ export type FomSchema =
   | FomText
   | FomNumber
   | FomBoolean
+  | FomOptional
 
 export interface FomIssue {
   path: (string | number)[]

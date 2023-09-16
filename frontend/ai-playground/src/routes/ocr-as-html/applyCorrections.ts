@@ -147,6 +147,10 @@ function dropColumns(action: DropColumns, pages: Page[]): Page[] {
 }
 
 function findOutlinedSection(action: OutlineSection, pages: Page[]): LabeledSection | null {
+  let right = 1
+  let bottom = 1
+  let matchingRightLines: Line[] = []
+  let matchingBottomLines: Line[] = []
   let allLines = pages.flatMap((p) => p.items.filter((i) => i._type === 'line')) as Line[]
   const leftRegexes = action.left.split(',').map((s) => new RegExp(s))
   const matchingLeftLines = leftRegexes.flatMap((regex) =>
@@ -168,27 +172,38 @@ function findOutlinedSection(action: OutlineSection, pages: Page[]): LabeledSect
     }
     return topMost
   }, matchingTopLines[0])
-  const rightRegexes = action.right.split(',').map((s) => new RegExp(s))
-  const matchingRightLines = rightRegexes.flatMap((regex) =>
-    allLines.filter((line) => regex.test(line.text)),
-  )
-  const rightMostLine = matchingRightLines.reduce((rightMost, line) => {
-    if (line.boundingBox.left > rightMost.boundingBox.left) {
-      return line
+  if (action.right) {
+    const rightRegexes = action.right.split(',').map((s) => new RegExp(s))
+    matchingRightLines = rightRegexes.flatMap((regex) =>
+      allLines.filter((line) => regex.test(line.text)),
+    )
+    const rightMostLine = matchingRightLines.reduce((rightMost, line) => {
+      if (line.boundingBox.left > rightMost.boundingBox.left) {
+        return line
+      }
+      return rightMost
+    }, matchingRightLines[0])
+    if (rightMostLine?.boundingBox) {
+      right = rightMostLine.boundingBox.left
     }
-    return rightMost
-  }, matchingRightLines[0])
-  const bottomRegexes = action.bottom.split(',').map((s) => new RegExp(s))
-  const matchingBottomLines = bottomRegexes.flatMap((regex) =>
-    allLines.filter((line) => regex.test(line.text)),
-  )
-  const bottomMostLine = matchingBottomLines.reduce((bottomMost, line) => {
-    if (line.boundingBox.top > bottomMost.boundingBox.top) {
-      return line
+  }
+  if (action.bottom) {
+    const bottomRegexes = action.bottom.split(',').map((s) => new RegExp(s))
+    matchingBottomLines = bottomRegexes.flatMap((regex) =>
+      allLines.filter((line) => regex.test(line.text)),
+    )
+    const bottomMostLine = matchingBottomLines.reduce((bottomMost, line) => {
+      if (line.boundingBox.top > bottomMost.boundingBox.top) {
+        return line
+      }
+      return bottomMost
+    }, matchingBottomLines[0])
+    console.log({ bottomMostLine })
+    if (bottomMostLine?.boundingBox) {
+      bottom = bottomMostLine.boundingBox.top
     }
-    return bottomMost
-  }, matchingBottomLines[0])
-  if (!leftMostLine || !rightMostLine || !bottomMostLine || !topMostLine) {
+  }
+  if (!leftMostLine || !topMostLine) {
     return null
   }
   if (!action.leftIsInclusive) {
@@ -204,11 +219,14 @@ function findOutlinedSection(action: OutlineSection, pages: Page[]): LabeledSect
     allLines = allLines.filter((line) => !matchingBottomLines.includes(line))
   }
   const linesInSection = allLines.filter((line) => {
+    if (line.boundingBox === undefined) {
+      return false
+    }
     return (
-      line.boundingBox.top >= topMostLine.boundingBox.top &&
-      line.boundingBox.top <= bottomMostLine.boundingBox.top &&
       line.boundingBox.left >= leftMostLine.boundingBox.left &&
-      line.boundingBox.left <= rightMostLine.boundingBox.left
+      line.boundingBox.top >= topMostLine.boundingBox.top &&
+      line.boundingBox.left <= right &&
+      line.boundingBox.top <= bottom
     )
   })
   return { _type: 'labeledSection', label: action.sectionLabel, items: linesInSection }

@@ -27,7 +27,7 @@
         }
     })
 
-    afterUpdate(() => console.log({object:$object, errors:$errors}))
+    afterUpdate(() => console.log({schema,object:$object, errors:$errors}))
 </script>
 
 
