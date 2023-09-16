@@ -20,7 +20,6 @@
     }
 
     function dispatchPartials(generated: string) {
-        console.log({generated})
         if (generated.trim().length === 0) {
             return
         }
@@ -32,17 +31,9 @@
 
     onMount(() => {
         $input = html
-        console.log({html})
         generateJsonSchemaFromHtmlButton.click()
     })
 </script>
-
-<!--<h1 class="text-center">Creating initial version of output JSON Schema</h1>-->
-<!--<p class="text-center"><em>We're using GPT 4 to 'guess' a JSON Schema from the document, because 3.5 is no good at this task.</em></p>-->
-<!--<p class="text-center"><em>It can take a long time if the document is complex</em></p>-->
-<!--<p class="text-center"><em>You will get the option to edit the schema, this is just a starting point.</em></p>-->
-
-<!--<pre>{$completion}</pre>-->
 
 <form on:submit={handleSubmit} class="hidden">
     <button type="submit" class="btn btn-primary mt-2" bind:this={generateJsonSchemaFromHtmlButton}>Generate</button>
