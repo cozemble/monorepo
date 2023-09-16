@@ -1,6 +1,12 @@
 import { arrays, mandatory } from '@cozemble/lang-util'
-import { Block, Relationship } from '@aws-sdk/client-textract'
-import { Line, Page, Row, Table } from '@cozemble/backend-aws-ocr-types'
+import { Block, Relationship, BoundingBox } from '@aws-sdk/client-textract'
+import {
+  Line,
+  Page,
+  Row,
+  Table,
+  BoundingBox as CozembleBoundingBox,
+} from '@cozemble/backend-aws-ocr-types'
 
 export interface ProcessedTextractDocument {
   pages: Page[]
@@ -15,6 +21,17 @@ interface ProcessedCell {
   text: string
 }
 
+function toBoundingBox(textractBoundingBox: BoundingBox | undefined): CozembleBoundingBox {
+  if (!textractBoundingBox) {
+    throw new Error(`Expected bounding box to be defined`)
+  }
+  const left = parseFloat(mandatory(textractBoundingBox.Left, `Left`).toFixed(3))
+  const top = parseFloat(mandatory(textractBoundingBox.Top, `Top`).toFixed(3))
+  const width = parseFloat(mandatory(textractBoundingBox.Width, `Width`).toFixed(3))
+  const height = parseFloat(mandatory(textractBoundingBox.Height, `Height`).toFixed(3))
+  return { _type: 'boundingBox', left, top, width, height }
+}
+
 function lineToJson(line: Block): Line {
   if (line.BlockType !== 'LINE') {
     throw new Error(`Expected line, got ${line.BlockType}`)
@@ -22,7 +39,8 @@ function lineToJson(line: Block): Line {
   if (!line.Text) {
     throw new Error(`Expected line to have text`)
   }
-  return { _type: 'line', text: line.Text }
+
+  return { _type: 'line', text: line.Text, boundingBox: toBoundingBox(line.Geometry?.BoundingBox) }
 }
 
 function toProcessedCell(
@@ -76,7 +94,7 @@ function tableToJson(blockFinder: BlockFinder, linesInTables: Block[], item: Blo
     .map((rowKey) => rowMap.get(rowKey) as ProcessedCell[])
     .map((cells) => ({ _type: 'row', cells: cells.map((cell) => cell.text) } as Row))
 
-  return { _type: 'table', rows }
+  return { _type: 'table', rows, boundingBox: toBoundingBox(item.Geometry?.BoundingBox) }
 }
 
 function linesInTable(blockFinder: BlockFinder, lines: Block[], table: Block): Block[] {
