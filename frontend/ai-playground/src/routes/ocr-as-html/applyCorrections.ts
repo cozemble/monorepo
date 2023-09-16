@@ -6,9 +6,10 @@ import type {
   ExtractRows,
   LabelTable,
   MergeTables,
+  OutlineSection,
 } from './ocrCorrectiveActions'
 import type { FomIssue } from '@cozemble/frontend-cozemble-forms'
-import type { Page, Table } from '@cozemble/backend-aws-ocr-types'
+import type { BlockItem, LabeledSection, Line, Page, Table } from '@cozemble/backend-aws-ocr-types'
 
 function labelThisTable(action: LabelTable, table: Table): Table {
   if (table.rows.length > 1) {
@@ -145,6 +146,91 @@ function dropColumns(action: DropColumns, pages: Page[]): Page[] {
   return pages.map((p) => dropColumnsInPage(action, p))
 }
 
+function findOutlinedSection(action: OutlineSection, pages: Page[]): LabeledSection | null {
+  let allLines = pages.flatMap((p) => p.items.filter((i) => i._type === 'line')) as Line[]
+  const leftRegexes = action.left.split(',').map((s) => new RegExp(s))
+  const matchingLeftLines = leftRegexes.flatMap((regex) =>
+    allLines.filter((line) => regex.test(line.text)),
+  )
+  const leftMostLine = matchingLeftLines.reduce((leftMost, line) => {
+    if (line.boundingBox.left < leftMost.boundingBox.left) {
+      return line
+    }
+    return leftMost
+  }, matchingLeftLines[0])
+  const topRegexes = action.top.split(',').map((s) => new RegExp(s))
+  const matchingTopLines = topRegexes.flatMap((regex) => {
+    return allLines.filter((line) => regex.test(line.text))
+  })
+  const topMostLine = matchingTopLines.reduce((topMost, line) => {
+    if (line.boundingBox.top < topMost.boundingBox.top) {
+      return line
+    }
+    return topMost
+  }, matchingTopLines[0])
+  const rightRegexes = action.right.split(',').map((s) => new RegExp(s))
+  const matchingRightLines = rightRegexes.flatMap((regex) =>
+    allLines.filter((line) => regex.test(line.text)),
+  )
+  const rightMostLine = matchingRightLines.reduce((rightMost, line) => {
+    if (line.boundingBox.left > rightMost.boundingBox.left) {
+      return line
+    }
+    return rightMost
+  }, matchingRightLines[0])
+  const bottomRegexes = action.bottom.split(',').map((s) => new RegExp(s))
+  const matchingBottomLines = bottomRegexes.flatMap((regex) =>
+    allLines.filter((line) => regex.test(line.text)),
+  )
+  const bottomMostLine = matchingBottomLines.reduce((bottomMost, line) => {
+    if (line.boundingBox.top > bottomMost.boundingBox.top) {
+      return line
+    }
+    return bottomMost
+  }, matchingBottomLines[0])
+  if (!leftMostLine || !rightMostLine || !bottomMostLine || !topMostLine) {
+    return null
+  }
+  console.log({ matchingLeftLines, matchingRightLines, matchingTopLines, matchingBottomLines })
+  if (!action.leftIsInclusive) {
+    allLines = allLines.filter((line) => !matchingLeftLines.includes(line))
+  }
+  if (!action.rightIsInclusive) {
+    allLines = allLines.filter((line) => !matchingRightLines.includes(line))
+  }
+  if (!action.topIsInclusive) {
+    allLines = allLines.filter((line) => !matchingTopLines.includes(line))
+  }
+  if (!action.bottomIsInclusive) {
+    allLines = allLines.filter((line) => !matchingBottomLines.includes(line))
+  }
+  const linesInSection = allLines.filter((line) => {
+    return (
+      line.boundingBox.top >= topMostLine.boundingBox.top &&
+      line.boundingBox.top <= bottomMostLine.boundingBox.top &&
+      line.boundingBox.left >= leftMostLine.boundingBox.left &&
+      line.boundingBox.left <= rightMostLine.boundingBox.left
+    )
+  })
+  return { _type: 'labeledSection', label: action.sectionLabel, items: linesInSection }
+}
+
+function notInSection(newSections: LabeledSection[], item: BlockItem) {
+  const allItemsInSections = newSections.flatMap((s) => s.items)
+  return !allItemsInSections.includes(item)
+}
+
+function outlineSection(action: OutlineSection, pages: Page[]): Page[] {
+  const section = findOutlinedSection(action, pages)
+  const existingSections = pages[0].sections ?? []
+  const newSections = section ? [...existingSections, section] : existingSections
+  return pages.map((p, index) => ({
+    ...p,
+    sections: index === 0 ? newSections : p.sections,
+    items: p.items.filter((item) => notInSection(newSections, item)),
+  }))
+}
+
 function extractRows(action: ExtractRows, pages: Page[]): Page[] {
   const sourceTables = pages.flatMap((p) =>
     p.items.filter((i) => i._type === 'table' && i.label === action.sourceTableLabel),
@@ -250,6 +336,9 @@ function applyCorrection(action: Action, pages: Page[]) {
   if (action.action === 'dropColumns') {
     return dropColumns(action, pages)
   }
+  if (action.action === 'outlineSection') {
+    return outlineSection(action, pages)
+  }
   return pages
 }
 
@@ -258,4 +347,39 @@ export function applyCorrections(actions: Action[], errors: FomIssue[], pages: P
     return actions.reduce((ps, action) => applyCorrection(action, ps), pages)
   }
   return pages
+}
+
+export interface Sections {
+  topLeft: boolean
+  topRight: boolean
+  bottomLeft: boolean
+  bottomRight: boolean
+}
+
+function isInScope(item: BlockItem, sections: Sections) {
+  if (item.boundingBox === undefined) {
+    return true
+  }
+  if (sections.topLeft && item.boundingBox.top < 0.5 && item.boundingBox.left < 0.5) {
+    return true
+  }
+  if (sections.topRight && item.boundingBox.top < 0.5 && item.boundingBox.left > 0.5) {
+    return true
+  }
+  if (sections.bottomLeft && item.boundingBox.top > 0.5 && item.boundingBox.left < 0.5) {
+    return true
+  }
+  if (sections.bottomRight && item.boundingBox.top > 0.5 && item.boundingBox.left > 0.5) {
+    return true
+  }
+
+  return false
+}
+
+function scopePageContent(p: Page, sections: Sections): Page {
+  return { ...p, items: p.items.filter((item) => isInScope(item, sections)) }
+}
+
+export function scopeContent(pages: Page[], sections: Sections): Page[] {
+  return pages.map((p) => scopePageContent(p, sections))
 }

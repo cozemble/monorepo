@@ -50,6 +50,19 @@ export const dropColumns = z.object({
   columnNames: z.string().min(1, { message: 'Required' }),
 })
 
+export const outlineSection = z.object({
+  action: z.literal('outlineSection'),
+  sectionLabel: z.string().min(1, { message: 'Required' }),
+  left: z.string().min(1, { message: 'Required' }),
+  leftIsInclusive: z.boolean().default(true),
+  top: z.string().min(1, { message: 'Required' }),
+  topIsInclusive: z.boolean().default(true),
+  right: z.string().min(1, { message: 'Required' }),
+  rightIsInclusive: z.boolean().default(true),
+  bottom: z.string().min(1, { message: 'Required' }),
+  bottomIsInclusive: z.boolean().default(true),
+})
+
 export const action = z.discriminatedUnion('action', [
   labelTable,
   deleteRows,
@@ -57,6 +70,7 @@ export const action = z.discriminatedUnion('action', [
   extractRows,
   apportionColumnContents,
   dropColumns,
+  outlineSection,
 ])
 export const actions = action.array()
 
@@ -65,6 +79,7 @@ export type DeleteRows = z.infer<typeof deleteRows>
 export type MergeTables = z.infer<typeof mergeTables>
 export type ExtractRows = z.infer<typeof extractRows>
 export type DropColumns = z.infer<typeof dropColumns>
+export type OutlineSection = z.infer<typeof outlineSection>
 export type ApportionColumnContents = z.infer<typeof apportionColumnContents>
 export type Action = z.infer<typeof action>
 export type Actions = z.infer<typeof actions>

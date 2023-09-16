@@ -17,6 +17,8 @@
         {strings.camelcaseToSentenceCase(item.action)} from "{item.tableLabel}"
     {:else if item.action === 'dropColumns'}
         {strings.camelcaseToSentenceCase(item.action)} from "{item.tableLabel}"
+    {:else if item.action === 'outlineSection'}
+        {strings.camelcaseToSentenceCase(item.action)} "{item.sectionLabel}"
     {:else}
         Apportion column "{item.sourceColumnName}" in "{item.tableLabel}"
     {/if}

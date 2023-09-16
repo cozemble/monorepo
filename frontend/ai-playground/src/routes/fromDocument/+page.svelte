@@ -11,6 +11,13 @@
     let uploadingPdf = false
     let awsOcrResponse: AwsOcrResponse | null = null
 
+    let isLocalhost = false
+
+    if (typeof window !== 'undefined') {
+        isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    }
+
+
     function init(element: HTMLInputElement) {
         element.focus()
     }
@@ -44,10 +51,19 @@
         const ocredPages = event.detail
         awsOcrResponse = {
             json: {pages: ocredPages},
-            html:""
+            html: ""
         }
     }
 
+    let ocrOutcomeShortcut: string | null = null
+
+    function useShortcut() {
+        const json = JSON.parse(ocrOutcomeShortcut || '{}').json
+        awsOcrResponse = {
+            json,
+            html: ""
+        }
+    }
 </script>
 
 <div class="grid h-screen place-items-center w-5/6 mx-auto mb-8">
@@ -77,10 +93,23 @@
                     Cancel
                 </button>
             {/if}
-
         {/if}
         {#if errorMessage}
             <p class="text-center text-red-500 mt-4">{errorMessage}</p>
+        {/if}
+        {#if isLocalhost && !awsOcrResponse}
+            <hr class="w-full mt-8"/>
+            <div class="flex flex-col items-center mt-4">
+                <div>
+                    <h4>or paste OCR outcome json here</h4>
+                </div>
+                <div>
+                    <textarea class="textarea textarea-bordered" rows="10" cols="50" bind:value={ocrOutcomeShortcut}></textarea>
+                </div>
+                <div>
+                    <button class="btn" on:click={useShortcut}>Use shortcut</button>
+                </div>
+            </div>
         {/if}
     </div>
 </div>

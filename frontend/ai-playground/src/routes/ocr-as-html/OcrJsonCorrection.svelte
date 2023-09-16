@@ -18,7 +18,6 @@
     let preview: "html" | "json" = "html"
 
     const errors: Readable<FomIssue[]> = derived(actions, o => {
-        console.log({o})
         try {
             actionsType.parse(o)
             return []
@@ -52,6 +51,7 @@
         </div>
         <OcrCorrections {actions} on:actions/>
     </div>
+
     <div class="flex flex-col ml-8 overflow-y-auto h-5/6">
         <div class="mt-4 mx-auto">
             <div class="tabs ">
