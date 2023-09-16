@@ -14,6 +14,7 @@
     let actions = [] as Action[]
     let section: 'postProcessOcr' | 'configureJsonSchema' = 'postProcessOcr'
     let jsonSchema: JsonSchema | null = null
+    let initialActions = [] as Action[]
 
     function cancel() {
         dispatch('cancel')
@@ -31,6 +32,11 @@
     function jsonSchemaDefined(event: CustomEvent) {
         jsonSchema = event.detail
     }
+
+    function backToCorrections(event: CustomEvent) {
+        initialActions = event.detail
+        section = 'postProcessOcr'
+    }
 </script>
 
 {#if section === "postProcessOcr"}
@@ -46,11 +52,11 @@
         </button>
     </div>
     <div class="border rounded p-4">
-        <HandleAwsOcrResponse {pages} on:actions={onActions}/>
+        <HandleAwsOcrResponse {pages} {initialActions} on:actions={onActions}/>
     </div>
 {:else}
     {#if jsonSchema === null}
-        <ConfigureTargetJsonSchema pages={$pages} {actions} on:cancel={cancel} on:schema={jsonSchemaDefined}/>
+        <ConfigureTargetJsonSchema pages={$pages} {actions} on:cancel={cancel} on:schema={jsonSchemaDefined} on:corrections={backToCorrections}/>
     {:else}
         <ApiExplainer />
     {/if}

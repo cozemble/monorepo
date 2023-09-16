@@ -32,6 +32,7 @@
 
     onMount(() => {
         $input = html
+        console.log({html})
         generateJsonSchemaFromHtmlButton.click()
     })
 </script>

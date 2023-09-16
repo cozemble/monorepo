@@ -191,7 +191,6 @@ function findOutlinedSection(action: OutlineSection, pages: Page[]): LabeledSect
   if (!leftMostLine || !rightMostLine || !bottomMostLine || !topMostLine) {
     return null
   }
-  console.log({ matchingLeftLines, matchingRightLines, matchingTopLines, matchingBottomLines })
   if (!action.leftIsInclusive) {
     allLines = allLines.filter((line) => !matchingLeftLines.includes(line))
   }

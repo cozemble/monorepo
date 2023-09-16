@@ -15,11 +15,11 @@
     const mutatedPages = applyCorrections(actions, [], pages)
     const html = jsonToHtml(mutatedPages)
     const dispatch = createEventDispatcher()
-    // let generatingJsonSchema = true
     let jsonSchema: PartialJson | null = null
     let sampleJson: PartialJson | null = null
     let generatingJson = false
     let editingSchema = false
+
 
     function editSchema() {
         editingSchema = true
@@ -41,7 +41,6 @@
         }
     }
     function jsonSchemaPartial(event: CustomEvent) {
-        console.log({event})
         jsonSchema = partial(event.detail)
     }
 
@@ -60,6 +59,10 @@
 
     let headingText = "Creating initial version of output  JSON Schema"
     let subheadingText = "We're using GPT 4 to 'guess' a JSON Schema from the document, because 3.5 is no good - it can take up to 30 seconds."
+
+    function backToCorrections() {
+        dispatch('corrections', actions)
+    }
 </script>
 
 
@@ -83,6 +86,9 @@
         </div>
     {:else}
         <div class="mx-auto mb-8">
+            <button class="btn btn-secondary mt-4 btn-lg" on:click={backToCorrections}>
+                &lt;&lt; Back to Corrections
+            </button>
             <button class="btn btn-primary mt-4 btn-lg" on:click={next}>
                 JSON looks OK - NEXT >>
             </button>

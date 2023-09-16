@@ -1,4 +1,4 @@
-import type { BlockItem, Page, Row } from '@cozemble/backend-aws-ocr-types'
+import type { BlockItem, LabeledSection, Page, Row } from '@cozemble/backend-aws-ocr-types'
 import { strings } from '@cozemble/lang-util'
 
 function rowToHtml(row: Row): string {
@@ -21,6 +21,15 @@ function pageToHtml(page: Page): string {
   return page.items.reduce((acc, item) => acc + itemToHtml(item), '')
 }
 
+function sectionToHtml(section: LabeledSection) {
+  const sectionHtml = section.items.map((item) => itemToHtml(item)).join('<br/>')
+  return `<section id="${section.label}"><h2>Section: ${strings.camelcaseToSentenceCase(
+    section.label,
+  )}</h2>${sectionHtml}</section>`
+}
+
 export function jsonToHtml(pages: Page[]): string {
-  return pages.reduce((acc, page) => acc + pageToHtml(page), '')
+  const sections = pages.flatMap((p) => p.sections ?? [])
+  const sectionsHtml = sections.reduce((acc, section) => acc + sectionToHtml(section), '')
+  return sectionsHtml + '<br/>' + pages.reduce((acc, page) => acc + pageToHtml(page), '')
 }

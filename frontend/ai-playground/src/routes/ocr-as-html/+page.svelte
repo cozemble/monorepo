@@ -9,5 +9,5 @@
 </div>
 {#if pastedJson.trim().length > 0}
     {@const parsedPages = JSON.parse(pastedJson).pages}
-    <OcrJsonCorrection pages={writable(parsedPages)}/>
+    <OcrJsonCorrection pages={writable(parsedPages)} initialActions={[]}/>
 {/if}

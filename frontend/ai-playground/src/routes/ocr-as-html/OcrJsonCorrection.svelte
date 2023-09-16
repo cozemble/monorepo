@@ -13,7 +13,8 @@
     import {toSectionedJson} from "./toSectionedJson";
 
     export let pages: Writable<Page[]>
-    export let actions: Writable<Action[]> = writable([])
+    export let initialActions:Action[]
+    export let actions: Writable<Action[]> = writable(initialActions)
     const dispatch = createEventDispatcher()
     let preview: "html" | "json" = "html"
 
