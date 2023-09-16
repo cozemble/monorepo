@@ -36,7 +36,7 @@ function toProcessedCell(
   if (!cell.RowIndex || !cell.ColumnIndex) {
     throw new Error(`Expected cell to have RowIndex and ColumnIndex`)
   }
-  const wordsInCell = getChildBlocks(blockFinder, cell)
+  const wordsInCell = getChildBlocks(blockFinder, cell).filter((word) => word.BlockType === 'WORD')
   const linesInCell = arrays.unique(
     wordsInCell.map((word) =>
       linesInTables.find(
@@ -45,7 +45,20 @@ function toProcessedCell(
       ),
     ),
   )
-  const text = linesInCell.map((line) => line.Text).join('\n')
+  if (linesInCell.some((line) => line === undefined)) {
+    console.log({ linesInCell })
+  }
+  const text = linesInCell
+    .map((line) => {
+      if (!line) {
+        throw new Error(`Expected line to be defined`)
+      }
+      if (line.BlockType !== 'LINE') {
+        throw new Error(`Expected line, got ${line.BlockType}`)
+      }
+      return line.Text
+    })
+    .join('\n')
 
   return { _type: 'cell', rowIndex: cell.RowIndex - 1, columnIndex: cell.ColumnIndex - 1, text }
 }
