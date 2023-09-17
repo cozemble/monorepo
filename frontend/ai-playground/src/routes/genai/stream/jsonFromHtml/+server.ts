@@ -1,11 +1,7 @@
 import OpenAI from 'openai'
 import { OpenAIStream, StreamingTextResponse } from 'ai'
-import { OPENAI_API_KEY } from '$env/static/private'
+import { mandatory } from '@cozemble/lang-util'
 
-// Create an OpenAI API client (that's edge friendly!)
-const openai = new OpenAI({
-  apiKey: OPENAI_API_KEY,
-})
 // Set the runtime to edge for best performance
 export const config = {
   runtime: 'edge',
@@ -31,6 +27,13 @@ export async function POST({ request }) {
     Please help me by formatting every date value you find as yyyy-MM-dd.
     DO NOT MAKE UP DATA.  If you see values in the HTML, please use them.  But do not attempt to fill any blanks.  
     Do not explain the json.  I want json only.  If you explain the json, I will not be able to parse it.`
+
+  const OPENAI_API_KEY = mandatory(process.env.OPENAI_API_KEY, 'OPENAI_API_KEY')
+
+  // Create an OpenAI API client (that's edge friendly!)
+  const openai = new OpenAI({
+    apiKey: OPENAI_API_KEY,
+  })
 
   const response = await openai.chat.completions.create({
     stream: true,
