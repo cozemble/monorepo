@@ -1,5 +1,5 @@
 import OpenAI from 'openai'
-import { OpenAIStream, StreamingTextResponse } from 'ai'
+import { OpenAIStream, StreamingTextResponse } from '@cozemble/vercel-ai'
 import { mandatory } from '@cozemble/lang-util'
 
 // Set the runtime to edge for best performance

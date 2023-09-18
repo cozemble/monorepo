@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {useCompletion} from 'ai/svelte';
+    import {useCompletion} from '@cozemble/vercel-ai/svelte';
     import {createEventDispatcher, onMount} from 'svelte';
 
     export let html: string

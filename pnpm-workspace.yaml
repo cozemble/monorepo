@@ -8,3 +8,4 @@ packages:
   - 'model/attachment/*'
   - 'scripts/*'
   - 'ui/*'
+  - 'thirdparty/**/*'

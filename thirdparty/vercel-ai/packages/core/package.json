@@ -1,0 +1,24 @@
+{
+  "name": "@cozemble/vercel-ai",
+  "version": "1.0.0",
+  "main": "dist/esm/index.js",
+  "type": "module",
+  "types": "./dist/esm/index.d.ts",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "build": "npx tsc -p tsconfig.json",
+    "test": "echo NA"
+  },
+  "devDependencies": {
+    "@types/uuid": "9.0.0",
+    "typescript": "^5.1.3",
+    "vite": "4.4.3",
+    "vitest": "0.33.0"
+  },
+  "dependencies": {
+    "openai": "4.2.0",
+    "uuid": "9.0.0"
+  }
+}
