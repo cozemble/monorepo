@@ -1,11 +1,11 @@
 <script lang="ts">
-    import {useCompletion} from '@cozemble/vercel-ai/svelte';
+    import {svelte} from '@cozemble/vercel-ai';
     import {createEventDispatcher, onMount} from 'svelte';
 
     export let html: string
     export let schema: string
 
-    const {input, handleSubmit, completion, isLoading} = useCompletion({
+    const {input, handleSubmit, completion, isLoading} = svelte.useCompletion({
         api: '/genai/stream/jsonFromHtml',
     });
     let generateJsonFromHtmlButton: HTMLButtonElement
