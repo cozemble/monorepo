@@ -6,6 +6,7 @@
     let canvasElement: HTMLCanvasElement;
     let canvas: CanvasRenderingContext2D;
     let loadingMessage: HTMLElement;
+    let beepSound: HTMLAudioElement;
     let status = "No QR code detected.";
     let foundCodes = new Set<string>(); // to store unique QR codes
     let foundImages: {code: string, image: string}[] = []; // to store QR code with its image
@@ -43,10 +44,10 @@
             const code = (window as any).jsQR(imageData.data, imageData.width, imageData.height, {
                 inversionAttempts: "dontInvert",
             });
-            console.log({code, foundCodes})
             if (code && !foundCodes.has(code.data)) {
                 foundCodes = foundCodes.add(code.data);
                 foundImages = [...foundImages, { code: code.data, image: canvasElement.toDataURL() }]
+                beepSound.play();
 
                 drawLine(code.location.topLeftCorner, code.location.topRightCorner, "#FF3B58");
                 drawLine(code.location.topRightCorner, code.location.bottomRightCorner, "#FF3B58");
@@ -77,6 +78,7 @@
     <video bind:this={video} id="video" width="600" height="600" muted hidden />
     <div bind:this={loadingMessage} id="loadingMessage">🎥 Unable to access video stream (please make sure you have a webcam enabled)</div>
     <canvas bind:this={canvasElement} id="canvas" hidden />
+    <audio bind:this={beepSound} src="/beep.mp3" preload="auto"></audio>
     <div>{status}</div>
     <!-- Adding a section to display found QR codes and their images -->
     {#each foundImages as { code, image }, index}
