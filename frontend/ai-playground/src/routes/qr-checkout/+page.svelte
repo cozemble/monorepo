@@ -44,7 +44,7 @@
             const code = (window as any).jsQR(imageData.data, imageData.width, imageData.height, {
                 inversionAttempts: "dontInvert",
             });
-            if (code && !foundCodes.has(code.data)) {
+            if (code && !foundCodes.has(code.data) && code.data.trim().length > 0) {
                 foundCodes = foundCodes.add(code.data);
                 foundImages = [...foundImages, { code: code.data, image: canvasElement.toDataURL() }]
                 beepSound.play();
