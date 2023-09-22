@@ -88,6 +88,10 @@
         canvas.stroke();
     }
 
+    function isMacAddress(text: string): boolean {
+        return text.replace(/:/g, "").length === 12
+    }
+
     function tick() {
         loadingMessage.innerText = "⌛ Loading video...";
         if (video.readyState === video.HAVE_ENOUGH_DATA) {
@@ -101,9 +105,10 @@
             const code = (window as any).jsQR(imageData.data, imageData.width, imageData.height, {
                 inversionAttempts: "dontInvert",
             });
-            if (code && !foundCodes.has(code.data) && code.data.trim().length > 0) {
+
+            if (code && isMacAddress(code.data) && !foundCodes.has(code.data) && code.data.trim().length > 0) {
                 foundCodes = foundCodes.add(code.data);
-                foundImages = [...foundImages, {id: uuids.v4(), code: code.data, image: canvasElement.toDataURL()}]
+                foundImages = [{id: uuids.v4(), code: code.data, image: canvasElement.toDataURL()}, ...foundImages]
                 beepSound.play()
                 handleOcr(foundImages[foundImages.length - 1])
 
@@ -111,9 +116,9 @@
                 drawLine(code.location.topRightCorner, code.location.bottomRightCorner, "#FF3B58");
                 drawLine(code.location.bottomRightCorner, code.location.bottomLeftCorner, "#FF3B58");
                 drawLine(code.location.bottomLeftCorner, code.location.topLeftCorner, "#FF3B58");
-                status = `Found QR code: ${code.data}`;
+                status = `Found MAC Address: ${code.data}`;
             } else {
-                status = "No QR code detected.";
+                status = "No MAC address QR code detected.";
             }
         }
         requestAnimationFrame(tick);
@@ -127,7 +132,7 @@
 
 <svelte:head>
     <meta charset="utf-8">
-    <title>jsQR Demo</title>
+    <title>QR Checkout</title>
     <script src="https://unpkg.com/jsqr/dist/jsQR.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Ropa+Sans" rel="stylesheet">
 </svelte:head>
@@ -143,15 +148,15 @@
     <!-- Adding a section to display found QR codes and their images -->
     {#each foundImages as {code, image, ocrText, gatewayId}, index}
         <div>
-            <h3>Found QR code {index + 1}: {code}</h3>
+            <h3>MAC Address: {code}</h3>
             <div class="flex border p-4">
                 <img src={image} alt="QR code image" width="100" height="100"/>
                 {#if ocrText}
                     <div>
-                    <p class="ml-4">{ocrText}</p><br/>
-                    {#if gatewayId}
-                        <p class="ml-4"><strong>Gateway ID</strong>: {gatewayId}</p>
-                    {/if}
+                        <p class="ml-4">{ocrText}</p><br/>
+                        {#if gatewayId}
+                            <p class="ml-4"><strong>Gateway ID</strong>: {gatewayId}</p>
+                        {/if}
                     </div>
                 {/if}
             </div>
