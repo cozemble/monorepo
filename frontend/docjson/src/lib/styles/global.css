@@ -55,6 +55,9 @@
   h6 {
     @apply text-base font-semibold;
   }
+  .label {
+    @apply leading-3 text-sm !pl-0;
+  }
 }
 
 @layer components {
