@@ -64,7 +64,9 @@
         {/each}
       </ul>
 
-      <EmailOnRelease />
+      <div class="flex xs-only:justify-center">
+        <EmailOnRelease />
+      </div>
     </div>
 
     <!-- TODO catchy "Try it" indicator -->
