@@ -14,7 +14,7 @@
   </button>
 
   <!-- Sign in with Linkedin button -->
-  <button class="btn bg-[#0072b1] text-base-100 w-full">
+  <button class="btn bg-[#0072b1] hover:bg-[#07537c] text-base-100 w-full">
     <!-- <Icon icon="logos:linkedin-icon" class="w-6 h-6" /> -->
     <Icon icon="line-md:linkedin" class="w-6 h-6" />
     <span>Continue with Linkedin</span>
