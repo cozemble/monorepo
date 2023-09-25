@@ -7,9 +7,11 @@
     import ConfigureTargetJsonSchema from "./ConfigureTargetJsonSchema.svelte";
     import type {JsonSchema} from "@cozemble/model-core";
     import ApiExplainer from "./ApiExplainer.svelte";
+    import {jsonToHtml} from "./jsonToHtml";
 
     export let awsOcrResponse: AwsOcrResponse
     const pages = writable(awsOcrResponse.json.pages)
+    const html = jsonToHtml(awsOcrResponse.json.pages)
     const dispatch = createEventDispatcher()
     let actions = [] as Action[]
     let section: 'postProcessOcr' | 'configureJsonSchema' = 'postProcessOcr'
@@ -37,6 +39,9 @@
         initialActions = event.detail
         section = 'postProcessOcr'
     }
+
+    console.log({html})
+
 </script>
 
 {#if section === "postProcessOcr"}

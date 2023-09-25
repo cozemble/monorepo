@@ -1,8 +1,7 @@
 <script lang="ts">
     import {goto} from "$app/navigation";
     import type {AwsOcrResponse} from "../aws-ocr/awsOcrTypes";
-    import PostOcr from "./PostOcr.svelte";
-    import UploadDocument from "./UploadDocument.svelte";
+    import UploadDocument from "../fromDocument/UploadDocument.svelte";
 
     let awsOcrResponse: AwsOcrResponse | null = null
 
@@ -19,7 +18,7 @@
 <div class="grid h-screen place-items-center w-5/6 mx-auto mb-8">
     <div class="flex flex-col">
         {#if awsOcrResponse}
-            <PostOcr {awsOcrResponse} on:cancel={cancel}/>
+            <p>awsOcrResponse = {JSON.stringify(awsOcrResponse)}</p>
         {:else}
             <UploadDocument on:cancel={cancel} on:done={ocrDone}/>
         {/if}
