@@ -8,7 +8,7 @@ esbuild
     target: 'node18',
     outfile: './pulumi/dist/handler.js',
     // external: ['aws-sdk'],
-    external: [],
+    external: ['sharp'],
     minify: false,
   })
   .catch(() => process.exit(1))

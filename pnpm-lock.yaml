@@ -50,6 +50,9 @@ importers:
       '@cozemble/lang-util':
         specifier: workspace:*
         version: link:../../lang/util
+      '@types/sharp':
+        specifier: ^0.31.1
+        version: 0.31.1
       aws-sdk:
         specifier: ^2.1435.0
         version: 2.1435.0
@@ -59,6 +62,9 @@ importers:
       pdf-lib:
         specifier: ^1.17.1
         version: 1.17.1
+      sharp:
+        specifier: ^0.32.0
+        version: 0.32.0
     devDependencies:
       '@pulumi/aws':
         specifier: ^5.42.0
@@ -5411,7 +5417,6 @@ packages:
     resolution: {integrity: sha512-5nWwamN9ZFHXaYEincMSuza8nNfOof8nmO+mcI+Agx1uMUk4/pQnNIcix+9rLPXzKrm1pS34+6WRDbDV0Jn7ag==}
     dependencies:
       '@types/node': 16.11.6
-    dev: true
 
   /@types/sinonjs__fake-timers@8.1.1:
     resolution: {integrity: sha512-0kSuKjAS0TrGLJ0M/+8MaFkGsQhZpB6pxOmvS3K8FYI72K//YmdfoW9X2qPsAKh1mkwxGD5zib9s1FIFed6E8g==}
@@ -6413,7 +6418,7 @@ packages:
     resolution: {integrity: sha512-xq+q3SRMOxGivLhBNaUdC64hDTQwejJ+H0T/NB1XMtTVEwNTrfFF3gAxiyW0Bu/xWEGhjVKgUcMhCrUy2+uCWg==}
     dependencies:
       base64-js: 1.5.1
-      ieee754: 1.1.13
+      ieee754: 1.2.1
       isarray: 1.0.0
 
   /buffer@5.7.1:

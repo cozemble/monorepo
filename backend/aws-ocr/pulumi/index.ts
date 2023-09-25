@@ -5,6 +5,9 @@ const apiKeyValue = new pulumi.Config().requireSecret('ocrApiKey')
 
 const ocrBucket = new aws.s3.Bucket('ocrBucket')
 
+const sharpAwsLayerArn = 'arn:aws:lambda:eu-west-2:238021041087:layer:sharp-0-32-1:1'
+const ghostscriptLayerArn = 'arn:aws:lambda:eu-west-2:764866452798:layer:ghostscript:13' // https://github.com/shelfio/ghostscript-lambda-layer
+
 const lambdaRole = new aws.iam.Role('lambdaRole', {
   assumeRolePolicy: JSON.stringify({
     Version: '2012-10-17',
@@ -54,6 +57,7 @@ const lambda = new aws.lambda.Function('mylambda', {
       OCR_API_KEY: apiKeyValue,
     },
   },
+  layers: [sharpAwsLayerArn, ghostscriptLayerArn],
 })
 
 // Give the Lambda permission to be invoked by the API Gateway

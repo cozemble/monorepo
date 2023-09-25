@@ -4,6 +4,7 @@ import { mandatory } from '@cozemble/lang-util'
 import { stashPdf } from './stashPdf'
 import { syncS3FileOcr } from './syncS3FileOcr'
 import { syncOcr } from './syncOcr'
+import { convertToPng, learnSharp } from './convertToPng'
 
 export const handler: Handler = async (event) => {
   const apiKey = mandatory(process.env.OCR_API_KEY, 'OCR_API_KEY')
@@ -33,6 +34,8 @@ export const handler: Handler = async (event) => {
       return stashPdf(event)
     case '/prod/s3Ocr':
       return syncS3FileOcr(event)
+    case '/prod/img/convertToPng':
+      return convertToPng(event)
     default:
       return {
         statusCode: 404,
