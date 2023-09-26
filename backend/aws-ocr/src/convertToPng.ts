@@ -64,7 +64,7 @@ export async function convertToPng(event: any) {
       await fs.writeFile(inputFilePath, buffer)
 
       // Execute Ghostscript command
-      await execAsync(`/opt/bin/gs -sDEVICE=pngalpha -o ${outputFilePath} -r72 ${inputFilePath}`)
+      await execAsync(`/opt/bin/gs -sDEVICE=pngalpha -o ${outputFilePath} -r144 ${inputFilePath}`)
 
       // Read the converted PNG file
       const pngBuffer = await fs.readFile(outputFilePath)

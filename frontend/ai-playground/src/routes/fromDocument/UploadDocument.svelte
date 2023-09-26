@@ -2,6 +2,7 @@
     import type {StashPdfResponse} from "@cozemble/backend-aws-ocr-types";
     import PerformOcr from "./PerformOcr.svelte";
     import {createEventDispatcher} from "svelte";
+    import CreateImagesOfPdfPages from "./CreateImagesOfPdfPages.svelte";
 
     let errorMessage: string | null = null
     let file: File | null = null;
@@ -63,6 +64,7 @@
             Cancel
         </button>
     {:else}
+        <CreateImagesOfPdfPages {stashPdfResponse} />
         <PerformOcr {stashPdfResponse} on:cancel on:done/>
     {/if}
 {:else}
