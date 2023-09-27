@@ -2,6 +2,7 @@
     import type {Page, StashPdfResponse} from "@cozemble/backend-aws-ocr-types";
     import PageOcrProgress from "./PageOcrProgress.svelte";
     import {createEventDispatcher, onMount} from "svelte";
+    import type {UploadAndOcrResponse} from "./types";
 
     export let stashPdfResponse: StashPdfResponse
     let currentOcrPageIndex = 1
@@ -29,11 +30,18 @@
     async function startScanning() {
         ocredPages = [...ocredPages, ...await scanPage()]
         currentOcrPageIndex++
-        console.log({ocredPages, currentOcrPageIndex, stashPdfResponse})
         if (currentOcrPageIndex <= stashPdfResponse.pages.length) {
             await startScanning()
         }
-        dispatch('done', ocredPages)
+        const response:UploadAndOcrResponse = {
+            ocr: {
+                json: {pages: ocredPages},
+                html:""
+            },
+            upload: stashPdfResponse!
+        }
+
+        dispatch('done', response)
     }
 
 

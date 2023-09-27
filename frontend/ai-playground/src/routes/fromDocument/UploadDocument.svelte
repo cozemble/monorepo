@@ -3,6 +3,7 @@
     import PerformOcr from "./PerformOcr.svelte";
     import {createEventDispatcher} from "svelte";
     import CreateImagesOfPdfPages from "./CreateImagesOfPdfPages.svelte";
+    import type {UploadAndOcrResponse} from "./types";
 
     let errorMessage: string | null = null
     let file: File | null = null;
@@ -53,7 +54,11 @@
             json,
             html: ""
         }
-        dispatch('done', awsOcrResponse)
+        const response:UploadAndOcrResponse = {
+            ocr: awsOcrResponse,
+            upload: stashPdfResponse!
+        }
+        dispatch('done', response)
     }
 </script>
 

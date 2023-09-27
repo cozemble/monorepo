@@ -46,7 +46,7 @@ export async function syncS3FileOcr(event: APIGatewayProxyEvent) {
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ json }),
+      body: JSON.stringify({ json, s3Key }),
     }
   } catch (error: any) {
     console.log(error)

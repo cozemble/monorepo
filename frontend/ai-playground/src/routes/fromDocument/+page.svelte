@@ -3,6 +3,7 @@
     import type {AwsOcrResponse} from "../aws-ocr/awsOcrTypes";
     import PostOcr from "./PostOcr.svelte";
     import UploadDocument from "./UploadDocument.svelte";
+    import {UploadAndOcrResponse} from "./types";
 
     let awsOcrResponse: AwsOcrResponse | null = null
 
@@ -10,8 +11,8 @@
         goto("/")
     }
 
-    function ocrDone(event: CustomEvent<AwsOcrResponse>) {
-        awsOcrResponse = event.detail
+    function ocrDone(event: CustomEvent<UploadAndOcrResponse>) {
+        awsOcrResponse = event.detail.ocr
     }
 
 </script>

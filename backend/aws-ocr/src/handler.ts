@@ -4,7 +4,18 @@ import { mandatory } from '@cozemble/lang-util'
 import { stashPdf } from './stashPdf'
 import { syncS3FileOcr } from './syncS3FileOcr'
 import { syncOcr } from './syncOcr'
-import { convertToPng, learnSharp } from './convertToPng'
+import { convertToPng, getImage } from './convertToPng'
+
+function maybeRestArgs(event: any) {
+  const path = event.path || event.requestContext?.http?.path
+  if (path && path.startsWith('/prod/img/get')) {
+    return getImage(event)
+  }
+  return {
+    statusCode: 404,
+    body: JSON.stringify({ message: 'Route not found' }),
+  }
+}
 
 export const handler: Handler = async (event) => {
   const apiKey = mandatory(process.env.OCR_API_KEY, 'OCR_API_KEY')
@@ -37,9 +48,6 @@ export const handler: Handler = async (event) => {
     case '/prod/img/convertToPng':
       return convertToPng(event)
     default:
-      return {
-        statusCode: 404,
-        body: JSON.stringify({ message: 'Route not found' }),
-      }
+      return maybeRestArgs(event)
   }
 }

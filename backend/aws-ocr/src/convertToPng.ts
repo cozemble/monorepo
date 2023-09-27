@@ -98,3 +98,45 @@ export async function convertToPng(event: any) {
     }
   }
 }
+
+export async function getImage(event: any) {
+  const { s3Key } = event.queryStringParameters
+  console.log({ s3Key })
+  try {
+    if (!s3Key) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ message: 'Invalid request body - no s3Key' }),
+      }
+    }
+
+    // Try to fetch the image from S3
+    const getObjectParams: AWS_S3.GetObjectCommandInput = {
+      Bucket: bucketName,
+      Key: s3Key,
+    }
+
+    const { Body, ContentType } = await s3.getObject(getObjectParams)
+
+    const buffer = await streamToBuffer(Body as Readable)
+    // Return the image with the appropriate content type
+    return {
+      statusCode: 200,
+      headers: { 'Content-Type': ContentType },
+      body: buffer.toString('base64'),
+      isBase64Encoded: true,
+    }
+  } catch (error: any) {
+    console.error('Error retrieving the image:', error)
+    if (error.Code === 'NoSuchKey') {
+      return {
+        statusCode: 404,
+        body: JSON.stringify({ message: 'Image not found', s3Key }),
+      }
+    }
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ message: 'Error retrieving the image: ' + error.message, s3Key }),
+    }
+  }
+}
