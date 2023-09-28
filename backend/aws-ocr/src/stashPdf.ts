@@ -9,15 +9,17 @@ const { S3 } = AWS_S3
 const s3 = new S3()
 const bucketName = mandatory(process.env.OCR_BUCKET_NAME, 'BUCKET_NAME')
 
-async function uploadToS3(
+export async function uploadToS3(
   bucketName: string,
   key: string,
   fileContent: Buffer | string | Uint8Array,
+  contentType: string, // Added contentType parameter
 ) {
   const params: AWS_S3.PutObjectCommandInput = {
     Bucket: bucketName,
     Key: key,
     Body: fileContent,
+    ContentType: contentType, // Set ContentType parameter
   }
 
   return s3.putObject(params)
@@ -51,7 +53,7 @@ export async function stashPdf(event: any) {
     const pdfId = uuids.v4()
     const s3Parent = `pdfs/${pdfId}`
     const s3Key = `${s3Parent}/${mandatory(file.filename, 'FILENAME')}`
-    await uploadToS3(bucketName, s3Key, file.content)
+    await uploadToS3(bucketName, s3Key, file.content, file.contentType)
     console.log(`File uploaded to S3: s3://${bucketName}/${s3Key}`)
 
     const pdfDoc = await PDFDocument.load(file.content)
@@ -65,7 +67,7 @@ export async function stashPdf(event: any) {
 
       const pagePdfBytes = await pageDoc.save()
       const pageS3Key = s3KeyForPage(s3Parent, i + 1)
-      await uploadToS3(bucketName, pageS3Key, pagePdfBytes)
+      await uploadToS3(bucketName, pageS3Key, pagePdfBytes, 'application/pdf')
       console.log(`Page ${i + 1} uploaded to S3: s3://${bucketName}/${pageS3Key}`)
       pageS3Keys.push(pageS3Key)
     }

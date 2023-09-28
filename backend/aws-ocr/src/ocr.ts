@@ -37,7 +37,6 @@ async function waitForAnalysis(s3Key: string, jobId: string): Promise<Block[]> {
     const response: GetDocumentAnalysisCommandOutput = await textract.getDocumentAnalysis({
       JobId: jobId,
     })
-    console.log(`Job status: ${response.JobStatus}`)
     if (response.JobStatus === 'FAILED') {
       throw new Error('Textract processing failed')
     }

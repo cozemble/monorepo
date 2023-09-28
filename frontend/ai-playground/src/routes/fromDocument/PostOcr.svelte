@@ -37,6 +37,8 @@
         initialActions = event.detail
         section = 'postProcessOcr'
     }
+
+
 </script>
 
 {#if section === "postProcessOcr"}
@@ -56,8 +58,9 @@
     </div>
 {:else}
     {#if jsonSchema === null}
-        <ConfigureTargetJsonSchema pages={$pages} {actions} on:cancel={cancel} on:schema={jsonSchemaDefined} on:corrections={backToCorrections}/>
+        <ConfigureTargetJsonSchema pages={$pages} {actions} on:cancel={cancel} on:schema={jsonSchemaDefined}
+                                   on:corrections={backToCorrections}/>
     {:else}
-        <ApiExplainer />
+        <ApiExplainer/>
     {/if}
 {/if}
