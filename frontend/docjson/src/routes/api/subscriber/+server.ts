@@ -1,4 +1,4 @@
-import type { RequestEvent } from '@sveltejs/kit'
+import { json, type RequestEvent } from '@sveltejs/kit'
 
 interface ISubscriber {
   email: string
@@ -13,7 +13,7 @@ export async function POST({ request }: RequestEvent<Partial<ISubscriber>>) {
     const headers: HeadersInit = {
       apikey: SUPABASE_KEY,
       Authorization: `Bearer ${SUPABASE_KEY}`,
-      Prefer: 'return=minimal',
+      Prefer: 'resolution=merge-duplicates',
       'Content-Type': 'application/json',
     }
 
@@ -24,7 +24,6 @@ export async function POST({ request }: RequestEvent<Partial<ISubscriber>>) {
           body: JSON.stringify(payload),
           headers,
         })
-          .then((response) => response.json())
           .then(resolve)
           .catch(reject)
       })
@@ -32,13 +31,12 @@ export async function POST({ request }: RequestEvent<Partial<ISubscriber>>) {
     const response = (await subscribeUser(jsonBody)) as Response
     if (!response.ok) {
       const err = await response.text()
-      return new Response(err, { status: 500 })
+      return json(err, { status: 500 })
     }
 
-    const result = await response.json()
-    return new Response(result, { status: 200 })
+    return json(response.body, { status: 200 })
   } catch (err: any) {
     console.error(err)
-    return new Response(err.message, { status: 500 })
+    return json(err.message, { status: 500 })
   }
 }

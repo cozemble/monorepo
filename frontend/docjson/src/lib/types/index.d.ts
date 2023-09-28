@@ -25,3 +25,8 @@ type DataRecord = {
   _createdAt: string
   _updatedAt: string
 }
+
+interface HelperText {
+  error: boolean
+  text: string | null
+}

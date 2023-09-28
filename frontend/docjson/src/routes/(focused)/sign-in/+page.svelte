@@ -8,6 +8,12 @@
   const switchForm = () => {
     presentForm = presentForm === 'login' ? 'signup' : 'login'
   }
+
+  export let form: Record<string, string>;
+
+  export let data
+  let { supabase } = data
+  $: ({ supabase } = data)
 </script>
 
 <!-- TODO 
@@ -56,12 +62,12 @@
     <div class="divider" />
 
     {#if presentForm === 'login'}
-      <LoginForm {switchForm} />
+      <LoginForm {switchForm} {form} />
     {:else}
-      <SignupForm {switchForm} />
+      <SignupForm {switchForm} {form} />
     {/if}
 
     <div class="divider my-10 text-base-content/40">or</div>
-    <SocialSignIn />
+    <SocialSignIn {supabase} />
   </div>
 </section>

@@ -1,10 +1,13 @@
 <script lang="ts">
   export let switchForm: () => void
+  export let form: Record<string, string>
+  
+  import { enhance } from '$app/forms'
 </script>
 
 <!-- TODO functionality -->
 
-<form action="/" method="post" class="card">
+<form method="post" class="card" use:enhance>
   <div class="form-control w-full mb-2">
     <label for="email" class="label">Email</label>
     <input
@@ -13,6 +16,7 @@
       name="email"
       class="input input-bordered w-full"
       placeholder="you@example.com"
+      value={form?.email ?? ''}
     />
   </div>
 
