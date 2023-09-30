@@ -10,6 +10,7 @@ export const config = {
 export async function POST({ request }) {
   const { prompt } = await request.json()
   const { html, schema } = JSON.parse(prompt)
+  console.log({ html, schema })
 
   const openAiPrompt = `I have this json schema:
     
