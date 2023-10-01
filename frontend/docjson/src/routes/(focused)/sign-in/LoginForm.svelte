@@ -1,42 +1,22 @@
 <script lang="ts">
+  import { enhance } from '$app/forms'
+  import FormInput from '$lib/components/form/FormInput.svelte'
+
   export let switchForm: () => void
   export let form: Record<string, string>
-  
-  import { enhance } from '$app/forms'
 </script>
 
 <!-- TODO functionality -->
 
-<form method="post" class="card" use:enhance>
-  <div class="form-control w-full mb-2">
-    <label for="email" class="label">Email</label>
-    <input
-      type="email"
-      id="email"
-      name="email"
-      class="input input-bordered w-full"
-      placeholder="you@example.com"
-      value={form?.email ?? ''}
-    />
-  </div>
+<form action="?/signin" method="post" class="card" use:enhance>
+  <FormInput name="email" value={form?.email ?? ''} placeholder="you@example.com" />
 
-  <div class="form-controll w-full">
-    <label for="password" class="label">Password</label>
-    <input
-      type="password"
-      id="password"
-      name="password"
-      class="input input-bordered w-full"
-      placeholder="••••••••"
-    />
-    <div class="label">
-      <!-- Forgot password button -->
-      <a
-        href="/forgot-password"
-        class="label-text-alt link-hover text-sm opacity-50 hover:opacity-70">Forgot password?</a
-      >
-    </div>
-  </div>
+  <FormInput name="password" value={form?.password ?? ''} placeholder="••••••••" type="password" />
+
+  <!-- Forgot password button -->
+  <a href="/forgot-password" class="label-text-alt link-hover text-sm opacity-50 hover:opacity-70"
+    >Forgot password?</a
+  >
 
   <div class="flex flex-col items-center mt-6">
     <button type="submit" class="btn btn-primary w-full">Sign in</button>

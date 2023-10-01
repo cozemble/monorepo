@@ -1,5 +1,6 @@
 <script lang="ts">
   import { enhance } from '$app/forms'
+  import FormInput from '$lib/components/form/FormInput.svelte'
 
   export let switchForm: () => void
   export let form: Record<string, string>
@@ -9,6 +10,7 @@
 </script>
 
 <!-- TODO functionality -->
+<!-- TODO display check your email after submit -->
 
 <!-- TODO handle error message-->
 <!-- svelte-ignore empty-block -->
@@ -16,40 +18,21 @@
 {/if}
 
 <form action="?/signup" method="post" class="card" use:enhance>
-  <div class="form-control w-full mb-2">
-    <label for="name" class="label">Name</label>
-    <input
-      type="text"
-      id="name"
-      name="name"
-      class="input input-bordered w-full"
-      placeholder="Your Name"
-      value={form?.name ?? ''}
-    />
-  </div>
 
-  <div class="form-control w-full mb-2">
-    <label for="email" class="label">Email</label>
-    <input
-      type="email"
-      id="email"
-      name="email"
-      class="input input-bordered w-full"
-      placeholder="you@example.com"
-      value={form?.email ?? ''}
-    />
-  </div>
+  <FormInput name="name" value={form?.name ?? ''} placeholder="Your Name" />
 
-  <div class="form-controll w-full">
-    <label for="password" class="label">Password</label>
-    <input
-      type="password"
-      id="password"
-      name="password"
-      class="input input-bordered w-full"
-      placeholder="••••••••"
-    />
-  </div>
+  <FormInput
+    name="email"
+    value={form?.email ?? ''}
+    placeholder="you@example.com"
+  />
+
+  <FormInput
+    name="password"
+    value={form?.password ?? ''}
+    placeholder="••••••••"
+    type="password"
+  />
 
   <div class="form-control mt-4">
     <label class="label cursor-pointer">
