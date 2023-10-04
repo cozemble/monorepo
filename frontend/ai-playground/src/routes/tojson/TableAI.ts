@@ -1,6 +1,6 @@
 import type { TableTypeGuessWithTableIndex } from '../genai/tables/guessTableType/guessTableType'
 import { guessTableType } from '../genai/tables/guessTableType/guessTableType'
-import type { Page, Table } from '@cozemble/backend-aws-ocr-types'
+import type { Page, Table, Line } from '@cozemble/backend-aws-ocr-types'
 import { tablesOnly } from './helpers'
 import { tableToCsv } from '../fromDocument/tableToCsv'
 
@@ -20,6 +20,10 @@ export function limitRows(limit: number, table: Table): Table {
 
 export function flattenTables(pages: Page[]): Table[] {
   return pages.flatMap((p) => p.items).filter((i) => i._type === 'table') as Table[]
+}
+
+export function flattenBlocks(pages: Page[]): Line[] {
+  return pages.flatMap((p) => p.items).filter((i) => i._type === 'line') as Line[]
 }
 
 export async function beginInitialTableAnalysis(pages: Page[]): Promise<TableIntelligence> {
