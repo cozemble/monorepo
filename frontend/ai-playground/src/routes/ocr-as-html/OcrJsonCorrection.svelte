@@ -11,6 +11,7 @@
     import {z} from "zod";
     import {createEventDispatcher} from "svelte";
     import {toSectionedJson} from "./toSectionedJson";
+    import {zodErrors} from "./zodErrors";
 
     export let pages: Writable<Page[]>
     export let initialActions:Action[]
@@ -18,19 +19,7 @@
     const dispatch = createEventDispatcher()
     let preview: "html" | "json" = "html"
 
-    const errors: Readable<FomIssue[]> = derived(actions, o => {
-        try {
-            actionsType.parse(o)
-            return []
-        } catch (error: any) {
-            if (error instanceof z.ZodError) {
-                return error.errors
-            } else {
-                console.error("Some other error:", error);
-                return []
-            }
-        }
-    })
+    const errors = zodErrors(actionsType,actions)
 
     const mutatedPages = derived([pages, actions, errors], ([pages, actions, errors]) => {
         return applyCorrections(actions, errors, pages)

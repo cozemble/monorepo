@@ -1,4 +1,4 @@
-import type { BlockItem, LabeledSection, Page, Row } from '@cozemble/backend-aws-ocr-types'
+import type { BlockItem, LabeledSection, Page, Row, Table } from '@cozemble/backend-aws-ocr-types'
 import { strings } from '@cozemble/lang-util'
 
 function rowToHtml(row: Row): string {
@@ -9,12 +9,16 @@ function rowsToHtml(rows: Row[]): string {
   return rows.reduce((acc, row) => acc + rowToHtml(row), '')
 }
 
+export function tableToHtml(item: Table) {
+  const id = item.label ? ` id="${strings.camelize(item.label)}"` : ''
+  return `<table ${id}>${rowsToHtml(item.rows)}</table>`
+}
+
 function itemToHtml(item: BlockItem): string {
   if (item._type === 'line') {
     return `<p>${item.text}</p>`
   }
-  const id = item.label ? ` id="${strings.camelize(item.label)}"` : ''
-  return `<table ${id}>${rowsToHtml(item.rows)}</table>`
+  return tableToHtml(item)
 }
 
 function pageToHtml(page: Page): string {
