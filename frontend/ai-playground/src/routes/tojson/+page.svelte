@@ -5,6 +5,7 @@
     import ToJson from "./ToJson.svelte";
     import type {UploadAndOcrResponse} from "../fromDocument/types";
     import type {StashPdfResponse} from "@cozemble/backend-aws-ocr-types";
+    import JsonApiWizard from "./JsonApiWizard.svelte";
 
     let awsOcrResponse: AwsOcrResponse | null = null
     let upload: StashPdfResponse | null = null
@@ -23,7 +24,7 @@
 <div class="grid h-screen place-items-center w-5/6 mx-auto mb-8">
     <div class="flex flex-col">
         {#if awsOcrResponse && upload}
-            <ToJson {awsOcrResponse} {upload}/>
+            <JsonApiWizard {awsOcrResponse} {upload}/>
         {:else}
             <UploadDocument on:cancel={cancel} on:done={ocrDone}/>
         {/if}

@@ -29,6 +29,14 @@ export interface DisplayOptions {
   _type: 'displayOptions'
 }
 
+export interface ChangeTables {
+  _type: 'changeTables'
+}
+
+export interface MergeTables {
+  _type: 'mergeTables'
+}
+
 export const generatingFirstJson: GeneratingFirstJson = {
   _type: 'generatingFirstJson',
 }
@@ -57,6 +65,14 @@ export const displayOptions: DisplayOptions = {
   _type: 'displayOptions',
 }
 
+export const changeTables: ChangeTables = {
+  _type: 'changeTables',
+}
+
+export const mergeTables: MergeTables = {
+  _type: 'mergeTables',
+}
+
 export function nextWizardState(wizardState: WizardState): WizardState {
   switch (wizardState._type) {
     case 'generatingFirstJson':
@@ -73,6 +89,8 @@ export type WizardState =
   | ApplyJsonSchema
   | GenerateJsonSchema
   | DisplayOptions
+  | ChangeTables
+  | MergeTables
 
 export interface WizardStateStore extends Writable<WizardState> {
   history(): WizardState[]
@@ -95,3 +113,5 @@ export function wizardStateStore(initialState: WizardState): WizardStateStore {
     },
   }
 }
+
+export type TableAction = 'mergeTables' | 'extractRows' | 'deleteRows'

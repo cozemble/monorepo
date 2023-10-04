@@ -1,15 +1,14 @@
 <script lang="ts">
     import type {WizardStateStore} from "./wizardState";
     import {
-        applyJsonSchema,
+        applyJsonSchema, changeTables,
         displayOptions,
-        generateJsonSchema,
+        generateJsonSchema, mergeTables,
         startApiCreation,
         startJsonImprovement
     } from "./wizardState";
     import type {JsonSchema} from "@cozemble/model-core";
     import type {Writable} from "svelte/store";
-    import {json} from "../fromDocument/partialJson";
 
     export let wizardState: WizardStateStore
     export let jsonSchema: Writable<JsonSchema | null>
@@ -30,8 +29,8 @@
         alert("Not implemented yet")
     }
 
-    function changeTables() {
-        alert("Not implemented yet")
+    function onChangeTables() {
+        $wizardState = changeTables
     }
 
     function onEditJsonSchema() {
@@ -40,6 +39,22 @@
 
     function onGenerateJsonSchema() {
         $wizardState = generateJsonSchema
+    }
+
+    function onMergeTables() {
+        $wizardState = mergeTables
+    }
+
+    function onExtractRows() {
+        alert("Not implemented yet")
+    }
+
+    function onDeleteRows() {
+        alert("Not implemented yet")
+    }
+
+    function onApportionColumn() {
+        alert("Not implemented yet")
     }
 </script>
 
@@ -93,7 +108,7 @@
                     <h2 class="card-title">Make changes to tables</h2>
                     <p>Merge tables, extract/delete rows, apply data formats to rows and cells, etc</p>
                     <div class="card-actions justify-end">
-                        <button class="btn btn-secondary btn-sm" on:click={changeTables}>Change Tables</button>
+                        <button class="btn btn-secondary btn-sm" on:click={onChangeTables}>Change Tables</button>
                     </div>
                 </div>
             </div>
@@ -177,3 +192,54 @@
         </div>
     </div>
 {/if}
+{#if $wizardState._type === "changeTables"}
+    <div class="flex flex-col items-center">
+        <h3>Change tables</h3>
+        <h4>We have a choice of table tools you can use</h4>
+        <div class="mt-4 flex">
+            <div class="card w-96 bg-base-100 shadow-xl ml-4 border">
+                <div class="card-body">
+                    <h2 class="card-title">Merge tables</h2>
+                    <p>You can merge tables if they are split across pages, or for other reasons</p>
+                    <div class="card-actions justify-end">
+                        <button class="btn btn-secondary btn-sm" on:click={onMergeTables}>Merge tables</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card w-96 bg-base-100 shadow-xl ml-4 border">
+                <div class="card-body">
+                    <h2 class="card-title">Extract rows</h2>
+                    <p>If certain rows logically belong elsewhere, you can extract those rows</p>
+                    <div class="card-actions justify-end">
+                        <button class="btn btn-secondary btn-sm" on:click={onExtractRows}>Extract rows</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card w-96 bg-base-100 shadow-xl ml-4 border">
+                <div class="card-body">
+                    <h2 class="card-title">Delete rows</h2>
+                    <p>If certain rows should be removed, choose this option</p>
+                    <div class="card-actions justify-end">
+                        <button class="btn btn-secondary btn-sm" on:click={onDeleteRows}>Delete rows</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card w-96 bg-base-100 shadow-xl ml-4 border">
+                <div class="card-body">
+                    <h2 class="card-title">Apportion column contents</h2>
+                    <p>If the contents of a column need to be "re-written"</p>
+                    <div class="card-actions justify-end">
+                        <button class="btn btn-secondary btn-sm" on:click={onApportionColumn}>Apportion column</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{/if}
+
+{#if $wizardState._type === 'mergeTables'}
+    <div class="flex flex-col items-center">
+        <h3>Merge tables</h3>
+    </div>
+{/if}
+
