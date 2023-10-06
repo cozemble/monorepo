@@ -9,25 +9,29 @@ const ratelimit = new Ratelimit({
   analytics: true,
 })
 
+// url stacks
 const rateLimitUrl: string[] = ['/guessTableType']
 
 const handleRateLimit: Handle = async ({ event, resolve }) => {
   const existURL = rateLimitUrl.filter((url) => event.url.pathname.endsWith(url))
-  const ip = event.request.headers.get('X-Forwarded-For') ?? event.request.headers.get('x-real-ip')
 
-  const res = await resolve(event)
+  const ip = event.request.headers.get('X-Forwarded-For') ?? event.request.headers.get('x-real-ip')
+  const identifier = ip ?? event.getClientAddress()
 
   if (existURL.length) {
-    const { success, limit, reset, remaining } = await ratelimit.limit(`ratelimit_middleware_${ip}`)
+    const { success, limit, reset, remaining } = await ratelimit.limit(
+      `ratelimit_middleware_${identifier}`,
+    )
 
     console.log(success)
 
-    res.headers.set('X-RateLimit-Limit', limit.toString())
-    res.headers.set('X-RateLimit-Remaining', remaining.toString())
-    res.headers.set('X-RateLimit-Reset', reset.toString())
+    event.setHeaders({ 'X-RateLimit-Limit': limit.toString() })
+    event.setHeaders({ 'X-RateLimit-Remaining': remaining.toString() })
+    event.setHeaders({ 'X-RateLimit-Reset': reset.toString() })
   }
 
-  return res
+  const response = await resolve(event)
+  return response
 }
 
 export const handle = sequence(handleRateLimit)
