@@ -1,28 +1,26 @@
 <script lang="ts">
+  import { onMount } from 'svelte'
+  import { page } from '$app/stores'
+  import { goto } from '$app/navigation'
+
+  import user from '$lib/stores/user'
   import LoginForm from './LoginForm.svelte'
   import SignupForm from './SignupForm.svelte'
   import SocialSignIn from './SocialSignIn.svelte'
 
-  let presentForm: 'login' | 'signup' = 'login'
+  export let form: Record<string, string>
 
+  let presentForm: 'login' | 'signup' = 'signup'
   const switchForm = () => {
     presentForm = presentForm === 'login' ? 'signup' : 'login'
   }
 
-  export let form: Record<string, string>;
+  $: supabase = $page?.data?.supabase
 
-  export let data
-  let { supabase } = data
-  $: ({ supabase } = data)
+  onMount(() => {
+    if (!$user.isGuest) goto('/dashboard')
+  })
 </script>
-
-<!-- TODO 
-  - [ ] Add sign up form:
-  - [ ] Add email input
-  - [ ] Add password input
-  - [ ] Add terms and conditions checkbox
-  - [ ] Add sign up button
--->
 
 <!-- TODO decide if we need these forms in different pages or in the same page -->
 <!-- TODO LATER heading typing animation change -->
