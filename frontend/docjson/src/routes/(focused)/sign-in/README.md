@@ -26,7 +26,20 @@
       - Redirect to the [Dashboard](../dashboard/README.md) page
 
   - ## Social Sign In
-    > TODO
+    Sign in or create an account using a social media account.
+    - Supported social media accounts:
+      - Github
+      - Google
+      - LinkedIn
+      - SSO (Single Sign On)
+        - Not a social media account, but included here to keep the code simple
 
   - ## Forgot Password Form
-    > TODO
+    Send a password reset email to the user's email address.
+    - ### Form Fields
+      - Email
+
+    - ### Submit Button
+      - Send password reset email
+      - Tell user to check their email
+
