@@ -8,7 +8,7 @@
 - ## [Create Wizard](./(focused)/create/README.md)
   This is the wizard that the user will use to create their API.
 
-- ## [Dashboard](./(dashboard)/README.md)
+- ## [Dashboard](./dashboard/README.md)
   Application dashboard. Contains all of the functionality of the application.
   
 - ## [Sign In](./(focused)/auth/README.md)
