@@ -51,13 +51,11 @@
      glass bg-base-300/30 border-2 border-solid border-base-300
      "
   >
-    <h2 class="mb-2">
+    <h2 class="mb-8">
       {presentForm === 'login' ? 'Log in' : 'Sign up'}
     </h2>
-    <p class="opacity-70">
-      {presentForm === 'login' ? 'Log in to your account' : 'Create an account to get started'}
-    </p>
-    <div class="divider" />
+
+    <!-- <div class="divider" /> -->
 
     {#if presentForm === 'login'}
       <LoginForm {switchForm} {form} />
