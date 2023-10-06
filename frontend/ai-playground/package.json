@@ -41,6 +41,8 @@
     "@cozemble/model-to-json": "workspace:*",
     "@cozemble/ui-filter-editor": "workspace:*",
     "@tailwindcss/typography": "^0.5.9",
+    "@upstash/ratelimit": "^0.4.4",
+    "@upstash/redis": "^1.22.1",
     "@zxing/library": "^0.20.0",
     "ai": "^2.2.12",
     "ajv": "^8.12.0",
