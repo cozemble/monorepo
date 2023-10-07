@@ -1,45 +1,22 @@
-# Sign In
-  Login to an account or create a new account.
+# Auth
+  All pages related to authentication.   
 
-  - ## Sign In Form
-    Sign in to an existing account.
+  ## Pages
+  - [/sign-in](./sign-in/README.md)
+  - [/sign-up](./sign-up/README.md)
+  - [/forgot-password](./forgot-password/README.md)
+  - [/reset-password](./reset-password/README.md)
+  - /callback
+    Utility page for oauth providers to redirect to after authenticating the user.
+    - Redirects to the [Dashboard](../../dashboard/README.md) page if sign-in was successful.
+    - Redirects to the [Sign In](./sign-in/README.md) page if sign-in was unsuccessful.
 
-    - ### Form Fields
-      - Email
-      - Password
-
-    - ### Submit Button
-      - Authenticate user
-      - Redirect to the [Dashboard](../dashboard/README.md) page
-  
-  - ## Sign Up Form
-    Create a new account.
-    
-    - ### Form Fields
-      - Email
-      - Password
-      - Accept Terms of Service (required true)
-
-    - ### Submit Button
-      - Create user
-      - Bring in their guest data if they have any
-      - Redirect to the [Dashboard](../dashboard/README.md) page
-
-  - ## Social Sign In
-    Sign in or create an account using a social media account.
+  - ## OAuth Providers
+    Sign in or create an account using an oauth provider.
+    Used in both the sign in and sign up pages.
     - Supported social media accounts:
       - Github
       - Google
       - LinkedIn
-      - SSO (Single Sign On)
-        - Not a social media account, but included here to keep the code simple
-
-  - ## Forgot Password Form
-    Send a password reset email to the user's email address.
-    - ### Form Fields
-      - Email
-
-    - ### Submit Button
-      - Send password reset email
-      - Tell user to check their email
-
+   
+  > TODO IF NEEDED: 2fa
