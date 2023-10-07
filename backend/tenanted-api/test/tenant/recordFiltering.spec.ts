@@ -1,14 +1,14 @@
 import { beforeAll, describe, expect, test } from 'vitest'
-import { makeTenant, makeTenantMemberAccessToken, putModels, putRecords } from './testHelpers.ts'
+import { makeTenant, makeTenantMemberAccessToken, putModels, putRecords } from './testHelpers.js'
 import { uuids } from '@cozemble/lang-util'
 import { dataRecordFns, modelFns, modelOptions, propertyFns } from '@cozemble/model-api'
 import { Model, Property, systemConfigurationFns } from '@cozemble/model-core'
-import { appWithTestContainer } from '../../src/appWithTestContainer.ts'
+import { appWithTestContainer } from '../../src/appWithTestContainer.js'
 import {
   filledFilterInstanceGroupFns,
   filterRequestPayloadFns,
 } from '@cozemble/backend-tenanted-api-types'
-import { testEnv } from '../helper.ts'
+import { testEnv } from '../helper.js'
 import { registerJsonStringProperty } from '@cozemble/model-properties-core'
 
 const jwtSigningSecret = 'secret'

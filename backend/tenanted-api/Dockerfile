@@ -1,30 +1,23 @@
-FROM node:18.16.0-alpine AS builder
-RUN apk add --no-cache libc6-compat
-RUN apk update
-# Set working directory
+# Base Image
+FROM node:18.16.0-alpine
+
+# Set up necessary packages and tools
+RUN apk add --no-cache curl && \
+    curl -L https://unpkg.com/@pnpm/self-installer | node && \
+    npm install -g ts-node && \
+    apk add openssl
+
+# Set the working directory
 WORKDIR /app
+
+# Copy the contents from staging to the working directory
 COPY staging/ .
 
-# Add lockfile and package.json's of isolated subworkspace
-FROM node:18.16.0-alpine AS installer
-RUN apk add --no-cache libc6-compat
-RUN apk update
-RUN apk add build-base libc6-compat gcompat curl
-RUN curl -L https://unpkg.com/@pnpm/self-installer | node
-WORKDIR /app
-
-# First install the dependencies (as they change less often)
-COPY --from=builder /app/ .
+# Install the dependencies using pnpm
 RUN pnpm install
-RUN pnpm run build
 
-FROM node:18.16.0-alpine AS runner
-WORKDIR /app
-
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 cozemble
-USER cozemble
-
-COPY --from=installer --chown=cozemble:nodejs /app/ ./
+# Expose port 3000 for the application
 EXPOSE 3000
-CMD node dist/esm/index.js
+
+# Command to run the application using ts-node
+CMD npx ts-node --esm src/index.ts

@@ -1,24 +1,25 @@
 {
   "name": "@cozemble/backend-tenanted-api",
   "version": "1.0.0",
-  "module": "dist/esm/index.js",
+  "module": "src/index.ts",
   "type": "module",
   "files": [
     "dist/"
   ],
   "scripts": {
-    "build": "npx tsc -p tsconfig.json",
+    "build": "npx tsc --noEmit -p tsconfig.json",
+    "build-npm": "npx tsc -p tsconfig.json",
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest watch",
-    "start": "nodemon dist/esm/index.js",
+    "start": "ts-node --esm src/index.ts",
     "db:migrate": "dotenv -- bash -c 'npx postgrator --username $PG_ADMIN_USER --password $PG_ADMIN_PASSWORD'",
     "db:migrate-local": "npx postgrator --host 127.0.0.1 --database postgres --username user --password password",
     "dev": "nodemon -x \"npm run buildrun\"",
     "buildrun": "npm run compile && npm run server",
     "build-run-db": "npm run compile && npm run bounce:db",
     "bounce:db": "node dist/cjs/devDb.js",
-    "compile": "npx tsc -p tsconfig.json",
-    "server": "NODE_ENV=development node dist/esm/index.js",
+    "compile": "npx tsc --noEmit -p tsconfig.json",
+    "server": "NODE_ENV=development ts-node --esm src/index.ts",
     "clean:postgres": "./scripts/run-clean-postgres.sh && npm run db:migrate-local"
   },
   "devDependencies": {

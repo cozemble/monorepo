@@ -7,7 +7,12 @@
 		"forceConsistentCasingInFileNames": true,
 		"outDir": "./lib",
 		"declaration": true,
-		"moduleResolution": "NodeNext"
+		"moduleResolution": "NodeNext",
+		"noImplicitAny": false,
+		"esModuleInterop": true
+  },
+  "ts-node": {
+	"esm": true
   },
   "include": [
     "./src"

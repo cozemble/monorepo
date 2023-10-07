@@ -39,23 +39,23 @@ export function refreshTokenKey(userPool: string) {
 }
 
 export {
-  SavableRecords,
-  SavableRecord,
-  JsonPath,
+  type SavableRecords,
+  type SavableRecord,
+  type JsonPath,
   savableRecords,
   fetchedRecords,
-  FetchedRecords,
-  SuccessfulSaveResponse,
-} from './records.js'
+  type FetchedRecords,
+  type SuccessfulSaveResponse,
+} from './records.ts'
 
-export { ErrorType, ConflictErrorType } from './errorsTypes.js'
+export type { ErrorType, ConflictErrorType } from './errorsTypes.ts'
 
 export {
-  FilledFilterInstanceGroup,
-  FilledFilterInstance,
-  Value,
-  RhsValue,
-  FilterRequestPayload,
+  type FilledFilterInstanceGroup,
+  type FilledFilterInstance,
+  type Value,
+  type RhsValue,
+  type FilterRequestPayload,
   filterRequestPayloadFns,
   filledFilterInstanceGroupFns,
-} from './filters.js'
+} from './filters.ts'

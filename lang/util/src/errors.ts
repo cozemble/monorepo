@@ -1,6 +1,6 @@
 // @ts-ignore
 import mergician from 'mergician'
-import type { StringKeyedObject } from './index.js'
+import type { StringKeyedObject } from './index.ts'
 
 export interface JustErrorMessage {
   _type: 'just.error.message'

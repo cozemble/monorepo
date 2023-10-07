@@ -22,7 +22,7 @@ export {
 } from './properties/derived/derivedProperties.js'
 
 export {
-  JsonArrayProperty,
+  type JsonArrayProperty,
   ArrayPropertyConfiguration,
   jsonArrayPropertyDescriptor,
   arrayPropertyType,

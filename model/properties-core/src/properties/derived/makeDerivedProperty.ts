@@ -75,7 +75,7 @@ function makeDerivedProperty<T extends JsonProperty, V, C>(
   // @ts-ignore
   baseType: JsonPropertyDescriptor<T, V>,
   jsonType: JsonDataType,
-    // @ts-ignore
+  // @ts-ignore
 ): JsonPropertyDescriptor<T, V, C> {
   const thisPropertyType: PropertyType = {
     _type: 'property.type',

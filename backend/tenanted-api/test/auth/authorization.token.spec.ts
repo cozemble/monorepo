@@ -1,10 +1,10 @@
 import { beforeAll, describe, expect, test } from 'vitest'
-import { appWithTestContainer } from '../../src/appWithTestContainer.ts'
+import { appWithTestContainer } from '../../src/appWithTestContainer.js'
 import * as http from 'http'
-import { makeTenant } from '../tenant/testHelpers.ts'
+import { makeTenant } from '../tenant/testHelpers.js'
 import { uuids } from '@cozemble/lang-util'
-import { withAdminPgClient } from '../../src/infra/postgresPool.ts'
-import { testEnv } from '../helper.ts'
+import { withAdminPgClient } from '../../src/infra/postgresPool.js'
+import { testEnv } from '../helper.js'
 
 const jwtSigningSecret = 'secret'
 const port = 3005

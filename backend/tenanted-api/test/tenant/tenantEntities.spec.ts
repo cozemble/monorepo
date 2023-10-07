@@ -1,7 +1,7 @@
 import { beforeAll, describe, expect, test } from 'vitest'
-import { appWithTestContainer } from '../../src/appWithTestContainer.ts'
-import { simulateNewUser } from './testHelpers.ts'
-import { testEnv } from '../helper.ts'
+import { appWithTestContainer } from '../../src/appWithTestContainer.js'
+import { simulateNewUser } from './testHelpers.js'
+import { testEnv } from '../helper.js'
 
 const jwtSigningSecret = 'secret'
 const port = 3007

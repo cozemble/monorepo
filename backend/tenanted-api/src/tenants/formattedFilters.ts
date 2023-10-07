@@ -1,4 +1,4 @@
-import {
+import type {
   FilledFilterInstance,
   FilledFilterInstanceGroup,
 } from '@cozemble/backend-tenanted-api-types'
@@ -16,6 +16,7 @@ function toRhs(f: FilledFilterInstance) {
   if (operation.postgresComparator._type === 'literal.postgres.comparator') {
     return `${operation.postgresComparator.value} '${rhsValue}'`
   } else {
+    // @ts-ignore
     return postgresComparatorTemplateFns.fillValue(operation.postgresComparator, rhsValue)
   }
 }

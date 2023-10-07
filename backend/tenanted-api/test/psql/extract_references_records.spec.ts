@@ -1,6 +1,6 @@
-import { appWithTestContainer } from '../../src/appWithTestContainer.ts'
+import { appWithTestContainer } from '../../src/appWithTestContainer.js'
 import { beforeAll, describe, expect, test } from 'vitest'
-import { withAdminPgClient } from '../../src/infra/postgresPool.ts'
+import { withAdminPgClient } from '../../src/infra/postgresPool.js'
 
 const jwtSigningSecret = 'secret'
 const port = 3008

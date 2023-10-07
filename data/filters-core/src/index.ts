@@ -1,41 +1,45 @@
-export { filterActions, FilterAction, FilterActionHandler } from './actions.js'
+export { filterActions, type FilterAction, type FilterActionHandler } from './actions.ts'
 
-export {
+export type {
   FilterGroupList,
   FilterGroup,
-  filterGroupListFns,
   FilterInstanceList,
   LhsOption,
-  lhsOption,
-  filterInstance,
   FilterGroupContents,
   FilterInstance,
-  filterInstanceFns,
   FilterOperator,
-  filterOperatorFns,
   Conjunction,
   FilterDataType,
   SelectableRhsOption,
   UserSuppliedRhsOption,
-  selectableRhsOption,
-  userSuppliedRhsOption,
   IdAndLabel,
   RhsOptionType,
-  idAndLabel,
-  userSuppliedRhsOptionWithValue,
   SelectableRhsOptionWithSelection,
   UserSuppliedRhsOptionWithValue,
   SelectedRhsOptionType,
-  selectableRhsOptionWithSelection,
   RealWorldRhsOption,
+} from './types.ts'
+
+export {
+  filterGroupListFns,
+  lhsOption,
+  filterInstance,
+  filterInstanceFns,
+  filterOperatorFns,
+  selectableRhsOption,    
+  userSuppliedRhsOption,
+  idAndLabel,
+  userSuppliedRhsOptionWithValue,
+  selectableRhsOptionWithSelection,
   realWorldRhsOption,
   postgresComparatorTemplateFns,
-} from './types.js'
+} from './types.ts'
+
 
 export {
   partiallyAppliedFilterGroupListReducer,
-  FilterGroupListReducer,
-} from './filterGroupListReducer.js'
+  type FilterGroupListReducer,
+} from './filterGroupListReducer.ts'
 
 export {
   beforeFilterOperator,
@@ -49,4 +53,4 @@ export {
   isNotNullFilterOperator,
   containsFilterOperator,
   startsWithFilterOperator,
-} from './operators.js'
+} from './operators.ts'
