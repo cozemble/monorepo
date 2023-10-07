@@ -6,7 +6,7 @@
   import user from '$lib/stores/user'
   import LoginForm from './LoginForm.svelte'
   import SignupForm from './SignupForm.svelte'
-  import SocialSignIn from './SocialSignIn.svelte'
+  import OAuthProviders from './OAuthProviders.svelte'
 
   export let form: Record<string, string>
 
@@ -64,6 +64,6 @@
     {/if}
 
     <div class="divider my-10 text-base-content/40">or</div>
-    <SocialSignIn {supabase} />
+    <OAuthProviders {supabase} />
   </div>
 </section>
