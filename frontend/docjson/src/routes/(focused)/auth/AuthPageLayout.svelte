@@ -50,20 +50,20 @@
     <div class="divider my-5 opacity-60" />
 
     <div class="flex justify-center">
-      <button class="link-hover text-base  opacity-70 hover:opacity-100" on:click={goToOtherPage}>
+      <button class="link-hover text-base opacity-70 hover:opacity-100" on:click={goToOtherPage}>
         {otherPageLinkName}
       </button>
     </div>
 
     <!-- Terms of service note -->
-    <div class="mt-14 text-xs text-center opacity-40">
+    <div class="mt-14 text-xs text-center text-base-content/50">
       By continuing, you agree to our
 
       <!-- TODO proper links for terms and privacy pages -->
-      <a href="/coming-soon" class="link"> Terms of Service</a>
+      <a href="/coming-soon" class="link hover:text-base-content/80"> Terms of Service</a>
 
       and
-      <a href="/coming-soon" class="link"> Privacy Policy </a>
+      <a href="/coming-soon" class="link hover:text-base-content/80"> Privacy Policy </a>
     </div>
   </div>
 
