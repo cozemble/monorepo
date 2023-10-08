@@ -22,22 +22,11 @@
   })
 </script>
 
-<!-- TODO decide if we need these forms in different pages or in the same page -->
 <!-- TODO LATER heading typing animation change -->
 
-<!--  TODO forgot password functionality -->
-
-<!-- bg-gradient-to-b from-primary/20 to-accent/50 text-base-content -->
 <section
-  class="form-section w-full flex-grow flex flex-col md:flex-row gap-6 md:gap-20 lg:gap-[15vw] items-center justify-center rounded-xl
-
-"
+  class="w-full flex-grow flex flex-col md:flex-row gap-6 md:gap-20 lg:gap-[15vw] items-center justify-center"
 >
-  <!-- bg gradient divs -->
-  <div class="absolute top-1/2 left-2/3 w-32 h-32 -z-40 bg-primary/80 blur-3xl " />
-  <div class="absolute top-2/3 left-1/2 w-32 h-32 -z-40 bg-secondary/60 blur-3xl " />
-  <div class="absolute top-1/3 left-1/3 w-32 h-32 -z-40 bg-accent/80 blur-3xl " />
-
   <div class="text-center md:text-start">
     <h1 class="lg:text-5xl xl:text-6xl 2xl:text-7xl mb-4 ">Welcome back!</h1>
     <p class="lg:text-xl opacity-50 tracking-tighter">
@@ -54,8 +43,6 @@
     <h2 class="mb-8">
       {presentForm === 'login' ? 'Log in' : 'Sign up'}
     </h2>
-
-    <!-- <div class="divider" /> -->
 
     {#if presentForm === 'login'}
       <LoginForm {switchForm} {form} />
