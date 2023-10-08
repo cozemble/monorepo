@@ -22,9 +22,9 @@
   class="w-full flex-grow flex flex-col md:flex-row gap-6 md:gap-20 lg:gap-[15vw] items-center justify-center"
 >
   <div class="text-center md:text-start">
-    <h1 class="lg:text-5xl xl:text-6xl 2xl:text-7xl mb-4 ">Welcome back!</h1>
+    <h1 class="lg:text-5xl xl:text-6xl 2xl:text-7xl mb-4 ">Get started!</h1>
     <p class="lg:text-xl opacity-50 tracking-tighter">
-      Sign in or create an account to get started.
+      Create an account to start using our services
     </p>
   </div>
 
@@ -39,6 +39,7 @@
     <SignupForm {form} />
 
     <div class="divider my-10 text-base-content/40">or</div>
+
     <OAuthProviders {supabase} />
   </div>
 </section>

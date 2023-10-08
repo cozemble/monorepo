@@ -25,9 +25,7 @@
 >
   <div class="text-center md:text-start">
     <h1 class="lg:text-5xl xl:text-6xl 2xl:text-7xl mb-4 ">Welcome back!</h1>
-    <p class="lg:text-xl opacity-50 tracking-tighter">
-      Sign in or create an account to get started.
-    </p>
+    <p class="lg:text-xl opacity-50 tracking-tighter">Sign in to your account to continue</p>
   </div>
 
   <div
