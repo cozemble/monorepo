@@ -45,10 +45,4 @@
     <Icon icon="logos:google-icon" class="w-6 h-6" />
     <span>Continue with Google</span>
   </button>
-
-  <!-- SSO button -->
-  <button class="btn btn-link text-neutral w-full">
-    <Icon icon="mdi:lock-outline" class="w-6 h-6" />
-    <span>Continue with SSO</span>
-  </button>
 </div>

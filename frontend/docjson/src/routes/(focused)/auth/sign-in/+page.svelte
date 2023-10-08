@@ -1,5 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte'
+  import Icon from '@iconify/svelte'
+
   import { page } from '$app/stores'
   import { goto } from '$app/navigation'
 
@@ -39,6 +41,13 @@
     <LoginForm {form} />
 
     <div class="divider my-10 text-base-content/40">or</div>
+
     <OAuthProviders {supabase} />
+
+    <!-- SSO -->
+    <button class="btn btn-link text-neutral w-full mt-3">
+      <Icon icon="mdi:lock-outline" class="w-6 h-6" />
+      <span>Continue with SSO</span>
+    </button>
   </div>
 </section>
