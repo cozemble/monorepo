@@ -1,6 +1,7 @@
 import { AuthApiError } from '@supabase/supabase-js'
 import { fail, type Actions, redirect } from '@sveltejs/kit'
 
+// TODO move these actions to relevant files
 export const actions: Actions = {
   signin: async ({ request, locals: { supabase } }) => {
     const formData = await request.formData()
