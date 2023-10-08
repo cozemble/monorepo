@@ -22,8 +22,11 @@
  -->
 
 <section
-  class="w-full flex-grow flex flex-col md:flex-row gap-6 md:gap-20 lg:gap-[10vw] items-center justify-start rounded-xl
- "
+  class="w-full flex-grow flex 
+  flex-col-reverse md:flex-row 
+  gap-6 md:gap-20 lg:gap-[10vw] 
+  items-start justify-start rounded-xl
+  "
 >
   <!-- Background decoration -->
   <div class="absolute top-1/2 left-2/3 w-32 h-32 -z-40 bg-primary/80 blur-[20em] " />
@@ -32,23 +35,27 @@
 
   <!-- Form section -->
   <div
-    class="w-[45vw] p-52 py-12 h-full 
-    bg-base-100/70 backdrop-blur-3xl
-    border-r border-base-300
+    class="w-full md:w-[45vw] 
+    p-4 md:px-[5vw] xl:py-12 xl:px-[8vw] 2xl:px-[11vw] 
+    h-full 
+    md:bg-base-100/70 backdrop-blur-3xl
+    md:border-r md:border-base-300
     "
   >
-    <h2 class="mb-8">
+    <h2 class="mb-4 md:mb-8 text-2xl md:text-3xl">
       {formTitle}
     </h2>
 
     <slot name="form" />
-    <div class="divider my-10 text-base-content/40">or</div>
+    <div class="divider my-5 2xl:my-10 text-base-content/40">or</div>
 
     <OAuthProviders {supabase} />
     <slot name="sso" />
 
-    <div class="divider my-5 opacity-60" />
+    <div class="divider my-2 2xl:my-5 opacity-60" />
 
+    <!-- Link to the other page -->
+    <!-- TODO make this more accessible (maybe a link at the header) -->
     <div class="flex justify-center">
       <button class="link-hover text-base opacity-70 hover:opacity-100" on:click={goToOtherPage}>
         {otherPageLinkName}
@@ -68,12 +75,12 @@
   </div>
 
   <!-- Section on the right -->
-  <div class="text-center md:text-start">
+  <div class="text-center md:text-start md:mt-[40vh]">
     <!-- TODO LATER MAYBE: heading typing animation -->
-    <h1 class="lg:text-4xl 2xl:text-5xl mb-4">
+    <h1 class="mb-2 xl:mb-4 lg:text-5xl 2xl:text-6xl ">
       {heading}
     </h1>
-    <p class="lg:text-lg opacity-50 tracking-tighter">
+    <p class="2xl:text-lg opacity-50 tracking-tighter">
       {subheading}
     </p>
   </div>
