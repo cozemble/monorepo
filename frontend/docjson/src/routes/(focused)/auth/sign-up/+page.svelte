@@ -4,16 +4,10 @@
   import { goto } from '$app/navigation'
 
   import user from '$lib/stores/user'
-  import LoginForm from './LoginForm.svelte'
   import SignupForm from './SignupForm.svelte'
-  import OAuthProviders from './OAuthProviders.svelte'
+  import OAuthProviders from '../OAuthProviders.svelte'
 
   export let form: Record<string, string>
-
-  let presentForm: 'login' | 'signup' = 'signup'
-  const switchForm = () => {
-    presentForm = presentForm === 'login' ? 'signup' : 'login'
-  }
 
   $: supabase = $page?.data?.supabase
 
@@ -40,15 +34,9 @@
      glass bg-base-300/30 border-2 border-solid border-base-300
      "
   >
-    <h2 class="mb-8">
-      {presentForm === 'login' ? 'Log in' : 'Sign up'}
-    </h2>
+    <h2 class="mb-8">Sign up</h2>
 
-    {#if presentForm === 'login'}
-      <LoginForm {switchForm} {form} />
-    {:else}
-      <SignupForm {switchForm} {form} />
-    {/if}
+    <SignupForm {form} />
 
     <div class="divider my-10 text-base-content/40">or</div>
     <OAuthProviders {supabase} />

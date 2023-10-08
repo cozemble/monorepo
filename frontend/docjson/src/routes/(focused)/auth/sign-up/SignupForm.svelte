@@ -5,9 +5,14 @@
 
   import FormInput from '$lib/components/form/FormInput.svelte'
   import notifications from '$lib/stores/notifications'
+  import { goto } from '$app/navigation'
 
-  export let switchForm: () => void
   export let form: Record<string, string>
+
+  const goToLogin = () => {
+    console.log('go to login')
+    goto(`/auth/sign-in`)
+  }
 
   let helperText: HelperText = { error: false, text: null }
 
@@ -141,7 +146,10 @@
   <div class="flex flex-col items-center mt-6">
     <button type="submit" class="btn btn-primary w-full" on:click={onSubmit}>Sign in</button>
 
-    <button class="link-hover pt-2 text-sm opacity-50 hover:opacity-70" on:click={switchForm}>
+    <button
+      class="link-hover pt-2 text-sm opacity-50 hover:opacity-70"
+      on:click|preventDefault={goToLogin}
+    >
       already have an account?
     </button>
   </div>
