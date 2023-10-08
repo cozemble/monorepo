@@ -14,4 +14,3 @@
 >
   <SignupForm {form} slot="form" />
 </AuthPageLayout>
-```

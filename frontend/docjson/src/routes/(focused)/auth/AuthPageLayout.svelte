@@ -54,6 +54,17 @@
         {otherPageLinkName}
       </button>
     </div>
+
+    <!-- Terms of service note -->
+    <div class="mt-14 text-xs text-center opacity-40">
+      By continuing, you agree to our
+
+      <!-- TODO proper links for terms and privacy pages -->
+      <a href="/coming-soon" class="link"> Terms of Service</a>
+
+      and
+      <a href="/coming-soon" class="link"> Privacy Policy </a>
+    </div>
   </div>
 
   <!-- Section on the right -->

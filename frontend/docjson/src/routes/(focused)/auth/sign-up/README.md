@@ -4,9 +4,9 @@
   - Form:
     - email
     - password
-    - accept Terms of Service (required)
   - [OAuth Providers](../README.md#oauth-providers)
   - Go to sign in page (if user already has an account)
+  - Accept Terms of Service as a note
 
   - ## On auth success
     - Create user

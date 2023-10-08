@@ -14,7 +14,6 @@
     name: '',
     email: '',
     password: '',
-    term: false,
   }
   $: if (form?.name) values.name = form.name
   $: if (form?.email) values.email = form.email
@@ -30,16 +29,12 @@
       .max(24, 'Name should be shorter than 24 characters'),
     email: z.string().email('Please provide a valid email address'),
     password: z.string().min(8, 'Password should be minimum 8 characters'),
-    term: z.literal(true, {
-      errorMap: () => ({ message: 'You must accept the terms & conditions' }),
-    }),
   })
 
   let errors = writable<{
     name?: string
     email?: string
     password?: string
-    term?: string
   }>({})
 
   //
@@ -58,7 +53,6 @@
         name: errs.name?.[0],
         email: errs.email?.[0],
         password: errs.password?.[0],
-        term: errs.term?.[0],
       })
 
       notifications.create({
@@ -119,24 +113,6 @@
   />
 
   <!-- TODO move and transform this to a note at the bottom of the form -->
-  <div class="form-control">
-    <label class="label cursor-pointer">
-      <input
-        type="checkbox"
-        name="term"
-        bind:checked={values.term}
-        class="checkbox checkbox-primary"
-      />
-      <span class="label-text">I accept the privacy policy and terms of use </span>
-    </label>
-
-    <label for="term" class="label text-error pb-0 pt-1">
-      <div />
-      <label for="" class="label-text-alt text-error">
-        {$errors?.term || ''}
-      </label>
-    </label>
-  </div>
 
   <div class="flex flex-col items-center mt-6">
     <button type="submit" class="btn btn-primary w-full" on:click={onSubmit}>Sign in</button>
