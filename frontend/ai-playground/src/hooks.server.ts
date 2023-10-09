@@ -25,13 +25,15 @@ const handleRateLimit: Handle = async ({ event, resolve }) => {
 
     console.log(success)
 
-    event.setHeaders({ 'X-RateLimit-Limit': limit.toString() })
-    event.setHeaders({ 'X-RateLimit-Remaining': remaining.toString() })
-    event.setHeaders({ 'X-RateLimit-Reset': reset.toString() })
+    event.setHeaders({
+      'X-RateLimit-Limit': limit.toString(),
+      'X-RateLimit-Remaining': remaining.toString(),
+      'X-RateLimit-Reset': reset.toString(),
+    })
   }
 
   const response = await resolve(event)
   return response
 }
 
-export const handle = sequence(handleRateLimit)
+export const handle: Handle = sequence(handleRateLimit)
