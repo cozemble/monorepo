@@ -19,4 +19,8 @@
       - Google
       - LinkedIn
    
+  - ## Auth access
+    All pages in this directory are only accessible if the user is not authenticated.
+    - Redirect to [Dashboard](../../../dashboard/README.md) page if user is already authenticated
+
   > TODO IF NEEDED: 2fa

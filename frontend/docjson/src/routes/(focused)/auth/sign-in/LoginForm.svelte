@@ -2,7 +2,6 @@
   import { enhance } from '$app/forms'
   import FormInput from '$lib/components/form/FormInput.svelte'
 
-  export let switchForm: () => void
   export let form: Record<string, string>
 </script>
 
@@ -20,8 +19,5 @@
 
   <div class="flex flex-col items-center mt-6">
     <button type="submit" class="btn btn-primary w-full">Sign in</button>
-    <button class="link-hover pt-2 text-sm opacity-50 hover:opacity-70" on:click={switchForm}>
-      or create an account
-    </button>
   </div>
 </form>
