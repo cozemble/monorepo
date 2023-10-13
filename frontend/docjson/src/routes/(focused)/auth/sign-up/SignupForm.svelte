@@ -113,6 +113,6 @@
   />
 
   <div class="flex flex-col items-center mt-6">
-    <button class="btn btn-primary w-full">Sign in</button>
+    <button class="btn btn-primary w-full">Sign up</button>
   </div>
 </form>
