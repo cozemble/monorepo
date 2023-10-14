@@ -14,7 +14,7 @@
     Forgot password?
   </h1>
 
-  <p class="text-center text-sm md:text-base lg:text-lg opacity-60">
+  <p class="mb-10 lg:mb-14 text-center text-sm md:text-base lg:text-lg opacity-60">
     Enter your email address and we will send you a link to reset your password.
   </p>
 

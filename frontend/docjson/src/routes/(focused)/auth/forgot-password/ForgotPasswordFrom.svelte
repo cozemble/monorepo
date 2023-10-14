@@ -59,11 +59,7 @@
   }
 </script>
 
-<form
-  method="post"
-  on:submit|preventDefault={onSubmit}
-  class="mt-10 lg:mt-14 w-full flex flex-col "
->
+<form method="post" on:submit|preventDefault={onSubmit} class="w-full flex flex-col ">
   <FormInput name="Email Address" bind:value {error} placeholder="you@example.com" />
 
   <!-- TODO change to a loading button -->
