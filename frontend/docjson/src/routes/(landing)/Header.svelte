@@ -22,7 +22,7 @@
       <a class="link-hover normal-case hidden sm:block" href="/pricing"> Pricing </a>
 
       {#if $user.isGuest}
-        <a href="/coming-soon" class="btn btn-primary btn-sm normal-case"> Sign Up </a>
+        <a href="/auth/sign-up" class="btn btn-primary btn-sm normal-case"> Sign Up </a>
       {:else}
         <a href="/coming-soon" class="btn btn-primary btn-sm normal-case"> Dashboard </a>
       {/if}
