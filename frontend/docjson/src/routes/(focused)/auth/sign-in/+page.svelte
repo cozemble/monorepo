@@ -16,7 +16,7 @@
 
   <!-- TODO handle SSO -->
   <!-- SSO -->
-  <button slot="sso" class="btn btn-link text-neutral w-full mt-3">
+  <button slot="sso" class="btn btn-link text-neutral w-full mt-3" disabled title="Coming soon">
     <Icon icon="mdi:lock-outline" class="w-6 h-6" />
     <span>Continue with SSO</span>
   </button>
