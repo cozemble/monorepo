@@ -122,8 +122,9 @@
   />
 
   <!-- Forgot password button -->
-  <a href="/forgot-password" class="label-text-alt link-hover text-sm opacity-50 hover:opacity-70"
-    >Forgot password?</a
+  <a
+    href="/auth/forgot-password"
+    class="label-text-alt link-hover text-sm opacity-50 hover:opacity-70">Forgot password?</a
   >
 
   <div class="flex flex-col items-center mt-6">
