@@ -29,9 +29,9 @@
   "
 >
   <!-- Background decoration -->
-  <div class="absolute top-1/2 left-2/3 w-32 h-32 -z-40 bg-primary/80 blur-[20em] " />
-  <div class="absolute top-2/3 left-1/2 w-32 h-32 -z-40 bg-secondary/60 blur-[20em] " />
-  <div class="absolute top-1/3 left-1/3 w-32 h-32 -z-40 bg-accent/80 blur-[20em] " />
+  <div class="absolute top-1/2 left-2/3 w-32 h-32 -z-40 bg-primary/80 blur-[6rem] " />
+  <div class="absolute top-2/3 left-1/2 w-32 h-32 -z-40 bg-secondary/60 blur-[6rem] " />
+  <div class="absolute top-1/3 left-1/3 w-32 h-32 -z-40 bg-accent/80 blur-[6rem] " />
 
   <!-- Form section -->
   <div
