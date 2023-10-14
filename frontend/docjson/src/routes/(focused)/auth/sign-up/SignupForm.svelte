@@ -3,24 +3,11 @@
   import { writable } from 'svelte/store'
   import { z } from 'zod'
 
-  import FormInput from '$lib/components/form/FormInput.svelte'
+  import { page } from '$app/stores'
   import notifications from '$lib/stores/notifications'
+  import FormInput from '$lib/components/form/FormInput.svelte'
 
-  export let form: Record<string, string>
-
-  let helperText: HelperText = { error: false, text: null }
-
-  let values = {
-    name: '',
-    email: '',
-    password: '',
-  }
-  $: if (form?.name) values.name = form.name
-  $: if (form?.email) values.email = form.email
-
-  $: console.log(values)
-
-  //
+  $: supabase = $page.data.supabase
 
   const Schema = z.object({
     name: z
@@ -31,70 +18,83 @@
     password: z.string().min(8, 'Password should be minimum 8 characters'),
   })
 
-  let errors = writable<{
-    name?: string
-    email?: string
-    password?: string
-  }>({})
+  type Values = z.infer<typeof Schema>
+
+  let values: Values = {
+    name: '',
+    email: '',
+    password: '',
+  }
+
+  let errors = writable<Partial<Values>>({})
+
+  // let helperText: HelperText = { error: false, text: null }
 
   //
 
   const onSubmit: EventHandler = async () => {
+    // Validation
+
     errors.set({})
 
     const validation = Schema.safeParse(values)
 
     if (!validation.success) {
       const errs = validation.error.flatten().fieldErrors
-
-      console.error(errs)
-
       errors.set({
         name: errs.name?.[0],
         email: errs.email?.[0],
         password: errs.password?.[0],
       })
 
-      notifications.create({
-        text: 'Error',
-        description: 'Please check the form for errors',
-        type: 'error',
-        duration: 2000,
-      })
-
       return
     }
 
-    // mock the behavior for now
-    // <!-- TODO actual sign up -->
+    // Send request
 
-    console.warn(validation.data)
-
-    const notification = notifications.create({
+    const loadingNotification = notifications.create({
       text: 'Signing up',
       description: 'Please wait while we sign you up',
       type: 'loading',
       isClosable: false,
     })
 
-    setTimeout(() => {
-      notification.handleClose()
+    const { error } = await supabase.auth.signUp({
+      email: values.email,
+      password: values.password,
+      options: {
+        data: { name: values.name },
+        emailRedirectTo: window.location.origin + `/auth/callback`,
+      },
+    })
+
+    loadingNotification.handleClose()
+
+    // Response handling
+
+    if (error) {
       notifications.create({
-        text: 'Success',
-        description: 'You have been signed up successfully',
-        type: 'success',
-        duration: 2000,
+        text: 'Error',
+        description: error.message,
+        type: 'error',
+        duration: 5000,
       })
-    }, 2000)
+
+      return
+    }
+
+    // <!-- TODO determine if this is the best way to tell user to check their email -->
+    notifications.create({
+      text: 'Success',
+      description: 'Please check your email to verify your account',
+      type: 'success',
+      isClosable: true,
+    })
   }
 </script>
 
-<!-- TODO display check your email after submit -->
-
-<!-- svelte-ignore empty-block -->
-{#if !!helperText.text}{/if}
-
-<form>
+<!-- method is set to post just in case to prevent security issues -->
+<form method="post" on:submit|preventDefault={onSubmit}>
   <FormInput name="name" bind:value={values.name} error={$errors?.name} placeholder="Your Name" />
 
   <FormInput
@@ -112,9 +112,7 @@
     type="password"
   />
 
-  <!-- TODO move and transform this to a note at the bottom of the form -->
-
   <div class="flex flex-col items-center mt-6">
-    <button type="submit" class="btn btn-primary w-full" on:click={onSubmit}>Sign in</button>
+    <button class="btn btn-primary w-full">Sign up</button>
   </div>
 </form>

@@ -30,18 +30,27 @@
     <span>Continue with GitHub</span>
   </button>
 
+  <!-- TODO implement Linkedin oauth and enable this -->
   <!-- Sign in with Linkedin button -->
   <button
     class="btn bg-[#0072b1] hover:bg-[#07537c] text-base-100 w-full"
     on:click={() => handleOAuthLogin('linkedin')}
+    disabled
+    title="Coming soon"
   >
     <!-- <Icon icon="logos:linkedin-icon" class="w-6 h-6" /> -->
     <Icon icon="line-md:linkedin" class="w-6 h-6" />
     <span>Continue with Linkedin</span>
   </button>
 
+  <!-- TODO implement Google oauth and enable this -->
   <!-- Sign in with Google button -->
-  <button class="btn  w-full" on:click={() => handleOAuthLogin('google')}>
+  <button
+    class="btn  w-full"
+    on:click={() => handleOAuthLogin('google')}
+    disabled
+    title="Coming soon"
+  >
     <Icon icon="logos:google-icon" class="w-6 h-6" />
     <span>Continue with Google</span>
   </button>

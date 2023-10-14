@@ -3,8 +3,6 @@
 
   import AuthPageLayout from '../AuthPageLayout.svelte'
   import LoginForm from './LoginForm.svelte'
-
-  export let form: Record<string, string>
 </script>
 
 <AuthPageLayout
@@ -14,10 +12,11 @@
   otherPageLinkName="don't have an account yet?"
   otherPageLink="/auth/sign-up"
 >
-  <LoginForm {form} slot="form" />
+  <LoginForm slot="form" />
 
+  <!-- TODO handle SSO -->
   <!-- SSO -->
-  <button slot="sso" class="btn btn-link text-neutral w-full mt-3">
+  <button slot="sso" class="btn btn-link text-neutral w-full mt-3" disabled title="Coming soon">
     <Icon icon="mdi:lock-outline" class="w-6 h-6" />
     <span>Continue with SSO</span>
   </button>

@@ -1,7 +1,7 @@
 // TODO user settings
 // TODO user API keys
 
-import { writable, type Readable, derived } from 'svelte/store'
+import { writable, type Readable, derived, get } from 'svelte/store'
 import type { Session } from '@supabase/supabase-js'
 import { page } from '$app/stores'
 
@@ -19,10 +19,6 @@ interface User {
 
 //
 
-const session: Readable<Session | null> = derived(page, ($page) => {
-  return $page?.data?.session ?? null
-})
-
 // TODO fetch user details from supabase
 const details = writable<UserDetails>({
   id: 'mock-user',
@@ -36,11 +32,12 @@ const details = writable<UserDetails>({
  * - isGuest: true if session is null
  * - details: user details
  */
-const user: Readable<User> = derived([session, details], ([$session, $details]) => {
-  const isGuest = $session ? false : true
+const user: Readable<User> = derived([page, details], ([$page, $details]) => {
+  const session = $page?.data?.session ?? null
+  const isGuest = session ? false : true
 
   return {
-    session: $session,
+    session,
     isGuest,
     details: $details,
   }

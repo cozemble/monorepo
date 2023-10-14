@@ -1,8 +1,6 @@
 <script lang="ts">
   import SignupForm from './SignupForm.svelte'
   import AuthPageLayout from '../AuthPageLayout.svelte'
-
-  export let form: Record<string, string>
 </script>
 
 <AuthPageLayout
@@ -12,5 +10,5 @@
   otherPageLinkName="already have an account?"
   otherPageLink="/auth/sign-in"
 >
-  <SignupForm {form} slot="form" />
+  <SignupForm slot="form" />
 </AuthPageLayout>
