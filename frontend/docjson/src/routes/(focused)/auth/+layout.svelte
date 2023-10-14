@@ -11,8 +11,10 @@
     const path = $page.url.pathname
 
     if (path === '/auth/sign-out') return
+    if (path === '/auth/reset-password') return
 
     if (!$user.isGuest) goto('/dashboard')
+    if (path === '/auth/reset-password') goto('/auth/sign-in')
   })
 </script>
 
