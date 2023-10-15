@@ -5,6 +5,7 @@
 
   export let supabase: SupabaseClient
 
+  // <!-- TODO bring in their guest data if signing up -->
   const handleOAuthLogin = async (provider: Provider) => {
     let { error } = await supabase.auth.signInWithOAuth({
       provider,
@@ -15,8 +16,6 @@
     if (error) console.log('OAuth Error:', error.message)
   }
 </script>
-
-<!-- TODO functionality -->
 
 <!-- Social sign in buttons -->
 <div class=" flex flex-col gap-3">

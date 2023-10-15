@@ -59,6 +59,7 @@
       isClosable: false,
     })
 
+    // <!-- TODO bring in their guest data -->
     const { error } = await supabase.auth.signUp({
       email: values.email,
       password: values.password,
