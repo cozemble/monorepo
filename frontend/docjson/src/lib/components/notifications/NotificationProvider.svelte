@@ -2,6 +2,7 @@
   import notifications from '$lib/stores/notifications'
   import Notification from './Notification.svelte'
 
+  // <!-- TODO prevent duplicate notifications -->
   notifications.create({
     text: 'This is an early prototype',
     description: 'No functionality is implemented yet',
