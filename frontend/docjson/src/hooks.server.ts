@@ -1,9 +1,11 @@
-import { PUBLIC_SUPABASE_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public'
+import { redirect, type Handle } from '@sveltejs/kit'
+import { sequence } from '@sveltejs/kit/hooks'
 import { createSupabaseServerClient } from '@supabase/auth-helpers-sveltekit'
-import type { Database } from '$lib/types/database.types'
-import type { Handle } from '@sveltejs/kit'
 
-export const handle: Handle = async ({ event, resolve }) => {
+import { PUBLIC_SUPABASE_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public'
+import type { Database } from '$lib/types/database.types'
+
+const supabaseHandler: Handle = async ({ event, resolve }) => {
   event.locals.supabase = createSupabaseServerClient<Database>({
     supabaseKey: PUBLIC_SUPABASE_KEY,
     supabaseUrl: PUBLIC_SUPABASE_URL,
@@ -24,5 +26,31 @@ export const handle: Handle = async ({ event, resolve }) => {
   })
 }
 
-// Add more handlers
-// export const handle = sequence(handleSession)
+/** Handle route protection, should be run after supabaseHandler */
+const routeProtectionHandler: Handle = async ({ event, resolve }) => {
+  const path = event.url.pathname
+
+  const session = await event.locals.getSession()
+
+  if (path === '/auth/sign-in' || path === '/auth/sign-up' || path === '/auth/forgot-password') {
+    if (session) {
+      throw redirect(303, '/')
+    }
+  }
+
+  if (path === '/auth/sign-out' || path === '/auth/reset-password') {
+    if (!session) {
+      throw redirect(303, '/auth/sign-in')
+    }
+  }
+
+  if (path.startsWith('/dashboard')) {
+    if (!session) {
+      throw redirect(303, '/auth/sign-in')
+    }
+  }
+
+  return resolve(event)
+}
+
+export const handle = sequence(supabaseHandler, routeProtectionHandler)
