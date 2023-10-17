@@ -1,27 +1,5 @@
 <script lang="ts">
-  import { page } from '$app/stores'
-  import { onMount } from 'svelte'
   import UpdatePasswordForm from './UpdatePasswordForm.svelte'
-  import user from '$lib/stores/user'
-  import { goto } from '$app/navigation'
-
-  $: supabase = $page.data.supabase
-
-  onMount(async () => {
-    const code = $page.url.searchParams.get('code')
-
-    const unauthorized = !code && $user.isGuest
-
-    // <!-- TODO unify all authorization rules to prevent duplications and collisions -->
-    if (unauthorized) {
-      goto('/auth/sign-in')
-      return
-    }
-
-    // <!-- TODO make sure if this is the right place to do this -->
-    // call the Supabase API to exchange the code for a session
-    if (code) await supabase.auth.exchangeCodeForSession(code)
-  })
 </script>
 
 <div
