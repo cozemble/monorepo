@@ -50,7 +50,6 @@
     <div class="divider my-5 2xl:my-10 text-base-content/40">or</div>
 
     <OAuthProviders {supabase} />
-    <slot name="sso" />
 
     <div class="divider my-2 2xl:my-5 opacity-60" />
 
