@@ -1,4 +1,6 @@
 <script lang="ts">
+  import user from '$lib/stores/user'
+  import ForgotPasswordFrom from './ForgotPasswordFrom.svelte'
   import UpdatePasswordForm from './UpdatePasswordForm.svelte'
 </script>
 
@@ -18,5 +20,23 @@
     Enter your new password
   </p>
 
-  <UpdatePasswordForm />
+  {#if $user.isGuest}
+    <ForgotPasswordFrom />
+
+    <span class="mt-14 text-sm text-base-content/70">
+      If you still need help, check out
+      <a href="/contact" class="link hover:text-secondary">Contact </a>
+    </span>
+
+    <div class="join mt-4">
+      <a href="/auth/sign-in" class="mt-4 btn btn-ghost btn-sm join-item">Sign in</a>
+      <a href="/auth/sign-up" class="mt-4 btn btn-ghost btn-sm join-item">Sign Up</a>
+    </div>
+
+    <!--  -->
+  {:else}
+    <UpdatePasswordForm />
+  {/if}
+
+  <!--  -->
 </div>

@@ -4,11 +4,10 @@
   ## Pages
   - [/sign-in](./sign-in/README.md)
   - [/sign-up](./sign-up/README.md)
-  - [/forgot-password](./forgot-password/README.md)
   - [/reset-password](./reset-password/README.md)
   - /callback
     Utility page for oauth providers to redirect to after authenticating the user.
-    - Redirects to the [Dashboard](../../dashboard/README.md) page if sign-in was successful.
+    - Redirects to the given `redirectTo` parameter or [Dashboard](../../dashboard/README.md) page if sign-in was successful.
     - Redirects to the [Sign In](./sign-in/README.md) page if sign-in was unsuccessful.
   - /sign-out
     Utility page for signing out.

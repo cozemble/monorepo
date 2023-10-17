@@ -32,13 +32,13 @@ const routeProtectionHandler: Handle = async ({ event, resolve }) => {
 
   const session = await event.locals.getSession()
 
-  if (path === '/auth/sign-in' || path === '/auth/sign-up' || path === '/auth/forgot-password') {
+  if (path === '/auth/sign-in' || path === '/auth/sign-up') {
     if (session) {
       throw redirect(303, '/')
     }
   }
 
-  if (path === '/auth/sign-out' || path === '/auth/reset-password') {
+  if (path === '/auth/sign-out') {
     if (!session) {
       throw redirect(303, '/auth/sign-in')
     }
