@@ -1,6 +1,8 @@
 <script lang="ts">
-  import { invalidate } from '$app/navigation'
   import { onMount } from 'svelte'
+  import { invalidate } from '$app/navigation'
+
+  import NotificationProvider from '$lib/components/notifications/NotificationProvider.svelte'
 
   export let data
 
@@ -21,3 +23,5 @@
 </script>
 
 <slot />
+
+<NotificationProvider />

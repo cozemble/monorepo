@@ -1,27 +1,7 @@
 <script lang="ts">
-  import { page } from '$app/stores'
-  import { onMount } from 'svelte'
-  import UpdatePasswordForm from './UpdatePasswordForm.svelte'
   import user from '$lib/stores/user'
-  import { goto } from '$app/navigation'
-
-  $: supabase = $page.data.supabase
-
-  onMount(async () => {
-    const code = $page.url.searchParams.get('code')
-
-    const unauthorized = !code && $user.isGuest
-
-    // <!-- TODO unify all authorization rules to prevent duplications and collisions -->
-    if (unauthorized) {
-      goto('/auth/sign-in')
-      return
-    }
-
-    // <!-- TODO make sure if this is the right place to do this -->
-    // call the Supabase API to exchange the code for a session
-    if (code) await supabase.auth.exchangeCodeForSession(code)
-  })
+  import ForgotPasswordFrom from './ForgotPasswordFrom.svelte'
+  import UpdatePasswordForm from './UpdatePasswordForm.svelte'
 </script>
 
 <div
@@ -40,5 +20,23 @@
     Enter your new password
   </p>
 
-  <UpdatePasswordForm />
+  {#if $user.isGuest}
+    <ForgotPasswordFrom />
+
+    <span class="mt-14 text-sm text-base-content/70">
+      If you still need help, check out
+      <a href="/contact" class="link hover:text-secondary">Contact </a>
+    </span>
+
+    <div class="join mt-4">
+      <a href="/auth/sign-in" class="mt-4 btn btn-ghost btn-sm join-item">Sign in</a>
+      <a href="/auth/sign-up" class="mt-4 btn btn-ghost btn-sm join-item">Sign Up</a>
+    </div>
+
+    <!--  -->
+  {:else}
+    <UpdatePasswordForm />
+  {/if}
+
+  <!--  -->
 </div>

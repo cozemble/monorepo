@@ -1,18 +1,6 @@
 <script lang="ts">
   import notifications from '$lib/stores/notifications'
   import Notification from './Notification.svelte'
-
-  // <!-- TODO prevent duplicate notifications -->
-  notifications.create({
-    text: 'This is an early prototype',
-    description: 'No functionality is implemented yet',
-    type: 'neutral',
-    isClosable: true,
-    // duration: 2000,
-    icon: 'wpf:maintenance',
-  })
-
-  $: console.log($notifications)
 </script>
 
 <div

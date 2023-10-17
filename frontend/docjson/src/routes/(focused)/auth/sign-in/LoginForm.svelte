@@ -123,7 +123,7 @@
 
   <!-- Forgot password button -->
   <a
-    href="/auth/forgot-password"
+    href="/auth/reset-password"
     class="label-text-alt link-hover text-sm opacity-50 hover:opacity-70">Forgot password?</a
   >
 

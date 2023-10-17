@@ -34,7 +34,7 @@
     })
 
     const { error: ReqError } = await supabase.auth.resetPasswordForEmail(value, {
-      redirectTo: $page.url.origin + '/auth/reset-password',
+      redirectTo: $page.url.origin + '/auth/callback?redirectTo=/auth/reset-password',
     })
 
     loadingNotification.handleClose()

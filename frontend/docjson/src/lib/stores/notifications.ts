@@ -94,6 +94,17 @@ const close = (id: string) => {
   )
 }
 
+// TODO remove this when the app is ready
+// A notification to show when the app is in early prototype
+create({
+  text: 'This is an early prototype',
+  description: 'No functionality is implemented yet',
+  type: 'neutral',
+  isClosable: true,
+  // duration: 2000,
+  icon: 'wpf:maintenance',
+})
+
 export default {
   ...notificationStore,
   get,

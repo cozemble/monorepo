@@ -1,8 +1,6 @@
 <script lang="ts">
   import Header from './Header.svelte'
   import Footer from './Footer.svelte'
-
-  import NotificationProvider from '../../lib/components/notifications/NotificationProvider.svelte'
 </script>
 
 <Header />
@@ -10,5 +8,3 @@
   <slot />
 </main>
 <Footer />
-
-<NotificationProvider />
