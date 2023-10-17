@@ -5,6 +5,7 @@
   - [/sign-in](./sign-in/README.md)
   - [/sign-up](./sign-up/README.md)
   - [/reset-password](./reset-password/README.md)
+    Handle both forgot password form and reset password form.
   - /callback
     Utility page for oauth providers to redirect to after authenticating the user.
     - Redirects to the given `redirectTo` parameter or [Dashboard](../../dashboard/README.md) page if sign-in was successful.
