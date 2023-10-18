@@ -28,10 +28,6 @@
 
   let errors = writable<Partial<Values>>({})
 
-  // let helperText: HelperText = { error: false, text: null }
-
-  //
-
   const onSubmit: EventHandler = async () => {
     // Validation
 
