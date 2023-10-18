@@ -1,6 +1,6 @@
 <script lang="ts">
   import Logo from '$lib/components/Logo.svelte'
-  import Icon from '@iconify/svelte'
+  import user from '$lib/stores/user'
 
   let scrollY = 0
   $: scrolled = scrollY > 50
@@ -21,7 +21,11 @@
       <a class="link-hover normal-case hidden sm:block" href="/coming-soon"> Docs </a>
       <a class="link-hover normal-case hidden sm:block" href="/pricing"> Pricing </a>
 
-      <a href="/coming-soon" class="btn btn-primary btn-sm normal-case">Sign Up</a>
+      {#if $user.isGuest}
+        <a href="/auth/sign-up" class="btn btn-primary btn-sm normal-case"> Sign Up </a>
+      {:else}
+        <a href="/coming-soon" class="btn btn-primary btn-sm normal-case"> Dashboard </a>
+      {/if}
     </div>
   </div>
 </header>

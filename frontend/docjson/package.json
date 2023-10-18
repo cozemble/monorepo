@@ -26,10 +26,13 @@
     "tslib": "^2.4.1",
     "typescript": "^5.0.0",
     "vite": "^4.4.2",
-    "vitest": "^0.33.0"
+    "vitest": "^0.33.0",
+    "zod": "^3.22.2"
   },
   "type": "module",
   "dependencies": {
+    "@supabase/auth-helpers-sveltekit": "^0.10.3",
+    "@supabase/supabase-js": "^2.36.0",
     "daisyui": "^3.5.1"
   }
 }

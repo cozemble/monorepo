@@ -8,13 +8,10 @@ export interface Notification {
   description?: string
   icon?: string
 
-  /**
-   * @default 'neutral'
-   * neutral, info, success, error, warning, loading
-   */
-  type: 'info' | 'neutral' | 'success' | 'error' | 'warning' | 'loading'
+  /** default: neutral */
+  type: 'neutral' | 'info' | 'success' | 'error' | 'warning' | 'loading'
 
-  show: boolean
+  show: boolean // TODO remove this when the close function is refactored
   isClosable?: boolean
   handleClose: () => void
   duration?: number
@@ -24,16 +21,14 @@ interface NotificationCreateOptions {
   text: string
   description?: string
 
-  /** @default 'neutral'
-   * @see Notification['type']
-   */
+  /** default: neutral */
   type?: Notification['type']
   /** custom icon option */
   icon?: string
 
   isClosable?: boolean
   /** Callback when notification is closed */
-  onClose?: () => void
+  onClose?: () => void // TODO rename this to onCloseCallback
   duration?: number
 }
 
@@ -55,6 +50,7 @@ const create = (options: NotificationCreateOptions): Notification => {
 
     show: true,
     isClosable: options.isClosable ?? true,
+    // TODO rename this to close
     handleClose: () => {
       close(_id)
       options.onClose?.()
@@ -80,6 +76,7 @@ const remove = (id: string) => {
   )
 }
 
+// TODO remove the notification from the store when it is closed
 /**
  * Turns show to false of a notification
  * @param id Notification ID
@@ -96,6 +93,17 @@ const close = (id: string) => {
     }),
   )
 }
+
+// TODO remove this when the app is ready
+// A notification to show when the app is in early prototype
+create({
+  text: 'This is an early prototype',
+  description: 'No functionality is implemented yet',
+  type: 'neutral',
+  isClosable: true,
+  // duration: 2000,
+  icon: 'wpf:maintenance',
+})
 
 export default {
   ...notificationStore,
