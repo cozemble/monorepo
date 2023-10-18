@@ -4,6 +4,11 @@ export interface TableTypeGuess {
   label: string
 }
 
+export interface SectionGuess {
+  sectionName: string
+  lines: string[]
+}
+
 export interface TableTypeGuessWithTableIndex {
   tableIndex: number
   type: 'rows' | 'layout'

@@ -7,6 +7,7 @@
     export let body: any
     let submitButton: HTMLButtonElement
     const dispatch = createEventDispatcher()
+    let jsonContainerDiv: HTMLDivElement
 
     const {input, handleSubmit, completion, isLoading} = useCompletion({
         api
@@ -31,6 +32,7 @@
             return
         }
         dispatch('partial', generated)
+        jsonContainerDiv.scrollTop = jsonContainerDiv.scrollHeight
     }
 
     $: onLoadingChange($isLoading, $completion)
@@ -41,4 +43,6 @@
 <form on:submit={handleSubmit} class="hidden">
     <button type="submit" bind:this={submitButton}>Generate</button>
 </form>
-<pre class="border p-8">{$completion}</pre>
+<div class="border rounded p-4 overflow-y-auto" bind:this={jsonContainerDiv}>
+<pre  >{$completion}</pre>
+</div>
