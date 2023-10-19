@@ -25,7 +25,7 @@
   class="w-full flex-grow flex 
   flex-col-reverse md:flex-row 
   gap-6 md:gap-20 lg:gap-[10vw] 
-  items-start justify-start rounded-xl
+   justify-start rounded-xl
   "
 >
   <!-- Background decoration -->
@@ -37,7 +37,6 @@
   <div
     class="w-full md:w-[45vw] 
     p-4 md:px-[5vw] xl:py-12 xl:px-[8vw] 2xl:px-[11vw] 
-    h-full 
     md:bg-base-100/70 backdrop-blur-3xl
     md:border-r md:border-base-300
     "
