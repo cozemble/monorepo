@@ -10,7 +10,7 @@
     let { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: $page.url.origin + '/auth/callback',
+        redirectTo: window.location.origin + '/auth/callback',
       },
     })
     if (error) console.log('OAuth Error:', error.message)
