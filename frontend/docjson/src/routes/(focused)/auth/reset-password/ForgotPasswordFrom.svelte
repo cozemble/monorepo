@@ -27,23 +27,23 @@
     // Send request
 
     const loadingNotification = notifications.create({
-      text: 'Sending email',
+      title: 'Sending email',
       description: 'Please wait while we send you an email',
       type: 'loading',
-      isClosable: false,
+      canUserClose: false,
     })
 
     const { error: ReqError } = await supabase.auth.resetPasswordForEmail(value, {
       redirectTo: $page.url.origin + '/auth/callback?redirectTo=/auth/reset-password',
     })
 
-    loadingNotification.handleClose()
+    loadingNotification.remove()
 
     // Handle response
 
     if (ReqError) {
       notifications.create({
-        text: 'Error',
+        title: 'Error',
         description: ReqError.message,
         type: 'error',
       })
@@ -52,7 +52,7 @@
     }
 
     notifications.create({
-      text: 'Email sent',
+      title: 'Email sent',
       description: 'If you registered with this email, you will receive an email shortly',
       type: 'success',
     })

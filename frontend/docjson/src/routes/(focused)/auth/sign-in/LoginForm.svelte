@@ -50,10 +50,10 @@
     // Send request
 
     const loadingNotification = notifications.create({
-      text: 'Signing in',
+      title: 'Signing in',
       description: 'Please wait while we sign you in',
       type: 'loading',
-      isClosable: false,
+      canUserClose: false,
     })
 
     const { error: AuthError } = await supabase.auth.signInWithPassword({
@@ -63,14 +63,14 @@
 
     // Response handling
 
-    loadingNotification.handleClose()
+    loadingNotification.remove()
 
     if (AuthError) {
       const areCredentialsInvalid = AuthError.name
 
       if (areCredentialsInvalid) {
         notifications.create({
-          text: 'Error',
+          title: 'Error',
           description: 'Invalid email or password. Please try again.',
           type: 'error',
           duration: 5000,
@@ -83,7 +83,7 @@
       }
 
       return notifications.create({
-        text: 'Error',
+        title: 'Error',
         description: 'An error occurred while signing in. Please try again.',
         type: 'error',
         duration: 5000,
@@ -94,7 +94,7 @@
 
     // <!-- TODO determine if this is the best way to tell user to check their email -->
     notifications.create({
-      text: 'Success',
+      title: 'Success',
       description: 'Sign in successful.',
       type: 'success',
       duration: 5000,

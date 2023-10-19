@@ -4,7 +4,7 @@
 
   export let notification: Notification
 
-  const { text, description, type, handleClose: onClose, isClosable } = notification
+  const { title: text, description, type, remove, canUserClose } = notification
 
   const classes = `
     ${(type === 'error' && 'alert-error') || ''}
@@ -25,25 +25,23 @@
   `.trim()
 </script>
 
-{#if notification.show}
-  <div class="alert shadow-xl relative {classes}">
-    {#if type !== 'loading'}
-      <Icon {icon} class="stroke-current shrink-0 w-6 h-6 xs-only:hidden" />
-    {:else}
-      <span class="loading" />
-    {/if}
+<div class="alert shadow-xl relative {classes}">
+  {#if type === 'loading'}
+    <span class="loading" />
+  {:else}
+    <Icon {icon} class="stroke-current shrink-0 w-6 h-6 xs-only:hidden" />
+  {/if}
 
-    <div class="flex flex-col">
-      <span class="font-semibold">{text}</span>
-      <span class="text-sm">{description}</span>
-    </div>
-
-    {#if isClosable}
-      <!-- spacer div -->
-      <div />
-      <button class="absolute top-1 right-2 btn btn-circle btn-xs btn-neutral" on:click={onClose}
-        ><Icon icon="mdi:close" class="stroke-current text-base" />
-      </button>
-    {/if}
+  <div class="flex flex-col">
+    <span class="font-semibold">{text}</span>
+    <span class="text-sm">{description}</span>
   </div>
-{/if}
+
+  {#if canUserClose}
+    <!-- spacer div -->
+    <div />
+    <button class="absolute top-1 right-2 btn btn-circle btn-xs btn-neutral" on:click={remove}
+      ><Icon icon="mdi:close" class="stroke-current text-base" />
+    </button>
+  {/if}
+</div>

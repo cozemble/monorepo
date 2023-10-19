@@ -8,22 +8,22 @@
 
   onMount(async () => {
     const loadingNotification = notifications.create({
-      text: 'Signing out',
+      title: 'Signing out',
       description: 'Please wait while we sign you out',
       type: 'loading',
-      isClosable: false,
+      canUserClose: false,
     })
 
     const { error } = await supabase.auth.signOut()
 
-    loadingNotification.handleClose()
+    loadingNotification.remove()
 
     if (error) {
       notifications.create({
-        text: 'Error',
+        title: 'Error',
         description: 'An error occurred while signing out. Please try again.',
         type: 'error',
-        isClosable: true,
+        canUserClose: true,
       })
 
       goto('/')
@@ -32,7 +32,7 @@
     }
 
     notifications.create({
-      text: 'Success',
+      title: 'Success',
       description: 'Signed out successfully',
       type: 'info',
       duration: 5000,

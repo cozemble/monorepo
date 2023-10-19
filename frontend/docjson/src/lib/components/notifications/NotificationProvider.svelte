@@ -8,7 +8,7 @@
         flex flex-col items-end justify-end gap-2
         "
 >
-  {#each $notifications as notification (notification._id)}
+  {#each $notifications as notification (notification.id)}
     <Notification {notification} />
   {/each}
 </div>

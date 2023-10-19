@@ -57,21 +57,21 @@
     // Send request
 
     const loadingNotification = notifications.create({
-      text: 'Signing up',
+      title: 'Signing up',
       description: 'Please wait while we sign you up',
       type: 'loading',
-      isClosable: false,
+      canUserClose: false,
     })
 
     const { error } = await supabase.auth.updateUser({ password: values.password })
 
-    loadingNotification.handleClose()
+    loadingNotification.remove()
 
     // Response handling
 
     if (error) {
       notifications.create({
-        text: 'Error',
+        title: 'Error',
         description: error.message,
         type: 'error',
       })
@@ -82,7 +82,7 @@
     }
 
     notifications.create({
-      text: 'Success',
+      title: 'Success',
       description: 'Your password has been updated',
       type: 'success',
     })

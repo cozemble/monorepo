@@ -49,10 +49,10 @@
     // Send request
 
     const loadingNotification = notifications.create({
-      text: 'Signing up',
+      title: 'Signing up',
       description: 'Please wait while we sign you up',
       type: 'loading',
-      isClosable: false,
+      canUserClose: false,
     })
 
     // <!-- TODO bring in their guest data -->
@@ -65,13 +65,13 @@
       },
     })
 
-    loadingNotification.handleClose()
+    loadingNotification.remove()
 
     // Response handling
 
     if (error) {
       notifications.create({
-        text: 'Error',
+        title: 'Error',
         description: error.message,
         type: 'error',
         duration: 5000,
@@ -82,10 +82,10 @@
 
     // <!-- TODO determine if this is the best way to tell user to check their email -->
     notifications.create({
-      text: 'Success',
+      title: 'Success',
       description: 'Please check your email to verify your account',
       type: 'success',
-      isClosable: true,
+      canUserClose: true,
     })
   }
 </script>
