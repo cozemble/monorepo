@@ -6,13 +6,13 @@
 
   export let supabase: SupabaseClient
 
-  const getURL = (pathname: string): URL => {
+  const getURL = (): string => {
     let url = PUBLIC_SITE_URL ?? 'http://localhost:5173/'
 
     url = url.includes('http') ? url : `https://${url}`
     url = url.charAt(url.length - 1) === '/' ? url : `${url}/`
 
-    return new URL(url, pathname)
+    return url + 'auth/callback'
   }
 
   // <!-- TODO bring in their guest data if signing up -->
@@ -20,7 +20,7 @@
     let { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo:  getURL('/auth/callback').toString()
+        redirectTo:  getURL()
       },
     })
     if (error) console.log('OAuth Error:', error.message)
