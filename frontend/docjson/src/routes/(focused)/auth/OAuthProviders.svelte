@@ -1,16 +1,27 @@
 <script lang="ts">
-  import { page } from '$app/stores'
   import Icon from '@iconify/svelte'
   import type { Provider, SupabaseClient } from '@supabase/supabase-js'
 
   export let supabase: SupabaseClient
+
+  const getURL = (pathname: string): URL => {
+    let url = process?.env?.NEXT_PUBLIC_SITE_URL ?? 
+    process?.env?.NEXT_PUBLIC_VERCEL_URL ?? 
+    'http://localhost:5173/'
+
+    url = url.includes('http') ? url : `https://${url}`
+    url = url.charAt(url.length - 1) === '/' ? url : `${url}/`
+
+    return new URL(url, pathname)
+  }
 
   // <!-- TODO bring in their guest data if signing up -->
   const handleOAuthLogin = async (provider: Provider) => {
     let { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: window.location.origin + '/auth/callback',
+        // return window.location.origin
+        redirectTo:  getURL('/auth/callback').toString(),
       },
     })
     if (error) console.log('OAuth Error:', error.message)
