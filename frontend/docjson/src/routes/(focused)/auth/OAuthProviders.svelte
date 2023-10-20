@@ -2,12 +2,12 @@
   import Icon from '@iconify/svelte'
   import type { Provider, SupabaseClient } from '@supabase/supabase-js'
 
+  import { PUBLIC_SITE_URL } from '$env/static/public'
+
   export let supabase: SupabaseClient
 
   const getURL = (pathname: string): URL => {
-    let url = process?.env?.NEXT_PUBLIC_SITE_URL ?? 
-    process?.env?.NEXT_PUBLIC_VERCEL_URL ?? 
-    'http://localhost:5173/'
+    let url = PUBLIC_SITE_URL ?? 'http://localhost:5173/'
 
     url = url.includes('http') ? url : `https://${url}`
     url = url.charAt(url.length - 1) === '/' ? url : `${url}/`
@@ -20,8 +20,7 @@
     let { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        // return window.location.origin
-        redirectTo:  getURL('/auth/callback').toString(),
+        redirectTo:  getURL('/auth/callback').toString()
       },
     })
     if (error) console.log('OAuth Error:', error.message)
