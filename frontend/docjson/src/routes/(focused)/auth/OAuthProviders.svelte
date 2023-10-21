@@ -8,9 +8,9 @@
   const handleOAuthLogin = async (provider: Provider) => {
     let { error } = await supabase.auth.signInWithOAuth({
       provider,
-      // options: {
-      //   redirectTo: `${window.location.origin}/auth/callback`
-      // },
+      options: {
+        redirectTo: `${window.location.origin}/auth/v1/callback`
+      },
     })
     if (error) console.log('OAuth Error:', error.message)
   }
