@@ -61,7 +61,7 @@
       password: values.password,
       options: {
         data: { name: values.name },
-        emailRedirectTo: window.location.origin + `/auth/callback`,
+        emailRedirectTo: `https://tojson.dev/auth/callback`,
       },
     })
 
