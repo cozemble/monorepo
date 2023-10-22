@@ -48,6 +48,7 @@
   },
   "dependencies": {
     "@cozemble/lang-util": "workspace:*",
+    "daisyui": "^3.9.3",
     "zod": "^3.22.2"
   }
 }
