@@ -6,14 +6,12 @@
 
   export let supabase: SupabaseClient
 
-  $: domain = $page.url.hostname
-
   // <!-- TODO bring in their guest data if signing up -->
   const handleOAuthLogin = async (provider: Provider) => {
     let { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: `${domain}/auth/callback`,
+        redirectTo: `https://tojson.dev/auth/callback`,
       },
     })
     if (error) console.log('OAuth Error:', error.message)
