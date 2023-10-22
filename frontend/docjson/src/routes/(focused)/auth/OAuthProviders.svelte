@@ -1,29 +1,19 @@
 <script lang="ts">
-  import { page } from '$app/stores'
   import Icon from '@iconify/svelte'
   import type { Provider, SupabaseClient } from '@supabase/supabase-js'
-  import { onMount } from 'svelte'
 
   export let supabase: SupabaseClient
-
-  $: domain = $page.url.hostname
 
   // <!-- TODO bring in their guest data if signing up -->
   const handleOAuthLogin = async (provider: Provider) => {
     let { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: `${domain}/auth/callback`,
+        redirectTo: `${window.location.origin}/auth/v1/callback`
       },
     })
     if (error) console.log('OAuth Error:', error.message)
   }
-
-  onMount(() => {
-    page.subscribe(() => {
-      console.log('page changed', $page)
-    })
-  })
 </script>
 
 <!-- Social sign in buttons -->
