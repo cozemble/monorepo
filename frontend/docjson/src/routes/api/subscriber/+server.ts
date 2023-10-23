@@ -1,25 +1,27 @@
 import { json, type RequestEvent } from '@sveltejs/kit'
 
+import { PUBLIC_SUPABASE_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public'
+
 interface ISubscriber {
   email: string
 }
 
 export async function POST({ request }: RequestEvent<Partial<ISubscriber>>) {
+  const SUPABASE_SUBSCRIBE_URL = `${PUBLIC_SUPABASE_URL}/rest/v1/subscribe`
+
   try {
-    const SUPA_BASE_INSERT_URL = String(process.env.SUPABASE_SUBSCRIBE_URL)
-    const SUPABASE_KEY = String(process.env.SUPABASE_KEY)
     const jsonBody = await request.json()
 
     const headers: HeadersInit = {
-      apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${SUPABASE_KEY}`,
+      apikey: PUBLIC_SUPABASE_KEY,
+      Authorization: `Bearer ${PUBLIC_SUPABASE_KEY}`,
       Prefer: 'resolution=merge-duplicates',
       'Content-Type': 'application/json',
     }
 
     const subscribeUser = (payload: ISubscriber) =>
       new Promise((resolve, reject) => {
-        fetch(SUPA_BASE_INSERT_URL, {
+        fetch(SUPABASE_SUBSCRIBE_URL, {
           method: 'POST',
           body: JSON.stringify(payload),
           headers,
