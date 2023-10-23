@@ -838,6 +838,9 @@ importers:
       '@cozemble/lang-util':
         specifier: workspace:*
         version: link:../../lang/util
+      daisyui:
+        specifier: ^3.9.3
+        version: 3.9.3
       zod:
         specifier: ^3.22.2
         version: 3.22.2
@@ -4933,7 +4936,7 @@ packages:
     peerDependencies:
       '@sveltejs/kit': ^1.0.0
     dependencies:
-      '@sveltejs/kit': 1.20.4(svelte@4.0.5)(vite@4.4.3)
+      '@sveltejs/kit': 1.20.4(svelte@3.54.0)(vite@4.4.3)
       import-meta-resolve: 2.2.2
     dev: true
 
@@ -7093,6 +7096,19 @@ packages:
 
   /daisyui@3.5.1:
     resolution: {integrity: sha512-7GG+9QXnr2qQMCqnyFU8TxpaOYJigXiEtmzoivmiiZZHvxqIwYdaMAkgivqTVxEgy3Hot3m1suzZjmt1zUrvmA==}
+    engines: {node: '>=16.9.0'}
+    dependencies:
+      colord: 2.9.3
+      css-selector-tokenizer: 0.8.0
+      postcss: 8.4.27
+      postcss-js: 4.0.1(postcss@8.4.27)
+      tailwindcss: 3.3.3
+    transitivePeerDependencies:
+      - ts-node
+    dev: false
+
+  /daisyui@3.9.3:
+    resolution: {integrity: sha512-8li177QCu6dqlEOzE3h/dAV1y9Movbjx5bzJIO/hNqMNZtJkbHM0trjTzbDejV7N57eNGdjBvAGtxZYKzS4jow==}
     engines: {node: '>=16.9.0'}
     dependencies:
       colord: 2.9.3
