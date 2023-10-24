@@ -2,13 +2,20 @@ import { redirect, type Handle } from '@sveltejs/kit'
 import { sequence } from '@sveltejs/kit/hooks'
 import { createSupabaseServerClient } from '@supabase/auth-helpers-sveltekit'
 
-import { PUBLIC_SUPABASE_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public'
+import { env } from '$env/dynamic/public'
 import type { Database } from '$lib/types/database.types'
 
 const supabaseHandler: Handle = async ({ event, resolve }) => {
+  const supabaseUrl = env.PUBLIC_SUPABASE_URL
+  const supabaseKey = env.PUBLIC_SUPABASE_KEY
+
+  if (!supabaseUrl || !supabaseKey) {
+    throw new Error('Missing PUBLIC_SUPABASE_URL or PUBLIC_SUPABASE_KEY')
+  }
+
   event.locals.supabase = createSupabaseServerClient<Database>({
-    supabaseKey: PUBLIC_SUPABASE_KEY,
-    supabaseUrl: PUBLIC_SUPABASE_URL,
+    supabaseUrl,
+    supabaseKey,
     event,
   })
 
