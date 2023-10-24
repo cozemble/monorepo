@@ -3,6 +3,9 @@
 
   import OAuthProviders from './OAuthProviders.svelte'
   import { goto } from '$app/navigation'
+  import { fade } from 'svelte/transition'
+  import { writable } from 'svelte/store'
+  import TypingAnimatedText from '$lib/components/TypingAnimatedText.svelte'
 
   $: supabase = $page?.data?.supabase
 
@@ -76,10 +79,10 @@
   <div class="text-center md:text-start md:mt-[40vh]">
     <!-- TODO LATER MAYBE: heading typing animation -->
     <h1 class="mb-2 xl:mb-4 lg:text-5xl 2xl:text-6xl ">
-      {heading}
+      <TypingAnimatedText text={heading} />
     </h1>
     <p class="2xl:text-lg opacity-50 tracking-tighter">
-      {subheading}
+      <TypingAnimatedText text={subheading} speed={20} startDelay={1000} />
     </p>
   </div>
 </section>

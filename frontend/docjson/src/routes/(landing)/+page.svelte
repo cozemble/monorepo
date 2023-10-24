@@ -69,10 +69,6 @@
       </div>
     </div>
 
-    <!-- TODO catchy "Try it" indicator -->
-
-    <!-- TODO list of previous schemas -->
-
     <TryItForm />
   </div>
 </section>
