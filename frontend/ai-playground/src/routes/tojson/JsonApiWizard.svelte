@@ -26,8 +26,10 @@
         sectionAnalysisComplete = true
     }
 
-    function onTableAmendmentsComplete() {
+    function onTableAmendmentsComplete(event:CustomEvent) {
         tableAmendmentComplete = true
+        const {deDuplicationDecision, mergedTables} = event.detail
+        console.log({deDuplicationDecision, mergedTables})
     }
 </script>
 

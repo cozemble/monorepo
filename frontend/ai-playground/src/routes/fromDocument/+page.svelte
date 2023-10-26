@@ -3,7 +3,7 @@
     import type {AwsOcrResponse} from "../aws-ocr/awsOcrTypes";
     import PostOcr from "./PostOcr.svelte";
     import UploadDocument from "./UploadDocument.svelte";
-    import {UploadAndOcrResponse} from "./types";
+    import type {UploadAndOcrResponse} from "./types";
 
     let awsOcrResponse: AwsOcrResponse | null = null
 
