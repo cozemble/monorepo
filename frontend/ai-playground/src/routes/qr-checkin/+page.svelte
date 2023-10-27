@@ -77,7 +77,7 @@
 
 <svelte:head>
     <meta charset="utf-8">
-    <title>QR Checkout</title>
+    <title>QR Checkin</title>
     <script src="https://unpkg.com/jsqr/dist/jsQR.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Ropa+Sans" rel="stylesheet">
 </svelte:head>
