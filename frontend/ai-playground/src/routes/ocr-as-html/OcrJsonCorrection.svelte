@@ -45,10 +45,10 @@
     <div class="flex flex-col ml-8 overflow-y-auto h-5/6">
         <div class="mt-4 mx-auto">
             <div class="tabs ">
-                <a class="tab tab-lg tab-lifted" class:tab-active={preview === "html"}
-                   on:click={() => preview = "html"}>HTML Preview</a>
-                <a class="tab tab-lg tab-lifted" class:tab-active={preview === "json"}
-                   on:click={() => preview = "json"}>JSON Preview</a>
+                <button class="tab tab-lg tab-lifted" class:tab-active={preview === "html"}
+                   on:click={() => preview = "html"}>HTML Preview</button>
+                <button class="tab tab-lg tab-lifted" class:tab-active={preview === "json"}
+                   on:click={() => preview = "json"}>JSON Preview</button>
             </div>
         </div>
         <div>
