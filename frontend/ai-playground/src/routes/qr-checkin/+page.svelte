@@ -98,7 +98,7 @@
     <canvas bind:this={canvasElement} id="canvas" hidden/>
     <audio bind:this={beepSound} src="/beep.mp3" preload="auto"></audio>
     <div class="flex flex-wrap mx-2 mt-2">
-        <QrScanList {foundImages}/>
+        <QrScanList {foundImages} {deviceType}/>
     </div>
 </main>
 

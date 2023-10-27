@@ -2,18 +2,38 @@
     import type {ImageWithQrCode} from "./types";
 
     export let foundImages: ImageWithQrCode[]
+    export let deviceType:string
+
+    function onExport() {
+        const csvContent = "data:text/csv;charset=utf-8,Mac,Device Type\n" + foundImages.map(({code}) => `${code},${deviceType}`).join("\n");
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "qr-codes.csv");
+        document.body.appendChild(link); // Required for FF
+
+        link.click();
+    }
 </script>
 
-<div class="flex flex-col">
-    <div>
-        <h6>Number of devices found: {foundImages.length}</h6>
+<div>
+    <div class="flex mb-2">
+        <h6 class="ml-1">Number of devices scanned: {foundImages.length}</h6>
+        <button class="btn btn-primary btn-sm ml-2" on:click={onExport}>Export</button>
     </div>
-    <div class="flex flex-wrap">
+    <table class="table border">
+        <thead>
+        <tr>
+            <th>MAC</th>
+            <th>QR code</th>
+        </thead>
+        <tbody>
         {#each foundImages as {code, image}}
-            <div class="flex border flex-col mx-2 rounded p-2 mt-2">
-                <h5>MAC: {code}</h5>
-                <img src={image} alt="QR code image" width="100" height="100"/>
-            </div>
+            <tr>
+                <td>{code}</td>
+                <td><img src={image} alt="QR code image" width="100" height="100"/></td>
+            </tr>
         {/each}
-    </div>
+        </tbody>
+    </table>
 </div>
