@@ -13,6 +13,7 @@
     export let actions: Writable<Action[]>
     const showErrors = writable(true)
 
+    /** Given to `FomForm` to define the form */
     $: schema = extendSchema(zodToFom(actionsType) as FomArray, $actions)
 
     const errors: Readable<FomIssue[]> = derived(actions, o => {
@@ -34,6 +35,11 @@
         console.log("afterUpdate", schema)
     })
 </script>
+
+<!-- 
+    @component
+    Handles OCR corrective actions by mutating the provided `actions` store
+ -->
 
 <FomArrayForm {schema} object={actions} {errors} {showErrors} rootItemName="Corrective Action"
               itemSummarizer={ActionSummarizer}/>

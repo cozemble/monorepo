@@ -7,4 +7,11 @@
     export let pages: Writable<Page[]>
     export let initialActions:Action[]
 </script>
+
+<!-- 
+    @component
+    Display OCR result and allow corrections to be made
+    - Wraps `OcrJsonCorrection` from `/ocr-as-html` route 
+ -->
+
 <OcrJsonCorrection {pages} {initialActions} on:actions/>

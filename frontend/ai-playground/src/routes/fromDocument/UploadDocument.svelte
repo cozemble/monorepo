@@ -62,6 +62,14 @@
     }
 </script>
 
+<!-- 
+    @component
+    - UploadDocument for OCR
+    - Perform the OCR with: PerformOcr
+        - When it's done, dispatch 'done' with the OCR outcome
+    - Accept text from user and bypass OCR if user pastes in JSON
+ -->
+
 {#if uploadingPdf}
     {#if stashPdfResponse === null}
         <h1 class="text-center mb-4">Uploading your file</h1>

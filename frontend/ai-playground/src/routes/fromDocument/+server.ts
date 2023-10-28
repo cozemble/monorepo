@@ -2,6 +2,7 @@ import { error, type RequestEvent, type RequestHandler } from '@sveltejs/kit'
 import { mandatoryOpenAiCreds, OpenAi } from '$lib/generative/GenerativeAiBackend'
 import { promptEventSender } from '$lib/analytics/promptEventSender'
 
+/** Generate schema from the given data with OpenAi */
 export const POST: RequestHandler = async (event: RequestEvent) => {
   const data = await event.request.json()
   if (!data) {

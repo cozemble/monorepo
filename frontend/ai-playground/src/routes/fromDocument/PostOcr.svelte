@@ -7,11 +7,14 @@
     import ConfigureTargetJsonSchema from "./ConfigureTargetJsonSchema.svelte";
     import type {JsonSchema} from "@cozemble/model-core";
     import ApiExplainer from "./ApiExplainer.svelte";
-
+ 
     export let awsOcrResponse: AwsOcrResponse
     const pages = writable(awsOcrResponse.json.pages)
     const dispatch = createEventDispatcher()
+
+    /** Correction actions to be applied to the OCR result */
     let actions = [] as Action[]
+    /** Is the OCR correction step done */
     let section: 'postProcessOcr' | 'configureJsonSchema' = 'postProcessOcr'
     let jsonSchema: JsonSchema | null = null
     let initialActions = [] as Action[]
@@ -41,7 +44,13 @@
 
 </script>
 
+<!-- 
+    @component
+    Perform OCR corrections, then configure the target JSON schema
+ -->
+
 {#if section === "postProcessOcr"}
+    <!-- OCR Corrections -->
     <h1 class="text-center">OCR Post Processing</h1>
 
     <div class="mx-auto mb-4">
@@ -58,9 +67,11 @@
     </div>
 {:else}
     {#if jsonSchema === null}
+        <!-- Create JSON Schema  -->
         <ConfigureTargetJsonSchema pages={$pages} {actions} on:cancel={cancel} on:schema={jsonSchemaDefined}
                                    on:corrections={backToCorrections}/>
     {:else}
+        <!-- Finished -->
         <ApiExplainer/>
     {/if}
 {/if}

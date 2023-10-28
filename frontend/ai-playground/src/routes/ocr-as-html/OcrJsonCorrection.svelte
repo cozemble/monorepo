@@ -14,7 +14,7 @@
     import {zodErrors} from "./zodErrors";
 
     export let pages: Writable<Page[]>
-    export let initialActions:Action[]
+    export let initialActions: Action[]
     export let actions: Writable<Action[]> = writable(initialActions)
     const dispatch = createEventDispatcher()
     let preview: "html" | "json" = "html"
@@ -34,14 +34,25 @@
     $: continuousActionDispatch($actions, $errors)
 </script>
 
+<!-- 
+    @component
+    Display OCR result and allow corrections to be made
+    - Correction actions are dispatched with: `on:actions` 
+    - Preview can be toggled between HTML and JSON
+    - Preview is displayed with corrections applied
+ -->
+
 <div class="flex">
+    <!-- Corrective actions -->
     <div>
         <div class="mt-4 mx-auto">
             <h4 class="mx-auto">OCR Corrective Actions</h4>
         </div>
-        <OcrCorrections {actions} on:actions/>
+        <!-- TODO on:actions seems to be unnecessary because the component doesn't dispatch event -->
+        <OcrCorrections {actions} on:actions/> 
     </div>
 
+    <!-- Preview -->
     <div class="flex flex-col ml-8 overflow-y-auto h-5/6">
         <div class="mt-4 mx-auto">
             <div class="tabs ">

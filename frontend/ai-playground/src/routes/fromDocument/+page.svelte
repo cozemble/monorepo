@@ -5,6 +5,7 @@
     import UploadDocument from "./UploadDocument.svelte";
     import type {UploadAndOcrResponse} from "./types";
 
+    /** OCR result from UploadDocument */
     let awsOcrResponse: AwsOcrResponse | null = null
 
     function cancel() {
@@ -16,6 +17,12 @@
     }
 
 </script>
+
+<!-- 
+    @component
+    Upload a document and perform OCR \n
+    After OCR, allows for corrections to be made
+-->
 
 <div class="grid h-screen place-items-center w-5/6 mx-auto mb-8">
     <div class="flex flex-col">

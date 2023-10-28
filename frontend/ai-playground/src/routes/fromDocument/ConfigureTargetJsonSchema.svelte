@@ -65,6 +65,11 @@
     }
 </script>
 
+<!-- 
+    @component
+    Generate JSON Schema from the OCR result
+-->
+
 
 {#if generatingJson && jsonSchema}
     <GenerateJson {html} schema={jsonSchema.json} on:generated={jsonGenerated} on:partial={jsonPartial}/>
