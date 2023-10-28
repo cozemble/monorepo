@@ -35,6 +35,13 @@
     })
 </script>
 
+<!-- 
+    @component
+    Triggers a form submit to generate the JSON Schema from the HTML 
+    - `on:partial`: Streams the generation as it happens
+    - `on:generated`: When the generation is complete, dispatches the generated JSON Schema
+ -->
+
 <form on:submit={handleSubmit} class="hidden">
     <button type="submit" class="btn btn-primary mt-2" bind:this={generateJsonSchemaFromHtmlButton}>Generate</button>
 </form>

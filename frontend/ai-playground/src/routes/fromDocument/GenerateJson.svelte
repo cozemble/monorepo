@@ -36,6 +36,13 @@
     $: dispatchPartials($completion)
 </script>
 
+<!-- 
+    @component
+    Triggers a form submit to generate the JSON Data from the `html` and `schema`
+    - `on:partial`: Streams the generation as it happens
+    - `on:generated`: When the generation is complete, dispatches the generated JSON Schema
+ -->
+
 <form on:submit={handleSubmit} class="hidden">
     <button type="submit" class="btn btn-primary mt-2" bind:this={generateJsonFromHtmlButton}>Generate</button>
 </form>

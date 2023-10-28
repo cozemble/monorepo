@@ -67,10 +67,14 @@
 
 <!-- 
     @component
-    Generate JSON Schema from the OCR result
+    Generate JSON Schema and data from the OCR result
+    - Allow for user to edit the JSON Schema
+    - `on:schema` - When the user is done, dispatches the JSON Schema for the next step
+    - `on:corrections` - When the user wants to go back to the OCR corrections step
 -->
 
 
+<!-- Handling generation with streams, these are hidden -->
 {#if generatingJson && jsonSchema}
     <GenerateJson {html} schema={jsonSchema.json} on:generated={jsonGenerated} on:partial={jsonPartial}/>
 {/if}
@@ -84,12 +88,16 @@
 
 
 {#if jsonSchema}
+
     {#if editingSchema}
+        <!-- User Edit -->
         <div class="flex">
             <EditSchema schemaStr={jsonSchema.json} on:edited={schemaEdited}
                         on:cancel={() => editingSchema = false}/>
         </div>
+
     {:else}
+        <!-- Actions -->
         <div class="mx-auto mb-8">
             <button class="btn btn-secondary mt-4 btn-lg" on:click={backToCorrections}>
                 &lt;&lt; Back to Corrections
@@ -102,7 +110,11 @@
                 Cancel
             </button>
         </div>
+
+        <!-- Display -->
         <div class="flex">
+        
+            <!-- Schema -->
             <div>
                 <div class="flex">
                     <h4 class="mx-auto">Target JSON Schema</h4>
@@ -112,6 +124,8 @@
                     <pre>{formatJson(jsonSchema)}</pre>
                 </div>
             </div>
+        
+            <!-- Sample -->
             <div class="ml-4">
                 <div class="flex">
                     <h4 class="mx-auto">Target JSON</h4>
@@ -121,6 +135,7 @@
                     <pre>{sampleJson ? formatJson(sampleJson) : ""}</pre>
                 </div>
             </div>
+        
         </div>
     {/if}
 {/if}

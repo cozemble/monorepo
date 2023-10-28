@@ -48,6 +48,14 @@
     onMount(startScanning)
 </script>
 
+
+<!-- 
+    @component
+    Perform OCR on the PDF uploaded to S3
+    - Automatically starts scanning on mount
+    - `on:done`: dispatches with the OCR result when done
+-->
+
 <h1 class="text-center">Scanning your document</h1>
 
 <div class="mx-auto mb-4">
@@ -56,6 +64,7 @@
     </button>
 </div>
 
+<!-- Display progress and results for each page -->
 {#each stashPdfResponse.pages as page, pageIndex}
     <div class="mb-2">
         <PageOcrProgress {page} pageIndex={pageIndex + 1} {currentOcrPageIndex} ocredPage={ocredPages[pageIndex]}/>

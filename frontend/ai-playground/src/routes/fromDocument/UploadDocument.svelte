@@ -64,10 +64,9 @@
 
 <!-- 
     @component
-    - UploadDocument for OCR
-    - Perform the OCR with: PerformOcr
-        - When it's done, dispatch 'done' with the OCR outcome
-    - Accept text from user and bypass OCR if user pastes in JSON
+    Upload document and perform OCR
+        - 'on:done': dispatches when OCR is complete with the OCR outcome
+    - Optional JSON text input to bypass OCR
  -->
 
 {#if uploadingPdf}
@@ -80,6 +79,7 @@
         <CreateImagesOfPdfPages {stashPdfResponse} />
         <PerformOcr {stashPdfResponse} on:cancel on:done/>
     {/if}
+
 {:else}
     <h1 class="text-center mb-4">Upload your document</h1>
     <p class="text-center mb-8"><em>I will figure out what data is in it, and create a database for you</em>
@@ -93,9 +93,11 @@
         Cancel
     </button>
 {/if}
+
 {#if errorMessage}
     <p class="text-center text-red-500 mt-4">{errorMessage}</p>
 {/if}
+
 {#if isLocalhost}
     <hr class="w-full mt-8"/>
     <div class="flex flex-col items-center mt-4">
