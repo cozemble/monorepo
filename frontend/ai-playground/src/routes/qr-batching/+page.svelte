@@ -1,8 +1,9 @@
 <script lang="ts">
     import {onMount} from "svelte";
     import {mandatory, uuids} from "@cozemble/lang-util";
-    import type {ImageWithQrCode} from "./types";
-    import {batchTypes, nullBatchType} from "./types";
+    import type {BatchInstance} from "./types";
+    import {addScan, batchTypes, createBatchInstance, nullBatchType} from "./types";
+    import BatchAsTable from "./BatchAsTable.svelte";
 
     let video: HTMLVideoElement;
     let canvasElement: HTMLCanvasElement;
@@ -11,12 +12,12 @@
     let beepSound: HTMLAudioElement;
     let status = "No QR code detected.";
     let foundCodes = new Set<string>(); // to store unique QR codes
-    let foundImages: ImageWithQrCode[] = []; // to store QR code with its image
+    // let foundImages: ImageWithQrCode[] = []; // to store QR code with its image
     let batchTypeId = nullBatchType.id
     let showConfiguration = false
     let showConfigurationButtonText = "Show configuration"
+    let currentBatchInstance: BatchInstance | null = null
 
-    $: selectedBatchType = batchTypes.find(batchType => batchType.id === batchTypeId) ?? nullBatchType
 
     async function init() {
         try {
@@ -56,9 +57,11 @@
                 inversionAttempts: "dontInvert",
             });
 
-            if (code && isMacAddress(code.data) && !foundCodes.has(code.data) && code.data.trim().length > 0) {
+            if (code && currentBatchInstance && isMacAddress(code.data) && !foundCodes.has(code.data) && code.data.trim().length > 0) {
                 foundCodes = foundCodes.add(code.data);
-                foundImages = [{id: uuids.v4(), code: code.data, image: canvasElement.toDataURL()}, ...foundImages]
+                currentBatchInstance = addScan(currentBatchInstance, {id: uuids.v4(), code: code.data, image: canvasElement.toDataURL()})
+                console.log({currentBatchInstance})
+                // foundImages = [{id: uuids.v4(), code: code.data, image: canvasElement.toDataURL()}, ...foundImages]
                 beepSound.play()
 
                 drawLine(code.location.topLeftCorner, code.location.topRightCorner, "#FF3B58");
@@ -82,6 +85,20 @@
         showConfiguration = !showConfiguration
         showConfigurationButtonText = showConfiguration ? "Hide configuration" : "Show configuration"
     }
+
+    function batchTypeChanged() {
+        console.log("batchTypeChanged", batchTypeId)
+        const selectedBatchType = batchTypeById(batchTypeId)
+        if (selectedBatchType.id !== nullBatchType.id) {
+            currentBatchInstance = createBatchInstance(selectedBatchType)
+        } else {
+            currentBatchInstance = null
+        }
+    }
+
+    function batchTypeById(id: string) {
+        return batchTypes.find(batchType => batchType.id === id) ?? nullBatchType
+    }
 </script>
 
 <svelte:head>
@@ -93,8 +110,8 @@
 
 <main>
     <div class="mb-4">
-        <label class="label">Device type</label>
-        <select class="input input-bordered" bind:value={batchTypeId}>
+        <label class="label">Batch type</label>
+        <select class="input input-bordered" bind:value={batchTypeId} on:change={batchTypeChanged}>
             {#each batchTypes as batchType}
                 <option value={batchType.id}>{batchType.name}</option>
             {/each}
@@ -102,6 +119,7 @@
         <button class="btn btn-primary ml-2" on:click={onShowConfiguration}>{showConfigurationButtonText}</button>
     </div>
     {#if showConfiguration}
+        {@const selectedBatchType = batchTypeById(batchTypeId)}
         <div>
             <pre>{JSON.stringify(selectedBatchType, null, 2)}</pre>
         </div>
@@ -112,6 +130,11 @@
     </div>
     <canvas bind:this={canvasElement} id="canvas" hidden/>
     <audio bind:this={beepSound} src="/beep.mp3" preload="auto"></audio>
+    {#if currentBatchInstance !== null}
+        <div class="mt-2 flex">
+            <BatchAsTable {currentBatchInstance}/>
+        </div>
+    {/if}
 </main>
 
 <style>

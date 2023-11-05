@@ -1,3 +1,5 @@
+import {uuids} from "@cozemble/lang-util";
+
 export interface ImageWithQrCode {
     id: string
     code: string
@@ -47,7 +49,7 @@ export interface BatchInstance {
     _type: 'batch.instance'
     id: string
     type: BatchType
-    gateway: ImageWithQrCode
+    gateway: ImageWithQrCode | null
     scannedSensors: ScannedSensor[]
 }
 
@@ -131,6 +133,21 @@ const fourthBedroom: Location = {
     sensors: [temperatureSensor, breakSensor],
 }
 
+const locations = [
+    kitchen,
+    bathroom,
+    livingRoom,
+    mainBedroom,
+    secondBedroom,
+    thirdBedroom,
+    fourthBedroom,
+]
+
+const sensors = [
+    temperatureSensor,
+    breakSensor,
+]
+
 export const oneBedroomHouse: BatchType = {
     _type: 'batch.type',
     id: 'one-bedroom-house',
@@ -194,3 +211,95 @@ export const batchTypes: BatchType[] = [
     threeBedroomHouse,
     fourBedroomHouse,
 ]
+
+export function createBatchInstance(batchType: BatchType): BatchInstance {
+    return {
+        _type: 'batch.instance',
+        id: uuids.v4(),
+        type: batchType,
+        gateway: null,
+        scannedSensors: []
+    }
+}
+
+export function locationAtPath(path: SensorPath): Location {
+    return locationById(path.locationId)
+}
+
+export function sensorAtPath(path: SensorPath): SensorType {
+    return sensorById(path.sensorTypeId)
+}
+
+export function sensorById(id: SensorTypeId): SensorType {
+    const maybe = sensors.find(sensor => sensor.id.value === id.value)
+    if (maybe) {
+        return maybe
+    } else {
+        throw new Error(`No sensor found for id ${id}`)
+    }
+}
+
+export function locationById(id: LocationId): Location {
+    const maybe = locations.find(location => location.id.value === id.value)
+    if (maybe) {
+        return maybe
+    } else {
+        throw new Error(`No location found for id ${id}`)
+    }
+}
+
+export interface BatchInstanceLine {
+    location: Location
+    sensorType: SensorType
+    scannedSensor: ScannedSensor | null
+}
+
+export function flattenBatchInstance(instance: BatchInstance): BatchInstanceLine[] {
+    const lines: BatchInstanceLine[] = []
+    instance.type.sensors.forEach(sensorPath => {
+        const location = locationAtPath(sensorPath)
+        const sensorType = sensorAtPath(sensorPath)
+        const scannedSensor = instance.scannedSensors.find(scannedSensor => scannedSensor.path === sensorPath) || null
+        lines.push({location, sensorType, scannedSensor})
+    })
+    return lines
+}
+
+export function groupByLocation(lines: BatchInstanceLine[]): Map<Location, BatchInstanceLine[]> {
+    const map = new Map<Location, BatchInstanceLine[]>()
+    lines.forEach(line => {
+        const maybe = map.get(line.location)
+        if (maybe) {
+            maybe.push(line)
+        } else {
+            map.set(line.location, [line])
+        }
+    })
+    return map
+}
+
+export function orderedLocations(batchType: BatchType): Location[] {
+    const locationIds: LocationId[] = []
+    batchType.sensors.forEach(sensorPath => {
+        if (!locationIds.includes(sensorPath.locationId)) {
+            locationIds.push(sensorPath.locationId)
+        }
+    })
+    return locationIds.map(locationById)
+}
+
+export function addScan(batch: BatchInstance, scan: ImageWithQrCode): BatchInstance {
+    const indexOfFirstNull = batch.scannedSensors.length
+    console.log({batch,indexOfFirstNull})
+    const sensorPath = batch.type.sensors[indexOfFirstNull]
+    const scannedSensor: ScannedSensor = {
+        _type: 'scanned.sensor',
+        path: sensorPath,
+        scan
+    }
+    const scannedSensors = [...batch.scannedSensors, scannedSensor]
+    return {
+        ...batch,
+        scannedSensors
+    }
+}
