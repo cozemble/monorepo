@@ -14,6 +14,7 @@
     let foundImages: ImageWithQrCode[] = []; // to store QR code with its image
     let deviceType = "Temp Sensor";
 
+
     async function init() {
         try {
             video.srcObject = await navigator.mediaDevices.getUserMedia({video: {facingMode: "environment"}});
@@ -101,6 +102,7 @@
         <QrScanList {foundImages} {deviceType}/>
     </div>
 </main>
+
 
 <style>
     canvas {

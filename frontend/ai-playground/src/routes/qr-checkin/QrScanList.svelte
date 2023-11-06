@@ -2,18 +2,36 @@
     import type {ImageWithQrCode} from "./types";
 
     export let foundImages: ImageWithQrCode[]
-    export let deviceType:string
+    export let deviceType: string
+    let modal: HTMLDialogElement
+    let exportFileName = ""
+    let fileNameInput: HTMLInputElement
+    let exportError: string
+
 
     function onExport() {
-        const csvContent = "data:text/csv;charset=utf-8,Mac,Device Type\n" + foundImages.map(({code}) => `${code},${deviceType}`).join("\n");
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", "qr-codes.csv");
-        document.body.appendChild(link); // Required for FF
-
-        link.click();
+        modal.showModal()
+        setTimeout(() => fileNameInput.focus(), 100)
     }
+
+    function handleSubmit() {
+        exportError = ""
+        if (exportFileName.endsWith('.csv')) {
+            const csvContent = "data:text/csv;charset=utf-8,Mac,Device Type\n" + foundImages.map(({code}) => `${code},${deviceType}`).join("\n");
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", exportFileName);
+            document.body.appendChild(link); // Required for FF
+
+            link.click();
+            modal.close()
+            exportFileName = ""
+        } else {
+            exportError = 'File name must end with .csv'
+        }
+    }
+
 </script>
 
 <div>
@@ -37,3 +55,22 @@
         </tbody>
     </table>
 </div>
+
+<dialog bind:this={modal} class="modal">
+    <form method="dialog" class="modal-box" on:submit|preventDefault={handleSubmit}>
+        <div class="mx-auto">
+            <h1>Exporting</h1>
+            <p>Enter the file name</p>
+            <input type="text" bind:value={exportFileName} class="input input-bordered w-full"
+                   bind:this={fileNameInput} pattern=".*\.csv$"
+                   title="The file name must end with '.csv'."/><br/>
+            {#if exportError}
+                <p>{exportError}</p><br/>
+            {/if}
+            <div class="mt-2">
+                <button class="btn btn-primary" type="submit">Export</button>
+                <button class="btn btn-secondary" type="reset" on:click={() => modal.close()}>Cancel</button>
+            </div>
+        </div>
+    </form>
+</dialog>
