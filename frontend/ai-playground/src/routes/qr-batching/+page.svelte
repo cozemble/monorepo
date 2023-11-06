@@ -131,9 +131,11 @@
     <canvas bind:this={canvasElement} id="canvas" hidden/>
     <audio bind:this={beepSound} src="/beep.mp3" preload="auto"></audio>
     {#if currentBatchInstance !== null}
-        <div class="mt-2 flex">
-            <BatchAsTable {currentBatchInstance}/>
-        </div>
+        {#key currentBatchInstance.id}
+            <div class="mt-2 flex">
+                <BatchAsTable {currentBatchInstance}/>
+            </div>
+        {/key}
     {/if}
 </main>
 
