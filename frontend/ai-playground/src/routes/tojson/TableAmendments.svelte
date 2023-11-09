@@ -27,11 +27,19 @@
     }
 </script>
 
+<!--
+    @component
+
+-->
+
 {#if !deduplicationComplete}
+    <!-- Find duplications first -->
     <TableDeduplication {pages} {tables} {tableAnalysis} on:complete={onDeduplicationComplete}/>
 {:else if !mergesComplete}
+    <!-- Then find merges -->
     <TableMerging {pages} {tables} {tableAnalysis} on:complete={onMergeComplete}/>
 {:else}
+    <!-- Finished -->
     <p>dedupe decision = {JSON.stringify(deDuplicationDecision, null, 2)}</p>
     <p>merge decision = {JSON.stringify(mergedTables, null, 2)}</p>
 {/if}

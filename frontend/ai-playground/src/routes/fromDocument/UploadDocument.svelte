@@ -65,7 +65,7 @@
 <!-- 
     @component
     Upload document and perform OCR
-        - 'on:done': dispatches when OCR is complete with the OCR outcome
+    - 'on:done': dispatches when OCR is complete with the OCR outcome
     - Optional JSON text input to bypass OCR
  -->
 

@@ -18,6 +18,14 @@
         dispatch("ignore")
     }
 </script>
+
+<!-- 
+    @component
+    Show the user a tables that are instances of the same and ask them if they want to merge it
+    - `on:merge`: dispatched when the user wants to merge the tables
+    - `on:ignore`: dispatched when the user wants to ignore the tables
+-->
+
 <div class="flex flex-col">
     <h3 class="mx-auto">These tables look like they could be merged into one "{candidate.tableLabel}" table</h3>
     <h4 class="mx-auto">Should I perform the merge?</h4>

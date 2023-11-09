@@ -21,6 +21,11 @@
 
 </script>
 
+<!-- 
+    @component
+    Perform OCR on a document and suggest corrections
+ -->
+
 <div class="grid h-screen place-items-center w-5/6 mx-auto mb-8">
     <div class="flex flex-col">
         {#if awsOcrResponse && upload}

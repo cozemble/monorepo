@@ -4,6 +4,12 @@ import { extractJSON } from '$lib/generative/extractJson'
 import { ChatCompletionCreateParamsNonStreaming } from 'openai/resources/chat/completions'
 import { OpenAIStream, StreamingTextResponse } from 'ai'
 
+/**
+ * Make a call to OpenAI with the given prompt
+ * @param openAiPrompt prompt to send to OpenAI
+ * @param stream whether to stream the response
+ * @returns Response 
+ */
 export async function callOpenAi(openAiPrompt: string, stream: boolean): Promise<Response> {
   const OPENAI_API_KEY = mandatory(process.env.OPENAI_API_KEY, 'OPENAI_API_KEY')
 

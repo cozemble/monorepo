@@ -15,6 +15,13 @@
     const html = jsonToHtml(pagesWithTruncatedTables);
 </script>
 
+
+<!-- 
+    @component
+    Analyze each of the given sections
+    - `on:completion`: Dispatched when the analysis is complete
+ -->
+
 <h3 class="mx-auto">Looking for sections in the document....</h3>
 
 <StreamingJson api="/genai/sections/guessSections" body={{html}} on:completion/>

@@ -32,6 +32,13 @@
         }
     }
 </script>
+
+<!-- 
+    @component
+    Find out if there is duplications in the tables and suggest the user to dedupe them
+    - `on:complete`: dispatches the duplication candidates with the `shouldDedupe` property set for each
+-->
+
 {#if duplicationCandidates.length > 0}
     <ProposeDeduplication {tables} candidate={duplicationCandidates[$currentCandidateIndex]} on:dedupe={onDedupe} on:ignore={ignoreDuplicate}/>
 {/if}

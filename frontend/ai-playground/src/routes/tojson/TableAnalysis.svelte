@@ -15,6 +15,12 @@
         .join('\n')
 </script>
 
+<!-- 
+    @component
+    Analyze each of the given tables
+    - `on:completion`: Dispatched when the analysis is complete
+ -->
+ 
 <h3 class="mx-auto">We found {tables.length} {tableOrTables}.....performing analysis</h3>
 
 <StreamingJson api="/genai/tables/guessTableType" body={{tableCount:tables.length, tablesAsCsv}} on:completion/>

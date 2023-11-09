@@ -33,6 +33,13 @@
     }
 </script>
 
+<!-- 
+    @component
+    Analyze the tables and sections in the OCR response
+    - Analyzes the tables in one step
+    - Analyzes the sections in another step
+ -->
+ 
 <div>
     {#if !tableAnalysisComplete}
         <TableAnalysis {tables} on:completion={onTableAnalysis}/>

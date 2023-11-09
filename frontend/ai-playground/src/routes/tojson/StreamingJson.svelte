@@ -40,6 +40,14 @@
 
 </script>
 
+<!-- 
+    @component
+    Sends request to the given api and displays the response with chat like streaming
+    - `on:partial`: Dispatched when a partial response is received
+    - `on:completion`: Dispatched when the request is complete
+ -->
+
+ <!-- Using a hidden form to send the request -->
 <form on:submit={handleSubmit} class="hidden">
     <button type="submit" bind:this={submitButton}>Generate</button>
 </form>

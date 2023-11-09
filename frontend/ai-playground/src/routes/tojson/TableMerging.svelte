@@ -32,6 +32,13 @@
         }
     }
 </script>
+
+<!-- 
+    @component
+    Find out if there is multiple instances of a table and suggest the user to merge them  
+    - `on:complete`: dispatches the merge candidates with `shouldMerge` property set for each
+-->
+
 {#if mergeCandidates.length > 0}
     <ProposeMerge {tables} candidate={mergeCandidates[$currentCandidateIndex]} on:merge={onMerge} on:ignore={ignoreMerge}/>
 {/if}
