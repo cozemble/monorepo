@@ -29,7 +29,8 @@
 
 <!--
     @component
-
+    Find out duplications or possible merges in the tables and ask for user decision
+    - `on:completion`: dispatches the decisions of the user but not the results
 -->
 
 {#if !deduplicationComplete}
