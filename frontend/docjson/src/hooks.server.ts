@@ -1,5 +1,6 @@
 import { redirect, type Handle } from '@sveltejs/kit'
 import { sequence } from '@sveltejs/kit/hooks'
+import { ROUTES } from '$lib/utils'
 import { createSupabaseServerClient } from '@supabase/auth-helpers-sveltekit'
 
 import { env } from '$env/dynamic/public'
@@ -39,21 +40,21 @@ const routeProtectionHandler: Handle = async ({ event, resolve }) => {
 
   const session = await event.locals.getSession()
 
-  if (path === '/auth/sign-in' || path === '/auth/sign-up') {
+  if (path === ROUTES.SIGN_IN || path === ROUTES.SIGN_UP) {
     if (session) {
-      throw redirect(303, '/')
+      throw redirect(303, ROUTES.HOME)
     }
   }
 
-  if (path === '/auth/sign-out') {
+  if (path === ROUTES.SIGN_OUT) {
     if (!session) {
-      throw redirect(303, '/auth/sign-in')
+      throw redirect(303, ROUTES.SIGN_IN)
     }
   }
 
-  if (path.startsWith('/dashboard')) {
+  if (path.startsWith(ROUTES.DASHBOARD)) {
     if (!session) {
-      throw redirect(303, '/auth/sign-in')
+      throw redirect(303, ROUTES.SIGN_IN)
     }
   }
 
