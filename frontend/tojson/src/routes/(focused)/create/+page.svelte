@@ -5,6 +5,7 @@
   import { goto } from '$app/navigation'
   import ProgressBar from '$lib/components/ProgressBar.svelte'
   import CorrectOcr from './CorrectOCR.svelte'
+  import notifications from '$lib/stores/notifications'
 
   // <!-- TODO user can go back to previous steps -->
 
@@ -14,12 +15,14 @@
     detail?: string
     state: 'pending' | 'success' | 'error'
     withProgress: boolean
+    component?: any
     handler: (progressStore: Writable<number>) => Promise<{
       success: boolean
       error?: string
     }>
-    component?: any
   }
+
+  function createStep({ name, message, detail, state, withProgress, handler, component }: Step) {}
 
   let modelId: string
   /** Between 0 and 1 */
@@ -61,6 +64,7 @@
       state: 'pending',
       withProgress: false,
       component: CorrectOcr,
+      // handler: mockHandler,
       handler: async () => {
         // take forever and never resolve
         return await new Promise(() => {})
@@ -104,6 +108,22 @@
     // fail
     if (!stepResult.success) {
       // <!-- TODO display error -->
+
+      notifications.create({
+        title: 'Error',
+        description: stepResult.error || 'Something went wrong',
+        type: 'error',
+        onCloseCallback: () => {
+          notifications.create({
+            title: 'Redirecting',
+            description: 'Redirecting to the dashboard',
+            type: 'info',
+          })
+
+          goto(`/`)
+        },
+      })
+
       return
     }
 
@@ -139,43 +159,57 @@
   Handles the steps of the model creation process and redirects to the dashboard when the process is finished.
 -->
 
-<div class="flex flex-col items-center justify-center w-full sm:mt-12">
-  <!--  -->
-
-  <!-- * steps list -->
-  <div class="steps-area flex flex-col w-full max-w-[50em]">
-    <ul class="steps gap-4">
+<div class="flex items-stretch justify-start w-full gap-[5vw] flex-grow ">
+  <!-- Steps (left)-->
+  <div class="flex flex-col justify-center gap-16 max-w-[50em]">
+    <ul class="steps steps-vertical gap-4">
       {#each steps as step}
+        {@const isActive = step.name === currentStep.name}
         {@const stepStyle =
           (step.state === 'success' && 'step-primary') ||
           (step.state === 'error' && 'step-error') ||
-          (step.name === currentStep.name && 'font-bold') ||
+          (isActive && 'step-primary font-bold text-primary text-xl') ||
           ''}
+
         <li class="step {stepStyle}">
-          {step.name}
+          <div class="text-start">
+            {step.message}
+
+            {#if isActive}
+              <p class="opacity-50 font-normal text-sm">
+                {currentStep.detail || ''}
+              </p>
+            {/if}
+          </div>
         </li>
       {/each}
     </ul>
+
+    <div class="flex gap-2 w-full">
+      <!-- <button class="btn btn-warning">Cancel</button> -->
+      <button class="btn btn-secondary">Go Back</button>
+      <button class="btn btn-primary">Next</button>
+    </div>
   </div>
 
-  <!-- * heading -->
-  <div class="title-area my-8 sm:mt-12 text-center">
-    <h1 class="text-accent mb-4">{currentStep.message}</h1>
-
-    <p class="opacity-50">
-      {currentStep.detail || ''}
-    </p>
+  <!-- Step View (right) -->
+  <div class="text-center flex flex-col items-center justify-center px-10 pt-4 flex-grow border-l">
+    <!-- Step Component -->
+    {#if currentStep.component}
+      <div
+        class="w-full h-full p-6 gap-6 flex flex-col flex-grow items-center justify-center bg-base-300 rounded-2xl"
+      >
+        <svelte:component this={currentStep.component} />
+      </div>
+    {:else}
+      <!-- Heading -->
+      <h1 class="text-4xl text-accent mb-4">{currentStep.message}</h1>
+      <p class="opacity-50">
+        {currentStep.detail || ''}
+      </p>
+    {/if}
   </div>
 </div>
-
-<!-- TODO display component of the step if it exists -->
-{#if currentStep.component}
-  <div
-    class=" w-full h-full max-w-6xl p-6 gap-6 my-8 flex flex-col flex-grow items-center justify-center bg-base-300 rounded-2xl"
-  >
-    <svelte:component this={currentStep.component} />
-  </div>
-{/if}
 
 {#if currentStep.withProgress}
   <ProgressBar message={currentStep.message} progress={$progressStore} />
