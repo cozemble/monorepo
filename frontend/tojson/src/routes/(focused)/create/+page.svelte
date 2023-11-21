@@ -193,8 +193,8 @@
   </div>
 
   <!-- Step View (right) -->
-  <div class="text-center flex flex-col items-center justify-center px-10 pt-4 flex-grow border-l">
-    <!-- Step Component -->
+  <div class="flex flex-col items-center justify-center px-10 flex-grow border-l">
+    <!-- Component -->
     {#if currentStep.component}
       <div
         class="w-full h-full p-6 gap-6 flex flex-col flex-grow items-center justify-center bg-base-300 rounded-2xl"
@@ -202,15 +202,19 @@
         <svelte:component this={currentStep.component} />
       </div>
     {:else}
-      <!-- Heading -->
-      <h1 class="text-4xl text-accent mb-4">{currentStep.message}</h1>
-      <p class="opacity-50">
-        {currentStep.detail || ''}
-      </p>
+      <!-- placeholder when no component -->
+      <div class="flex flex-col items-center justify-center flex-grow w-full">
+        <h1 class="text-4xl text-accent mb-4">{currentStep.message}</h1>
+        <p class="opacity-50">
+          {currentStep.detail || ''}
+        </p>
+      </div>
+    {/if}
+
+    {#if currentStep.withProgress}
+      <div class="w-full pb-4">
+        <ProgressBar message={currentStep.message} progress={$progressStore} />
+      </div>
     {/if}
   </div>
 </div>
-
-{#if currentStep.withProgress}
-  <ProgressBar message={currentStep.message} progress={$progressStore} />
-{/if}
