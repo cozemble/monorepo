@@ -2,23 +2,15 @@ import {mandatory} from "@cozemble/lang-util";
 import {ConversationsHistoryArguments, WebClient} from "@slack/web-api";
 import 'dotenv/config';
 import {createClient} from '@supabase/supabase-js';
+import {createSlackTimestamp} from "./slack.js";
 
-
-const slackChannelId = mandatory(process.env.SLACK_CHANNEL_ID, "no SLACK_CHANNEL_ID in env");
-const botUserOAuthToken = mandatory(process.env.SLACK_BOT_USER_OAUTH_TOKEN, "no SLACK_BOT_USER_OAUTH_TOKEN in env");
-const supabaseUrl = mandatory(process.env.SUPABASE_URL, "no SUPABASE_URL in env");
-const supabaseAnonKey = mandatory(process.env.SUPABASE_ANON_KEY, "no SUPABASE_ANON_KEY in env");
+const slackChannelId = mandatory(process.env.SLACK_CHANNEL_ID, "No SLACK_CHANNEL_ID in env");
+const botUserOAuthToken = mandatory(process.env.SLACK_BOT_USER_OAUTH_TOKEN, "No SLACK_BOT_USER_OAUTH_TOKEN in env");
+const supabaseUrl = mandatory(process.env.SUPABASE_URL, "No SUPABASE_URL in env");
+const supabaseAnonKey = mandatory(process.env.SUPABASE_ANON_KEY, "No SUPABASE_ANON_KEY in env");
 
 const slack = new WebClient(botUserOAuthToken);
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
-function createSlackTimestamp(): string {
-    const now = Date.now(); // Current time in milliseconds
-    const seconds = Math.floor(now / 1000); // Convert to seconds
-    const microseconds = (now % 1000) * 1000; // Remainder in microseconds
-
-    return `${seconds}.${microseconds}`;
-}
 
 async function insertMessagesToSupabase(messages: any[]) {
     // Map all messages to the structure expected by your Supabase table
@@ -68,7 +60,6 @@ async function fetchChannelHistory(channelId: string) {
             oldest: lastFetchTimestamp
         };
     }
-    console.log('fetchParams', fetchParams)
     try {
         const now = createSlackTimestamp();
         const response = await slack.conversations.history(fetchParams);

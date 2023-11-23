@@ -114,6 +114,9 @@ importers:
       dotenv:
         specifier: ^16.0.3
         version: 16.0.3
+      openai:
+        specifier: 4.6.0
+        version: 4.6.0
     devDependencies:
       '@types/node':
         specifier: ^20.9.1
@@ -4998,7 +5001,7 @@ packages:
     peerDependencies:
       '@sveltejs/kit': ^1.0.0
     dependencies:
-      '@sveltejs/kit': 1.20.4(svelte@4.0.5)(vite@4.4.3)
+      '@sveltejs/kit': 1.20.4(svelte@3.54.0)(vite@4.4.3)
       import-meta-resolve: 2.2.2
     dev: true
 
@@ -5408,7 +5411,7 @@ packages:
   /@types/node-fetch@2.6.4:
     resolution: {integrity: sha512-1ZX9fcN4Rvkvgv4E6PAY5WXUFWFcRWxZa3EW83UjycOB9ljJCedb2CupIP4RZMEwF/M3eTcCihbBRgwtGbg5Rg==}
     dependencies:
-      '@types/node': 16.11.6
+      '@types/node': 20.9.1
       form-data: 3.0.1
     dev: false
 

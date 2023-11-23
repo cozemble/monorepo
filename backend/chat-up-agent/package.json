@@ -23,6 +23,7 @@
     "@cozemble/lang-util": "workspace:*",
     "@slack/web-api": "^6.10.0",
     "@supabase/supabase-js": "^2.36.0",
-    "dotenv": "^16.0.3"
+    "dotenv": "^16.0.3",
+    "openai": "4.6.0"
   }
 }
