@@ -17,8 +17,13 @@
     let tableAmendmentComplete = false
 
     function onTableAnalysis(event: CustomEvent) {
-        tableAnalysis = JSON.parse(event.detail)
-        tableAnalysisComplete = true
+        console.log({onTableAnalysisEvent:event})
+        try {
+            tableAnalysis = JSON.parse(event.detail)
+            tableAnalysisComplete = true
+        } catch (e) {
+            console.error(`Failed to parse table analysis event: ${e}`)
+        }
     }
 
     function onSectionAnalysis(event: CustomEvent) {
