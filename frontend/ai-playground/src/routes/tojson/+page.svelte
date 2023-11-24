@@ -6,6 +6,7 @@
     import type {UploadAndOcrResponse} from "../fromDocument/types";
     import type {StashPdfResponse} from "@cozemble/backend-aws-ocr-types";
     import JsonApiWizard from "./JsonApiWizard.svelte";
+    import {jsonToHtml} from "../fromDocument/jsonToHtml";
 
     let awsOcrResponse: AwsOcrResponse | null = null
     let upload: StashPdfResponse | null = null
@@ -16,7 +17,10 @@
 
     function ocrDone(event: CustomEvent<UploadAndOcrResponse>) {
         awsOcrResponse = event.detail.ocr
+        console.log({awsOcrResponse})
         upload = event.detail.upload
+        const html = jsonToHtml(awsOcrResponse.json.pages)
+        console.log({html})
     }
 
 </script>

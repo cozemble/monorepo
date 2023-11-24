@@ -1,7 +1,7 @@
 <script lang="ts">
     import {useCompletion} from 'ai/svelte';
     import {onMount, createEventDispatcher} from "svelte";
-
+    import {derived} from "svelte/store";
 
     export let api: string
     export let body: any
@@ -13,6 +13,18 @@
         api
     });
 
+    const processedCompletion = derived(completion, $completion => {
+        if ($completion.trim().length === 0) {
+            return ''
+        }
+        $completion = $completion.replace(/^```json/g, '').replace(/```$/g, '')
+        try {
+            return JSON.stringify(JSON.parse($completion), null, 2)
+        } catch (e) {
+            return $completion
+        }
+    })
+
     onMount(() => {
         $input = JSON.stringify({...body, stream: true})
         submitButton.click()
@@ -23,7 +35,8 @@
             return
         }
         if (isLoading === false) {
-            dispatch('completion', $completion)
+            const final = $completion.replace(/```json/g, '').replace(/```/g, '')
+            dispatch('completion', final)
         }
     }
 
@@ -52,5 +65,5 @@
     <button type="submit" bind:this={submitButton}>Generate</button>
 </form>
 <div class="border rounded p-4 overflow-y-auto" bind:this={jsonContainerDiv}>
-<pre  >{$completion}</pre>
+<pre>{$processedCompletion}</pre>
 </div>
