@@ -3,6 +3,9 @@
     import {jsonToHtml, type WordClass} from "../../fromDocument/jsonToHtml";
     import StreamingJson from "../StreamingJson.svelte";
     import type {LabelledKeywordResponse} from "../../genai/sections/labelKeywords/+server";
+    import {linesOnly} from "../helpers";
+    import {type BoundingBox, extractParagraphs, getBoundingBox, groupBySections, type Paragraph} from "./sectionFinder";
+    import {onMount} from "svelte";
 
     const awsResponse: AwsOcrResponse = {
         "json": {
@@ -395,27 +398,63 @@
         "html": ""
     }
 
-    let html = jsonToHtml(awsResponse.json.pages)
 
-    function onKeywordLabellingComplete(event:CustomEvent<string>) {
-        console.log("onKeywordLabellingComplete", event.detail)
-        const response:LabelledKeywordResponse[] = JSON.parse(event.detail)
-        const wordClasses:WordClass[] = response.map(r => ({
-            paragraphNumber: r.paragraphNumber,
-            word: r.fixedWord,
-            clazz: 'fixed-word'
-        }))
-        const stylePrefix = `<style>
+    const pagesWithLines = awsResponse.json.pages.map(page => linesOnly(page))
+    const stylePrefix = `<style>
+.text-box {
+ font-size: x-small;
+ /* no wrap */
+    white-space: nowrap;
+
+}
             .fixed-word {
             font-weight: bold;
             }
             </style>`
-        html = stylePrefix + jsonToHtml(awsResponse.json.pages, wordClasses)
-        console.log({html, wordClasses})
+
+    let html = stylePrefix + jsonToHtml(pagesWithLines)
+    console.log({html})
+
+
+    let paragraphs = [] as Paragraph[]
+    let sections = [] as Paragraph[][]
+    let boundingBoxes = [] as BoundingBox[]
+
+
+    onMount(() => {
+        paragraphs = extractParagraphs(html);
+        sections = groupBySections(paragraphs);
+        boundingBoxes = sections.map(getBoundingBox);
+    })
+
+    function onKeywordLabellingComplete(event: CustomEvent<string>) {
+        const response: LabelledKeywordResponse[] = JSON.parse(event.detail)
+        const wordClasses: WordClass[] = response.map(r => ({
+            paragraphNumber: r.paragraphNumber,
+            word: r.fixedWord,
+            clazz: 'fixed-word'
+        }))
+        const pagesWithLines = awsResponse.json.pages.map(page => linesOnly(page))
+        html = stylePrefix + jsonToHtml(pagesWithLines, wordClasses)
     }
 </script>
 
-<div class="flex w-full">
-<StreamingJson api="/genai/sections/labelKeywords" body={{html}} on:completion={onKeywordLabellingComplete}/>
+<div class="flex">
+    <div class="mx-4 html-container border rounded">
+        {@html html}
+    </div>
+    <div class="flex w-full">
+        <StreamingJson api="/genai/sections/labelKeywords" body={{html}} on:completion={onKeywordLabellingComplete}/>
+    </div>
 </div>
-{@html html}
+<div class="flex">
+ <pre>{JSON.stringify(sections, null, 2)}</pre>
+</div>
+
+<style>
+    .html-container {
+        width: 1500px;
+        height: 800px;
+        position: relative;
+    }
+</style>

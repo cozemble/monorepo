@@ -21,7 +21,11 @@ function itemToHtml(item: BlockItem, paragraphCounter: Counter, wordClasses: Wor
             const word = wc.word
             return acc.replace(word, `<span class="${wc.clazz}">${word}</span>`)
         }, item.text)
-        return `<p id="${paragraphNumber}">${text}</p>`
+        const left = item.boundingBox.left * 100
+        const top = item.boundingBox.top * 100
+        const width = item.boundingBox.width * 100
+        const height = item.boundingBox.height * 100
+        return `<p id="${paragraphNumber}" class="text-box"style="position: absolute; top: ${top}%; left: ${left}%; width: ${width}%; height: ${height}%;">${text}</p>`
     }
     return tableToHtml(item)
 }

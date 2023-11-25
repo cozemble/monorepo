@@ -12,15 +12,19 @@
     const tables = flattenTables(awsOcrResponse.json.pages)
     let tableAnalysis: TableTypeGuess[] = []
     let sectionAnalysis: SectionGuess[] = []
-    let sectionAnalysisComplete = true
-    let tableAnalysisComplete = tables.length <= 0
-    let tableAmendmentComplete = false
+
+    const stepOrder = [
+        'tableAnalysis',
+        'sectionAnalysis',
+        'tableAmendments'
+    ]
+    let currentStep = 'sectionAnalysis'
 
     function onTableAnalysis(event: CustomEvent) {
         console.log({onTableAnalysisEvent:event})
         try {
             tableAnalysis = JSON.parse(event.detail)
-            tableAnalysisComplete = true
+            currentStep = stepOrder[stepOrder.indexOf(currentStep) + 1]
         } catch (e) {
             console.error(`Failed to parse table analysis event: ${e}`)
         }
@@ -28,11 +32,12 @@
 
     function onSectionAnalysis(event: CustomEvent) {
         sectionAnalysis = JSON.parse(event.detail)
-        sectionAnalysisComplete = true
+        currentStep = stepOrder[stepOrder.indexOf(currentStep) + 1]
+        console.log({sectionAnalysis})
     }
 
     function onTableAmendmentsComplete(event:CustomEvent) {
-        tableAmendmentComplete = true
+        currentStep = stepOrder[stepOrder.indexOf(currentStep) + 1]
         const {deDuplicationDecision, mergedTables} = event.detail
         console.log({deDuplicationDecision, mergedTables})
     }
@@ -46,11 +51,11 @@
  -->
  
 <div>
-    {#if !tableAnalysisComplete}
+    {#if currentStep === 'tableAnalysis'}
         <TableAnalysis {tables} on:completion={onTableAnalysis}/>
-    {:else if !sectionAnalysisComplete}
+    {:else if currentStep === 'sectionAnalysis'}
         <SectionAnalysis pages={awsOcrResponse.json.pages} on:completion={onSectionAnalysis}/>
-    {:else if !tableAmendmentComplete}
+    {:else if currentStep === 'tableAmendments'}
         <TableAmendments pages={awsOcrResponse.json.pages} {tables} {tableAnalysis} on:completion={onTableAmendmentsComplete}/>
     {:else}
         <p>table analysis = {JSON.stringify(tableAnalysis, null,2)}</p>
