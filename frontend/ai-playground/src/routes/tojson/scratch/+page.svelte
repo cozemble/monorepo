@@ -420,7 +420,6 @@
     let sections = [] as Paragraph[][]
     let boundingBoxes = [] as BoundingBox[]
 
-
     onMount(() => {
         paragraphs = extractParagraphs(html);
         sections = groupBySections(paragraphs);
