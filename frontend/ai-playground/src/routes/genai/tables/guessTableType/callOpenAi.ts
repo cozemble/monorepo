@@ -1,7 +1,7 @@
 import OpenAI from 'openai'
 import {mandatory} from '@cozemble/lang-util'
 import {extractJSON} from '$lib/generative/extractJson'
-import {ChatCompletionCreateParamsNonStreaming} from 'openai/resources/chat/completions'
+import type {ChatCompletionCreateParamsNonStreaming} from 'openai/resources/chat/completions'
 import {OpenAIStream, StreamingTextResponse} from 'ai'
 
 export async function callOpenAi(openAiPrompt: string, stream: boolean, model = 'gpt-4-0613'): Promise<Response> {
@@ -33,7 +33,6 @@ export async function callOpenAi(openAiPrompt: string, stream: boolean, model = 
         if (!json) {
             throw new Error('No JSON found')
         }
-        console.log({json})
         return new Response(JSON.stringify({result: json}), {status: 200})
     }
 }

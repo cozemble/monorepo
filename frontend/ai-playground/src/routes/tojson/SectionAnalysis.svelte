@@ -4,7 +4,7 @@
     import {jsonToHtml, type WordClass} from "../fromDocument/jsonToHtml";
     import type {LabelledKeywordResponse} from "../genai/sections/labelKeywords/+server";
     import {linesOnly} from "./helpers";
-    import {writable} from "svelte/store";
+    import {writable, derived} from "svelte/store";
     import {
         type BoundingBox,
         extractParagraphs,
@@ -12,8 +12,8 @@
         groupBySections,
         type Paragraph
     } from "./scratch/sectionFinder";
-    import interact from 'interactjs';
     import {interactive} from "./interactiveBoundingBoxes";
+    import {getBoundingBoxWords, nearestBottom, nearestLeft, nearestRight, nearestTop} from "./nearestFixedWords";
 
     export let pages: Page[]
     const scanPercentageComplete = writable(0)
@@ -30,10 +30,11 @@
     let html = stylePrefix + jsonToHtml(pagesWithLines);
     const assistantSteps = ['scanForFixedWords', 'explainToUser']
     let currentAssistantStep = assistantSteps[0]
+    let labelledKeywords = [] as LabelledKeywordResponse[]
 
     function onKeywordLabellingComplete(event: CustomEvent<string>) {
-        const response: LabelledKeywordResponse[] = JSON.parse(event.detail)
-        const wordClasses: WordClass[] = response.map(r => ({
+        labelledKeywords = JSON.parse(event.detail)
+        const wordClasses: WordClass[] = labelledKeywords.map(r => ({
             paragraphNumber: r.paragraphNumber,
             word: r.fixedWord,
             clazz: 'fixed-word'
@@ -51,6 +52,14 @@
         paragraphs = extractParagraphs(html);
         sections = groupBySections(paragraphs);
         $boundingBoxes = sections.map(getBoundingBox);
+        if($boundingBoxes.length > 0) {
+            const box = $boundingBoxes[0];
+            const top = nearestTop(box, labelledKeywords, paragraphs);
+            const bottom = nearestBottom(box, labelledKeywords, paragraphs);
+            const left = nearestLeft(box, labelledKeywords, paragraphs);
+            const right = nearestRight(box, labelledKeywords, paragraphs);
+            console.log({top, bottom, left, right})
+        }
     }
 
     function nextAssistantStep() {
@@ -59,7 +68,6 @@
             currentAssistantStep = assistantSteps[index + 1]
         }
     }
-
 
     function onPartialKeywordLabelling(event: CustomEvent<string>) {
         const maxParagraph = findMaxParagraphNumber(html);
@@ -91,57 +99,8 @@
     let paragraphs = [] as Paragraph[]
     let sections = [] as Paragraph[][]
     const boundingBoxes = writable([] as BoundingBox[])
-
-    // Function to make boxes draggable and resizable
-    function makeInteractive(node:HTMLDivElement, index:number) {
-        interact(node)
-            .draggable({
-                // Draggable options
-                onmove: event => {
-                    const containerWidth = htmlContainer.clientWidth;
-                    const containerHeight = htmlContainer.clientHeight;
-                    let bbox = $boundingBoxes[index];
-                    // Update bbox top and left based on drag
-                    bbox.top += event.dy / containerHeight * 100;
-                    bbox.left += event.dx / containerWidth * 100;
-                    boundingBoxes.update(bboxes => {
-                        bboxes[index] = bbox;
-                        return bboxes;
-                    });
-                }
-            })
-            .resizable({
-                // Resizable options
-                edges: { left: true, right: true, bottom: true, top: true },
-                onmove: event => {
-                    const containerWidth = htmlContainer.clientWidth;
-                    const containerHeight = htmlContainer.clientHeight;
-                    boundingBoxes.update(bboxes => {
-                        let bbox = bboxes[index];
-                        // Calculate the change in size
-                        let dxPercentage = event.dx / containerWidth * 100;
-                        let dyPercentage = event.dy / containerHeight * 100;
-
-                        // Update bbox right and bottom
-                        if (event.edges.right) bbox.right += dxPercentage;
-                        if (event.edges.bottom) bbox.bottom += dyPercentage;
-                        if (event.edges.left) bbox.left += dxPercentage;
-                        if (event.edges.top) bbox.top += dyPercentage;
-
-                        bboxes[index] = bbox;
-                        return bboxes;
-                    });                }
-            });
-    }
-
+    const boundingBoxWords = derived(boundingBoxes, $boundingBoxes => $boundingBoxes.map(boundingBox => getBoundingBoxWords(boundingBox, labelledKeywords, paragraphs)))
 </script>
-
-
-<!-- 
-    @component
-    Analyze each of the given sections
-    - `on:completion`: Dispatched when the analysis is complete
- -->
 
 <div class="flex">
     <div class="flex flex-col">
@@ -165,7 +124,7 @@
             <StreamingJson api="/genai/sections/labelKeywords" body={{html}} on:completion={onKeywordLabellingComplete}
                            on:partial={onPartialKeywordLabelling}/>
         {:else if currentAssistantStep === 'explainToUser'}
-            <h3>Confirm sections</h3>
+            <h3>xConfirm sections</h3>
             <p>The document has been scanned for "fixed words", which are now marked in bold. These are words that we
                 think will appear in all versions of this kind of document.</p><br/>
             <p>If you disagree with any of the fixed words, just click on them to toggle. Similarly, if a non-bold word
@@ -176,6 +135,10 @@
             <button class="btn btn-primary" on:click={nextAssistantStep}>Ok</button>
         {/if}
     </div>
+</div>
+
+<div>
+    <pre>Bounding box words = {JSON.stringify($boundingBoxWords, null, 2)}</pre>
 </div>
 
 <style>
