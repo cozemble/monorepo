@@ -656,6 +656,9 @@ importers:
       daisyui:
         specifier: ^2.47.0
         version: 2.47.0(autoprefixer@10.4.13)(postcss@8.4.27)
+      interactjs:
+        specifier: ^1.10.22
+        version: 1.10.22
       jimp:
         specifier: ^0.22.10
         version: 0.22.10
@@ -3645,6 +3648,10 @@ packages:
   /@iconify/types@2.0.0:
     resolution: {integrity: sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==}
     dev: true
+
+  /@interactjs/types@1.10.22:
+    resolution: {integrity: sha512-a1bBKGM8J9e//2+qCec57pH2gopMODC74C9oql1JKSJ6LtQfUSk5Ne9UprQ+bo4DEFglC1Yy2TuaCt+aLT7rHw==}
+    dev: false
 
   /@istanbuljs/load-nyc-config@1.1.0:
     resolution: {integrity: sha512-VjeHSlIzpv/NyD3N0YuHfXOPDIixcA1q2ZV98wsMqcYlPmv2n3Yb2lYP9XMElnaFVXg5A7YLTeLu6V84uQDjmQ==}
@@ -8953,6 +8960,12 @@ packages:
     resolution: {integrity: sha512-zDml/jzr2PKU9I8J/xyZBQn8rPCAY//UOYNmR01XwNwyfhEWObo2SWfSl1+0tm1u6PhxLwDnfsT/6jB7OUxqFA==}
     engines: {node: '>= 0.10'}
     dev: true
+
+  /interactjs@1.10.22:
+    resolution: {integrity: sha512-T0Wt27rerCAEn8LinYCc8wIJhJ67E4e3//GQIrzHZlABJOXM4nkuqTWfk+o4Ttu4v+gOgghI4AI9fRi88KwmMA==}
+    dependencies:
+      '@interactjs/types': 1.10.22
+    dev: false
 
   /internal-slot@1.0.5:
     resolution: {integrity: sha512-Y+R5hJrzs52QCG2laLn4udYVnxsfny9CpOhNhUvk/SSSVyF6T27FzRbF0sroPidSu3X8oEAkOn2K804mjpt6UQ==}

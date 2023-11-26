@@ -5,7 +5,15 @@
     import type {LabelledKeywordResponse} from "../genai/sections/labelKeywords/+server";
     import {linesOnly} from "./helpers";
     import {writable} from "svelte/store";
-    import {type BoundingBox, extractParagraphs, getBoundingBox, groupBySections, type Paragraph} from "./scratch/sectionFinder";
+    import {
+        type BoundingBox,
+        extractParagraphs,
+        getBoundingBox,
+        groupBySections,
+        type Paragraph
+    } from "./scratch/sectionFinder";
+    import interact from 'interactjs';
+    import {interactive} from "./interactiveBoundingBoxes";
 
     export let pages: Page[]
     const scanPercentageComplete = writable(0)
@@ -78,10 +86,53 @@
     }
 
     let scanLineDiv: HTMLDivElement;
+    let htmlContainer: HTMLDivElement;
 
     let paragraphs = [] as Paragraph[]
     let sections = [] as Paragraph[][]
     const boundingBoxes = writable([] as BoundingBox[])
+
+    // Function to make boxes draggable and resizable
+    function makeInteractive(node:HTMLDivElement, index:number) {
+        interact(node)
+            .draggable({
+                // Draggable options
+                onmove: event => {
+                    const containerWidth = htmlContainer.clientWidth;
+                    const containerHeight = htmlContainer.clientHeight;
+                    let bbox = $boundingBoxes[index];
+                    // Update bbox top and left based on drag
+                    bbox.top += event.dy / containerHeight * 100;
+                    bbox.left += event.dx / containerWidth * 100;
+                    boundingBoxes.update(bboxes => {
+                        bboxes[index] = bbox;
+                        return bboxes;
+                    });
+                }
+            })
+            .resizable({
+                // Resizable options
+                edges: { left: true, right: true, bottom: true, top: true },
+                onmove: event => {
+                    const containerWidth = htmlContainer.clientWidth;
+                    const containerHeight = htmlContainer.clientHeight;
+                    boundingBoxes.update(bboxes => {
+                        let bbox = bboxes[index];
+                        // Calculate the change in size
+                        let dxPercentage = event.dx / containerWidth * 100;
+                        let dyPercentage = event.dy / containerHeight * 100;
+
+                        // Update bbox right and bottom
+                        if (event.edges.right) bbox.right += dxPercentage;
+                        if (event.edges.bottom) bbox.bottom += dyPercentage;
+                        if (event.edges.left) bbox.left += dxPercentage;
+                        if (event.edges.top) bbox.top += dyPercentage;
+
+                        bboxes[index] = bbox;
+                        return bboxes;
+                    });                }
+            });
+    }
 
 </script>
 
@@ -95,20 +146,17 @@
 <div class="flex">
     <div class="flex flex-col">
         <h3>Document with tables removed</h3>
-        <div class="html-container border rounded">
+        <div class="html-container border rounded" bind:this={htmlContainer}>
             <div bind:this={scanLineDiv} class="scan-line"></div>
-            {#if $boundingBoxes.length > 0}
-                {#each $boundingBoxes as boundingBox}
-                    <div class="bounding-box rounded"
-                         style="position:absolute;
-                    top: {boundingBox.top}%;
-                    left: {boundingBox.left}%;
-                    width: calc({boundingBox.right}% - {boundingBox.left}%);
-                    height: calc({boundingBox.bottom}% - {boundingBox.top}%);">
-                    </div>
-                {/each}
-            {/if}
-            {@html html}
+            {#each $boundingBoxes as boundingBox, index}
+                <div use:interactive={{ index, htmlContainer, boundingBoxes }} class="bounding-box rounded"
+                     style="position:absolute;
+                top: {boundingBox.top}%;
+                left: {boundingBox.left}%;
+                width: calc({boundingBox.right}% - {boundingBox.left}%);
+                height: calc({boundingBox.bottom}% - {boundingBox.top}%);">
+                </div>
+            {/each}            {@html html}
         </div>
     </div>
     <div class="flex flex-col ml-4">
@@ -122,7 +170,8 @@
                 think will appear in all versions of this kind of document.</p><br/>
             <p>If you disagree with any of the fixed words, just click on them to toggle. Similarly, if a non-bold word
                 SHOULD be a fixed work, click on that to toggle it.</p><br/>
-            <p>We have also taken a guess at the likely sections in this document.  If you disagree with a section, you can reshape it or delete it</p><br/>
+            <p>We have also taken a guess at the likely sections in this document. If you disagree with a section, you
+                can reshape it or delete it</p><br/>
             <p>You can also add new sections by clicking the Add Section button</p><br/>
             <button class="btn btn-primary" on:click={nextAssistantStep}>Ok</button>
         {/if}
