@@ -4,7 +4,7 @@
     import {jsonToHtml} from "../fromDocument/jsonToHtml";
     import type {LabelledKeywordResponse} from "../genai/sections/labelKeywords/+server";
     import {linesOnly, type SectionAnalysisStep} from "./helpers";
-    import {derived, writable} from "svelte/store";
+    import {writable} from "svelte/store";
     import {
         type BoundingBox,
         extractParagraphs,
@@ -12,10 +12,11 @@
         groupBySections,
         type Paragraph
     } from "./scratch/sectionFinder";
-    import {getBoundingBoxWords, nearestBottom, nearestLeft, nearestRight, nearestTop} from "./nearestFixedWords";
+    import {nearestBottom, nearestLeft, nearestRight, nearestTop} from "./nearestFixedWords";
     import DocumentView from "./DocumentView.svelte";
     import BoundingBoxView from "./BoundingBoxView.svelte";
     import SelectedBoundingBoxView from "./SelectedBoundingBoxView.svelte";
+    import {type MouseDragHandler, NoOpMouseDragHandler} from "./MouseDragHandler";
 
     export let pages: Page[]
     const scanPercentageComplete = writable(0)
@@ -86,13 +87,39 @@
     let paragraphs = [] as Paragraph[]
     let sections = [] as Paragraph[][]
     const boundingBoxes = writable([] as BoundingBox[])
-    const boundingBoxWords = derived(boundingBoxes, $boundingBoxes => $boundingBoxes.map(boundingBox => getBoundingBoxWords(boundingBox, $labelledKeywords, paragraphs)))
+
+    let mouseDragHandler: MouseDragHandler = NoOpMouseDragHandler
+
+    function onMouseDown(event: MouseEvent) {
+        mouseDragHandler.onMouseDown(event)
+    }
+
+    function onMouseMove(event: MouseEvent) {
+        mouseDragHandler.onMouseMove(event)
+    }
+
+    function onMouseUp(event: MouseEvent) {
+        mouseDragHandler.onMouseUp(event)
+    }
+
+    function onDeleteSection(event: CustomEvent<BoundingBox>) {
+        const index = $boundingBoxes.indexOf(event.detail)
+        console.log({index, event, boundingBoxes:$boundingBoxes})
+        if (index >= 0) {
+            boundingBoxes.update(boundingBoxes => boundingBoxes.filter((_, i) => i !== index))
+            $selectedBoundingBox = null
+            console.log({boundingBoxes:$boundingBoxes})
+        }
+    }
 </script>
 
 <div class="flex">
     <div class="flex flex-col">
         <h3>Document with tables removed</h3>
         <div class="html-container border rounded" bind:this={htmlContainer}
+             on:mousedown={onMouseDown}
+             on:mousemove={onMouseMove}
+             on:mouseup={onMouseUp}
              class:disabled={currentAssistantStep.documentDisabled}>
             <div bind:this={scanLineDiv} class="scan-line"></div>
             {#each $boundingBoxes as boundingBox, index}
@@ -119,7 +146,7 @@
         {:else if currentAssistantStep.name === 'configureSections'}
             <h3>Configure sections</h3>
             {#if $selectedBoundingBox}
-                <SelectedBoundingBoxView selectedBoundingBox={$selectedBoundingBox} {labelledKeywords} {paragraphs}/>
+                <SelectedBoundingBoxView selectedBoundingBox={$selectedBoundingBox} {labelledKeywords} {paragraphs} on:deleteSection={onDeleteSection}/>
             {/if}
         {/if}
     </div>

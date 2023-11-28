@@ -3,15 +3,20 @@
     import type {Writable} from "svelte/store";
     import type {LabelledKeywordResponse} from "../genai/sections/labelKeywords/+server";
     import {getBoundingBoxWords, getParagraphsInBoundingBox} from "./nearestFixedWords";
+    import {createEventDispatcher} from "svelte";
 
     export let selectedBoundingBox: BoundingBox;
     export let labelledKeywords: Writable<LabelledKeywordResponse[]>;
     export let paragraphs: Paragraph[]
+    const dispatch = createEventDispatcher();
     $: boundingBoxWords = getBoundingBoxWords(selectedBoundingBox, $labelledKeywords, paragraphs)
     $: containedParagraphs = getParagraphsInBoundingBox(selectedBoundingBox, paragraphs)
     $: labelledKeywordParagraphIds = $labelledKeywords.map(k => k.paragraphNumber)
     $: containedDataWords = containedParagraphs.filter(p => !labelledKeywordParagraphIds.includes(p.id))
-    $: containedParagraphTexts = containedDataWords.map(p => p.text)
+
+    function onDeleteSection() {
+        dispatch("deleteSection", selectedBoundingBox)
+    }
 </script>
 <div class="mt-4">
     <h5>This section:</h5>
@@ -44,6 +49,9 @@
             </ul>
         </li>
     </ul>
+    <div class="mt-8">
+        <button class="btn btn-sm btn-error" on:click={onDeleteSection}>Delete this section</button>
+    </div>
 </div>
 <style>
     .fixed-word {
