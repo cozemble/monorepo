@@ -21,7 +21,8 @@
         suffix = word.substring(word.indexOf(fixedWord) + fixedWord.length)
     }
 
-    function onParagraphClick() {
+    function onParagraphClick(event: MouseEvent) {
+        event.stopPropagation()
         labelledKeywords.update((lks) => {
             const lk = lks.find((lk) => lk.paragraphNumber === paragraphNumber)
             if (lk) {

@@ -36,3 +36,5 @@ export function linesInPage(page: Page): Line[] {
 export function linesInPages(pages: Page[]): Line[] {
     return pages.flatMap(linesInPage)
 }
+
+export type SectionAnalysisStep = { name: string, documentDisabled: boolean }

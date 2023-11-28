@@ -1,9 +1,9 @@
 <script lang="ts">
     import type {Page} from "@cozemble/backend-aws-ocr-types";
     import StreamingJson from "./StreamingJson.svelte";
-    import {jsonToHtml, type WordClass} from "../fromDocument/jsonToHtml";
+    import {jsonToHtml} from "../fromDocument/jsonToHtml";
     import type {LabelledKeywordResponse} from "../genai/sections/labelKeywords/+server";
-    import {linesOnly} from "./helpers";
+    import {linesOnly, type SectionAnalysisStep} from "./helpers";
     import {derived, writable} from "svelte/store";
     import {
         type BoundingBox,
@@ -12,17 +12,19 @@
         groupBySections,
         type Paragraph
     } from "./scratch/sectionFinder";
-    import {interactive} from "./interactiveBoundingBoxes";
     import {getBoundingBoxWords, nearestBottom, nearestLeft, nearestRight, nearestTop} from "./nearestFixedWords";
     import DocumentView from "./DocumentView.svelte";
+    import BoundingBoxView from "./BoundingBoxView.svelte";
+    import SelectedBoundingBoxView from "./SelectedBoundingBoxView.svelte";
 
     export let pages: Page[]
     const scanPercentageComplete = writable(0)
     const pagesWithLines = pages.map(page => linesOnly(page))
-    const assistantSteps = ['scanForFixedWords', 'explainToUser']
+    const assistantSteps: SectionAnalysisStep[] = [{name: 'scanForFixedWords', documentDisabled: false}, {name: 'explainToUser', documentDisabled: true}, {name: 'configureSections', documentDisabled: false}]
     let currentAssistantStep = assistantSteps[0]
     const labelledKeywords = writable([] as LabelledKeywordResponse[])
     let html = jsonToHtml(pagesWithLines);
+    const selectedBoundingBox = writable(null as BoundingBox | null)
 
     function onKeywordLabellingComplete(event: CustomEvent<string>) {
         $labelledKeywords = JSON.parse(event.detail)
@@ -90,27 +92,22 @@
 <div class="flex">
     <div class="flex flex-col">
         <h3>Document with tables removed</h3>
-        <div class="html-container border rounded" bind:this={htmlContainer}>
+        <div class="html-container border rounded" bind:this={htmlContainer}
+             class:disabled={currentAssistantStep.documentDisabled}>
             <div bind:this={scanLineDiv} class="scan-line"></div>
             {#each $boundingBoxes as boundingBox, index}
-                <div use:interactive={{ index, htmlContainer, boundingBoxes }} class="bounding-box rounded"
-                     style="position:absolute;
-                top: {boundingBox.top}%;
-                left: {boundingBox.left}%;
-                width: calc({boundingBox.right}% - {boundingBox.left}%);
-                height: calc({boundingBox.bottom}% - {boundingBox.top}%);">
-                </div>
+                <BoundingBoxView {boundingBox} {index} {htmlContainer} {boundingBoxes} {selectedBoundingBox}/>
             {/each}
             <DocumentView pages={pagesWithLines} {labelledKeywords}/>
         </div>
     </div>
     <div class="flex flex-col ml-4">
-        {#if currentAssistantStep === 'scanForFixedWords'}
+        {#if currentAssistantStep.name === 'scanForFixedWords'}
             <h3>Scanning document for "fixed words" ...</h3>
             <StreamingJson api="/genai/sections/labelKeywords" body={{html}} on:completion={onKeywordLabellingComplete}
                            on:partial={onPartialKeywordLabelling}/>
-        {:else if currentAssistantStep === 'explainToUser'}
-            <h3>xConfirm sections</h3>
+        {:else if currentAssistantStep.name === 'explainToUser'}
+            <h3>Short explainer...</h3>
             <p>The document has been scanned for "fixed words", which are now marked in bold. These are words that we
                 think will appear in all versions of this kind of document.</p><br/>
             <p>If you disagree with any of the fixed words, just click on them to toggle. Similarly, if a non-bold word
@@ -119,12 +116,13 @@
                 can reshape it or delete it</p><br/>
             <p>You can also add new sections by clicking the Add Section button</p><br/>
             <button class="btn btn-primary" on:click={nextAssistantStep}>Ok</button>
+        {:else if currentAssistantStep.name === 'configureSections'}
+            <h3>Configure sections</h3>
+            {#if $selectedBoundingBox}
+                <SelectedBoundingBoxView selectedBoundingBox={$selectedBoundingBox} {labelledKeywords} {paragraphs}/>
+            {/if}
         {/if}
     </div>
-</div>
-
-<div>
-    <pre>Bounding box words = {JSON.stringify($boundingBoxWords, null, 2)}</pre>
 </div>
 
 <style>
@@ -134,9 +132,8 @@
         position: relative;
     }
 
-    .bounding-box {
-        position: absolute;
-        border: 1px solid red;
+    .disabled {
+        opacity: 0.5;
     }
 
     /* Updated style for the scan line div */
