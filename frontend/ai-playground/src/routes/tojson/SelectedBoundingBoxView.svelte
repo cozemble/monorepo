@@ -13,6 +13,8 @@
     $: containedParagraphs = getParagraphsInBoundingBox(selectedBoundingBox, paragraphs)
     $: labelledKeywordParagraphIds = $labelledKeywords.map(k => k.paragraphNumber)
     $: containedDataWords = containedParagraphs.filter(p => !labelledKeywordParagraphIds.includes(p.id))
+    $: containedLabelledWords = containedParagraphs.filter(p => labelledKeywordParagraphIds.includes(p.id))
+
 
     function onDeleteSection() {
         dispatch("deleteSection", selectedBoundingBox)
@@ -41,6 +43,13 @@
         {:else}
             <li>Ends at the bottom of the document</li>
         {/if}
+        <li class="mt-4">Contains the following fixed words:
+            <ul class="ml-8">
+                {#each containedLabelledWords as word}
+                    <li><span class="fixed-word">{word.text}</span></li>
+                {/each}
+            </ul>
+        </li>
         <li class="mt-4">Contains the following data:
             <ul class="ml-8">
                 {#each containedDataWords as word}
@@ -49,7 +58,8 @@
             </ul>
         </li>
     </ul>
-    <div class="mt-8">
+    <div class="mt-8 flex justify-between">
+        <button class="btn btn-sm btn-primary" >Configure JSON output</button>
         <button class="btn btn-sm btn-error" on:click={onDeleteSection}>Delete this section</button>
     </div>
 </div>

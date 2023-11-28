@@ -102,6 +102,11 @@ export function getParagraphsInBoundingBox(boundingBox: BoundingBox, paragraphs:
         const isInHorizontalBounds = paragraphLeft >= boundingBox.left && paragraphRight <= boundingBox.right;
 
         return isInVerticalBounds && isInHorizontalBounds;
+    }).sort((a, b) => {
+        if (a.top === b.top) {
+            return a.left - b.left;
+        }
+        return a.top - b.top;
     });
 }
 
