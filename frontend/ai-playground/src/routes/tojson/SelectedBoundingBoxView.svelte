@@ -2,16 +2,20 @@
     import type {BoundingBox, Paragraph} from "./scratch/sectionFinder";
     import type {Writable} from "svelte/store";
     import type {LabelledKeywordResponse} from "../genai/sections/labelKeywords/+server";
-    import {getBoundingBoxWords} from "./nearestFixedWords";
+    import {getBoundingBoxWords, getParagraphsInBoundingBox} from "./nearestFixedWords";
 
     export let selectedBoundingBox: BoundingBox;
     export let labelledKeywords: Writable<LabelledKeywordResponse[]>;
     export let paragraphs: Paragraph[]
     $: boundingBoxWords = getBoundingBoxWords(selectedBoundingBox, $labelledKeywords, paragraphs)
+    $: containedParagraphs = getParagraphsInBoundingBox(selectedBoundingBox, paragraphs)
+    $: labelledKeywordParagraphIds = $labelledKeywords.map(k => k.paragraphNumber)
+    $: containedDataWords = containedParagraphs.filter(p => !labelledKeywordParagraphIds.includes(p.id))
+    $: containedParagraphTexts = containedDataWords.map(p => p.text)
 </script>
 <div class="mt-4">
     <h5>This section:</h5>
-    <ul>
+    <ul class="mt-4 ml-4">
         {#if boundingBoxWords.top}
             <li>Starts below the word <span class="fixed-word">{boundingBoxWords.top.text}</span></li>
         {:else}
@@ -32,6 +36,13 @@
         {:else}
             <li>Ends at the bottom of the document</li>
         {/if}
+        <li class="mt-4">Contains the following data:
+            <ul class="ml-8">
+                {#each containedDataWords as word}
+                    <li>{word.text}</li>
+                {/each}
+            </ul>
+        </li>
     </ul>
 </div>
 <style>

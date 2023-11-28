@@ -91,4 +91,18 @@ export function getBoundingBoxWords(boundingBox: BoundingBox, fixedWords: Labell
     }
 }
 
+export function getParagraphsInBoundingBox(boundingBox: BoundingBox, paragraphs: Paragraph[]): Paragraph[] {
+    return paragraphs.filter(paragraph => {
+        const paragraphTop = paragraph.top;
+        const paragraphBottom = paragraph.top + paragraph.height;
+        const paragraphLeft = paragraph.left;
+        const paragraphRight = paragraph.left + paragraph.width;
+
+        const isInVerticalBounds = paragraphTop >= boundingBox.top && paragraphBottom <= boundingBox.bottom;
+        const isInHorizontalBounds = paragraphLeft >= boundingBox.left && paragraphRight <= boundingBox.right;
+
+        return isInVerticalBounds && isInHorizontalBounds;
+    });
+}
+
 
