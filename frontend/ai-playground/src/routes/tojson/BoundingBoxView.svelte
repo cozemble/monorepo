@@ -2,6 +2,7 @@
     import type {BoundingBox} from "./scratch/sectionFinder";
     import type {Writable} from "svelte/store";
     import {interactive} from "./interactiveBoundingBoxes";
+    import {afterUpdate} from "svelte";
 
     export let boundingBox: BoundingBox;
     export let index: number;
@@ -14,6 +15,10 @@
         selectedBoundingBox.set(boundingBox);
         console.log({index, boundingBox, htmlContainer, boundingBoxes});
     }
+
+    afterUpdate(() => {
+        console.log({index, boundingBox, htmlContainer, boundingBoxes});
+    })
 </script>
 
 <div use:interactive={{ index, htmlContainer, boundingBoxes }} class="bounding-box rounded"

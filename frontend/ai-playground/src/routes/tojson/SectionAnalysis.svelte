@@ -16,7 +16,7 @@
     import DocumentView from "./DocumentView.svelte";
     import BoundingBoxView from "./BoundingBoxView.svelte";
     import SelectedBoundingBoxView from "./SelectedBoundingBoxView.svelte";
-    import {type MouseDragHandler, NoOpMouseDragHandler} from "./MouseDragHandler";
+    import {AddBoundingBoxMouseDragHandler, type MouseDragHandler, NoOpMouseDragHandler} from "./MouseDragHandler";
 
     export let pages: Page[]
     const scanPercentageComplete = writable(0)
@@ -26,6 +26,7 @@
     const labelledKeywords = writable([] as LabelledKeywordResponse[])
     let html = jsonToHtml(pagesWithLines);
     const selectedBoundingBox = writable(null as BoundingBox | null)
+    const boundingBoxPreview = writable(null as BoundingBox | null)
 
     function onKeywordLabellingComplete(event: CustomEvent<string>) {
         $labelledKeywords = JSON.parse(event.detail)
@@ -104,12 +105,26 @@
 
     function onDeleteSection(event: CustomEvent<BoundingBox>) {
         const index = $boundingBoxes.indexOf(event.detail)
-        console.log({index, event, boundingBoxes:$boundingBoxes})
         if (index >= 0) {
             boundingBoxes.update(boundingBoxes => boundingBoxes.filter((_, i) => i !== index))
             $selectedBoundingBox = null
-            console.log({boundingBoxes:$boundingBoxes})
         }
+    }
+
+    function onAddBoundingBoxAbort() {
+        mouseDragHandler = NoOpMouseDragHandler
+        $boundingBoxPreview = null
+    }
+
+    function onAddBoundingBoxComplete(box: BoundingBox) {
+        boundingBoxes.update(boundingBoxes => [...boundingBoxes, box])
+        $selectedBoundingBox = box
+        mouseDragHandler = NoOpMouseDragHandler
+        $boundingBoxPreview = null
+    }
+
+    function onAddSection() {
+        mouseDragHandler = new AddBoundingBoxMouseDragHandler(boundingBoxPreview, htmlContainer,onAddBoundingBoxAbort, onAddBoundingBoxComplete)
     }
 </script>
 
@@ -125,8 +140,16 @@
             {#each $boundingBoxes as boundingBox, index}
                 <BoundingBoxView {boundingBox} {index} {htmlContainer} {boundingBoxes} {selectedBoundingBox}/>
             {/each}
+            {#if $boundingBoxPreview}
+                <BoundingBoxView boundingBox={$boundingBoxPreview} index={$boundingBoxes.length} {htmlContainer} {boundingBoxes} {selectedBoundingBox}/>
+            {/if}
             <DocumentView pages={pagesWithLines} {labelledKeywords}/>
         </div>
+        {#if $labelledKeywords.length > 0}
+            <div class="mt-3">
+                <button class="btn btn-secondary btn-sm" on:click={onAddSection}>Add section</button>
+            </div>
+        {/if}
     </div>
     <div class="flex flex-col ml-4">
         {#if currentAssistantStep.name === 'scanForFixedWords'}
