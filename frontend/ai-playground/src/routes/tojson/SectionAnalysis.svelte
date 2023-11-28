@@ -4,7 +4,7 @@
     import {jsonToHtml, type WordClass} from "../fromDocument/jsonToHtml";
     import type {LabelledKeywordResponse} from "../genai/sections/labelKeywords/+server";
     import {linesOnly} from "./helpers";
-    import {writable, derived} from "svelte/store";
+    import {derived, writable} from "svelte/store";
     import {
         type BoundingBox,
         extractParagraphs,
@@ -14,33 +14,18 @@
     } from "./scratch/sectionFinder";
     import {interactive} from "./interactiveBoundingBoxes";
     import {getBoundingBoxWords, nearestBottom, nearestLeft, nearestRight, nearestTop} from "./nearestFixedWords";
+    import DocumentView from "./DocumentView.svelte";
 
     export let pages: Page[]
     const scanPercentageComplete = writable(0)
-    const stylePrefix = `<style>
-            .text-box {
-                 font-size: x-small;
-                 white-space: nowrap;
-            }
-            .fixed-word {
-                font-weight: bold;
-            }
-            </style>`
     const pagesWithLines = pages.map(page => linesOnly(page))
-    let html = stylePrefix + jsonToHtml(pagesWithLines);
     const assistantSteps = ['scanForFixedWords', 'explainToUser']
     let currentAssistantStep = assistantSteps[0]
-    let labelledKeywords = [] as LabelledKeywordResponse[]
+    const labelledKeywords = writable([] as LabelledKeywordResponse[])
+    let html = jsonToHtml(pagesWithLines);
 
     function onKeywordLabellingComplete(event: CustomEvent<string>) {
-        labelledKeywords = JSON.parse(event.detail)
-        const wordClasses: WordClass[] = labelledKeywords.map(r => ({
-            paragraphNumber: r.paragraphNumber,
-            word: r.fixedWord,
-            clazz: 'fixed-word'
-        }))
-        const pagesWithLines = pages.map(page => linesOnly(page))
-        html = stylePrefix + jsonToHtml(pagesWithLines, wordClasses)
+        $labelledKeywords = JSON.parse(event.detail)
         if (scanLineDiv) {
             scanLineDiv.style.display = 'none';
         }
@@ -52,12 +37,12 @@
         paragraphs = extractParagraphs(html);
         sections = groupBySections(paragraphs);
         $boundingBoxes = sections.map(getBoundingBox);
-        if($boundingBoxes.length > 0) {
+        if ($boundingBoxes.length > 0) {
             const box = $boundingBoxes[0];
-            const top = nearestTop(box, labelledKeywords, paragraphs);
-            const bottom = nearestBottom(box, labelledKeywords, paragraphs);
-            const left = nearestLeft(box, labelledKeywords, paragraphs);
-            const right = nearestRight(box, labelledKeywords, paragraphs);
+            const top = nearestTop(box, $labelledKeywords, paragraphs);
+            const bottom = nearestBottom(box, $labelledKeywords, paragraphs);
+            const left = nearestLeft(box, $labelledKeywords, paragraphs);
+            const right = nearestRight(box, $labelledKeywords, paragraphs);
             console.log({top, bottom, left, right})
         }
     }
@@ -99,7 +84,7 @@
     let paragraphs = [] as Paragraph[]
     let sections = [] as Paragraph[][]
     const boundingBoxes = writable([] as BoundingBox[])
-    const boundingBoxWords = derived(boundingBoxes, $boundingBoxes => $boundingBoxes.map(boundingBox => getBoundingBoxWords(boundingBox, labelledKeywords, paragraphs)))
+    const boundingBoxWords = derived(boundingBoxes, $boundingBoxes => $boundingBoxes.map(boundingBox => getBoundingBoxWords(boundingBox, $labelledKeywords, paragraphs)))
 </script>
 
 <div class="flex">
@@ -115,7 +100,8 @@
                 width: calc({boundingBox.right}% - {boundingBox.left}%);
                 height: calc({boundingBox.bottom}% - {boundingBox.top}%);">
                 </div>
-            {/each}            {@html html}
+            {/each}
+            <DocumentView pages={pagesWithLines} {labelledKeywords}/>
         </div>
     </div>
     <div class="flex flex-col ml-4">
