@@ -8,10 +8,12 @@
   We don't have the complex header and footer here. We only display the logo and the content of the page.
  -->
 
-<header class="navbar p-4 sm:py-3 sm:px-6">
-  <Logo />
-</header>
+<div class="flex flex-col h-screen">
+  <header class="navbar p-4 sm:py-3 sm:px-6">
+    <Logo />
+  </header>
 
-<main class="p-4 pb-20 sm:pb-4 flex-grow flex flex-col justify-between items-center">
-  <slot />
-</main>
+  <main class="p-4 pb-20 sm:pb-4 h-0 flex-grow">
+    <slot />
+  </main>
+</div>

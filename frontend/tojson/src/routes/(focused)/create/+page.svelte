@@ -159,9 +159,9 @@
   Handles the steps of the model creation process and redirects to the dashboard when the process is finished.
 -->
 
-<div class="flex items-stretch justify-start w-full gap-[5vw] flex-grow ">
+<div class="w-full h-full gap-[5vw] flex items-stretch">
   <!-- Steps (left)-->
-  <div class="flex flex-col justify-center gap-16 max-w-[50em]">
+  <div class="max-w-[50em] flex flex-col justify-center gap-16">
     <ul class="steps steps-vertical gap-4">
       {#each steps as step}
         {@const isActive = step.name === currentStep.name}
@@ -193,12 +193,10 @@
   </div>
 
   <!-- Step View (right) -->
-  <div class="flex flex-col items-center justify-center px-10 flex-grow border-l">
+  <div class="h-full flex-grow flex flex-col items-center justify-center">
     <!-- Component -->
     {#if currentStep.component}
-      <div
-        class="w-full h-full p-6 gap-6 flex flex-col flex-grow items-center justify-center bg-base-300 rounded-2xl"
-      >
+      <div class="gap-6 w-full h-full overflow-y-auto rounded-2xl border">
         <svelte:component this={currentStep.component} />
       </div>
     {:else}
