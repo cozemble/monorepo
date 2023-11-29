@@ -6,15 +6,28 @@
     - ## Document OCR
       - Non-interactive
       - Do document OCR if user provided a document
-        - Documents are either PDFs or images
-      - Skip if user provided a TXT file
+        - Documents are either PDFs (later images)
+      - Skip if user provided a TXT file (later)
 
     - ## Post OCR Corrections
       - Interactive
       - Allow user to correct OCR mistakes
       - Allow user to add additional data
       - Allow user to remove data
-    
+      - Popups for suggestions 
+      - Corrective Actions:
+        - Table
+          - Label
+          - Merge
+          - Approve
+        - Column
+          - Validation Rules (JSON Schema)
+          - Name
+          - Drop
+        - Row
+          - Extract
+          - Remove
+        
     - ## Schema Generation
       - Non-interactive
       - Generate a schema from the data
