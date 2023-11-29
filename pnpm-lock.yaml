@@ -1337,8 +1337,8 @@ importers:
         specifier: ^2.36.0
         version: 2.36.0
       daisyui:
-        specifier: ^4.4.2
-        version: 4.4.2(postcss@8.4.27)
+        specifier: ^4.4.14
+        version: 4.4.14(postcss@8.4.27)
     devDependencies:
       '@iconify/svelte':
         specifier: ^3.1.4
@@ -5008,7 +5008,7 @@ packages:
     peerDependencies:
       '@sveltejs/kit': ^1.0.0
     dependencies:
-      '@sveltejs/kit': 1.20.4(svelte@3.54.0)(vite@4.4.3)
+      '@sveltejs/kit': 1.20.4(svelte@4.0.5)(vite@4.4.3)
       import-meta-resolve: 2.2.2
     dev: true
 
@@ -7209,8 +7209,8 @@ packages:
       - ts-node
     dev: false
 
-  /daisyui@4.4.2(postcss@8.4.27):
-    resolution: {integrity: sha512-Ecg5loskj9dkaAnTSK5Xn5jb24TqDlQIg/NJ025jCkw2S/zw12btjvLgY2Sv5Ws1DFVoVBRs3XYXyojZG7zVnw==}
+  /daisyui@4.4.14(postcss@8.4.27):
+    resolution: {integrity: sha512-1g37QzzDFM0QLQe+qRBswkGKyaGijk84t01UMg1ytkFhQxru3zeMh5nWcpC9KnqzKgnITkpSebpGqq4gP8zRrg==}
     engines: {node: '>=16.9.0'}
     dependencies:
       css-selector-tokenizer: 0.8.0
