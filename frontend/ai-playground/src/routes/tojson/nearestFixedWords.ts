@@ -1,4 +1,4 @@
-import type {BoundingBox, Paragraph} from "./scratch/sectionFinder";
+import type {BoundingBox, Paragraph} from "./sectionFinder";
 import type {LabelledKeywordResponse} from "../genai/sections/labelKeywords/+server";
 
 function getFixedParagraphs(fixedWords: LabelledKeywordResponse[], paragraphs: Paragraph[]) {

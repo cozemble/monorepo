@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type {BoundingBox} from "./scratch/sectionFinder";
+    import type {BoundingBox} from "./sectionFinder";
     import type {Writable} from "svelte/store";
     import {interactive} from "./interactiveBoundingBoxes";
     import {afterUpdate} from "svelte";

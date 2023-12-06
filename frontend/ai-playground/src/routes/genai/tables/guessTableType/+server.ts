@@ -1,4 +1,4 @@
-import { callOpenAi } from './callOpenAi'
+import {callOpenAi} from "./callOpenAi";
 
 function guessTableTypePrompt(tableCount: number, tablesAsCsv: string): string {
   return `Here are ${tableCount} tables represented as CSV.  They have been scanned by an OCR process.

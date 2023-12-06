@@ -11,7 +11,7 @@
         getBoundingBox,
         groupBySections,
         type Paragraph
-    } from "./scratch/sectionFinder";
+    } from "./sectionFinder";
     import {nearestBottom, nearestLeft, nearestRight, nearestTop} from "./nearestFixedWords";
     import DocumentView from "./DocumentView.svelte";
     import BoundingBoxView from "./BoundingBoxView.svelte";

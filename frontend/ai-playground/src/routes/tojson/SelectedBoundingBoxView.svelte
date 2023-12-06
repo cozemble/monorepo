@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type {BoundingBox, Paragraph} from "./scratch/sectionFinder";
+    import type {BoundingBox, Paragraph} from "./sectionFinder";
     import type {Writable} from "svelte/store";
     import type {LabelledKeywordResponse} from "../genai/sections/labelKeywords/+server";
     import {getBoundingBoxWords, getParagraphsInBoundingBox} from "./nearestFixedWords";

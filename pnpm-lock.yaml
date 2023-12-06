@@ -642,8 +642,8 @@ importers:
         specifier: ^0.20.0
         version: 0.20.0
       ai:
-        specifier: ^2.2.12
-        version: 2.2.12(react@18.2.0)(solid-js@1.7.11)(svelte@3.54.0)(vue@3.3.4)
+        specifier: 2.2.26
+        version: 2.2.26(react@18.2.0)(solid-js@1.7.11)(svelte@3.54.0)(vue@3.3.4)
       ajv:
         specifier: ^8.12.0
         version: 8.12.0
@@ -666,8 +666,8 @@ importers:
         specifier: ^22.1.0
         version: 22.1.0
       openai:
-        specifier: 4.6.0
-        version: 4.6.0
+        specifier: 4.20.1
+        version: 4.20.1
       svelte-codemirror-editor:
         specifier: ^1.1.0
         version: 1.1.0(codemirror@6.0.1)
@@ -5976,8 +5976,8 @@ packages:
       indent-string: 4.0.0
     dev: true
 
-  /ai@2.2.12(react@18.2.0)(solid-js@1.7.11)(svelte@3.54.0)(vue@3.3.4):
-    resolution: {integrity: sha512-UdTbykzU9EvqwLv8KyJD4Avzsi9DYXZlE+6S4jd86iyp56jRJeg9Vmsnc+2487qI20aMIqKkm07R3qqJ1DH6lA==}
+  /ai@2.2.26(react@18.2.0)(solid-js@1.7.11)(svelte@3.54.0)(vue@3.3.4):
+    resolution: {integrity: sha512-ANvG9sTT/pwOykEj1Huos8BuiYD4azUVoMXxDV3uhWO1KdZP5iN1GnSnnh08+ZDXKhedZnXZqvVTG2rSEgCWPQ==}
     engines: {node: '>=14.6'}
     peerDependencies:
       react: ^18.2.0
@@ -5996,7 +5996,6 @@ packages:
     dependencies:
       eventsource-parser: 1.0.0
       nanoid: 3.3.6
-      openai: 4.2.0
       react: 18.2.0
       solid-js: 1.7.11
       solid-swr-store: 0.10.7(solid-js@1.7.11)(swr-store@0.10.6)
@@ -6006,8 +6005,6 @@ packages:
       swr-store: 0.10.6
       swrv: 1.0.4(vue@3.3.4)
       vue: 3.3.4
-    transitivePeerDependencies:
-      - encoding
     dev: false
 
   /ajv-formats@2.1.1(ajv@8.12.0):
@@ -10794,8 +10791,8 @@ packages:
       - debug
     dev: false
 
-  /openai@4.2.0:
-    resolution: {integrity: sha512-zfvpO2eITIxIjTG8T6Cek7NB2dMvP/LW0TRUJ4P9E8+qbBNKw00DrtfF64b+fAV2+wUYCVyynT6iSycJ//TtbA==}
+  /openai@4.20.1:
+    resolution: {integrity: sha512-Dd3q8EvINfganZFtg6V36HjrMaihqRgIcKiHua4Nq9aw/PxOP48dhbsk8x5klrxajt5Lpnc1KTOG5i1S6BKAJA==}
     hasBin: true
     dependencies:
       '@types/node': 18.17.12
@@ -10806,6 +10803,7 @@ packages:
       form-data-encoder: 1.7.2
       formdata-node: 4.4.1
       node-fetch: 2.7.0
+      web-streams-polyfill: 3.2.1
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -14075,6 +14073,11 @@ packages:
     dependencies:
       makeerror: 1.0.12
     dev: true
+
+  /web-streams-polyfill@3.2.1:
+    resolution: {integrity: sha512-e0MO3wdXWKrLbL0DgGnUV7WHVuw9OUvL4hjgnPkIeEvESk74gAITi5G606JtZPp39cd8HA9VQzCIvA49LpPN5Q==}
+    engines: {node: '>= 8'}
+    dev: false
 
   /web-streams-polyfill@4.0.0-beta.3:
     resolution: {integrity: sha512-QW95TCTaHmsYfHDybGMwO5IJIM93I/6vTRk+daHTWFPhwh+C8Cg7j7XyKrwrj8Ib6vYXe0ocYNrmzY4xAAN6ug==}
