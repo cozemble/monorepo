@@ -3,8 +3,8 @@ import axios from 'axios'
 
 const fileTypes = ['application/pdf'];
 
-const OPENAI_KEY = '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';
-const AWS_OCR_KEY = '2b0a5cbe-783b-46b6-8787-24e7a390b191';
+const OPENAI_KEY = 'xxxx-xxx';
+const AWS_OCR_KEY = 'xxxx-xxxx';
 
 const AWS_OCR_URL = ' https://gkxoxjr0h8.execute-api.eu-west-2.amazonaws.com/prod/ocr';
 const ChatGPTURL = 'https://api.openai.com/v1/engines/davinci-codex/completions';
