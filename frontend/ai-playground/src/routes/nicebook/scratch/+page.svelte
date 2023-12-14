@@ -4,6 +4,7 @@
     import type {AvailabilityResponse} from "../api/availability/times/AvailabilityResponse";
     import {callAppointmentApi} from "./callAppointmentApi";
     import type {AddOn} from "../api/addOns/addOns";
+    import AppointmentForm from "./AppointmentForm.svelte";
 
     let appointmentTypes: AppointmentType[] = [];
     let availableAppointmentTimes: AvailabilityResponse[] = [];
@@ -51,3 +52,5 @@
         <li><pre>{JSON.stringify(addOn, null, 2)}</pre></li> <!-- Display each add-on -->
     {/each}
 </ul>
+
+<AppointmentForm />
